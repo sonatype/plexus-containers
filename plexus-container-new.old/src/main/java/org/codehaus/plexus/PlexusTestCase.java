@@ -228,7 +228,12 @@ public class PlexusTestCase
 
     public static File getTestFile( String basedir, String path )
     {
-        return new File( basedir, path );
+        File basedirFile = new File( basedir );
+        if ( ! basedirFile.isAbsolute() )
+        {
+            basedirFile = getTestFile( basedir );
+        }
+        return new File( basedirFile, path );
     }
 
     public static String getTestPath( String path )
