@@ -682,9 +682,7 @@ public class DefaultComponentRepository
             }
             catch ( Exception e )
             {
-                getLogger().error(
-                    "Error while disposing component manager. Continuing with the rest",
-                    e );
+                getLogger().error( "Error while disposing component manager. Continuing with the rest", e );
             }
         }
 
