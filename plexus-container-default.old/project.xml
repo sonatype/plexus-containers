@@ -32,7 +32,7 @@
 
   <repository>
     <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvspublic:plexus/plexus-container</connection>
-    <url>http://cvs.codehaus.org/viewcvs.cgi/plexus/?root=codehaus</url>
+    <url>http://cvs.codehaus.org/viewcvs.cgi/plexus/plexus-container/?root=codehaus</url>
   </repository>
 
   <versions/>
