@@ -62,7 +62,6 @@ public class DefaultComponentComposer
             // Cardinality is determined by field.getType() method
             // It can be array, map, collection or "ordinary" field
             assignRequirmentToField( field, container, role, componentRepository, component );
-
         }
     }
 
@@ -275,6 +274,9 @@ public class DefaultComponentComposer
             msg.append( type );
 
             msg.append( "' exists in component of role: '" );
+
+            //!!!
+            // Can't construct this message if the component descriptor is null.
 
             msg.append( componentDescriptor.getRole() );
 
