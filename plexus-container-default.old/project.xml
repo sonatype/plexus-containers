@@ -94,6 +94,15 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <name>Ben Walding</name>
+      <id>bwalding</id>
+      <email>bwalding@codehaus.org</email>
+      <organization>Walding Consulting Services</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
   
   <dependencies>
