@@ -500,7 +500,6 @@ public class DefaultPlexusContainer
         }
     }
 
-
     // We are assuming that any component which is designated as a component discovery
     // listener is listed in the plexus.xml file that will be discovered and processed
     // before the components.xml are discovered in JARs and processed.
@@ -528,7 +527,6 @@ public class DefaultPlexusContainer
 
                 List componentDescriptors = componentSet.getComponents();
 
-
                 for ( Iterator k = componentDescriptors.iterator(); k.hasNext(); )
                 {
                     ComponentDescriptor componentDescriptor = (ComponentDescriptor) k.next();
@@ -540,12 +538,25 @@ public class DefaultPlexusContainer
                     // the user defined one.
                     if ( getComponentDescriptor( componentDescriptor.getComponentKey() ) == null )
                     {
-
                         addComponentDescriptor( componentDescriptor );
+
+                        // We only want to add components that have not yet been
+                        // discovered in a parent realm. We don't quite have fine
+                        // grained control over this right now but this is for
+                        // dynamic additions which are only happening from maven
+                        // at the moment. And plugins have a parent realm and
+                        // a grand parent realm so if the component has been
+                        // discovered it's most likely in those realms.
+
+                        // I actually need to keep track of what realm a component
+                        // was discovered in so that i can accurately search the
+                        // parents.
+
+                        discoveredComponentDescriptors.add( componentDescriptor );
                     }
                 }
 
-                discoveredComponentDescriptors.addAll( componentDescriptors );
+                //discoveredComponentDescriptors.addAll( componentDescriptors );
             }
         }
 
