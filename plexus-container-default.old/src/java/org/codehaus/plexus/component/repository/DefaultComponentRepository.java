@@ -347,9 +347,9 @@ public class DefaultComponentRepository
 
                 if ( descriptor == null )
                 {
-                    getLogger().error( "Non existant component: " + key );
+                    getLogger().error( "Non-existent component: " + key );
 
-                    throw new ComponentLookupException( "Non existant component:  " );
+                    throw new ComponentLookupException( "Non-existent component: " + key );
                 }
 
                 try
