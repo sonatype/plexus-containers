@@ -5,6 +5,8 @@ import junit.framework.TestCase;
 import java.io.StringReader;
 import java.util.List;
 
+import org.apache.avalon.framework.configuration.Configuration;
+
 /**
  *
  *
@@ -111,5 +113,45 @@ public class ObjectBuilderTest
         assertNotNull( inner );
 
         assertEquals( "inner-class-id", inner.getId() );
+    }
+
+    public void testReadingObjectWithEmbeddedConfiguration()
+        throws Exception
+    {
+        String configuration =
+            "<person>" +
+            "  <id>jvz</id>" +
+            "  <name>jason</name>" +
+            "  <configuration>" +
+            "    <foo>bar</foo>" +
+            "    <handlers>" +
+            "      <one>1</one>" +
+            "      <two>2</two>" +
+            "    </handlers>" +
+            "  </configuration>" +
+            "  <occupation>muckraker</occupation>" +
+            "</person>";
+
+        ObjectBuilder builder = new ObjectBuilder();
+
+        Person person = (Person) builder.build( new StringReader( configuration ), Person.class );
+
+        assertNotNull( person );
+
+        assertEquals( "jvz", person.getId() );
+
+        assertEquals( "jason", person.getName() );
+
+        Configuration c = person.getConfiguration();
+
+        assertNotNull( c );
+
+        assertEquals( "bar", c.getChild( "foo" ).getValue() );
+
+        assertEquals( 1, c.getChild( "handlers").getChild( "one" ).getValueAsInteger() );
+
+        assertEquals( 2, c.getChild( "handlers").getChild( "two" ).getValueAsInteger() );
+
+        assertEquals( "muckraker", person.getOccupation() );
     }
 }
