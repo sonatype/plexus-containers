@@ -6,12 +6,15 @@ import org.codehaus.plexus.component.repository.exception.ComponentRepositoryExc
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
 import org.codehaus.plexus.component.composition.CompositionException;
+import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
+import org.codehaus.plexus.component.discovery.DefaultComponentDiscoverer;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * @todo We need to process component descriptors from a specified configuration file in addition
@@ -35,6 +38,8 @@ public class DefaultComponentRepository
 
     private CompositionResolver compositionResolver;
 
+    private ComponentDiscoverer componentDiscoverer;
+
     public DefaultComponentRepository()
     {
         componentDescriptors = new HashMap();
@@ -42,6 +47,8 @@ public class DefaultComponentRepository
         componentDescriptorMaps = new HashMap();
 
         compositionResolver = new DefaultCompositionResolver();
+
+        componentDiscoverer = new DefaultComponentDiscoverer();
     }
 
     // ----------------------------------------------------------------------
@@ -91,7 +98,7 @@ public class DefaultComponentRepository
     public void initializeComponentDescriptors()
         throws Exception
     {
-        initializeComponentDescriptorsFromComponentsThatHaveBeenDiscovered();
+        initializeComponentDescriptorsThatHaveBeenDiscovered();
 
         initializeComponentDescriptorsFromUserConfiguration();
     }
@@ -107,12 +114,15 @@ public class DefaultComponentRepository
         }
     }
 
-    private void initializeComponentDescriptorsFromComponentsThatHaveBeenDiscovered()
+    private void initializeComponentDescriptorsThatHaveBeenDiscovered()
         throws Exception
     {
-        // This will consist of using the classworlds realm and searching for all
-        // components.xml files and initializing the component descriptors
-        // described within.
+        List componentDescriptors = componentDiscoverer.findComponents( null );
+
+        for ( Iterator i = componentDescriptors.iterator(); i.hasNext(); )
+        {
+            addComponentDescriptor( (ComponentDescriptor) i.next() );
+        }
     }
 
     // ----------------------------------------------------------------------
@@ -123,6 +133,7 @@ public class DefaultComponentRepository
         throws ComponentRepositoryException
     {
         ComponentDescriptor componentDescriptor = null;
+
         try
         {
             componentDescriptor = PlexusTools.buildComponentDescriptor( configuration );

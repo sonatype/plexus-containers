@@ -25,8 +25,8 @@ public class ComponentDiscovererTest
 
         ComponentDescriptor cd = (ComponentDescriptor) components.get( 0 );
 
-        assertEquals( "org.codehaus.plexus.Foo", cd.getRole() );
+        assertEquals( "org.codehaus.plexus.discovery.DiscoveredComponent", cd.getRole() );
 
-        assertEquals( "org.codehaus.plexus.DefaultFoo", cd.getImplementation() );
+        assertEquals( "org.codehaus.plexus.discovery.DefaultDiscoveredComponent", cd.getImplementation() );
     }
 }

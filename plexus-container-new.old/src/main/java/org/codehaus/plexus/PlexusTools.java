@@ -20,11 +20,7 @@ public class PlexusTools
     public static ComponentDescriptor buildComponentDescriptor( String configuration )
         throws Exception
     {
-        XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
-
-        PlexusConfiguration c = builder.parse( new StringReader( configuration ) );
-
-        return buildComponentDescriptor( c );
+        return buildComponentDescriptor( buildConfiguration( configuration ) );
     }
 
     public static ComponentDescriptor buildComponentDescriptor( PlexusConfiguration configuration )
@@ -36,8 +32,16 @@ public class PlexusTools
 
         xstreamTool.alias( "requirement", ComponentRequirement.class );
 
-        ComponentDescriptor cd = (ComponentDescriptor) xstreamTool.build( (PlexusConfiguration) configuration, ComponentDescriptor.class );
+        ComponentDescriptor cd = (ComponentDescriptor) xstreamTool.build( configuration, ComponentDescriptor.class );
 
         return cd;
+    }
+
+    public static PlexusConfiguration buildConfiguration( String configuration )
+        throws Exception
+    {
+        XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
+
+        return builder.parse( new StringReader( configuration ) );
     }
 }
