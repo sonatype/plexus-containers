@@ -26,7 +26,6 @@ package org.codehaus.plexus.component.configurator.converters;
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 
@@ -36,18 +35,19 @@ public interface ConfigurationConverter
 
 
     /**
-     * @param converterLookup  Repository of available converters
+     * @param converterLookup Repository of available converters
      * @param configuration
-     * @param type                Type of the class which must be returned
-     * @param classLoader         ClassLoader which should be used for loading classes
-     * @param componentDescriptor Descriptor of the component for which the work is done
+     * @param type the type of object to read
+     * @param baseType the type of object the the source is
+     * @param classLoader ClassLoader which should be used for loading classes
      * @return
      * @throws ComponentConfigurationException
-     *
+     * @todo a better way, instead of baseType, would be to pass in a factory for new classes that could be based from the given package
      */
     public Object fromConfiguration( ConverterLookup converterLookup,
                                      PlexusConfiguration configuration,
                                      Class type,
-                                     ClassLoader classLoader,
-                                     ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException;
+                                     Class baseType,
+                                     ClassLoader classLoader )
+        throws ComponentConfigurationException;
 }

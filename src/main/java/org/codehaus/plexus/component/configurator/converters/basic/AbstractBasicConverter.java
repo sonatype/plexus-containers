@@ -27,14 +27,14 @@ package org.codehaus.plexus.component.configurator.converters.basic;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 public abstract class AbstractBasicConverter extends AbstractConfigurationConverter
 {
     abstract public Object fromString( String str );
 
-    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type, ClassLoader classLoader, ComponentDescriptor componentDescriptor )
+    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                     Class baseType, ClassLoader classLoader )
         throws ComponentConfigurationException
     {
         if ( configuration.getChildCount() > 0 )
@@ -46,9 +46,7 @@ public abstract class AbstractBasicConverter extends AbstractConfigurationConver
 
         if ( value == null )
         {
-            String msg = "Could not find a value for configuration element: " + 
-            			 "'" + configuration.getName() + "'  of component: " +
-            			 componentDescriptor.getHumanReadableKey();
+            String msg = "Could not find a value for configuration element: '" + configuration.getName();
 
             throw new ComponentConfigurationException( msg );
         }

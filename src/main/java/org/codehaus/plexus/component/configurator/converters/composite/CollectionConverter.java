@@ -28,7 +28,6 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurationExceptio
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -54,18 +53,18 @@ public class CollectionConverter extends AbstractConfigurationConverter
     public Object fromConfiguration( ConverterLookup converterLookup,
                                      PlexusConfiguration configuration,
                                      Class type,
-                                     ClassLoader classLoader,
-                                     ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+                                     Class baseType,
+                                     ClassLoader classLoader )
+        throws ComponentConfigurationException
     {
         Collection retValue = null;
 
-        Class implementation = getClassForImplementationHint( null, configuration, classLoader, componentDescriptor );
+        Class implementation = getClassForImplementationHint( null, configuration, classLoader );
 
         if ( implementation != null )
         {
-            retValue = ( Collection ) instantiateObject( implementation, componentDescriptor );
+            retValue = ( Collection ) instantiateObject( implementation );
         }
-
         else
         {
             // we can have 2 cases here:
@@ -86,9 +85,7 @@ public class CollectionConverter extends AbstractConfigurationConverter
                 }
                 catch ( Exception e )
                 {
-                    String msg = "Error occured while configuring component " +
-                            componentDescriptor.getHumanReadableKey() +
-                            ". An attempt to convert configuration entry "+
+                    String msg = "An attempt to convert configuration entry "+
                             configuration.getName() +
                             "' into Collection object failed: " + e.getMessage();
 
@@ -103,26 +100,24 @@ public class CollectionConverter extends AbstractConfigurationConverter
             PlexusConfiguration c = configuration.getChild( i );
             //Object o = null;
 
-            String conifgEntry = c.getName();
+            String configEntry = c.getName();
 
-            String componentClassname = componentDescriptor.getImplementation();
+            String basePackage = baseType.getPackage().getName();
 
-            String basePackage = componentClassname.substring( 0, componentClassname.lastIndexOf( "." ) );
-
-            String name = StringUtils.capitalizeFirstLetter( fromXML( conifgEntry ) );
+            String name = StringUtils.capitalizeFirstLetter( fromXML( configEntry ) );
 
             String classname = basePackage + "." + name;
 
-            Class childType = getClassForImplementationHint( null, c, classLoader, componentDescriptor );
+            Class childType = getClassForImplementationHint( null, c, classLoader );
 
             if ( childType == null )
             {
-                childType = loadClass( classname, classLoader, componentDescriptor );
+                childType = loadClass( classname, classLoader );
             }
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
-            Object object = converter.fromConfiguration( converterLookup, c, childType, classLoader, componentDescriptor );
+            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader );
 
             retValue.add( object );
         }

@@ -26,7 +26,6 @@ package org.codehaus.plexus.component.configurator;
 
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 
@@ -41,7 +40,6 @@ public class BasicComponentConfigurator
 
 
     public void configureComponent( Object component,
-                                    ComponentDescriptor componentDescriptor,
                                     PlexusConfiguration configuration )
             throws ComponentConfigurationException
     {
@@ -57,6 +55,6 @@ public class BasicComponentConfigurator
 
         ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
 
-        converter.processConfiguration( converterLookup, component, classLoader, configuration, componentDescriptor );        
+        converter.processConfiguration( converterLookup, component, classLoader, configuration );
     }
 }

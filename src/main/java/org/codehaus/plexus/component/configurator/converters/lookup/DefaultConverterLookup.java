@@ -29,6 +29,7 @@ import org.codehaus.plexus.component.configurator.converters.ConfigurationConver
 import org.codehaus.plexus.component.configurator.converters.basic.BooleanConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.ByteConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.CharConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.DateConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.DoubleConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.FloatConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.IntConverter;
@@ -36,7 +37,6 @@ import org.codehaus.plexus.component.configurator.converters.basic.LongConverter
 import org.codehaus.plexus.component.configurator.converters.basic.ShortConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.StringBufferConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.StringConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.DateConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.CollectionConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PlexusConfigurationConverter;
@@ -92,9 +92,7 @@ public class DefaultConverterLookup implements ConverterLookup
         if ( retValue == null )
         {
             // this is highly irregular
-            String msg = "Configuration converter lookup failed";
-
-            throw new ComponentConfigurationException( msg );
+            throw new ComponentConfigurationException( "Configuration converter lookup failed" );
         }
         return retValue;
     }

@@ -25,9 +25,7 @@ package org.codehaus.plexus.component.configurator.converters;
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -46,8 +44,7 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
      */
     protected Class getClassForImplementationHint( Class type,
                                                    PlexusConfiguration configuration,
-                                                   ClassLoader classLoader,
-                                                   ComponentDescriptor componentDescriptor )
+                                                   ClassLoader classLoader )
             throws ComponentConfigurationException
     {
         Class retValue = type;
@@ -63,10 +60,7 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
             }
             catch ( ClassNotFoundException e )
             {
-                String msg = "Error configuring component: "
-                        + componentDescriptor.getHumanReadableKey()
-                        + ". Class name which was explicitly "
-                        + " given in configuration using 'implementation' attribute: '"
+                String msg = "Class name which was explicitly given in configuration using 'implementation' attribute: '"
                         + implementation + "' cannot be loaded: " + e.getMessage();
 
                 throw new ComponentConfigurationException( msg );
@@ -78,7 +72,7 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
     }
 
 
-    protected Class loadClass( String classname, ClassLoader classLoader, ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+    protected Class loadClass( String classname, ClassLoader classLoader ) throws ComponentConfigurationException
     {
         Class retValue = null;
 
@@ -88,22 +82,24 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
         }
         catch ( Exception e )
         {
-            throw new ComponentConfigurationException( "Error configuring component: " + componentDescriptor.getHumanReadableKey() + ".", e );
+            throw new ComponentConfigurationException( "Error loading class '" + classname + "'", e );
         }
 
         return retValue;
     }
 
-    protected Object instantiateObject( String classname, ClassLoader classLoader, ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+    protected Object instantiateObject( String classname, ClassLoader classLoader )
+        throws ComponentConfigurationException
     {
-        Class clazz = loadClass( classname, classLoader, componentDescriptor );
+        Class clazz = loadClass( classname, classLoader );
 
-        Object retValue = instantiateObject( clazz, componentDescriptor );
+        Object retValue = instantiateObject( clazz );
 
         return retValue;
     }
 
-    protected Object instantiateObject( Class clazz, ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+    protected Object instantiateObject( Class clazz )
+        throws ComponentConfigurationException
     {
         Object retValue = null;
 
@@ -115,12 +111,7 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
         }
         catch ( Exception e )
         {
-            String msg = "Error configuring component: "
-                    + componentDescriptor.getHumanReadableKey()
-                    + ". Class '"
-                    + clazz.getName()
-                    + "' cannot be instantiated";
-
+            String msg = "Class '" + clazz.getName() + "' cannot be instantiated";
 
             throw new ComponentConfigurationException( msg );
         }

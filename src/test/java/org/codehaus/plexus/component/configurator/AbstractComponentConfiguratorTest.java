@@ -24,16 +24,15 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
 import junit.framework.Assert;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.component.repository.io.PlexusTools;
+import junit.framework.TestCase;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.io.StringReader;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -80,7 +79,7 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         descriptor.setImplementation( component.getClass().getName() );
 
-        cc.configureComponent( component, descriptor, configuration );
+        cc.configureComponent( component, configuration );
 
         assertEquals( "check integer value", 0, component.getIntValue() );
 
@@ -130,7 +129,7 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         descriptor.setImplementation( component.getClass().getName() );
 
-        cc.configureComponent( component, descriptor, configuration );
+        cc.configureComponent( component, configuration );
 
         assertEquals( "jason", component.getName() );
 
@@ -177,7 +176,7 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         descriptor.setImplementation( component.getClass().getName() );
 
-        cc.configureComponent( component, descriptor, configuration );
+        cc.configureComponent( component, configuration );
 
         List list = component.getList();
 
@@ -214,7 +213,7 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         descriptor.setImplementation( component.getClass().getName() );
 
-        cc.configureComponent( component, descriptor, configuration );
+        cc.configureComponent( component, configuration );
 
         assertNotNull( component.getThing() );
 
@@ -252,7 +251,7 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         descriptor.setImplementation( component.getClass().getName() );
 
-        cc.configureComponent( component, descriptor, configuration );
+        cc.configureComponent( component, configuration );
 
         Properties properties = component.getSomeProperties();
 
