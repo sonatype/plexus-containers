@@ -34,9 +34,9 @@ public class Log4JLoggerManagerTest
 
         assertEquals( "INFO,default", p.getProperty( "log4j.rootLogger" ) );
 
-        assertEquals( "org.codehaus.log4j.FileAppender", p.getProperty( "log4j.appender.default" ) );
+        assertEquals( "org.apache.log4j.FileAppender", p.getProperty( "log4j.appender.default" ) );
 
-        assertEquals( "org.codehaus.log4j.PatternLayout", p.getProperty( "log4j.appender.default.layout" ) );
+        assertEquals( "org.apache.log4j.PatternLayout", p.getProperty( "log4j.appender.default.layout" ) );
 
         assertEquals( "true", p.getProperty( "log4j.appender.default.append" ) );
 
