@@ -23,12 +23,8 @@ package org.codehaus.plexus.util.cli;
  */
 public class DefaultConsumer implements StreamConsumer
 {
-    /* (non-Javadoc)
-     * @see org.apache.maven.scm.util.StreamConsumer#consumeLine(java.lang.String)
-     */
     public void consumeLine(String line)
     {
         System.out.println(line);
     }
-
 }

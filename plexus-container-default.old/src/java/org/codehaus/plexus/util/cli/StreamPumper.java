@@ -61,26 +61,25 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 /**
- * Class to pump the error stream during Process's runtime. Copied from
- * the Ant built-in task.
- *
- * @since  June 11, 2001
- * @author <a href="mailto:fvancea@maxiq.com">Florin Vancea</a>
- * @author <a href="mailto:pj@thoughtworks.com">Paul Julius</a>
+ * Class to pump the error stream during Process's runtime. Copied from the Ant
+ * built-in task.
+ * 
+ * @since June 11, 2001
+ * @author <a href="mailto:fvancea@maxiq.com">Florin Vancea </a>
+ * @author <a href="mailto:pj@thoughtworks.com">Paul Julius </a>
  */
-public class StreamPumper extends Thread
+public class StreamPumper
+    extends Thread
 {
-
     private BufferedReader in;
+
     private StreamConsumer consumer = null;
-    private PrintWriter out = new PrintWriter( System.out );
+
+    private PrintWriter out = null;
+
     private static final int SIZE = 1024;
 
-    public StreamPumper( InputStream in, PrintWriter writer )
-    {
-        this( in );
-        out = writer;
-    }
+    boolean done;
 
     public StreamPumper( InputStream in )
     {
@@ -90,11 +89,18 @@ public class StreamPumper extends Thread
     public StreamPumper( InputStream in, StreamConsumer consumer )
     {
         this( in );
+
         this.consumer = consumer;
     }
 
-    public StreamPumper( InputStream in, PrintWriter writer,
-                         StreamConsumer consumer )
+    public StreamPumper( InputStream in, PrintWriter writer )
+    {
+        this( in );
+
+        out = writer;
+    }
+
+    public StreamPumper( InputStream in, PrintWriter writer, StreamConsumer consumer )
     {
         this( in );
         this.out = writer;
@@ -106,10 +112,12 @@ public class StreamPumper extends Thread
         try
         {
             String s = in.readLine();
+
             while ( s != null )
             {
                 consumeLine( s );
-                if (out != null)
+
+                if ( out != null )
                 {
                     out.println( s );
                     out.flush();
@@ -133,17 +141,29 @@ public class StreamPumper extends Thread
                 // do nothing
             }
         }
+
+        done = true;
     }
 
     public void flush()
     {
-        out.flush();
+        if ( out != null )
+        {
+            out.flush();
+        }
     }
 
     public void close()
     {
-        flush();
-        out.close();
+        if ( out != null )
+        {
+            out.close();
+        }
+    }
+
+    public boolean isDone()
+    {
+        return done;
     }
 
     private void consumeLine( String line )
