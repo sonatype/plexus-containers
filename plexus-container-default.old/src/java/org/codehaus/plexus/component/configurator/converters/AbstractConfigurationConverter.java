@@ -52,18 +52,8 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
     {        
         Class retValue = type;
 
-        String implementation = null;
-
-        try
-        {
-            implementation = configuration.getAttribute( IMPLEMENTATION );
-        }
-        catch ( Exception e )
-        {
-            //@todo I am not sure about semantics of getAttribute  and why it throws
-            // any exception. IMO it should return null values.
-        }
-
+        String implementation = configuration.getAttribute( IMPLEMENTATION, null );
+        
         if ( implementation != null )
         {
             try

@@ -44,23 +44,19 @@ public abstract class AbstractBasicConverter extends AbstractConfigurationConver
             //@todo what we should do here?
         }
 
-        String configValue = null;
+        String value = configuration.getValue( null );
 
-        try
-        {
-            configValue = configuration.getValue();
-        }
-        catch ( PlexusConfigurationException e )
+        if ( value == null )
         {
             String msg = "Error occured while reading config element '"
                     + configuration.getName()
                     + "' of component "
                     + componentDescriptor.getHumanReadableKey();
 
-            throw new ComponentConfigurationException( msg, e );
+            throw new ComponentConfigurationException( msg );
         }
 
-        Object retValue = fromString( configValue );
+        Object retValue = fromString( value );
 
         return retValue;
     }

@@ -54,6 +54,9 @@ public class PropertiesConverter extends AbstractConfigurationConverter
                                      ClassLoader classLoader,
                                      ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
     {
+
+        String element = configuration.getName();
+
         Properties retValue = new Properties();
 
         PlexusConfiguration[] children = configuration.getChildren( "property" );
@@ -64,25 +67,30 @@ public class PropertiesConverter extends AbstractConfigurationConverter
             {
                 PlexusConfiguration child = children[ i ];
 
-                addEntry( retValue, child );
+                addEntry( retValue, element, child, componentDescriptor );
             }
         }
+
         return retValue;
     }
 
-    private void addEntry( Properties properties, PlexusConfiguration child ) throws ComponentConfigurationException
+    private void addEntry( Properties properties, String element, PlexusConfiguration child, ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
     {
         try
         {
             String name =  child.getChild( "name" ).getValue();
 
-            String value =  child.getChild( "value" ).getValue();
+            String value =  child.getChild( "value" ).getValue( null );
 
             properties.put( name, value );
         }
         catch ( PlexusConfigurationException e )
         {
-            String msg = null;
+            String msg = "Error occured while configuring component " +
+                    componentDescriptor.getHumanReadableKey() +
+                    ". An attempt to convert configuration entry "+
+                    element +
+                    "' into Java Properties object failed - name element does not exit in the configuration.";
 
             throw new ComponentConfigurationException( msg );
         }

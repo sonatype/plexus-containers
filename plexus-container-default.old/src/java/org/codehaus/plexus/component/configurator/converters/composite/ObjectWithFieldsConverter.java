@@ -43,6 +43,11 @@ import java.util.Map;
  */
 public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
 {
+    /**
+     * @todo I am not sure what should go into this method
+     * @param type
+     * @return
+     */
     public boolean canConvert( Class type )
     {
         boolean retValue = true;
@@ -110,9 +115,9 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
 
             if ( converter == null )
             {
-                String msg = "Error occured while configuring component ["
+                String msg = "Error occured while configuring component "
                         + componentDescriptor.getHumanReadableKey()
-                        + "] No converter is capable to convert configuration entry <"
+                        + ". No converter is capable to convert configuration entry <"
                         + elementName
                         + ">"
                         + " to instance of class: '"

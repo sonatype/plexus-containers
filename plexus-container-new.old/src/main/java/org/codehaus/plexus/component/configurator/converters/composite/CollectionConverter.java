@@ -86,12 +86,14 @@ public class CollectionConverter extends AbstractConfigurationConverter
                 }
                 catch ( Exception e )
                 {
-                    //@todo improve message
-                    String msg = "Error configuring component: "
-                            + componentDescriptor.getHumanReadableKey() + ":";
+                    String msg = "Error occured while configuring component " +
+                            componentDescriptor.getHumanReadableKey() +
+                            ". An attempt to convert configuration entry "+
+                            configuration.getName() +
+                            "' into Collection object failed: " + e.getMessage();
 
-                    throw new ComponentConfigurationException( msg, e );
-                }
+                    throw new ComponentConfigurationException( msg );
+               }
             }
         }
         // now we have collection and we have to add some objects to it

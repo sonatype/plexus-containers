@@ -1024,15 +1024,9 @@ public class DefaultPlexusContainer
     {
         BasicComponentConfigurator configurator = new BasicComponentConfigurator();
 
-        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
-
-        componentDescriptor.setRole( "plexus-container" );
-
-        componentDescriptor.setImplementation( getClass().getName() );
-
         PlexusConfiguration c = configuration.getChild( "component-repository" );
 
-        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+        processCoreComponentConfiguration( "component-repository", configurator, c );
 
         componentRepository.configure( configuration );
 
@@ -1044,7 +1038,7 @@ public class DefaultPlexusContainer
 
         c = configuration.getChild( "lifecycle-handler-manager" );
 
-        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+        processCoreComponentConfiguration( "lifecycle-handler-manager",configurator, c );
 
         lifecycleHandlerManager.initialize();
 
@@ -1052,7 +1046,7 @@ public class DefaultPlexusContainer
 
         c = configuration.getChild( "component-manager-manager" );
 
-        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+        processCoreComponentConfiguration( "component-manager-manager",configurator,  c );
 
         componentManagerManager.setLifecycleHandlerManager( lifecycleHandlerManager );
 
@@ -1060,7 +1054,7 @@ public class DefaultPlexusContainer
 
         c = configuration.getChild( "component-discoverer-manager" );
 
-        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+        processCoreComponentConfiguration( "component-discoverer-manager", configurator, c );
 
         componentDiscovererManager.initialize();
 
@@ -1068,19 +1062,38 @@ public class DefaultPlexusContainer
 
         c = configuration.getChild( "component-factory-manager" );
 
-        processCoreComponentConfiguration( configurator, componentDescriptor, c );
-
+        processCoreComponentConfiguration(  "component-factory-manager", configurator, c );
 
         // Component factory manager
 
         c = configuration.getChild( "component-composer-manager" );
 
-        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+        processCoreComponentConfiguration( "component-composer-manager", configurator, c );
     }
 
-    private void processCoreComponentConfiguration( BasicComponentConfigurator configurator, ComponentDescriptor componentDescriptor, PlexusConfiguration c )
+    private void processCoreComponentConfiguration( String role, BasicComponentConfigurator configurator, PlexusConfiguration c )
             throws ComponentConfigurationException
     {
+        String implementation = c.getAttribute( "implementation", null);
+
+        if ( implementation == null )
+        {
+
+            String msg = "Core component: '"+
+                    role +
+                    "' + which is needed by plexus to function properly cannot " +
+                    "be instantiated. Implementation attribute was not specified in plexus.conf." +
+                    "This is highly irregular, your plexus JAR is most likely corrupt.";
+            
+            throw new ComponentConfigurationException( msg );
+        }
+
+        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
+
+        componentDescriptor.setRole( role );
+
+        componentDescriptor.setImplementation( implementation );
+
         PlexusConfiguration configuration = new XmlPlexusConfiguration( "configuration" );
 
         configuration.addChild( c );
