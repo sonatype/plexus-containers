@@ -4,7 +4,6 @@ import org.apache.avalon.framework.configuration.Configurable;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.util.Expand;
 
 import java.io.File;
 import java.io.InputStream;
@@ -20,18 +19,11 @@ public class DefaultResourceManager
     extends AbstractLogEnabled
     implements Configurable, ResourceManager
 {
-    // ----------------------------------------------------------------------
-    //     Instance members
-    // ----------------------------------------------------------------------
-
     /** The classloader to use for loading resources and classes. */
     private PlexusClassLoader plexusClassLoader;
 
-    /** Parent classloader. */
-    //private ClassLoader classLoader;
-
     // ----------------------------------------------------------------------
-    //     Constructors
+    // Constructors
     // ----------------------------------------------------------------------
 
     public DefaultResourceManager()
@@ -39,7 +31,7 @@ public class DefaultResourceManager
     }
 
     // ----------------------------------------------------------------------
-    //     Constructors
+    // Accessors
     // ----------------------------------------------------------------------
 
     public void setClassLoader( ClassLoader classLoader )
@@ -55,39 +47,6 @@ public class DefaultResourceManager
     public PlexusClassLoader getPlexusClassLoader()
     {
         return this.plexusClassLoader;
-    }
-
-    public DefaultResourceManager createChild( String id )
-    {
-        DefaultResourceManager child = new DefaultResourceManager();
-        child.setClassLoader( getPlexusClassLoader() );
-        child.enableLogging( getLogger() );
-        return child;
-    }
-
-    /** Add a directory resource.
-     *
-     *  @param directory The directory.
-     *
-     *  @throws Exception If an error occurs while adding the resource.
-     */
-    public void addDirectoryResource( String directory )
-        throws Exception
-    {
-        addDirectoryResource( new File( directory ) );
-    }
-
-    /** Add a directory resource.
-     *
-     *  @param directory The directory.
-     *
-     *  @throws Exception If an error occurs while adding the resource.
-     */
-    public void addDirectoryResource( File directory )
-        throws Exception
-    {
-        getPlexusClassLoader().addURL( directory.toURL() );
-        getLogger().info( "added directory resource; " + directory.getPath() );
     }
 
     /** Add a jar resource.
@@ -113,55 +72,6 @@ public class DefaultResourceManager
     {
         getPlexusClassLoader().addURL( jar.toURL() );
         getLogger().info( "added jar resource: " + jar.getPath() );
-    }
-
-    /** Add a component jar resource.
-     *
-     *  @throws Exception If an error occurs while adding the resource.
-     */
-    public void addComponentResourceJar( String component )
-        throws Exception
-    {
-        addComponentResourceJar( new File( component ) );
-    }
-
-    /** Add a component jar resource.
-     *
-     *  @throws Exception If an error occurs while adding the resource.
-     */
-    public void addComponentResourceJar( File component )
-        throws Exception
-    {
-        Expand expand = new Expand();
-        expand.setSrc( component );
-        expand.setDest( component.getParentFile() );
-        expand.setOverwrite( false );
-        expand.execute();
-    }
-
-    /** Add a URL resource.
-     *
-     *  @param url The URL.
-     *
-     *  @throws Exception If an error occurs while adding the resource.
-     */
-    public void addUrlResource( String url )
-        throws Exception
-    {
-        addUrlResource( new URL( url ) );
-    }
-
-    /** Add a URL resource.
-     *
-     *  @param url The URL.
-     *
-     *  @throws Exception If an error occurs while adding the resource.
-     */
-    public void addUrlResource( URL url )
-        throws Exception
-    {
-        getPlexusClassLoader().addURL( url );
-        getLogger().info( "added url resource; " + url.toExternalForm() );
     }
 
     /**
@@ -194,25 +104,9 @@ public class DefaultResourceManager
         {
             try
             {
-                if ( resourceConfigs[i].getName().equals( "directory" ) )
-                {
-                    addDirectoryResource( resourceConfigs[i].getValue() );
-                }
-                else if ( resourceConfigs[i].getName().equals( "jar" ) )
-                {
-                    addJarResource( resourceConfigs[i].getValue() );
-                }
-                else if ( resourceConfigs[i].getName().equals( "jar-repository" ) )
+                if ( resourceConfigs[i].getName().equals( "jar-repository" ) )
                 {
                     addJarRepository( resourceConfigs[i].getValue() );
-                }
-                else if ( resourceConfigs[i].getName().equals( "url" ) )
-                {
-                    addUrlResource( resourceConfigs[i].getValue() );
-                }
-                else if ( resourceConfigs[i].getName().equals( "component" ) )
-                {
-                    addComponentResourceJar( resourceConfigs[i].getValue() );
                 }
                 else
                 {
@@ -221,8 +115,7 @@ public class DefaultResourceManager
             }
             catch ( Exception e )
             {
-                throw new ConfigurationException( "error configuring resource: " + resourceConfigs[i].getValue(),
-                                                  e );
+                throw new ConfigurationException( "error configuring resource: " + resourceConfigs[i].getValue(), e );
             }
         }
     }
