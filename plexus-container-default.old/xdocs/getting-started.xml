@@ -39,7 +39,7 @@
       ]]></source>
     
       <p>
-        Now all you need to do is run the getting-start script for your given
+        Now all you need to do is run the getting-started script for your given
         platform. This will execute the standard 'getting-started' that Maven projects tend 
         to provide in order to get new users up and running quickly. Unfortunately we must use 
         native scripts at the moment due to some quirks with Maven's reactor. After you have 
