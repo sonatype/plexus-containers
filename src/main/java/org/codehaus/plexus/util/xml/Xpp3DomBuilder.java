@@ -1,16 +1,32 @@
 package org.codehaus.plexus.util.xml;
 
 import java.io.Reader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.util.xml.pull.MXParser;
 import org.codehaus.plexus.util.xml.pull.XmlPullParser;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 public class Xpp3DomBuilder
 {
     public static Xpp3Dom build( Reader reader )
         throws Exception
+    {
+        return build( reader, true );
+    }
+
+    /**
+     *
+     * @param reader The XML document to parse.
+     * @param trim If true all spaces on both ends of all text will be trimmed.
+     * @return The Xpp3Dom
+     * @throws XmlPullParserException
+     * @throws java.io.IOException
+     */
+    public static Xpp3Dom build( Reader reader, boolean trim )
+        throws XmlPullParserException, IOException
     {
         List elements = new ArrayList();
 
@@ -62,7 +78,14 @@ public class Xpp3DomBuilder
 
                 StringBuffer valueBuffer = (StringBuffer) values.get( depth );
 
-                valueBuffer.append( parser.getText() );
+                String text = parser.getText();
+
+                if ( trim )
+                {
+                    text = text.trim();
+                }
+
+                valueBuffer.append( text );
             }
             else if ( eventType == XmlPullParser.END_TAG )
             {

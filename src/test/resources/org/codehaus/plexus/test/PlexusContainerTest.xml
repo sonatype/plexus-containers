@@ -91,7 +91,13 @@
     </component>
     
     <component>
-      <role>org.codehaus.plexus.test.ServiceH</role>
+      <!--
+       | This special formatting is here to test the trimming of spaces in
+       | the configuration reader
+       |-->
+      <role>
+        org.codehaus.plexus.test.ServiceH
+      </role>
       <implementation>org.codehaus.plexus.test.DefaultServiceH</implementation>
       <lifecycle-handler>arbitrary</lifecycle-handler>
     </component>
@@ -138,7 +144,7 @@
       <implementation>org.codehaus.plexus.test.DefaultComponentA</implementation>
       <requirements>
         <requirement>
-            <role>org.codehaus.plexus.test.ComponentB</role> 
+            <role>org.codehaus.plexus.test.ComponentB</role>
          </requirement>
         <requirement>
            <role>org.codehaus.plexus.test.ComponentC</role>
