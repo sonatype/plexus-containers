@@ -59,8 +59,4 @@ public interface LifecycleHandler
     void addEndSegmentPhase( Phase phase );
 
     void enableLogging( Logger logger );
-
-    public void configure( Configuration config )
-        throws ConfigurationException;
-
 }

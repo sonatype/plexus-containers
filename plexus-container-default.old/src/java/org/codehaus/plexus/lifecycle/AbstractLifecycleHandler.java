@@ -164,21 +164,4 @@ public abstract class AbstractLifecycleHandler
             phase.execute( component, manager );
         }
     }
-
-    /**
-     * @see org.codehaus.plexus.lifecycle.LifecycleHandler#configure(org.apache.avalon.framework.configuration.Configuration)
-     */
-    public void configure( Configuration config ) throws ConfigurationException
-    {
-        this.configuration = config;
-
-    }
-
-    /**
-     * @return
-     */
-    public Configuration getConfiguration()
-    {
-        return configuration;
-    }
 }

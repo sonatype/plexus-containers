@@ -70,9 +70,6 @@ public class LifecycleHandlerFactory
 
         lifecycleHandler.addEntity( LifecycleHandler.SERVICE_REPOSITORY, componentRepository );
 
-        // Initialize the lifecycle handler before returning the manager.
-        lifecycleHandler.configure( config.getChild( "configuration" ) );
-
         lifecycleHandler.initialize();
 
         //wrap the handler in an immutable wrapper. THis is so components can't modify it
