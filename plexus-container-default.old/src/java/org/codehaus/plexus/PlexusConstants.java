@@ -1,7 +1,12 @@
 package org.codehaus.plexus;
 
-public class PlexusConstants
+public final class PlexusConstants
 {
+    // prevent instantiation
+    private PlexusConstants()
+    {
+    }
+
     /** Default selector tag. */
     public static final String DEFAULT_SELECTOR = "default-selector";
 
