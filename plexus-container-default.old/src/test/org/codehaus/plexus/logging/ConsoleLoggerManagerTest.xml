@@ -1,0 +1,17 @@
+<plexus>
+
+  <components>
+
+    <component>
+      <role>org.codehaus.plexus.logging.LoggerManager</role>
+      <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
+      <lifecycle-handler>basic</lifecycle-handler>
+
+      <configuration>
+        <threshold>fatal</threshold>
+      </configuration>
+    </component>
+
+  </components>
+
+</plexus>
