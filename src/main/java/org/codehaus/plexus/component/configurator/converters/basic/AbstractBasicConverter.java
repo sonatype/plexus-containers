@@ -29,9 +29,13 @@ import org.codehaus.plexus.component.configurator.converters.AbstractConfigurati
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
-public abstract class AbstractBasicConverter extends AbstractConfigurationConverter
+/**
+ * @version $Id$
+ */
+public abstract class AbstractBasicConverter
+    extends AbstractConfigurationConverter
 {
-    abstract public Object fromString( String str );
+    abstract protected Object fromString( String str );
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
                                      Class baseType, ClassLoader classLoader )
@@ -39,14 +43,18 @@ public abstract class AbstractBasicConverter extends AbstractConfigurationConver
     {
         if ( configuration.getChildCount() > 0 )
         {
-            //@todo what we should do here?
+            throw new ComponentConfigurationException( "When configuring a basic element the configuration cannot " +
+                                                       "contain any child elements. " +
+                                                       "Configuration element '" + configuration.getName() + "'." );
         }
 
         String value = configuration.getValue( null );
 
+        // value should never be null as this converter wouldn't ever be called unless there
+        // is a <tag> in the configuration and then it will always have a value -- trygvis
         if ( value == null )
         {
-            String msg = "Could not find a value for configuration element: '" + configuration.getName();
+            String msg = "Could not find a value for configuration element: '" + configuration.getName() + ".";
 
             throw new ComponentConfigurationException( msg );
         }
