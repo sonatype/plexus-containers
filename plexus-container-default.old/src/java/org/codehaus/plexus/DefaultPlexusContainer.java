@@ -80,8 +80,6 @@ public class DefaultPlexusContainer
     /** XML element used to start the logging configuration block. */
     public static final String LOGGING_TAG = "logging";
 
-    private boolean componentRepositoryInitialized;
-
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -444,8 +442,6 @@ public class DefaultPlexusContainer
                                                getContext() );
 
         setComponentRepository( componentRepository );
-
-        componentRepositoryInitialized = true;
     }
 
     /**
