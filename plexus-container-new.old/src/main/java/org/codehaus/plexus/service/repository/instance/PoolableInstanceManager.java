@@ -18,8 +18,6 @@ public class PoolableInstanceManager
 {
     private SweeperPool pool;
 
-    private int connections = 0;
-
     /**
      *
      */
@@ -47,13 +45,16 @@ public class PoolableInstanceManager
     public void release( Object component )
     {
         ComponentHousing housing = removeHousing( component );
+
         if ( housing == null )
         {
             getLogger().warn( "Component attempted to be returned to pool, but this object does no appear to be from this pool. Component class=" + component.getClass() );
             return;
         }
+
         pool.put( housing );
-        connections--;
+
+        decrementConnectionCount();
     }
 
     /**
@@ -76,21 +77,17 @@ public class PoolableInstanceManager
     public Object getComponent() throws Exception
     {
         ComponentHousing housing = (ComponentHousing) pool.get();
+
         if ( housing == null )
         {
             housing = newHousingInstance();
         }
-        putHousing( housing.getComponent(), housing );
-        connections++;
-        return housing.getComponent();
-    }
 
-    /**
-     * @see org.codehaus.plexus.service.repository.instance.InstanceManager#getConnections()
-     */
-    public int getConnections()
-    {
-        return connections;
+        putHousing( housing.getComponent(), housing );
+
+        incrementConnectionCount();
+
+        return housing.getComponent();
     }
 
     /**
@@ -109,30 +106,40 @@ public class PoolableInstanceManager
         throws ConfigurationException
     {
         if ( config == null )
+        {
             config = new DefaultConfiguration( "" );
+        }
+
         if ( defaultConfig == null )
+        {
             defaultConfig = new DefaultConfiguration( "" );
+        }
+
         int sweepInterval =
             config.getChild( "sweep-interval" ).getValueAsInteger(
                 defaultConfig.getChild( "sweep-interval" ).getValueAsInteger( 5 ) );
+
         int minCapacity =
             config.getChild( "min-capacity" ).getValueAsInteger(
                 defaultConfig.getChild( "min-capacity" ).getValueAsInteger( 3 ) );
+
         int maxCapacity =
             config.getChild( "max-capacity" ).getValueAsInteger(
                 defaultConfig.getChild( "max-capacity" ).getValueAsInteger( 30 ) );
+
         int triggerSize =
             config.getChild( "trigger-size" ).getValueAsInteger(
                 defaultConfig.getChild( "trigger-size" ).getValueAsInteger( 15 ) );
+
         int initialCapacity =
             config.getChild( "initial-capacity" ).getValueAsInteger(
                 defaultConfig.getChild( "initial-capacity" ).getValueAsInteger( 10 ) );
-        return new SweeperPool(
-            maxCapacity,
-            minCapacity,
-            initialCapacity,
-            sweepInterval,
-            triggerSize );
+
+        return new SweeperPool( maxCapacity,
+                                minCapacity,
+                                initialCapacity,
+                                sweepInterval,
+                                triggerSize );
     }
 
     class ComponentPool extends SweeperPool

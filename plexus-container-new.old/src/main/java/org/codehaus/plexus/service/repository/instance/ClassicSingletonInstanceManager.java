@@ -16,9 +16,6 @@ public class ClassicSingletonInstanceManager
 {
     private ComponentHousing singleton;
 
-    /** Number of clients using this component */
-    private int connections = 0;
-
     /**
      *
      */
@@ -34,9 +31,9 @@ public class ClassicSingletonInstanceManager
     {
         if ( singleton.getComponent() == component )
         {
-            connections--;
+            decrementConnectionCount();
 
-            if ( connections == 0 )
+            if ( ! connected() )
             {
                 dispose();
             }
@@ -72,17 +69,8 @@ public class ClassicSingletonInstanceManager
             singleton = newHousingInstance();
         }
 
-        connections++;
+        incrementConnectionCount();
 
         return singleton.getComponent();
     }
-
-    /**
-     * @see org.codehaus.plexus.service.repository.instance.InstanceManager#getConnections()
-     */
-    public int getConnections()
-    {
-        return connections;
-    }
-
 }

@@ -15,9 +15,6 @@ public class KeepAliveSingletonInstanceManager
 {
     private ComponentHousing singleton;
 
-    /** Number of clients using this component */
-    private int connections = 0;
-
     /**
      *
      */
@@ -34,7 +31,7 @@ public class KeepAliveSingletonInstanceManager
         //Only accept it if it is the same instance.
         if ( singleton.getComponent() == component )
         {
-            connections--;
+            decrementConnectionCount();
         }
         else
         {
@@ -65,16 +62,9 @@ public class KeepAliveSingletonInstanceManager
         {
             singleton = newHousingInstance();
         }
-        connections++;
+
+        incrementConnectionCount();
+
         return singleton.getComponent();
     }
-
-    /**
-     * @see org.codehaus.plexus.service.repository.instance.InstanceManager#getConnections()
-     */
-    public int getConnections()
-    {
-        return connections;
-    }
-
 }

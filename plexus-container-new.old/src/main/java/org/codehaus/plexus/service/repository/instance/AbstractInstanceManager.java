@@ -32,6 +32,7 @@ public abstract class AbstractInstanceManager
     /** Lifecycle handler for this component type */
     private LifecycleHandler lifecycleHandler;
 
+    /** Logger. */
     private Logger logger;
 
     /**
@@ -40,31 +41,6 @@ public abstract class AbstractInstanceManager
     public AbstractInstanceManager()
     {
         super();
-    }
-
-    /**
-     * This currently does nothing. Subclasses should still call this if they override this method
-     * as it may doing something useful in future.
-     *
-     * @see org.codehaus.plexus.service.repository.instance.InstanceManager#initialize()
-     */
-    public void initialize()
-        throws Exception
-    {
-    }
-
-    // ----------------------------------------------------------------------
-    // Lifecylce Management
-    // ----------------------------------------------------------------------
-
-    /**
-     * make sure to call this if overriding
-     */
-    public void configure( Configuration configuration )
-        throws ConfigurationException
-    {
-        this.configuration = configuration;
-        implementation = configuration.getChild( "implementation" ).getValue();
     }
 
     // ----------------------------------------------------------------------
@@ -131,6 +107,54 @@ public abstract class AbstractInstanceManager
     {
         return logger;
     }
+
+    private int connections;
+
+    protected void incrementConnectionCount()
+    {
+        connections++;
+    }
+
+    protected void decrementConnectionCount()
+    {
+        connections--;
+    }
+
+    protected boolean connected()
+    {
+        return connections > 0;
+    }
+
+    public int getConnections()
+    {
+        return connections;
+    }
+
+    // ----------------------------------------------------------------------
+    // Lifecylce Management
+    // ----------------------------------------------------------------------
+
+    /**
+     * This currently does nothing. Subclasses should still call this if they override this method
+     * as it may doing something useful in future.
+     *
+     * @see org.codehaus.plexus.service.repository.instance.InstanceManager#initialize()
+     */
+    public void initialize()
+        throws Exception
+    {
+    }
+
+    /**
+     * make sure to call this if overriding
+     */
+    public void configure( Configuration configuration )
+        throws ConfigurationException
+    {
+        this.configuration = configuration;
+        implementation = configuration.getChild( "implementation" ).getValue();
+    }
+
 
     /**
      * @see org.codehaus.plexus.service.repository.instance.InstanceManager#enableLogging(org.apache.avalon.framework.logger.Logger)
