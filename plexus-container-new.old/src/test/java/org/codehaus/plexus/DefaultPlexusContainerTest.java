@@ -167,6 +167,8 @@ defaultComponents++;
         // Retrieve another
         DefaultServiceB serviceB2 = (DefaultServiceB) container.getComponentRepository().lookup( ServiceB.ROLE );
 
+        assertNotNull( serviceB2 );
+
         // ----------------------------------------------------------------------
         //  ServiceC
         // ----------------------------------------------------------------------
@@ -206,6 +208,55 @@ defaultComponents++;
         assertNotSame( serviceD2, serviceD3 );
         assertNotSame( serviceD1, serviceD3 );
 
+        // ----------------------------------------------------------------------
+        // Per-lookup component
+        // ----------------------------------------------------------------------
+
+        // Retrieve an instance of service e.
+        DefaultServiceE serviceE1 = (DefaultServiceE) container.getComponentRepository().lookup( ServiceE.ROLE );
+
+        // Make sure the service is alive.
+        assertNotNull( serviceE1 );
+
+        // Check the lifecycle
+        assertEquals( true, serviceE1.enableLogging );
+        assertEquals( true, serviceE1.contextualize );
+        assertEquals( true, serviceE1.service );
+        assertEquals( true, serviceE1.configure );
+        assertEquals( true, serviceE1.initialize );
+        assertEquals( true, serviceE1.start );
+
+        // Retrieve another
+        DefaultServiceE serviceE2 = (DefaultServiceE) container.getComponentRepository().lookup( ServiceE.ROLE );
+
+        // Make sure the service is alive.
+        assertNotNull( serviceE2 );
+
+        // Check the lifecycle
+        assertEquals( true, serviceE2.enableLogging );
+        assertEquals( true, serviceE2.contextualize );
+        assertEquals( true, serviceE2.service );
+        assertEquals( true, serviceE2.configure );
+        assertEquals( true, serviceE2.initialize );
+        assertEquals( true, serviceE2.start );
+
+        assertNotSame( serviceE1, serviceE2 );
+
+        // ----------------------------------------------------------------------
+        // Service F
+        // ----------------------------------------------------------------------
+
+        // The configuration for this component comes from a configuration using
+        // the 'configurations-directory' directive in plexus.conf.
+        ServiceF serviceF = (ServiceF) container.getComponentRepository().lookup( ServiceF.ROLE );
+
+        assertNotNull( serviceF );
+
+        // The configuration for this service has been pulled in using the 'configurations-directory'
+        // directive and we want to make sure that context values are interpolated
+        // correctly. For the test we are using ${plexus.home} which should be
+        // interpolated so no "${" sequence should be present.
+        assertFalse( serviceF.getPlexusHome().indexOf( "${" ) > 0 );
 
         // ----------------------------------------------------------------------
         //  ServiceG - singleton-keep-alive
@@ -286,56 +337,6 @@ defaultComponents++;
                 "Singleton component 'ServiceG' being instantiated multiple times. Failed test threads: "
                 + out );
         }
-
-        // ----------------------------------------------------------------------
-        // Per-lookup component
-        // ----------------------------------------------------------------------
-
-        // Retrieve an instance of service e.
-        DefaultServiceE serviceE1 = (DefaultServiceE) container.getComponentRepository().lookup( ServiceE.ROLE );
-
-        // Make sure the service is alive.
-        assertNotNull( serviceE1 );
-
-        // Check the lifecycle
-        assertEquals( true, serviceE1.enableLogging );
-        assertEquals( true, serviceE1.contextualize );
-        assertEquals( true, serviceE1.service );
-        assertEquals( true, serviceE1.configure );
-        assertEquals( true, serviceE1.initialize );
-        assertEquals( true, serviceE1.start );
-
-        // Retrieve another
-        DefaultServiceE serviceE2 = (DefaultServiceE) container.getComponentRepository().lookup( ServiceE.ROLE );
-
-        // Make sure the service is alive.
-        assertNotNull( serviceE2 );
-
-        // Check the lifecycle
-        assertEquals( true, serviceE2.enableLogging );
-        assertEquals( true, serviceE2.contextualize );
-        assertEquals( true, serviceE2.service );
-        assertEquals( true, serviceE2.configure );
-        assertEquals( true, serviceE2.initialize );
-        assertEquals( true, serviceE2.start );
-
-        assertNotSame( serviceE1, serviceE2 );
-
-        // ----------------------------------------------------------------------
-        // Service F
-        // ----------------------------------------------------------------------
-
-        // The configuration for this component comes from a configuration using
-        // the 'configurations-directory' directive in plexus.conf.
-        ServiceF serviceF = (ServiceF) container.getComponentRepository().lookup( ServiceF.ROLE );
-
-        assertNotNull( serviceF );
-
-        // The configuration for this service has been pulled in using the 'configurations-directory'
-        // directive and we want to make sure that context values are interpolated
-        // correctly. For the test we are using ${plexus.home} which should be
-        // interpolated so no "${" sequence should be present.
-        assertFalse( serviceF.getPlexusHome().indexOf( "${" ) > 0 );
     }
 
     class SingletonComponentTestThread extends AbstractTestThread
