@@ -102,9 +102,7 @@ public class DefaultPlexusContainerTest
         //  Implements all the standard Avalon lifecycle phases.
         // ----------------------------------------------------------------------
 
-        // Retrieve an manager of component a.
-
-        container.getComponentRepository().lookup( ServiceA.ROLE );
+        // Retrieve an instance of component a.
 
         DefaultServiceA serviceA = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
 
@@ -118,9 +116,10 @@ public class DefaultPlexusContainerTest
         assertEquals( true, serviceA.initialize );
         assertEquals( true, serviceA.start );
 
-        // Now how do we make sure it has been released and decomissioned
-        // properly.
         container.getComponentRepository().release( serviceA );
+
+        assertEquals( true, serviceA.stop );
+        assertEquals( true, serviceA.dispose );
 
         // make sure we get the same manager back everytime
         DefaultServiceA a0 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
@@ -130,6 +129,9 @@ public class DefaultPlexusContainerTest
         assertTrue( a0.equals( a1 ) );
         assertTrue( a1.equals( a2 ) );
         assertTrue( a2.equals( a0 ) );
+
+	// make sure that the component wasn't recycled
+        assertFalse( serviceA.equals( a0 ) );
 
         container.getComponentRepository().release( a0 );
         container.getComponentRepository().release( a1 );
@@ -400,7 +402,7 @@ public class DefaultPlexusContainerTest
             catch ( InterruptedException e )
             {
             }
-     	}        
+     	}
 
         assertEquals( "Expected 5 test threads to of run", reg.getRunThreads().size(), 5 );
         //now test if any components were returned which was not the same manager

@@ -7,11 +7,12 @@ import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.Configurable;
 import org.apache.avalon.framework.service.ServiceManager;
 import org.apache.avalon.framework.service.Serviceable;
+import org.apache.avalon.framework.activity.Disposable;
 import org.apache.avalon.framework.activity.Initializable;
 import org.apache.avalon.framework.activity.Startable;
 import org.apache.avalon.framework.logger.Logger;
 
-/** This component implements all the start phases:
+/** This component implements all the start and stop phases:
  *
  *  LogEnabled
  *  Contexualize
@@ -20,10 +21,14 @@ import org.apache.avalon.framework.logger.Logger;
  *  Initializable
  *  Startable
  *
+ *  Disposable
+ *
  */
 public class DefaultServiceA
     extends AbstractLogEnabled
-    implements ServiceA, Contextualizable, Serviceable, Configurable, Initializable, Startable
+    implements ServiceA,
+        Contextualizable, Serviceable, Configurable, Initializable, Startable,
+        Disposable
 {
     boolean enableLogging;
     boolean contextualize;
@@ -32,6 +37,7 @@ public class DefaultServiceA
     boolean initialize;
     boolean start;
     boolean stop;
+    boolean dispose;
 
     // ----------------------------------------------------------------------
     // Lifecylce Management
@@ -73,5 +79,10 @@ public class DefaultServiceA
         throws Exception
     {
         stop = true;
+    }
+
+    public void dispose()
+    {
+        dispose = true;
     }
 }
