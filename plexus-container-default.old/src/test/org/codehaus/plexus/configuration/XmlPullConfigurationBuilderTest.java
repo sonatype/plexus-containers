@@ -47,6 +47,24 @@ public class XmlPullConfigurationBuilderTest
         assertEquals( "jason", c.getChild( "name" ).getValue() );
     }
 
+    public void testMixedContentFailure()
+        throws Exception
+    {
+        String s = "<conf>mixed<name>jason</name></conf>";
+        XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
+
+        try
+        {
+            Configuration c = cb.parse( new StringReader( s ) );
+
+            fail();
+        }
+        catch ( Exception e )
+        {
+            // do nothing
+        }
+    }
+
     public void testComplexConfigurationBuilding()
         throws Exception
     {
