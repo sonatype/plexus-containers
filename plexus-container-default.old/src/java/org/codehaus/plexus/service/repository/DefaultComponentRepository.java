@@ -31,31 +31,41 @@ public class DefaultComponentRepository
 
     /** Components tag. */
     private static String COMPONENTS = "components";
+
     /** Component tag. */
     private static String COMPONENT = "component";
+
     /** Id tag. */
     private static String ID = "id";
+
     /** Role tag. */
     private static String ROLE = "role";
+
     /** Role tag. */
     private static String ROLE_HINT = "role-hint";
+
     /** Implementation tag. */
     private static String IMPLEMENTATION = "implementation";
+
     /** Configuration tag. */
     private static String INSTANTIATION_STRATEGY = "instantiation-strategy";
+
     /** Configuration tag. */
     private static String CONFIGURATION = "configuration";
 
-    // The instantiation strategies will be broken out into separate classes so
-    // breath easy :-)
+    /** Default instantiation strategy tag. */
+    protected static String DEFAULT_INSTANTIATION_STRATEGY = "singleton";
 
-    protected static String PER_LOOKUP_STRATEGY = "per-lookup";
-    protected static String POOLABLE_STRATEGY = "poolable";
-    protected static String SINGLETON_STRATEGY = "singleton";
-
+    /** Instance manager tag. */
     private static String INSTANCE_MANAGER = "instance-manager";
+
+    /** Instance managers tag. */
     private static String INSTANCE_MANAGERS = "instance-managers";
+
+    /** Lifecycle handler tag. */
     private static String LIFECYCLE_HANDLER = "lifecycle-handler";
+
+    /** Lifecycle handlers tag. */
     private static String LIFECYCLE_HANDLERS = "lifecycle-handlers";
 
 
@@ -352,7 +362,6 @@ public class DefaultComponentRepository
         {
             if ( ignoreDuplicates == false )
             {
-
                 throw new ConfigurationException(
                     "Duplicate Lifecycle handler. Duplicate id: " + housing.getId() );
             }
@@ -464,7 +473,7 @@ public class DefaultComponentRepository
 
         componentDescriptor.setInstantiationStrategy(
             configuration.getChild( INSTANTIATION_STRATEGY ).getValue( null ) );
-        componentDescriptor.setLifecycleHandlerId(
+        componentDescriptor.setLifecycleHandler(
             configuration.getChild( LIFECYCLE_HANDLER ).getValue( null ) );
         componentDescriptor.setConfiguration( configuration.getChild( CONFIGURATION ) );
 
@@ -593,7 +602,7 @@ public class DefaultComponentRepository
                     StringBuffer buff = new StringBuffer();
                     buff.append( "Obtained new component :role=" ).append( descriptor.getRole() );
                     buff.append( ",impl=" ).append( descriptor.getImplementation() );
-                    buff.append( ",lifecycle-id=" ).append( descriptor.getLifecycleHandlerId() );
+                    buff.append( ",lifecycle-id=" ).append( descriptor.getLifecycleHandler() );
                     buff.append( ",strategy=" ).append( descriptor.getInstantiationStrategy() );
                     getLogger().debug( buff.toString() );
                 }
@@ -677,9 +686,7 @@ public class DefaultComponentRepository
         // changes to the set as well.
         //<== now not important as each component manager does this.
 
-        Iterator iter = getComponentManagers().values().iterator();
-
-        while ( iter.hasNext() )
+        for ( Iterator iter = getComponentManagers().values().iterator(); iter.hasNext(); )
         {
             try
             {
@@ -772,5 +779,4 @@ public class DefaultComponentRepository
     {
         loggerManager = manager;
     }
-
 }
