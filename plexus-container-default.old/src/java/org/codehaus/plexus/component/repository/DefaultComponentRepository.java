@@ -125,23 +125,9 @@ public class DefaultComponentRepository
         this.plexusContainer = plexusContainer;
     }
 
-    /**
-     *
-     * @return
-     */
     public ClassLoader getClassLoader()
     {
         return getPlexusContainer().getClassLoader();
-    }
-
-    /**
-     * @see org.codehaus.plexus.component.repository.ComponentRepository#getDefaultLifecycleHandler()
-     */
-    public LifecycleHandler getDefaultLifecycleHandler()
-        throws UndefinedLifecycleHandlerException
-
-    {
-        return lifecycleHandlerManager.getDefaultLifecycleHandler();
     }
 
     /**
@@ -285,22 +271,6 @@ public class DefaultComponentRepository
 
         defaultInstantiationStrategy = getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute(
             "default", getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute( "default", null ) );
-
-        if ( defaultInstantiationStrategy == null
-             ||
-             defaultInstantiationStrategy.length() == 0 )
-        {
-            throw new ConfigurationException( "No default instantiation strategy defined" );
-        }
-
-        if ( !getComponentManagerDescriptors().containsKey( defaultInstantiationStrategy ) )
-        {
-            throw new ConfigurationException(
-                "The default instantiation strategy is specified as: '"
-                + defaultInstantiationStrategy
-                + "' but no InstanceManager"
-                + " with this id is defined" );
-        }
 
         getLogger().info( "Default instantiation strategy set to: '" + defaultInstantiationStrategy + "'" );
     }
