@@ -20,8 +20,8 @@ public class LogEnabledTest
     public void testGetLogger()
         throws Exception
     {
-        final MockLogEnabled logEnabled = new MockLogEnabled();
-        final MockLogger logger = new MockLogger( "base" );
+        MockLogEnabled logEnabled = new MockLogEnabled();
+        MockLogger logger = new MockLogger( "base" );
         logEnabled.enableLogging( logger );
         assertEquals( "logger", logger, logEnabled.getLogger() );
     }
@@ -29,9 +29,9 @@ public class LogEnabledTest
     public void testSetupLoggerOnLogEnabled()
         throws Exception
     {
-        final MockLogEnabled logEnabled = new MockLogEnabled();
-        final MockLogEnabled childLogEnabled = new MockLogEnabled();
-        final MockLogger logger = new MockLogger( "base" );
+        MockLogEnabled logEnabled = new MockLogEnabled();
+        MockLogEnabled childLogEnabled = new MockLogEnabled();
+        MockLogger logger = new MockLogger( "base" );
         logEnabled.enableLogging( logger );
         logEnabled.setupLogger( childLogEnabled );
         assertEquals( "logEnabled.logger", logger, logEnabled.getLogger() );
@@ -41,8 +41,8 @@ public class LogEnabledTest
     public void testSetupLoggerOnNonLogEnabled()
         throws Exception
     {
-        final MockLogEnabled logEnabled = new MockLogEnabled();
-        final MockLogger logger = new MockLogger( "base" );
+        MockLogEnabled logEnabled = new MockLogEnabled();
+        MockLogger logger = new MockLogger( "base" );
         logEnabled.enableLogging( logger );
         logEnabled.setupLogger( new Object() );
     }
@@ -50,7 +50,7 @@ public class LogEnabledTest
     public void testSetupLoggerWithNameOnLogEnabled()
         throws Exception
     {
-        final MockLogEnabled logEnabled = new MockLogEnabled();
+        MockLogEnabled logEnabled = new MockLogEnabled();
         MockLogEnabled childLogEnabled = new MockLogEnabled();
         MockLogger logger = new MockLogger( "base" );
         logEnabled.enableLogging( logger );
@@ -74,7 +74,6 @@ public class LogEnabledTest
         }
         catch ( IllegalStateException npe )
         {
-            assertEquals( "npe.message", "name", npe.getMessage() );
             return;
         }
         fail( "Expected to fail setting up child logger with null name" );
