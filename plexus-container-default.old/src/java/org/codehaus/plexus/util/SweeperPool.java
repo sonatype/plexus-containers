@@ -138,7 +138,7 @@ public class SweeperPool
      *
      * @return the number of pooled objects
      */
-    public int getSize()
+    public synchronized int getSize()
     {
         return pooledObjects.size();
     }
@@ -172,7 +172,7 @@ public class SweeperPool
      * Trim the pool down to min size
      *
      */
-    public void trim()
+    public synchronized void trim()
     {
         if ( ( ( triggerSize > 0 ) && ( pooledObjects.size() >= triggerSize ) )
             || ( ( maxSize > 0 ) && ( pooledObjects.size() >= maxSize ) ) )
@@ -223,7 +223,7 @@ public class SweeperPool
      * @author bert
      *
      */
-    class Sweeper implements Runnable
+    private class static Sweeper implements Runnable
     {
         private final transient SweeperPool pool;
         private transient boolean service = false;
@@ -271,7 +271,7 @@ public class SweeperPool
             debug("stopped");
         }
 
-        public void start()
+        public synchronized void start()
         {
             if ( !service )
             {
