@@ -1,10 +1,10 @@
 package org.codehaus.plexus;
 
-import junit.framework.TestCase;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import junit.framework.TestCase;
 
 import org.codehaus.plexus.context.Context;
 
@@ -13,7 +13,7 @@ public class PlexusTestCase
 {
     private DefaultPlexusContainer container;
 
-    public String basedir = System.getProperty( "basedir" );
+    public String basedir;
 
     public PlexusTestCase()
     {
@@ -46,6 +46,13 @@ public class PlexusTestCase
             System.out.println( "configuration = " + configuration );
 
             fail( e.getMessage() );
+        }
+
+        basedir = System.getProperty( "basedir" );
+
+        if ( basedir == null )
+        {
+            basedir = new File( "" ).getAbsolutePath();
         }
 
         container = new DefaultPlexusContainer();
