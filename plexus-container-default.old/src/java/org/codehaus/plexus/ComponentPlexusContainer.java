@@ -41,42 +41,41 @@ public final class ComponentPlexusContainer
     private PlexusContainer parentPlexus;
 
     /** Our own <code>PlexusContainer</code>. */
-    private DefaultPlexusContainer plexusEmbedder
-        = new DefaultPlexusContainer();
+    private DefaultPlexusContainer myPlexus = new DefaultPlexusContainer();
 
     private String configurationName;
 
     public Object lookup( String role )
         throws ComponentLookupException
     {
-        if (plexusEmbedder.hasService( role ))
+        if (myPlexus.hasService( role ))
         {
-            return plexusEmbedder.lookup( role );
+            return myPlexus.lookup( role );
         }
         if (parentPlexus != null)
         {
             return parentPlexus.lookup( role );
         }
-        return plexusEmbedder.lookup( role );
+        return myPlexus.lookup( role );
     }
 
     public Object lookup( String role, String id )
         throws ComponentLookupException
     {
-        if (plexusEmbedder.hasService( role, id ))
+        if (myPlexus.hasService( role, id ))
         {
-            return plexusEmbedder.lookup( role, id );
+            return myPlexus.lookup( role, id );
         }
         if (parentPlexus != null)
         {
             return parentPlexus.lookup( role, id );
         }
-        return plexusEmbedder.lookup( role, id );
+        return myPlexus.lookup( role, id );
     }
 
     public boolean hasService( String role )
     {
-        if (plexusEmbedder.hasService( role ))
+        if (myPlexus.hasService( role ))
         {
             return true;
         }
@@ -89,7 +88,7 @@ public final class ComponentPlexusContainer
 
     public boolean hasService( String role, String id )
     {
-        if (plexusEmbedder.hasService( role, id ))
+        if (myPlexus.hasService( role, id ))
         {
             return true;
         }
@@ -102,7 +101,7 @@ public final class ComponentPlexusContainer
 
     public void release( Object service )
     {
-        plexusEmbedder.release( service );
+        myPlexus.release( service );
         if (parentPlexus != null)
         {
             parentPlexus.release( service );
@@ -111,7 +110,7 @@ public final class ComponentPlexusContainer
 
     public void suspend( Object component )
     {
-        plexusEmbedder.suspend( component );
+        myPlexus.suspend( component );
         if (parentPlexus != null)
         {
             parentPlexus.suspend( component );
@@ -120,7 +119,7 @@ public final class ComponentPlexusContainer
 
     public void resume( Object component )
     {
-        plexusEmbedder.resume( component );
+        myPlexus.resume( component );
         if (parentPlexus != null)
         {
             parentPlexus.resume( component );
@@ -129,7 +128,7 @@ public final class ComponentPlexusContainer
 
     public void addContextValue( Object key, Object value )
     {
-        plexusEmbedder.addContextValue( key, value );
+        myPlexus.addContextValue( key, value );
     }
 
     public void setClassWorld( ClassWorld classWorld )
@@ -150,7 +149,7 @@ public final class ComponentPlexusContainer
 
     public ClassLoader getClassLoader()
     {
-        return plexusEmbedder.getClassLoader();
+        return myPlexus.getClassLoader();
     }
 
     public void contextualize( Context context )
@@ -174,23 +173,23 @@ public final class ComponentPlexusContainer
 
         Reader r = new InputStreamReader( stream );
 
-        plexusEmbedder.setConfigurationResource( r );
+        myPlexus.setConfigurationResource( r );
 
-        plexusEmbedder.initialize();
+        myPlexus.initialize();
 
-        plexusEmbedder.addContextValue( PlexusConstants.PLEXUS_KEY, this );
+        myPlexus.addContextValue( PlexusConstants.PLEXUS_KEY, this );
     }
 
     public void start()
         throws Exception
     {
-        plexusEmbedder.start();
+        myPlexus.start();
     }
 
     public void stop()
         throws Exception
     {
-        plexusEmbedder.dispose();
+        myPlexus.dispose();
     }
 
     public void dispose()
