@@ -16,7 +16,10 @@ import java.io.FileReader;
 public class PlexusContainerHost
     implements Runnable
 {
+    private DefaultPlexusContainer container;
+
     private boolean shouldStop;
+
     private boolean isStopped;
 
     // ----------------------------------------------------------------------
@@ -37,7 +40,7 @@ public class PlexusContainerHost
     public void start( ClassWorld classWorld, String configurationResource )
         throws Exception
     {
-        DefaultPlexusContainer container = new DefaultPlexusContainer();
+        container = new DefaultPlexusContainer();
         container.setClassWorld( classWorld );
         container.setConfigurationResource( new FileReader( configurationResource ) );
 
@@ -125,6 +128,9 @@ public class PlexusContainerHost
         synchronized ( this )
         {
             shouldStop = true;
+
+            container.dispose();
+
             notifyAll();
         }
 
