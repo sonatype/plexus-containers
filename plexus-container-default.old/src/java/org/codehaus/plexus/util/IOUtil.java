@@ -213,6 +213,7 @@ public final class IOUtil
         {
             output.write( buffer, 0, n );
         }
+        output.flush();
     }
 
     ///////////////////////////////////////////////////////////////
