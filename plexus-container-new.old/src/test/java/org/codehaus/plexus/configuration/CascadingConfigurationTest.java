@@ -41,17 +41,17 @@ public class CascadingConfigurationTest
         configurationBuilder = new XmlPullConfigurationBuilder();
 
         baseXml = "<conf>" +
-                    "<type default='foo'>jason</type>" +
-                    "<name>jason</name>" +
-                    "<number>0</number>" +
-                    "<boolean>true</boolean>" +
-                  "</conf>";
+            "<type default='foo'>jason</type>" +
+            "<name>jason</name>" +
+            "<number>0</number>" +
+            "<boolean>true</boolean>" +
+            "</conf>";
 
         parentXml = "<conf>" +
-                      "<type default='bar'>jason</type>" +
-                      "<occupation>procrastinator</occupation>" +
-                      "<foo a1='1' a2='2' number='0'>bar</foo>" +
-                    "</conf>";
+            "<type default='bar'>jason</type>" +
+            "<occupation>procrastinator</occupation>" +
+            "<foo a1='1' a2='2' number='0'>bar</foo>" +
+            "</conf>";
 
         base = configurationBuilder.parse( new StringReader( baseXml ) );
 

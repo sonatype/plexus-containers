@@ -9,19 +9,23 @@ import java.io.StringReader;
  * @author Mark Wilkinson
  * @version $Revision$
  */
-final class CloseCheckStringReader extends StringReader {
+final class CloseCheckStringReader extends StringReader
+{
     private boolean closed = false;
 
-    public CloseCheckStringReader(String s) {
-        super(s);
+    public CloseCheckStringReader( String s )
+    {
+        super( s );
     }
 
-    public void close() {
+    public void close()
+    {
         closed = true;
         super.close();
     }
 
-    public boolean isClosed() {
+    public boolean isClosed()
+    {
         return closed;
     }
 }

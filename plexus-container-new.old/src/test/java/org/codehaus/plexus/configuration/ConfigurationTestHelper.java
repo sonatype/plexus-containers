@@ -31,13 +31,13 @@ public class ConfigurationTestHelper
     public static String getXmlConfiguration()
     {
         return "<configuration>" +
-                  "<string string='string'>string</string>" +
-                  "<number number='0'>0</number>" +
-                  "<not-a-number not-a-number='foo'>not-a-number</not-a-number>" +
-                  "<boolean-true boolean-true='true'>true</boolean-true>" +
-                  "<boolean-false boolean-false='false'>false</boolean-false>" +
-                  "<not-a-boolean>not-a-boolean</not-a-boolean>" +
-                "</configuration>";
+            "<string string='string'>string</string>" +
+            "<number number='0'>0</number>" +
+            "<not-a-number not-a-number='foo'>not-a-number</not-a-number>" +
+            "<boolean-true boolean-true='true'>true</boolean-true>" +
+            "<boolean-false boolean-false='false'>false</boolean-false>" +
+            "<not-a-boolean>not-a-boolean</not-a-boolean>" +
+            "</configuration>";
     }
 
     public static void testConfiguration( Configuration c )
@@ -67,7 +67,7 @@ public class ConfigurationTestHelper
 
             fail( "A ConfigurationException should be thrown." );
         }
-        catch( ConfigurationException e )
+        catch ( ConfigurationException e )
         {
             // do nothing
         }
@@ -84,7 +84,7 @@ public class ConfigurationTestHelper
 
             fail( "A ConfigurationException should be thrown." );
         }
-        catch( ConfigurationException e )
+        catch ( ConfigurationException e )
         {
             // do nothing
         }
@@ -101,7 +101,7 @@ public class ConfigurationTestHelper
 
             fail( "A ConfigurationException should be thrown." );
         }
-        catch( ConfigurationException e )
+        catch ( ConfigurationException e )
         {
             // do nothing
         }
@@ -122,7 +122,7 @@ public class ConfigurationTestHelper
 
             fail( "A ConfigurationException should be thrown." );
         }
-        catch( ConfigurationException e )
+        catch ( ConfigurationException e )
         {
 
         }
@@ -141,7 +141,7 @@ public class ConfigurationTestHelper
 
             fail( "A ConfigurationException should be thrown." );
         }
-        catch( ConfigurationException e )
+        catch ( ConfigurationException e )
         {
             // do nothing
         }
@@ -159,7 +159,7 @@ public class ConfigurationTestHelper
 
             fail( "A ConfigurationException should be thrown." );
         }
-        catch( ConfigurationException e )
+        catch ( ConfigurationException e )
         {
             // do nothing
         }
@@ -177,7 +177,7 @@ public class ConfigurationTestHelper
 
             fail( "A ConfigurationException should be thrown." );
         }
-        catch( ConfigurationException e )
+        catch ( ConfigurationException e )
         {
             // do nothing
         }
@@ -198,7 +198,7 @@ public class ConfigurationTestHelper
 
             fail( "A ConfigurationException should be thrown." );
         }
-        catch( ConfigurationException e )
+        catch ( ConfigurationException e )
         {
             // do nothing
         }

@@ -1,7 +1,6 @@
 package org.codehaus.plexus.configuration;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
 import org.apache.avalon.framework.configuration.Configuration;
 
 import java.io.StringReader;
@@ -17,39 +16,39 @@ import java.util.List;
 public class ObjectBuilderTest
     extends TestCase
 {
-    private String configuration =
-        "<message>" +
-        "  <group-id>papinet</group-id>" +
-        "  <group-name>Papinet</group-name>" +
-        "  <group-version>2.1</group-version> " +
-        "  <id>invoice</id> " +
-        "  <name>Invoice</name>" +
-        "  <class-name>org.foo.Bar</class-name>" +
-        "  <unique-id-expression>unique-id-expression</unique-id-expression>" +
-        "  <recipient-id-expression>recipient-id-expression</recipient-id-expression>" +
-        "  <intake-id>directory-intake</intake-id>" +
-        "  <outtake-id>directory-outtake</outtake-id>" +
-        "  <view-id>invoice</view-id>" +
-        "  <summary>" +
-        "    <id>invoice</id>" +
-        "    <title>Invoice</title>" +
-        "    <collection>collection</collection>" +
-        "    <key-field>key-field</key-field>" +
-        "    <elements>" +
-        "      <element>" +
-        "        <header-key>invoice.id.label</header-key>" +
-        "        <expression>expression</expression>" +
-        "      </element>" +
-        "    </elements>" +
-        "  </summary>" +
-        "  <inner-class>" +
-        "    <id>inner-class-id</id>" +
-        "  </inner-class>" +
-        "</message>";
-
     public void testMessageBuilder()
         throws Exception
     {
+        String configuration =
+            "<message>" +
+            "  <group-id>papinet</group-id>" +
+            "  <group-name>Papinet</group-name>" +
+            "  <group-version>2.1</group-version> " +
+            "  <id>invoice</id> " +
+            "  <name>Invoice</name>" +
+            "  <class-name>org.foo.Bar</class-name>" +
+            "  <unique-id-expression>unique-id-expression</unique-id-expression>" +
+            "  <recipient-id-expression>recipient-id-expression</recipient-id-expression>" +
+            "  <intake-id>directory-intake</intake-id>" +
+            "  <outtake-id>directory-outtake</outtake-id>" +
+            "  <view-id>invoice</view-id>" +
+            "  <summary>" +
+            "    <id>invoice</id>" +
+            "    <title>Invoice</title>" +
+            "    <collection>collection</collection>" +
+            "    <key-field>key-field</key-field>" +
+            "    <elements>" +
+            "      <element>" +
+            "        <header-key>invoice.id.label</header-key>" +
+            "        <expression>expression</expression>" +
+            "      </element>" +
+            "    </elements>" +
+            "  </summary>" +
+            "  <inner-class>" +
+            "    <id>inner-class-id</id>" +
+            "  </inner-class>" +
+            "</message>";
+
         ObjectBuilder builder = new ObjectBuilder();
 
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();

@@ -145,7 +145,7 @@ public class PropertiesConfigurationTest
         {
             configuration.getValue();
         }
-        catch( UnsupportedOperationException e )
+        catch ( UnsupportedOperationException e )
         {
             // do nothing
         }

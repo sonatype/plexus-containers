@@ -51,10 +51,7 @@
 package org.codehaus.plexus.configuration;
 
 import junit.framework.TestCase;
-
 import org.apache.avalon.framework.configuration.Configuration;
-
-import java.io.StringReader;
 
 /**
  * Test the basic public methods of DefaultConfiguration.

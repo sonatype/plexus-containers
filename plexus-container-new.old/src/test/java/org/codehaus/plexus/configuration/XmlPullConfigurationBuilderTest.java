@@ -41,9 +41,9 @@ public class XmlPullConfigurationBuilderTest
 
         try
         {
-            Configuration c = cb.parse( new StringReader( s ) );
+            cb.parse( new StringReader( s ) );
 
-            fail();
+            fail( "Exception should be thrown due to mixed content error." );
         }
         catch ( Exception e )
         {
@@ -104,7 +104,7 @@ public class XmlPullConfigurationBuilderTest
 
         assertFalse( "reader closed before parsing", reader.isClosed() );
 
-        Configuration c = cb.parse( reader );
+        cb.parse( reader );
 
         assertTrue( "reader not closed after parsing", reader.isClosed() );
     }

@@ -2,7 +2,7 @@ package org.codehaus.plexus.configuration;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
