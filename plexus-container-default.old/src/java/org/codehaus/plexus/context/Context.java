@@ -59,4 +59,36 @@ public interface Context
 {
     Object get( Object key )
         throws ContextException;
+    
+    /**
+     * Adds the item to the context.
+     *
+     * @param key the key of the item
+     * @param value the item
+     * @throws java.lang.IllegalStateException if context is read only
+     */
+    public void put( Object key, Object value )throws IllegalStateException;
+    
+
+    /**
+     * Hides the item in the context.
+     * After remove(key) has been called, a get(key)
+     * will always fail, even if the parent context
+     * has such a mapping.
+     *
+     * @param key the items key
+     * @throws java.lang.IllegalStateException if context is read only
+     */
+    void hide( Object key )
+        throws IllegalStateException;
+    
+
+    /**
+     * Make the context read-only.
+     * Any attempt to write to the context via put()
+     * will result in an IllegalStateException.
+     */
+    void makeReadOnly();
+    
+    
 }

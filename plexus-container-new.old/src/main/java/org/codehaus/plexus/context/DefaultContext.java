@@ -35,6 +35,7 @@ public class DefaultContext
     public DefaultContext( Map contextData, Context parent )
     {
         this.parent = parent;
+        
         this.contextData = contextData;
     }
 
@@ -97,7 +98,7 @@ public class DefaultContext
     }
 
     /**
-     * Helper method fo adding items to Context.
+     * Helper method for adding items to Context.
      *
      * @param key the items key
      * @param value the item
@@ -107,6 +108,7 @@ public class DefaultContext
         throws IllegalStateException
     {
         checkWriteable();
+        
         if ( null == value )
         {
             contextData.remove( key );
