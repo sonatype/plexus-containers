@@ -1,38 +1,38 @@
 package org.codehaus.plexus.component.composition;
 
-import org.apache.commons.graph.domain.dependency.DependencyGraph;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.util.dag.DAG;
 
 import java.util.List;
+import java.util.Set;
+import java.util.Iterator;
+
+
 
 /**
  *
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author <a href="mailto:michal.maczka@dimatics.com">Michal Maczka</a>
  *
  * @version $Id$
  */
-public class DefaultCompositionResolver  implements CompositionResolver
+public class DefaultCompositionResolver implements CompositionResolver
 {
-    private DependencyGraph componentDependencyGraph;
+    private DAG dag = new DAG();
 
-    public DefaultCompositionResolver()
+    public List getComponentDependencies( final String componentKey )
     {
-        componentDependencyGraph = new DependencyGraph();
+        return dag.getAdjacentLabels( componentKey );        
     }
 
     public void addComponentDescriptor( final ComponentDescriptor componentDescriptor )
     {
-        componentDependencyGraph.addDependencies( componentDescriptor.getComponentKey(), componentDescriptor.getRequirements() );
-    }
-
-    public List getComponentDependencies( final String componentKey )
-    {
-        final List dependencies = componentDependencyGraph.getSortedDependencies( componentKey );
-
-        // We don't want the component key itself showing up.
-        dependencies.remove( componentKey );
-
-        return dependencies;
+        final String componentKey = componentDescriptor.getComponentKey();        
+        final Set requirements = componentDescriptor.getRequirements();        
+        for ( final Iterator iterator = requirements.iterator(); iterator.hasNext(); )
+        {
+            final String requirement = ( String ) iterator.next();
+            dag.addEdge( componentKey, requirement );
+        }
     }
 }

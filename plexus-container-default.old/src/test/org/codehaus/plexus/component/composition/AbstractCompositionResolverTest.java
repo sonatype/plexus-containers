@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -141,7 +140,7 @@ public abstract class AbstractCompositionResolverTest
             "</component>";
 
 
-        DefaultCompositionResolver compositionResolver = new DefaultCompositionResolver();
+        CompositionResolver compositionResolver = getCompositionResolver();
 
         ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
 
@@ -165,12 +164,33 @@ public abstract class AbstractCompositionResolverTest
 
         List dependencies = compositionResolver.getComponentDependencies( c1.getComponentKey() );
 
-        assertEquals( 4, dependencies.size() );
+        assertEquals( 2, dependencies.size() );
 
+        // I just leave this at the moment as I am just 99% sure that this is not needed and not
+        // correct. compositionResolver.getComponentDependencies() should return only direct dependencies 
+        // 
+        // I will need to add a method like getSortedComponents() 
+        // which will do topological sort of DAG and return list of ordered component which can be used 
+        // by ComponentComposer. 
+        // Possibility of checking if there are cycles probably also must be exposed in API (DAG has it alredy)
+        // and it should be used
+        // I can implement cycle detecting from single node (source) as after adding new component
+        // we don't have to probably check entire graph but we will probably have to check 
+        // if there are cycles. 
+        
+        /**
         // c5 must come before c3
         assertTrue( dependencies.indexOf( "c5" ) < dependencies.indexOf( "c3" ) );
 
         // c4 must come before c3
         assertTrue( dependencies.indexOf( "c4" ) < dependencies.indexOf( "c3" ) );
+        */
+        
+          
+        
+        
+        
+        
     }
+        
 }
