@@ -545,12 +545,17 @@ public class DefaultComponentRepository
         ComponentDescriptor componentDescriptor = new ComponentDescriptor();
 
         componentDescriptor.setRole( configuration.getChild( ROLE ).getValue() );
+
         componentDescriptor.setRoleHint( configuration.getChild( ROLE_HINT ).getValue( null ) );
+
         componentDescriptor.setImplementation( configuration.getChild( IMPLEMENTATION ).getValue() );
+
         componentDescriptor.setId( configuration.getChild( ID ).getValue( null ) );
 
         componentDescriptor.setInstantiationStrategy( configuration.getChild( INSTANTIATION_STRATEGY ).getValue( null ) );
+
         componentDescriptor.setLifecycleHandler( configuration.getChild( LIFECYCLE_HANDLER ).getValue( null ) );
+
         componentDescriptor.setConfiguration( configuration.getChild( CONFIGURATION ) );
 
         return componentDescriptor;
