@@ -541,18 +541,19 @@ public class DefaultPlexusContainer
             File configurationsDirectory = new File( s );
 
             if ( configurationsDirectory.exists()
-                &&
-                configurationsDirectory.isDirectory() )
+                 &&
+                 configurationsDirectory.isDirectory() )
             {
-                List confs = FileUtils.getFiles( configurationsDirectory, "**/*.conf", "**/*.xml" );
+                List componentConfigurationFiles = FileUtils.getFiles( configurationsDirectory, "**/*.conf", "**/*.xml" );
 
-                for ( Iterator i = confs.iterator(); i.hasNext(); )
+                for ( Iterator i = componentConfigurationFiles.iterator(); i.hasNext(); )
                 {
-                    File conf = (File) i.next();
+                    File componentConfigurationFile = (File) i.next();
 
-                    PlexusConfiguration c = builder.parse( getInterpolationConfigurationReader( new FileReader( conf ) ) );
+                    PlexusConfiguration componentConfiguration =
+                        builder.parse( getInterpolationConfigurationReader( new FileReader( componentConfigurationFile ) ) );
 
-                    componentsConfiguration.addAllChildren( c.getChild( "components" ) );
+                    componentsConfiguration.addAllChildren( componentConfiguration.getChild( "components" ) );
                 }
             }
         }
