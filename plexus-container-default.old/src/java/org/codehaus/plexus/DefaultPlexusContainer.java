@@ -266,19 +266,6 @@ public class DefaultPlexusContainer
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    /**
-     * - Initialize ClassLoader
-     * - Initialize the default configuration
-     * - Initialize the configuration
-     * - Initialize logger manager
-     * - Initialize component repository
-     * - Initialize resource manager
-     * - Initialize the context. Values put into the context at this point won't
-     *   be interpolated into the configuration.  This may need to change later.
-     * - Initialize lifecycle handler
-     *
-     * @throws Exception
-     */
     public void initialize()
         throws Exception
     {
@@ -839,8 +826,6 @@ public class DefaultPlexusContainer
         Configuration c = mergedConfiguration.getChild( "lifecycle-handler-manager" );
 
         lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( (PlexusConfiguration) c, DefaultLifecycleHandlerManager.class );
-
-        System.out.println( "lifecycleHandlerManager = " + lifecycleHandlerManager );
 
         lifecycleHandlerManager.initialize( loggerManager, context, componentRepository );
     }
