@@ -281,22 +281,6 @@ public class FileUtils
     }
 
     /**
-     * Copy a file. The new file will be created if it does not exist. This is
-     * an inefficient method, which just calls {@link #fileRead(String)} and
-     * then {@link #fileWrite(String,String)}
-     *
-     * @param inFileName the file to copy
-     * @param outFileName the file to copy to
-     * @throws Exception if fileRead or fileWrite throw it
-     */
-    public static void fileCopy( String inFileName, String outFileName ) throws
-        Exception
-    {
-        String content = fileRead( inFileName );
-        fileWrite( outFileName, content );
-    }
-
-    /**
      * Deletes a file.
      *
      * @param fileName The name of the file to delete.
