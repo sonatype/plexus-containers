@@ -43,18 +43,18 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="classworlds">
+      <library name="asm">
         <CLASSES>
-          <root url="jar://$MAVEN_REPO$/classworlds/jars/classworlds-1.0-rc3.jar!/" />
+          <root url="jar://$MAVEN_REPO$/asm/jars/asm-1.3.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="asm">
+      <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPO$/asm/jars/asm-1.3.4.jar!/" />
+          <root url="jar://$MAVEN_REPO$/classworlds/jars/classworlds-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

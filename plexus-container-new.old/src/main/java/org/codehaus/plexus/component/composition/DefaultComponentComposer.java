@@ -41,6 +41,7 @@ public class DefaultComponentComposer
 
             final Field field = findMatchingField( component, componentDescriptor, requirement );
 
+            // we want to use private fields.                       
             if ( !field.isAccessible() )
             {
                 field.setAccessible( true );
@@ -214,9 +215,6 @@ public class DefaultComponentComposer
             throw new CompositionException( msg.toString() );
         }
 
-        // we want to use private fields.
-        field.setAccessible( true );
-
         return field;
     }
 
@@ -260,13 +258,17 @@ public class DefaultComponentComposer
 
         if ( field == null )
         {
-            StringBuffer msg = new StringBuffer( "Component Composition failed. No field of type: '" );
+            StringBuffer msg = new StringBuffer( "Component composition failed. No field of type: '" );
 
             msg.append( type );
+            
+            msg.append( "' exists in class '" );
+            msg.append( component.getClass().getName() );
+            msg.append( "'." );
 
             if ( componentDescriptor != null )
             {
-                msg.append( "' exists in component of role: '" );
+                msg.append( " Component role: '" );
 
                 msg.append( componentDescriptor.getRole() );
 
@@ -274,7 +276,7 @@ public class DefaultComponentComposer
 
                 if ( componentDescriptor.getRoleHint() != null )
                 {
-                    msg.append( " and role-hint: '" );
+                    msg.append( ", role-hint: '" );
 
                     msg.append( componentDescriptor.getRoleHint() );
 

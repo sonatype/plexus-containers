@@ -31,7 +31,7 @@ public class PlexusTestCase
     /**
      * Set up the test-case by starting the container.
      */
-    public void setUp()
+    protected void setUp()
         throws Exception
     {
         File f = new File( basedir, "target/plexus-home" );
@@ -88,7 +88,7 @@ public class PlexusTestCase
     /**
      * Tear down the test-case by stopping the container container manager..
      */
-    public void tearDown()
+    protected void tearDown()
         throws Exception
     {
         container.dispose();
