@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component.manager;
 
+import org.apache.avalon.framework.service.ServiceManager;
+import org.apache.avalon.framework.service.Serviceable;
 import org.codehaus.plexus.factory.AbstractPlexusFactory;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -12,7 +14,8 @@ public class ComponentManagerFactory
                                            LoggerManager loggerManager,
                                            ClassLoader classLoader,
                                            LifecycleHandler lifecycleHandler,
-                                           ComponentDescriptor descriptor )
+                                           ComponentDescriptor descriptor,
+                                           ServiceManager service )
         throws Exception
     {
         ComponentManager componentManager = (ComponentManager) getInstance( componentManagerDescriptor.getImplementation(), classLoader );
@@ -22,8 +25,13 @@ public class ComponentManagerFactory
         componentManager.configure( componentManagerDescriptor.getConfiguration() );
         componentManager.setLifecycleHandler( lifecycleHandler );
         componentManager.setComponentDescriptor( descriptor );
-        componentManager.initialize();
-
+        
+		if( componentManager instanceof Serviceable )
+		{
+			((Serviceable)componentManager).service(service);
+		}		
+		componentManager.initialize();
+		
         return componentManager;
     }
 }

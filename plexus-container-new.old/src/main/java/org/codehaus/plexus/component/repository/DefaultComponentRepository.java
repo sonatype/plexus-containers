@@ -4,11 +4,13 @@ import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.context.Context;
 import org.apache.avalon.framework.service.ServiceException;
+import org.apache.avalon.framework.service.ServiceManager;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerFactory;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerHousing;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
+import org.codehaus.plexus.lifecycle.avalon.AvalonServiceManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.component.manager.ComponentManager;
@@ -116,6 +118,12 @@ public class DefaultComponentRepository
      */
     private Object lookupLock = new Object();
 
+	/** ServiceManager given to InstanceManagers if they need access to
+	 * other components. Care must be taken no circular dependencies
+	 * are created.
+	 *  */
+	private ServiceManager service;
+
     /** Constructor. */
     public DefaultComponentRepository()
     {
@@ -124,6 +132,7 @@ public class DefaultComponentRepository
         componentManagers = new ThreadSafeMap();
         compManagersByCompClass = new ThreadSafeMap();
         lifecycleHandlers = new HashMap();
+		service = new AvalonServiceManager( this );
     }
 
     // ----------------------------------------------------------------------
@@ -459,7 +468,7 @@ public class DefaultComponentRepository
         if ( componentManagerDescriptor == null )
         {
             throw new ConfigurationException(
-                "No manager manager configured with strategy: "
+                "No instance manager configured with strategy: "
                 + strategy
                 + " for component with role: "
                 + descriptor.getRole() );
@@ -484,9 +493,10 @@ public class DefaultComponentRepository
                                                                             getComponentLogManager(),
                                                                             getClassLoader(),
                                                                             h,
-                                                                            descriptor );
+                                                                            descriptor,
+                                                                            service );
 
-        componentManager.initialize();
+        //componentManager.initialize();//performed in ComponentFactory
 
         //make the ComponentManager available for future requests
         getComponentManagers().put( descriptor.getComponentKey(), componentManager );
