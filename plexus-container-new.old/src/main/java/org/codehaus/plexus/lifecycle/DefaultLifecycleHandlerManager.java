@@ -13,7 +13,7 @@ public class DefaultLifecycleHandlerManager
 {
     private List lifecycleHandlers = null;
 
-    private String defaultLifecycleHandlerId = null;
+    private String defaultLifecycleHandlerId = "plexus";
 
     public void initialize()
         throws Exception
