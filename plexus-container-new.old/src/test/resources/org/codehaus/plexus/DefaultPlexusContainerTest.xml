@@ -19,9 +19,9 @@
     </logger>
   </logging>
 
-  <service-repository>
+  <component-repository>
     <implementation>org.codehaus.plexus.component.repository.DefaultComponentRepository</implementation>
-  </service-repository>
+  </component-repository>
 
   <lifecycle-handlers>
     <lifecycle-handler implementation="org.codehaus.plexus.SimpleLifecycleHandler">
