@@ -7,7 +7,7 @@ import java.io.StringReader;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
@@ -25,11 +25,18 @@ public class CascadingConfigurationTest
     {
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
-        String s0 = "<conf><name>jason</name></conf>";
+        String s0 = "<conf>" +
+                      "<type default='foo'>jason</type>" +
+                      "<name>jason</name>" +
+                    "</conf>";
+
+        String s1 = "<conf>" +
+                      "<type default='bar'>jason</type>" +
+                      "<occupation>procrastinator</occupation>" +
+                    "</conf>";
+
         Configuration base = cb.parse( new StringReader( s0 ) );
 
-        String s1 = "<conf><occupation>procrastinator</occupation></conf>";
-        cb = new XmlPullConfigurationBuilder();
         Configuration parent = cb.parse( new StringReader( s1 ) );
 
         CascadingConfiguration cc = new CascadingConfiguration( base, parent );
@@ -39,5 +46,9 @@ public class CascadingConfigurationTest
 
         // Take a value from the parent.
         assertEquals( "procrastinator", cc.getChild( "occupation" ).getValue() );
+
+        // We want the 'default' attribute from the base, which effectively overrides
+        // the 'default' attribute in the parent configuration.
+        assertEquals( "foo", cc.getChild( "type" ).getAttribute( "default" ) );
     }
 }
