@@ -1,5 +1,7 @@
 package org.codehaus.plexus.test;
 
+import org.codehaus.plexus.test.map.Activity;
+
 /**
  *
  * 
@@ -14,4 +16,6 @@ public interface Component
     String getHost();
 
     int getPort();
+
+    Activity getActivity();
 }

@@ -2005,17 +2005,20 @@ public class StringUtils
     static public String interpolate( String text, Map namespace )
     {
         Iterator keys = namespace.keySet().iterator();
+
         while ( keys.hasNext() )
         {
             String key = keys.next().toString();
+
             Object obj = namespace.get( key );
-            String value =
-                obj.toString();
+
+            String value = obj.toString();
+
             text = StringUtils.replace( text, "${" + key + "}", value );
+
             if ( key.indexOf( " " ) == -1 )
             {
-                text = StringUtils.replace( text,
-                                            "$" + key, value );
+                text = StringUtils.replace( text, "$" + key, value );
             }
         }
         return text;

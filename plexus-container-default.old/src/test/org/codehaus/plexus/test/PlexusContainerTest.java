@@ -70,6 +70,8 @@ public class PlexusContainerTest
 
         assertNotNull( component );
 
+        assertNotNull( component.getActivity() );
+
         assertEquals( "localhost", component.getHost() );
 
         assertEquals( 10000, component.getPort() );

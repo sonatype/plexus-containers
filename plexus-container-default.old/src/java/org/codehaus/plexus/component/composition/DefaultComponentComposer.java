@@ -39,6 +39,8 @@ public class DefaultComponentComposer
 
             final String role = requirement.getRole();
 
+            final String roleHint = requirement.getRoleHint();
+
             final Field field = findMatchingField( component, componentDescriptor, requirement );
 
             // we want to use private fields.                       
@@ -50,7 +52,7 @@ public class DefaultComponentComposer
             // We have a field to which we should assigning component(s).
             // Cardinality is determined by field.getType() method
             // It can be array, map, collection or "ordinary" field
-            assignRequirmentToField( field, container, role, component );
+            assignRequirmentToField( field, container, role, roleHint, component );
         }
     }
 
@@ -84,6 +86,7 @@ public class DefaultComponentComposer
     private void assignRequirmentToField( final Field field,
                                           PlexusContainer container,
                                           final String role,
+                                          final String roleHint,
                                           Object component )
         throws CompositionException
     {
@@ -125,10 +128,30 @@ public class DefaultComponentComposer
             }
             else //"ordinary" field
             {
-                Object dependency = container.lookup( role );
+                Object dependency;
+
+                ComponentDescriptor cd;
+
+                if ( roleHint != null )
+                {
+                    System.out.println( "role = " + role );
+                    System.out.println( "roleHint = " + roleHint );
+
+                    dependency = container.lookup( role, roleHint );
+
+                    cd = container.getComponentDescriptor( role + roleHint );
+
+                    System.out.println( "dependency = " + dependency );
+                }
+                else
+                {
+                    dependency = container.lookup( role );
+
+                    cd = container.getComponentDescriptor( role );
+                }
 
                 // simple recursion
-                assembleComponent( dependency, container.getComponentDescriptor( role ), container );
+                assembleComponent( dependency, cd, container );
 
                 field.set( component, dependency );
             }

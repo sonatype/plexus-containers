@@ -9,6 +9,12 @@
     <component>
       <role>org.codehaus.plexus.test.Component</role>
       <implementation>org.codehaus.plexus.test.DefaultComponent</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.map.Activity</role>
+          <role-hint>one</role-hint>
+        </requirement>
+      </requirements>
       <configuration>
         <host>localhost</host>
         <port>10000</port>
@@ -79,8 +85,8 @@
       <implementation>org.codehaus.plexus.test.list.DefaultPipeline</implementation>
       <requirements>
         <requirement>
-        <role>org.codehaus.plexus.test.list.Valve</role>
-        <field-name>valves</field-name>
+          <role>org.codehaus.plexus.test.list.Valve</role>
+          <field-name>valves</field-name>
         </requirement>
       </requirements>
     </component>
@@ -95,5 +101,4 @@
       <implementation>org.codehaus.plexus.test.list.ValveTwo</implementation>
     </component>
  </components>
-
 </plexus>
