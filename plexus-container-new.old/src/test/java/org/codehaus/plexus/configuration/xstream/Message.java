@@ -49,6 +49,10 @@ public class Message
     /** Inner class. */
     private InnerClass innerClass;
 
+    public Message()
+    {
+    }
+
     // ----------------------------------------------------------------------
     // Accessors
     // ----------------------------------------------------------------------

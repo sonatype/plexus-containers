@@ -14,6 +14,10 @@ public class Pipeline
 {
     private List valves = new ArrayList();
 
+    public Pipeline()
+    {
+    }
+
     public Valve getValve( int i )
     {
         return (Valve) valves.get( i );

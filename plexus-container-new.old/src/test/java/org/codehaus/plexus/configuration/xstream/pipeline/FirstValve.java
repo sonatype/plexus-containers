@@ -13,6 +13,10 @@ public class FirstValve
 {
     private String name;
 
+    public FirstValve()
+    {
+    }
+
     public String getId()
     {
         return "first";

@@ -13,6 +13,10 @@ public class Element
 
     private String expression;
 
+    public Element()
+    {
+    }
+
     public String getHeaderKey()
     {
         return headerKey;

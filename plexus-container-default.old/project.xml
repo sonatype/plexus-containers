@@ -115,7 +115,7 @@
     <dependency>
       <groupId>xstream</groupId>
       <artifactId>xstream</artifactId>
-      <version>0.2</version>
+      <version>0.3</version>
     </dependency>
 
     <dependency>
@@ -174,7 +174,7 @@
 
     <unitTest>
       <includes>
-        <include>**/*Test.java</include>
+        <include>**/*XStreamTooTest.java</include>
       </includes>
       <excludes>
         <exclude>**/*HierarchyTest.java</exclude>

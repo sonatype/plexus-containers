@@ -27,6 +27,10 @@ public class Summary
     /** Elements. */
     private List elements = new ArrayList();
 
+    public Summary()
+    {
+    }
+
     // ----------------------------------------------------------------------
     // Accessors
     // ----------------------------------------------------------------------

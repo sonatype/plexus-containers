@@ -17,6 +17,10 @@ public class Person
 
     private String occupation;
 
+    public Person()
+    {
+    }
+
     public String getId()
     {
         return id;
