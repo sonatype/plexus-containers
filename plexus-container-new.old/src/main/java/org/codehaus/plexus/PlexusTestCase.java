@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.codehaus.plexus.context.Context;
+
 public class PlexusTestCase
     extends TestCase
 {
@@ -68,6 +70,10 @@ public class PlexusTestCase
         container.start();
     }
 
+    //!!! this should probably take a context as a parameter so that the
+    //    user is not forced to do getContainer().addContextValue(..)
+    //    this would require a change to PlexusContainer in order to get
+    //    hold of the context ...
     protected void customizeContext()
     {
     }
