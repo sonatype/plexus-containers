@@ -223,7 +223,7 @@ public class SweeperPool
      * @author bert
      *
      */
-    private class static Sweeper implements Runnable
+    private static class Sweeper implements Runnable
     {
         private final transient SweeperPool pool;
         private transient boolean service = false;
