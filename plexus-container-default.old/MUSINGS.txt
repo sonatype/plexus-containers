@@ -37,10 +37,6 @@ are very detailed and specific, while others are more general.  -pete
   having an 'id' of '*'.  This doesn't appear to be the case.
   Instead, it appears they are null instead.
 
-- NOTE to myself: why does lifecyclehandler need the
-  ComponentRepository?  On that note, why does the LifecycleHandler
-  call it a Service Repository instead of a Component Repository?
-
 - A component's Key should _not_ be the simple concatenation of Role
   and Hint (or Id) because this might clash with another valid Role.
   Perhaps it would be better to use a '/' as a separator, although
