@@ -1,5 +1,12 @@
 <configuration>
 
+  <logging>
+    <implementation>org.codehaus.plexus.logging.ConsoleLoggerManager</implementation>
+    <logger>
+      <threshold>ERROR</threshold>
+    </logger>
+  </logging>
+
   <components>
     <component>
       <role>org.codehaus.plexus.hierarchy.TestService</role>
