@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.util.ReflectionUtils;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 
@@ -171,31 +172,13 @@ public class FieldComponentComposer
         return field;
     }
 
-    protected Field getFieldByNameIncludingSuperclasses( Class componentClass, String fieldName )
-    {
-        if ( Object.class.equals( componentClass ) )
-        {
-            return null;
-        }
-
-        try
-        {
-            Field field = componentClass.getDeclaredField( fieldName );
-
-            return field;
-        }
-        catch ( Exception e )
-        {
-            return getFieldByNameIncludingSuperclasses( componentClass.getSuperclass(), fieldName );
-        }
-    }
 
     protected Field getFieldByName( Object component,
                                     String fieldName,
                                     ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
-        Field field = getFieldByNameIncludingSuperclasses( component.getClass(), fieldName );
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses( fieldName, component.getClass() );
 
         if ( field == null )
         {
