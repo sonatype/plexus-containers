@@ -652,12 +652,16 @@ public class DefaultPlexusContainer
         // We are in a non-embedded situation
         if ( plexusRealm == null )
         {
-            // Create a realm for this plexus instance.
-            plexusRealm = coreRealm.getWorld().newRealm( "plexus." + getName() );
+            try
+            {
+                plexusRealm = coreRealm.getWorld().getRealm( "plexus." + getName() );
+            }
+            catch ( NoSuchRealmException e )
+            {
+                plexusRealm = coreRealm.getWorld().newRealm( "plexus." + getName() );
+            }
     
-            plexusRealm.importFrom( coreRealm.getId(), "org.codehaus.plexus" );
-            plexusRealm.importFrom( coreRealm.getId(), "org.codehaus.xstream" );
-            plexusRealm.importFrom( coreRealm.getId(), "org.xmlpull" );
+            plexusRealm.importFrom( coreRealm.getId(), "" );
             
             addContextValue( "common.classloader", plexusRealm.getClassLoader() );
     
