@@ -107,6 +107,3 @@ are very detailed and specific, while others are more general.  -pete
   Logger in the lifecycle handler entity map, we stuff the LogManager
   instead?  That way we can then lookup specify loggers for the
   component role.
-
-- InstanceManagers should also take a configure(), otherwise you can't
-  configure things like the pool.
