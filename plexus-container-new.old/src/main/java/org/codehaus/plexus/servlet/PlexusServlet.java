@@ -7,7 +7,7 @@ import org.apache.avalon.framework.service.ServiceManager;
 import org.codehaus.plexus.PlexusConstants;
 
 /**
- * Extentsion of {@link HttpServlet} that provides convenience methods for
+ * Extension of {@link HttpServlet} that provides convenience methods for
  * servlets that need to access services provided by a Plexus container
  * embedded in a Servlet context. The Plexus container can be created using
  * either {@link PlexusLoaderServlet} or {@link PlexusServletContextListener}
