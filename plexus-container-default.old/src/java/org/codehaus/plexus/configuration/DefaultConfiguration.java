@@ -20,12 +20,12 @@ public class DefaultConfiguration
     /**
      * An empty (length zero) array of configuration objects.
      */
-    protected static final Configuration[] EMPTY_ARRAY = new Configuration[0];
+    protected static Configuration[] EMPTY_ARRAY = new Configuration[0];
 
-    private final String name;
-    private final String location;
-    private final String namespace;
-    private final String prefix;
+    private String name;
+    private String location;
+    private String namespace;
+    private String prefix;
     private HashMap attributes;
     private ArrayList children;
     private String value;

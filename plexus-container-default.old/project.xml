@@ -159,6 +159,13 @@
       <version>0.8.1</version>
     </dependency>
 
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.6.1</version>
+    </dependency>
+
+
   </dependencies>
 
   <build>

@@ -22,7 +22,8 @@ public abstract class AbstractConfiguration
      * <code>null</code>.
      * @since 4.1
      */
-    protected abstract String getPrefix() throws ConfigurationException;
+    protected abstract String getPrefix()
+        throws ConfigurationException;
 
     /**
      * Returns the value of the configuration element as an <code>int</code>.
@@ -37,6 +38,7 @@ public abstract class AbstractConfiguration
         throws ConfigurationException
     {
         final String value = getValue().trim();
+
         try
         {
             if ( value.startsWith( "0x" ) )
@@ -564,5 +566,10 @@ public abstract class AbstractConfiguration
                 return null;
             }
         }
+    }
+
+    public Configuration getParent()
+    {
+        return null;
     }
 }

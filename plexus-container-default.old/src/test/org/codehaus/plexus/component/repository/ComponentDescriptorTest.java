@@ -40,10 +40,13 @@ public class ComponentDescriptorTest
         componentDescriptor.setRole( role );
         componentDescriptor.setRoleHint( roleHint );
         componentDescriptor.setInstantiationStrategy( instantiation );
+        componentDescriptor.addRequirement( "foo" );
 
         assertEquals( role, componentDescriptor.getRole() );
         assertEquals( roleHint, componentDescriptor.getRoleHint() );
         assertEquals( instantiation, componentDescriptor.getInstantiationStrategy() );
         assertEquals( role + roleHint, componentDescriptor.getComponentKey() );
+        assertTrue( componentDescriptor.getRequirements().contains( "foo" ) );
     }
+
 }

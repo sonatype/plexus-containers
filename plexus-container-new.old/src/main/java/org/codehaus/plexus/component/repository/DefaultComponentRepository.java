@@ -66,6 +66,9 @@ public class DefaultComponentRepository
     /** Lifecycle handlers tag. */
     private static String LIFECYCLE_HANDLERS = "lifecycle-handlers";
 
+    private static String REQUIREMENTS = "requirements";
+
+    private static String REQUIREMENT = "requirement";
 
     // ----------------------------------------------------------------------
     //  Instance Members
@@ -313,7 +316,9 @@ public class DefaultComponentRepository
         throws Exception
     {
         initializeLifecycleHandlers();
+
         initializeComponentManagers();
+
         initializeComponentDescriptors();
     }
 
@@ -552,6 +557,13 @@ public class DefaultComponentRepository
         componentDescriptor.setLifecycleHandler( configuration.getChild( LIFECYCLE_HANDLER ).getValue( null ) );
 
         componentDescriptor.setConfiguration( configuration.getChild( CONFIGURATION ) );
+
+        Configuration[] requirements = configuration.getChild( REQUIREMENTS ).getChildren( REQUIREMENTS );
+
+        for ( int i = 0; i < requirements.length; i++ )
+        {
+            componentDescriptor.addRequirement( requirements[i].getValue() );
+        }
 
         return componentDescriptor;
     }
