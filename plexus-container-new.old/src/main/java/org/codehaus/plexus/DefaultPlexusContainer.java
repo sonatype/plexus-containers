@@ -335,6 +335,7 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     public void release( Object component )
+        throws Exception
     {
         if ( component == null )
         {
@@ -361,6 +362,7 @@ public class DefaultPlexusContainer
     }
 
     public void releaseAll( Map components )
+        throws Exception
     {
         for ( Iterator i = components.values().iterator(); i.hasNext(); )
         {
@@ -371,6 +373,7 @@ public class DefaultPlexusContainer
     }
 
     public void releaseAll( List components )
+        throws Exception
     {
         for ( Iterator i = components.iterator(); i.hasNext(); )
         {
@@ -391,6 +394,7 @@ public class DefaultPlexusContainer
     }
 
     public void suspend( Object component )
+        throws Exception
     {
         if ( component == null )
         {
@@ -403,6 +407,7 @@ public class DefaultPlexusContainer
     }
 
     public void resume( Object component )
+        throws Exception
     {
         if ( component == null )
         {

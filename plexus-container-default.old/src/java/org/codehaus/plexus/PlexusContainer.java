@@ -49,11 +49,14 @@ public interface PlexusContainer
     // Component release
     // ----------------------------------------------------------------------
 
-    void release( Object component );
+    void release( Object component )
+        throws Exception;
 
-    void releaseAll( Map components );
+    void releaseAll( Map components )
+        throws Exception;
 
-    void releaseAll( List components );
+    void releaseAll( List components )
+        throws Exception;
 
     // ----------------------------------------------------------------------
     // Component discovery
@@ -67,9 +70,11 @@ public interface PlexusContainer
     // Component replacement
     // ----------------------------------------------------------------------
 
-    void suspend( Object component );
+    void suspend( Object component )
+        throws Exception;
 
-    void resume( Object component );
+    void resume( Object component )
+        throws Exception;
 
     // ----------------------------------------------------------------------
     // Lifecycle

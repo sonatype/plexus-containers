@@ -29,11 +29,13 @@ public class PoolableComponentManager
     }
 
     public void release( Object component )
+        throws Exception
     {
         pool.put( component );
     }
 
     public void dispose()
+        throws Exception
     {
         //@todo really need to wait for all components to be returned.
         //however blocking on this call may prevent plexus servicing

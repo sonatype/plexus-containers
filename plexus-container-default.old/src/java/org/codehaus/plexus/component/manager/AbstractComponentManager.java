@@ -97,51 +97,28 @@ public abstract class AbstractComponentManager
     }
 
     protected void startComponentLifecycle( Object component )
+        throws Exception
     {
-        try
-        {
-            getLifecycleHandler().start( component, this );
-        }
-        catch ( Exception e )
-        {
-            container.getLogger().error( "Cannot start component lifecycle with role: " + getComponentDescriptor().getRole(), e );
-        }
+        getLifecycleHandler().start( component, this );
     }
 
     public void suspend( Object component )
+        throws Exception
     {
-        try
-        {
-            getLifecycleHandler().suspend( component, this );
-        }
-        catch ( Exception e )
-        {
-            container.getLogger().error( "Cannot suspend component with role: " + getComponentDescriptor().getRole(), e );
-        }
+        getLifecycleHandler().suspend( component, this );
     }
 
     public void resume( Object component )
+        throws Exception
     {
-        try
-        {
-            getLifecycleHandler().resume( component, this );
-        }
-        catch ( Exception e )
-        {
-            container.getLogger().error( "Cannot resume component with role: " + getComponentDescriptor().getRole(), e );
-        }
+        getLifecycleHandler().resume( component, this );
     }
 
     protected void endComponentLifecycle( Object component )
+        throws Exception
     {
-        try
-        {
-            getLifecycleHandler().end( component, this );
-        }
-        catch ( Exception e )
-        {
-            container.getLogger().error( "Cannot end component lifecycle with role: " + getComponentDescriptor().getRole(), e );
-        }
+        getLifecycleHandler().end( component, this );
+
     }
 
     public PlexusContainer getContainer()

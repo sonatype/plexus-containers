@@ -25,6 +25,7 @@ public class PerLookupComponentManager
     }
 
     public void release( Object component )
+        throws Exception
     {
         endComponentLifecycle( component );
     }

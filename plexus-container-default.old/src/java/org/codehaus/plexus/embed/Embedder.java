@@ -88,6 +88,7 @@ public class Embedder
     }
 
     public void release( Object service )
+        throws Exception
     {
         getContainer().release( service );
     }

@@ -33,13 +33,17 @@ public interface ComponentManager
 
     LifecycleHandler getLifecycleHandler();
 
-    void dispose();
+    void dispose()
+        throws Exception;
 
-    void release( Object component );
+    void release( Object component )
+        throws Exception;
 
-    void suspend( Object component );
+    void suspend( Object component )
+        throws Exception;
 
-    void resume( Object component );
+    void resume( Object component )
+        throws Exception;
 
     Object getComponent()
         throws Exception;
