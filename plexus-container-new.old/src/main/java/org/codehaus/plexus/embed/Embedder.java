@@ -4,6 +4,7 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.PropertyUtils;
+import org.codehaus.classworlds.ClassWorld;
 
 
 import java.io.File;
@@ -13,28 +14,6 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-/**
- * <tt>Embedder</tt> enables a client to embed Plexus into their
- * application with a minimal amount of work.  The basic usage is
- * as follows:
- * <br/>
- * <pre>
- *     Embedder embedder = new Embedder();
- *     embedder.setConfiguration("/plexus.xml");
- *     embedder.addContextValue("plexus.home", ".");
- *     embedder.start();
- *
- *     PlexusContainer container = embedder.getContainer();
- *     [do stuff with container]
- *
- *     embedder.stop();
- * </pre>
- * <br/>
- *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @author <a href="pete-codehaus-dev@kazmier.com">Pete Kazmier</a>
- * @version $Id$
- */
 public class Embedder
 {
     private String configuration;
@@ -98,6 +77,11 @@ public class Embedder
         container.setClassLoader( classLoader );
     }
 
+    public synchronized void setClassWorld( ClassWorld classWorld )
+    {
+        container.setClassWorld( classWorld );
+    }
+
     public synchronized void setConfiguration( String configuration )
     {
         if ( embedderStarted || embedderStopped )
@@ -152,7 +136,15 @@ public class Embedder
             container.addContextValue( key, value );
         }        
     }
-    
+
+    public synchronized void start( ClassWorld classWorld )
+        throws Exception
+    {
+        container.setClassWorld( classWorld );
+
+        start();
+    }
+
     public synchronized void start()
         throws Exception
     {

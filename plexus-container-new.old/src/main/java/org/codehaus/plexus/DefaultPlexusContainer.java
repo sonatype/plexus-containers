@@ -3,19 +3,19 @@ package org.codehaus.plexus;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
+import org.codehaus.plexus.component.composition.ComponentComposerManager;
+import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
+import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
+import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
+import org.codehaus.plexus.component.discovery.DiscoveryListenerDescriptor;
+import org.codehaus.plexus.component.factory.ComponentFactory;
+import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
-import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
-import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
-import org.codehaus.plexus.component.discovery.DiscoveryListenerDescriptor;
-import org.codehaus.plexus.component.factory.ComponentFactoryManager;
-import org.codehaus.plexus.component.factory.ComponentFactory;
-import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
@@ -678,8 +678,7 @@ public class DefaultPlexusContainer
                                              "most likely corrupt. The class loader being used is: " + getClassLoader() );
         }
 
-        PlexusConfiguration systemConfiguration =
-            PlexusTools.buildConfiguration( new InputStreamReader( is ) );
+        PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( new InputStreamReader( is ) );
 
         if ( configurationReader != null )
         {

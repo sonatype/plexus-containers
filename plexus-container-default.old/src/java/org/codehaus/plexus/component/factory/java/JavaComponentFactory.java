@@ -23,7 +23,6 @@ public class JavaComponentFactory
     public Object newInstance( ComponentDescriptor componentDescriptor, ClassLoader classLoader )
         throws ClassNotFoundException, InstantiationException, IllegalAccessException
     {
-        
         String role = componentDescriptor.getRole();
         
         String roleHint = componentDescriptor.getRoleHint();
