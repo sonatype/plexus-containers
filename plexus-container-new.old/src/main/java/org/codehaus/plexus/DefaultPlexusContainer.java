@@ -423,7 +423,7 @@ public class DefaultPlexusContainer
         {
             ComponentDiscoverer componentDiscoverer = (ComponentDiscoverer) i.next();
 
-            List componentDescriptors = componentDiscoverer.findComponents( classRealm.getClassLoader() );
+            List componentDescriptors = componentDiscoverer.findComponents( getClassLoader() );
 
             for ( Iterator j = componentDescriptors.iterator(); j.hasNext(); )
             {
@@ -546,6 +546,16 @@ public class DefaultPlexusContainer
         this.classWorld = classWorld;
     }
 
+    public ClassWorld getClassWorld()
+    {
+        return classWorld;
+    }
+
+    public ClassRealm getClassRealm()
+    {
+        return classRealm;
+    }
+    
     private void initializeClassWorlds()
         throws Exception
     {
