@@ -8,13 +8,48 @@ import org.codehaus.plexus.logging.AbstractLoggerManagerTest;
 import org.codehaus.plexus.logging.LoggerManager;
 
 import java.io.File;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Properties;
 
 public class Log4JLoggerManagerTest
     extends AbstractLoggerManagerTest
 {
+    private String configuration =
+        "<configuration>" +
+        "  <logging>" +
+        "    <logger-manager-type>log4j</logger-manager-type>" +
+        "    <logger>" +
+        "      <id>root</id>" +
+        "      <appender-id>default</appender-id>" +
+        "      <priority>INFO</priority>" +
+        "    </logger>" +
+        "    <appender>" +
+        "      <id>default</id>" +
+        "      <type>file</type>" +
+        "      <type-configuration>" +
+        "        <file>${plexus.home}/logs/plexus.log</file>" +
+        "        <append>true</append>" +
+        "      </type-configuration>" +
+        "      <threshold>INFO</threshold>" +
+        "      <layout>pattern-layout</layout>" +
+        "      <conversion-pattern>%-4r [%t] %-5p %c %x - %m%n</conversion-pattern>" +
+        "    </appender>" +
+        "    <appender>" +
+        "      <id>rolling</id>" +
+        "      <type>rollingFile</type>" +
+        "      <type-configuration>" +
+        "        <file>${plexus.home}/logs/plexus-rolling.log</file>" +
+        "        <append>true</append>" +
+        "        <maxBackupIndex>0</maxBackupIndex>" +
+        "        <maxFileSize>0</maxFileSize>" +
+        "      </type-configuration>" +
+        "      <threshold>DEBUG</threshold>" +
+        "      <layout>pattern-layout</layout>" +
+        "      <conversion-pattern>%-4r [%t] %-5p %c %x - %m%n</conversion-pattern>" +
+        "    </appender>" +
+        "  </logging>" +
+        "</configuration>";
+
     public void setUp()
     {
         super.setUp();
@@ -29,12 +64,12 @@ public class Log4JLoggerManagerTest
         }
     }
 
-    protected Configuration createConfiguration(String threshold)
+    protected Configuration createConfiguration( String threshold )
         throws Exception
     {
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
 
-        Configuration c = builder.parse( new InputStreamReader( Log4JLoggerManagerTest.class.getResourceAsStream( "plexus.conf" ) ) );
+        Configuration c = builder.parse( new StringReader( configuration ) );
 
         if ( threshold.equals( "disabled" ) )
         {
@@ -42,15 +77,16 @@ public class Log4JLoggerManagerTest
         }
 
         Configuration priorityNode = c.getChild( "logging" )
-                                      .getChild( "logger" )
-                                      .getChild( "priority" );
-        
-        ((DefaultConfiguration) priorityNode).setValue( threshold );
+            .getChild( "logger" )
+            .getChild( "priority" );
+
+        ( (DefaultConfiguration) priorityNode ).setValue( threshold );
 
         return c.getChild( "logging" );
     }
 
-    protected LoggerManager createLoggerManager() {
+    protected LoggerManager createLoggerManager()
+    {
         return new Log4JLoggerManager();
     }
 
@@ -61,7 +97,7 @@ public class Log4JLoggerManagerTest
 
         Log4JLoggerManager loggerManager = new Log4JLoggerManager();
 
-        Configuration c = builder.parse( new InputStreamReader( Log4JLoggerManagerTest.class.getResourceAsStream( "plexus.conf" ) ) );
+        Configuration c = builder.parse( new StringReader( configuration ) );
 
         loggerManager.configure( c.getChild( DefaultPlexusContainer.LOGGING_TAG ) );
 
