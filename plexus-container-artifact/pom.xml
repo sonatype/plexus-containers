@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -10,8 +9,7 @@
   <groupId>plexus</groupId>
   <artifactId>plexus-artifact-container</artifactId>
   <version>1.0-alpha-1</version>
-  <name>plexus artifact-enabled container</name>
-
+  <name>Plexus Artifact-Enabled Container</name>
   <dependencies>
     <dependency>
       <groupId>plexus</groupId>
@@ -39,19 +37,4 @@
       <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
   </dependencies>
-
-  <build>
-    <nagEmailAddress>plexus-dev@plexus.codehaus.org</nagEmailAddress>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
-    <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
-      <excludes>
-        <exclude>**/*Abstract*.java</exclude>
-      </excludes>
-    </unitTest>
-  </build>
-
 </project>

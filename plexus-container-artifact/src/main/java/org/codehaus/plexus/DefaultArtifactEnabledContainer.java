@@ -1,4 +1,3 @@
-/* Created on Aug 15, 2004 */
 package org.codehaus.plexus;
 
 import java.util.HashSet;
@@ -20,12 +19,12 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /**
  * @author jdcasey
+ * @version $Id$
  */
 public class DefaultArtifactEnabledContainer
     extends DefaultPlexusContainer
     implements ArtifactEnabledContainer
 {
-
     public DefaultArtifactEnabledContainer()
     {
         super();
@@ -133,5 +132,4 @@ public class DefaultArtifactEnabledContainer
             }
         }
     }
-
 }
