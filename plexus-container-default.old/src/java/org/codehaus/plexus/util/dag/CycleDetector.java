@@ -36,15 +36,22 @@ public class CycleDetector
     private static List dfs( final DAG graph )
     {
         final List verticies = graph.getVerticies();
-        LinkedList cycleStack = new LinkedList();
+
+
+        final LinkedList cycleStack = new LinkedList();
+
         boolean hasCycle = false;
+
         final Map vertexStateMap = new HashMap();
+
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
             final Vertex vertex = ( Vertex ) iter.next();
+
             if ( isNotVisited( vertex, vertexStateMap ) )
             {
                 hasCycle = dfsVisit( vertex, cycleStack, vertexStateMap );
+
                 if ( hasCycle )
                 {
                     break;
@@ -59,9 +66,12 @@ public class CycleDetector
             // for getting the sublist of vertex labels of cycle paricipants
             //
             // So in our case we are seraching for [b, a, c, d, b]
-            String label = ( String ) cycleStack.getFirst();
-            int pos = cycleStack.lastIndexOf( label );
-            List cycle = cycleStack.subList( 0, pos + 1  );
+            final String label = ( String ) cycleStack.getFirst();
+
+            final int pos = cycleStack.lastIndexOf( label );
+
+            final List cycle = cycleStack.subList( 0, pos + 1  );
+
             Collections.reverse( cycle );
 
             return cycle;
@@ -84,6 +94,7 @@ public class CycleDetector
             return true;
         }
         final Integer state = ( Integer ) vertexStateMap.get( vertex );
+
         return NOT_VISTITED.equals( state );
     }
 
@@ -96,20 +107,26 @@ public class CycleDetector
     private static boolean isVisiting( final Vertex vertex, final Map vertexStateMap )
     {
         final Integer state = ( Integer ) vertexStateMap.get( vertex );
+
         return VISITING.equals( state );
     }
 
     private static boolean dfsVisit( final Vertex vertex, final LinkedList cycle, final Map vertexStateMap )
     {
         cycle.addFirst( vertex.getLabel() );
+
         vertexStateMap.put( vertex, VISITING );
+
         final List verticies = vertex.getChildren();
+
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
             final Vertex v = ( Vertex ) iter.next();
+
             if ( isNotVisited( v, vertexStateMap ) )
             {
-                boolean hasCycle = dfsVisit( v, cycle, vertexStateMap );
+                final boolean hasCycle = dfsVisit( v, cycle, vertexStateMap );
+
                 if ( hasCycle )
                 {
                     return true;
@@ -118,22 +135,28 @@ public class CycleDetector
             else if ( isVisiting( v, vertexStateMap ) )
             {
                 cycle.addFirst( v.getLabel() );
+
                 return true;
             }
         }
         vertexStateMap.put( vertex, VISITED );
+
         cycle.removeFirst();
+
         return false;
 
     }
 
     public final static String cycleToString( final List cycle )
     {
-        StringBuffer buffer = new StringBuffer( );
+        final StringBuffer buffer = new StringBuffer( );
+
         buffer.append( "Cycle detected: " );
+
         for ( Iterator iterator = cycle.iterator(); iterator.hasNext(); )
         {
             buffer.append( iterator.next() );
+
             if ( iterator.hasNext() )
             {
                 buffer.append( " --> " );

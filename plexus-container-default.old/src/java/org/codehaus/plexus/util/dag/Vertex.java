@@ -6,6 +6,7 @@
  */
 package org.codehaus.plexus.util.dag;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,13 +15,15 @@ import java.util.List;
  * @author <a href="michal.maczka@dimatics.com">Michal Maczka</a>
  * @version $Id$
  */
-public class Vertex implements Cloneable
+public class Vertex implements Cloneable, Serializable
 {
     //------------------------------------------------------------
     //Fields
     //------------------------------------------------------------
     private String label = null;
+    
     List children = new ArrayList();
+    
     List parents = new ArrayList();
     
     
@@ -80,9 +83,11 @@ public class Vertex implements Cloneable
     public List getChildLabels()
     {
         final List retValue = new ArrayList( children.size() );
+    
         for ( final Iterator iter = children.iterator(); iter.hasNext(); )
         {
             final Vertex vertex = (Vertex) iter.next();
+        
             retValue.add( vertex.getLabel() );
         }
         return retValue;
@@ -106,9 +111,11 @@ public class Vertex implements Cloneable
     public List getParentLabels()
     {
         final List retValue = new ArrayList( parents.size() );
+        
         for ( final Iterator iter = parents.iterator(); iter.hasNext(); )
         {
             final Vertex vertex = (Vertex) iter.next();
+        
             retValue.add( vertex.getLabel() );
         }
         return retValue;
@@ -123,6 +130,7 @@ public class Vertex implements Cloneable
     public Object clone() throws CloneNotSupportedException 
     {         
         Object o = super.clone();	// this is what's failing..               
+        
         return o;
     }
 

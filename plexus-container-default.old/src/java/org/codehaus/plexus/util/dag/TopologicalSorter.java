@@ -39,16 +39,21 @@ public class TopologicalSorter
     private static List dfs( final DAG graph )
     {
         final List verticies = graph.getVerticies();
+        
         final List result = new ArrayList();
+        
         final Map vertexStateMap = new HashMap();
+        
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
             final Vertex vertex = (Vertex) iter.next();
+        
             if ( isNotVisited( vertex, vertexStateMap ) )
             {
                 dfsVisit( vertex, vertexStateMap, result );
             }
         }
+        
         return result;
     }
 
@@ -65,6 +70,7 @@ public class TopologicalSorter
             return true;
         }
         final Integer state = (Integer) vertexStateMap.get( vertex );
+        
         return NOT_VISTITED.equals( state );
     }
 
@@ -72,16 +78,21 @@ public class TopologicalSorter
     private static void dfsVisit( final Vertex vertex, final Map vertexStateMap, final List list )
     {
         vertexStateMap.put( vertex, VISITING );
+        
         final List verticies = vertex.getChildren();
+        
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
             final Vertex v = (Vertex) iter.next();
+        
             if ( isNotVisited( v, vertexStateMap ) )
             {
                 dfsVisit( v, vertexStateMap, list );
             }
         }
+        
         vertexStateMap.put( vertex, VISITED );
+        
         list.add( vertex.getLabel() );
     }
 

@@ -5,14 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.Serializable;
 
 /**
  * DAG = Directed Acyclic Graph
  *
  * @author <a href="michal.maczka@dimatics.com">Michal Maczka</a>
  * @version $Id$
+ *
+ * @todo this class should be reanmed from DAG to Dag
  */
-public class DAG implements Cloneable
+public class DAG implements Cloneable, Serializable
 {
     //------------------------------------------------------------
     //Fields
@@ -55,6 +58,7 @@ public class DAG implements Cloneable
     public Set getLabels()
     {
         final Set retValue = vertexMap.keySet();
+        
         return retValue;
     }
 
@@ -78,37 +82,48 @@ public class DAG implements Cloneable
         }
 
         final Vertex vertex = new Vertex( label );
+        
         vertexMap.put( label, vertex );
+        
         vertexList.add( vertex );
+        
         return vertex;
     }
 
     public void addEdge( final String from, final String to )
     {
         final Vertex v1 = addVertex( from );
+        
         final Vertex v2 = addVertex( to );
+        
         v1.addEdgeTo( v2 );
+        
         v2.addEdgeFrom( v1 );
     }
 
     public Vertex getVertex( final String label )
     {
         final Vertex retValue = (Vertex) vertexMap.get( label );
+        
         return retValue;
     }
 
     public boolean hasEdge( final String label1, final String label2 )
     {
         final Vertex v1 = getVertex( label1 );
+        
         if ( v1 == null )
         {
             throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label1 + "' must exist" );
         }
+        
         final Vertex v2 = getVertex( label2 );
+        
         if ( v2 == null )
         {
             throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label2 + "' must exist" );
         }
+        
         return v1.getChildren().contains( v2 );
 
     }
@@ -120,6 +135,7 @@ public class DAG implements Cloneable
     public List getChildLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
+        
         if ( vertex == null )
         {
             throw new IllegalArgumentException( "getChildLabels: A vertex for label '" + label + "' must exist" );
@@ -134,10 +150,12 @@ public class DAG implements Cloneable
     public List getParentLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
+        
         if ( vertex == null )
         {
             throw new IllegalArgumentException( "getChildLabels: A vertex for label '" + label + "' must exist" );
         }
+        
         return vertex.getChildLabels();
     }
     
@@ -148,6 +166,7 @@ public class DAG implements Cloneable
     public Object clone() throws CloneNotSupportedException 
     {                
         Object o = super.clone();	// this is what's failing..               
+        
         return o;
     }
    
