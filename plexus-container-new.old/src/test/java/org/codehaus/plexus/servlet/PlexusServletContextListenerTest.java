@@ -50,11 +50,11 @@ public class PlexusServletContextListenerTest extends TestCase
         ServletContextEvent sce = new ServletContextEvent(sc);
 
         pacl.contextInitialized( sce );
-        assertNotNull( PlexusServletContextListener.getServiceManager( sc ) );
-        assertNotNull( PlexusServletContextListener.getPlexusContainer( sc ) );
+        assertNotNull( PlexusServletUtils.getServiceManager( sc ) );
+        assertNotNull( PlexusServletUtils.getPlexusContainer( sc ) );
 
         pacl.contextDestroyed( sce );
-        assertNull( PlexusServletContextListener.getServiceManager( sc ) );
-        assertNull( PlexusServletContextListener.getPlexusContainer( sc ) );
+        assertNull( PlexusServletUtils.getServiceManager( sc ) );
+        assertNull( PlexusServletUtils.getPlexusContainer( sc ) );
     }
 }
