@@ -31,7 +31,7 @@ public final class ConsoleLogger
     /** Typecode for disabled log levels. */
     public static final int LEVEL_DISABLED = 5;
 
-    private final int m_logLevel;
+    private final int logLevel;
 
     /**
      * Creates a new ConsoleLogger with the priority set to DEBUG.
@@ -45,9 +45,9 @@ public final class ConsoleLogger
      * Creates a new ConsoleLogger.
      * @param logLevel log level typecode
      */
-    public ConsoleLogger( final int logLevel )
+    public ConsoleLogger( int logLevel )
     {
-        m_logLevel = logLevel;
+        this.logLevel = logLevel;
     }
 
     /**
@@ -55,7 +55,7 @@ public final class ConsoleLogger
      *
      * @param message a <code>String</code> value
      */
-    public void debug( final String message )
+    public void debug( String message )
     {
         debug( message, null );
     }
@@ -66,9 +66,9 @@ public final class ConsoleLogger
      * @param message a <code>String</code> value
      * @param throwable a <code>Throwable</code> value
      */
-    public void debug( final String message, final Throwable throwable )
+    public void debug( String message, Throwable throwable )
     {
-        if ( m_logLevel <= LEVEL_DEBUG )
+        if ( logLevel <= LEVEL_DEBUG )
         {
             System.out.print( "[DEBUG] " );
             System.out.println( message );
@@ -87,7 +87,7 @@ public final class ConsoleLogger
      */
     public boolean isDebugEnabled()
     {
-        return m_logLevel <= LEVEL_DEBUG;
+        return logLevel <= LEVEL_DEBUG;
     }
 
     /**
@@ -95,7 +95,7 @@ public final class ConsoleLogger
      *
      * @param message a <code>String</code> value
      */
-    public void info( final String message )
+    public void info( String message )
     {
         info( message, null );
     }
@@ -106,9 +106,9 @@ public final class ConsoleLogger
      * @param message a <code>String</code> value
      * @param throwable a <code>Throwable</code> value
      */
-    public void info( final String message, final Throwable throwable )
+    public void info( String message, Throwable throwable )
     {
-        if ( m_logLevel <= LEVEL_INFO )
+        if ( logLevel <= LEVEL_INFO )
         {
             System.out.print( "[INFO] " );
             System.out.println( message );
@@ -127,7 +127,7 @@ public final class ConsoleLogger
      */
     public boolean isInfoEnabled()
     {
-        return m_logLevel <= LEVEL_INFO;
+        return logLevel <= LEVEL_INFO;
     }
 
     /**
@@ -135,7 +135,7 @@ public final class ConsoleLogger
      *
      * @param message a <code>String</code> value
      */
-    public void warn( final String message )
+    public void warn( String message )
     {
         warn( message, null );
     }
@@ -146,9 +146,9 @@ public final class ConsoleLogger
      * @param message a <code>String</code> value
      * @param throwable a <code>Throwable</code> value
      */
-    public void warn( final String message, final Throwable throwable )
+    public void warn( String message, Throwable throwable )
     {
-        if ( m_logLevel <= LEVEL_WARN )
+        if ( logLevel <= LEVEL_WARN )
         {
             System.out.print( "[WARNING] " );
             System.out.println( message );
@@ -167,7 +167,7 @@ public final class ConsoleLogger
      */
     public boolean isWarnEnabled()
     {
-        return m_logLevel <= LEVEL_WARN;
+        return logLevel <= LEVEL_WARN;
     }
 
     /**
@@ -175,7 +175,7 @@ public final class ConsoleLogger
      *
      * @param message a <code>String</code> value
      */
-    public void error( final String message )
+    public void error( String message )
     {
         error( message, null );
     }
@@ -186,9 +186,9 @@ public final class ConsoleLogger
      * @param message a <code>String</code> value
      * @param throwable a <code>Throwable</code> value
      */
-    public void error( final String message, final Throwable throwable )
+    public void error( String message, Throwable throwable )
     {
-        if ( m_logLevel <= LEVEL_ERROR )
+        if ( logLevel <= LEVEL_ERROR )
         {
             System.out.print( "[ERROR] " );
             System.out.println( message );
@@ -207,7 +207,7 @@ public final class ConsoleLogger
      */
     public boolean isErrorEnabled()
     {
-        return m_logLevel <= LEVEL_ERROR;
+        return logLevel <= LEVEL_ERROR;
     }
 
     /**
@@ -215,7 +215,7 @@ public final class ConsoleLogger
      *
      * @param message a <code>String</code> value
      */
-    public void fatalError( final String message )
+    public void fatalError( String message )
     {
         fatalError( message, null );
     }
@@ -226,9 +226,9 @@ public final class ConsoleLogger
      * @param message a <code>String</code> value
      * @param throwable a <code>Throwable</code> value
      */
-    public void fatalError( final String message, final Throwable throwable )
+    public void fatalError( String message, Throwable throwable )
     {
-        if ( m_logLevel <= LEVEL_FATAL )
+        if ( logLevel <= LEVEL_FATAL )
         {
             System.out.print( "[FATAL ERROR] " );
             System.out.println( message );
@@ -247,7 +247,7 @@ public final class ConsoleLogger
      */
     public boolean isFatalErrorEnabled()
     {
-        return m_logLevel <= LEVEL_FATAL;
+        return logLevel <= LEVEL_FATAL;
     }
 
     /**
@@ -256,7 +256,7 @@ public final class ConsoleLogger
      * @param name ignored
      * @return this logger
      */
-    public Logger getChildLogger( final String name )
+    public Logger getChildLogger( String name )
     {
         return this;
     }
