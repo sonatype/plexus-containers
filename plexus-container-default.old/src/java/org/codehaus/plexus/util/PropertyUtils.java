@@ -5,16 +5,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  *
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
  *
  * @version $Id$
  */
 public class PropertyUtils
 {
+    
+    public static Properties loadProperties( URL url )
+    {
+        try
+        {
+            return loadProperties( url.openStream() );
+        }
+        catch ( Exception e )
+        {
+            // ignore
+        }
+
+        return null;
+    }
+    
     public static Properties loadProperties( File file )
     {
         try
