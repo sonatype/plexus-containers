@@ -132,19 +132,11 @@ public class DefaultComponentRepository
     // Accessors
     // ----------------------------------------------------------------------
 
-    /**
-     *
-     * @return
-     */
     public PlexusContainer getPlexusContainer()
     {
         return plexusContainer;
     }
 
-    /**
-     *
-     * @param plexusContainer
-     */
     public void setPlexusContainer( PlexusContainer plexusContainer )
     {
         this.plexusContainer = plexusContainer;
@@ -183,9 +175,6 @@ public class DefaultComponentRepository
         return loggerManager;
     }
 
-    /**
-     * @param manager
-     */
     public void setComponentLogManager( LoggerManager manager )
     {
         loggerManager = manager;
@@ -208,9 +197,6 @@ public class DefaultComponentRepository
         return h.getHandler();
     }
 
-    /**
-     * @return
-     */
     protected Configuration getConfiguration()
     {
         return configuration;
@@ -229,19 +215,11 @@ public class DefaultComponentRepository
         return getComponentDescriptors().containsKey( role + id );
     }
 
-    /**
-     *
-     * @return
-     */
     Map getComponentDescriptors()
     {
         return componentDescriptors;
     }
 
-    /**
-     *
-     * @return
-     */
     Map getComponentManagers()
     {
         return componentManagers;
@@ -518,8 +496,6 @@ public class DefaultComponentRepository
     //  Component Descriptor processing and Holder creation.
     // ----------------------------------------------------------------------
 
-
-
     /**
      * Adds a component to the ServiceBroker.  If the component has a
      * ServiceSelector, the appropriate action is taken.
@@ -530,7 +506,6 @@ public class DefaultComponentRepository
     {
         getComponentDescriptors().put( descriptor.getComponentKey(), descriptor );
     }
-
 
     // ----------------------------------------------------------------------
     // Service lookup methods
@@ -628,7 +603,6 @@ public class DefaultComponentRepository
     {
         return lookup( role + id );
     }
-
 
     /**
      * Release the specified component.
