@@ -1,11 +1,5 @@
 /*
  * $Id$
- *
- * Copyright (c) 2003 Fintricity Limited. All Rights Reserved.
- *
- * THIS IS UNPUBLISHED PROPRIETARY SOURCE CODE OF FINTRICITY LIMITED
- * The copyright notice above does not evidence any actual or
- * intended publication of such source code.
  */
 
 package org.codehaus.plexus.servlet;
