@@ -11,7 +11,7 @@ import java.util.Map;
  *
  *  @version $Id$
  */
-public class ComponentDescriptor
+public class ComponentManagerDescriptor
 {
     // ----------------------------------------------------------------------
     //  Instance members
@@ -50,7 +50,7 @@ public class ComponentDescriptor
 
     /** Construct.
      */
-    public ComponentDescriptor()
+    public ComponentManagerDescriptor()
     {
     }
 

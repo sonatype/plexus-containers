@@ -17,9 +17,9 @@ import org.codehaus.plexus.service.repository.instance.InstanceManager;
 public class ComponentManager
 {
     /** Component descriptor. */
-    private ComponentDescriptor componentDescriptor;
+    private ComponentManagerDescriptor componentDescriptor;
     /** Instance Manager descriptor. */
-    private ComponentDescriptor instanceManagerDescriptor;
+    private ComponentManagerDescriptor instanceManagerDescriptor;
     /**  Instance Manager. */
     private InstanceManager instanceManager;
     /** ClassLoader */
@@ -28,9 +28,9 @@ public class ComponentManager
     private ComponentRepository componentRespository;
 
     /** Constuctor. */
-    public ComponentManager( ComponentDescriptor componentDescriptor,
+    public ComponentManager( ComponentManagerDescriptor componentDescriptor,
                              ComponentRepository componentRepository,
-                             ComponentDescriptor instanceManagerDescriptor,
+                             ComponentManagerDescriptor instanceManagerDescriptor,
                              ClassLoader classLoader )
     {
         this.componentDescriptor = componentDescriptor;
@@ -95,7 +95,7 @@ public class ComponentManager
      *
      * @return
      */
-    public ComponentDescriptor getComponentDescriptor()
+    public ComponentManagerDescriptor getComponentDescriptor()
     {
         return componentDescriptor;
     }
@@ -104,7 +104,7 @@ public class ComponentManager
      *
      * @param serviceDescriptor
      */
-    public void setComponentDescriptor( ComponentDescriptor serviceDescriptor )
+    public void setComponentDescriptor( ComponentManagerDescriptor serviceDescriptor )
     {
         this.componentDescriptor = serviceDescriptor;
     }

@@ -394,15 +394,6 @@ public class DefaultComponentRepository
         return (ComponentManager) getComponentManagers().get( componentKey );
     }
 
-    /**
-     *
-     * @return
-     *//*
-    Map getComponentHousings()
-    {
-        return componentHousings;
-    }*/
-
     // ----------------------------------------------------------------------
     //  Component Descriptor processing and Holder creation.
     // ----------------------------------------------------------------------
@@ -417,10 +408,11 @@ public class DefaultComponentRepository
      * @throws Exception If an error occurs while attempting to locate
      *         the class or instantiate the component object.
      */
-    ComponentManager instantiateComponentManager( ComponentDescriptor descriptor )
+    ComponentManager instantiateComponentManager( ComponentManagerDescriptor descriptor )
         throws Exception
     {
-        ComponentDescriptor instantiationManagerDescriptor;
+        ComponentManagerDescriptor instantiationManagerDescriptor;
+
         String strategy = descriptor.getInstantiationStrategy();
 
         //donˈt want a 'ROLE#null' lookup
@@ -429,7 +421,7 @@ public class DefaultComponentRepository
             strategy = defaultInstantiationStrategy;
         }
 
-        instantiationManagerDescriptor = (ComponentDescriptor) getInstanceManagerDescriptors().get( strategy );
+        instantiationManagerDescriptor = (ComponentManagerDescriptor) getInstanceManagerDescriptors().get( strategy );
 
         if ( instantiationManagerDescriptor == null )
         {
@@ -439,12 +431,11 @@ public class DefaultComponentRepository
                 + " for component with role: "
                 + descriptor.getRole() );
         }
-        ComponentManager componentManager =
-            new ComponentManager(
-                descriptor,
-                this,
-                instantiationManagerDescriptor,
-                getClassLoader() );
+
+        ComponentManager componentManager = new ComponentManager( descriptor,
+                                                                  this,
+                                                                  instantiationManagerDescriptor,
+                                                                  getClassLoader() );
 
         componentManager.initialize();
         //make the ComponentManager available for future requests
@@ -460,10 +451,10 @@ public class DefaultComponentRepository
      * @return
      * @throws Exception
      */
-    ComponentDescriptor createComponentDescriptor( Configuration configuration )
+    ComponentManagerDescriptor createComponentDescriptor( Configuration configuration )
         throws Exception
     {
-        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
+        ComponentManagerDescriptor componentDescriptor = new ComponentManagerDescriptor();
 
         componentDescriptor.setRole( configuration.getChild( ROLE ).getValue() );
         componentDescriptor.setRoleHint( configuration.getChild( ROLE_HINT ).getValue( null ) );
@@ -488,7 +479,7 @@ public class DefaultComponentRepository
      *
      * @param descriptor
      */
-    protected void addComponentDescriptor( ComponentDescriptor descriptor )
+    protected void addComponentDescriptor( ComponentManagerDescriptor descriptor )
     {
         if ( getLogger().isDebugEnabled() )
         {
@@ -514,7 +505,7 @@ public class DefaultComponentRepository
      *
      * @param descriptor
      */
-    protected void addInstanceManagerDescriptor( ComponentDescriptor descriptor )
+    protected void addInstanceManagerDescriptor( ComponentManagerDescriptor descriptor )
     {
         getLogger().info(
             "Adding instance manager descriptor. strategy="
@@ -562,8 +553,8 @@ public class DefaultComponentRepository
                 }
                 // We need to create an instance of this componentManager.
                 getLogger().debug( "Creating new ComponentDescriptor for role: " + key );
-                ComponentDescriptor descriptor =
-                    (ComponentDescriptor) getComponentDescriptors().get( key );
+                ComponentManagerDescriptor descriptor =
+                    (ComponentManagerDescriptor) getComponentDescriptors().get( key );
 
                 if ( descriptor == null )
                 {

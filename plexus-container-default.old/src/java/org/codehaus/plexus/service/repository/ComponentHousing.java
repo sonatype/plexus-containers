@@ -16,9 +16,6 @@ public class ComponentHousing
     /** The component being housed. */
     private Object component;
 
-    /** How many clients are connected to this component. */
-    //private int connections;
-
     // ----------------------------------------------------------------------
     // Accessors
     // ----------------------------------------------------------------------
@@ -32,16 +29,6 @@ public class ComponentHousing
     {
         this.component = component;
     }
-
-    /* public int getConnections()
-     {
-         return connections;
-     }
-
-     public void setConnections( int connections )
-     {
-         this.connections = connections;
-     }*/
 
     public ComponentManager getComponentManager()
     {
