@@ -30,11 +30,6 @@ public class PlexusHierarchyTest
 
     private TestService testService;
 
-    public PlexusHierarchyTest( String testName )
-    {
-        super( testName );
-    }
-
     protected void setUp()
         throws Exception
     {

@@ -10,15 +10,16 @@ import org.codehaus.plexus.PlexusTestCase;
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
-public class NoComponentsMapTest extends PlexusTestCase {
-    public NoComponentsMapTest(String name) {
-        super(name);
-    }
-
-	public void testNoComponents() throws Exception {
+public class NoComponentsMapTest
+    extends PlexusTestCase
+{
+	public void testNoComponents()
+        throws Exception
+    {
         ActivityManager manager;
         
-        manager = (ActivityManager)lookup(ActivityManager.ROLE);
-        assertEquals(0, manager.getActivityCount());
+        manager = (ActivityManager) lookup( ActivityManager.ROLE );
+
+        assertEquals( 0, manager.getActivityCount() );
     }
 }

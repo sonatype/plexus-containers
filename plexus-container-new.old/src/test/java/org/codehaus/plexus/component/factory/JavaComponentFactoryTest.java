@@ -39,7 +39,7 @@ public class JavaComponentFactoryTest
     {
         JavaComponentFactory factory = new JavaComponentFactory();
 
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+//        ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
         ComponentDescriptor componentDescriptor = new ComponentDescriptor();
 

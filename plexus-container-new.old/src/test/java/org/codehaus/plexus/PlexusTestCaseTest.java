@@ -4,6 +4,7 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
+import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 /**
@@ -24,7 +25,7 @@ public class PlexusTestCaseTest
     public void testPlexusTestCase()
         throws Exception
     {
-        PlexusTestCase tc = new PlexusTestCase( "foo" );
+        PlexusTestCase tc = new PlexusTestCase();
 
         tc.setUp();
 
@@ -32,7 +33,7 @@ public class PlexusTestCaseTest
         {
             tc.lookup( "foo", "bar" );
 
-            fail( "Exception should be thrown." );
+            fail( "Expected ComponentLookupException." );
         }
         catch ( ComponentLookupException ex )
         {
@@ -40,7 +41,11 @@ public class PlexusTestCaseTest
         }
 
         // This component is discovered from src/test/META-INF/plexus/components.xml
-        tc.lookup( "org.codehaus.plexus.component.discovery.DiscoveredComponent" );
+        Object component = tc.lookup( "org.codehaus.plexus.component.discovery.DiscoveredComponent" );
+
+        assertNotNull( component );
+
+        assertTrue( component instanceof DiscoveredComponent );
 
         assertNotNull( tc.getClassLoader() );
 
