@@ -18,10 +18,10 @@
         <id>arbitrary</id>
         <name>Arbitrary Lifecycle Handler</name>
         <begin-segment>
-          <phase implementation="org.codehaus.plexus.lifecycle.phase.EenyPhase"/>
-          <phase implementation="org.codehaus.plexus.lifecycle.phase.MeenyPhase"/>
-          <phase implementation="org.codehaus.plexus.lifecycle.phase.MinyPhase"/>
-          <phase implementation="org.codehaus.plexus.lifecycle.phase.MoPhase"/>
+          <phase implementation="org.codehaus.plexus.test.lifecycle.phase.EenyPhase"/>
+          <phase implementation="org.codehaus.plexus.test.lifecycle.phase.MeenyPhase"/>
+          <phase implementation="org.codehaus.plexus.test.lifecycle.phase.MinyPhase"/>
+          <phase implementation="org.codehaus.plexus.test.lifecycle.phase.MoPhase"/>
         </begin-segment>
         <suspend-segment>
         </suspend-segment>
