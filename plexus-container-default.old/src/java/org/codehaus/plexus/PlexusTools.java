@@ -2,6 +2,7 @@ package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.codehaus.plexus.component.repository.ComponentSet;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
@@ -18,6 +19,8 @@ import java.io.Reader;
  */
 public class PlexusTools
 {
+    private static XStreamTool xstreamTool = new XStreamTool();
+
     public static ComponentDescriptor buildComponentDescriptor( String configuration )
         throws Exception
     {
@@ -27,15 +30,17 @@ public class PlexusTools
     public static ComponentDescriptor buildComponentDescriptor( PlexusConfiguration configuration )
         throws Exception
     {
-        XStreamTool xstreamTool = new XStreamTool();
-
-        xstreamTool.alias( "component", ComponentDescriptor.class );
-
-        xstreamTool.alias( "requirement", ComponentRequirement.class );
-
         ComponentDescriptor cd = (ComponentDescriptor) xstreamTool.build( configuration, ComponentDescriptor.class );
 
         return cd;
+    }
+
+    public static ComponentSet buildComponentSet( PlexusConfiguration configuration )
+        throws Exception
+    {
+        ComponentSet cs = (ComponentSet) xstreamTool.build( configuration, ComponentSet.class );
+
+        return cs;
     }
 
     public static PlexusConfiguration buildConfiguration( Reader configuration )
@@ -50,5 +55,10 @@ public class PlexusTools
         throws Exception
     {
         return buildConfiguration( new StringReader( configuration ) );
+    }
+
+    public static XStreamTool getXStream()
+    {
+        return xstreamTool;
     }
 }

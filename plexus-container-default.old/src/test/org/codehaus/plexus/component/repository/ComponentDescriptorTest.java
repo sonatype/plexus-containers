@@ -46,8 +46,6 @@ public class ComponentDescriptorTest
 
         assertEquals( 2, requirements.size() );
 
-        System.out.println( "req:" + requirements );
-
         boolean containsC2 = false;
 
         boolean containsC3 = false;
