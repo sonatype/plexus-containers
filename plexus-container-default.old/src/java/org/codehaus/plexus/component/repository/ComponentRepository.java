@@ -18,9 +18,9 @@ public interface ComponentRepository
     void initialize()
         throws Exception;
 
-    boolean hasService( String role );
+    boolean hasComponent( String role );
 
-    boolean hasService( String role, String id );
+    boolean hasComponent( String role, String id );
 
     void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws ComponentRepositoryException;

@@ -25,9 +25,9 @@ public interface PlexusContainer
 
     void releaseAll( Map components );
 
-    boolean hasService( String componentKey );
+    boolean hasComponent( String componentKey );
 
-    boolean hasService( String role, String id );
+    boolean hasComponent( String role, String id );
 
     void release( Object component );
 

@@ -31,7 +31,7 @@ public class PlexusHierarchyTest
 
         plexus = (PlexusContainer) service;
 
-        assertTrue( plexus.hasService( TestService.ROLE ) );
+        assertTrue( plexus.hasComponent( TestService.ROLE ) );
 
         service = plexus.lookup( TestService.ROLE );
 
@@ -54,7 +54,7 @@ public class PlexusHierarchyTest
         service = lookup( PlexusContainer.ROLE, "two" );
         assertNotNull( service );
         plexus = (PlexusContainer) service;
-        assertTrue( plexus.hasService( TestService.ROLE ) );
+        assertTrue( plexus.hasComponent( TestService.ROLE ) );
         service = plexus.lookup( TestService.ROLE );
         assertNotNull( service );
         testService = (TestService) service;
@@ -74,7 +74,7 @@ public class PlexusHierarchyTest
         service = lookup( PlexusContainer.ROLE );
         assertNotNull( service );
         plexus = (PlexusContainer) service;
-        assertTrue( plexus.hasService( TestService.ROLE ) );
+        assertTrue( plexus.hasComponent( TestService.ROLE ) );
         service = plexus.lookup( TestService.ROLE );
         assertNotNull( service );
         testService = (TestService) service;

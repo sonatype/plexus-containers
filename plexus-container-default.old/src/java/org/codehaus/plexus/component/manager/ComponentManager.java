@@ -35,31 +35,14 @@ public interface ComponentManager
 
     LifecycleHandler getLifecycleHandler();
 
-    /**
-     * Dispose this manager. Instance manager should take any components it holds
-     * through their shutdown lifecycle.
-     *
-     */
     void dispose();
 
-    /**
-     * Release the component back to this manager. The manager may decide to
-     * end the components lifecycle, put it back in a pool, or just keep it alive. It can
-     * be safely assumed the component is never null.
-     *
-     * @param component
-     */
     void release( Object component );
 
     void suspend( Object component );
 
     void resume( Object component );
 
-    /**
-     * Retrieve a component manager
-     *
-     * @return
-     */
     Object getComponent()
         throws Exception;
 }

@@ -90,12 +90,12 @@ public class Embedder
 
     public boolean hasService( String role )
     {
-        return getContainer().hasService( role );
+        return getContainer().hasComponent( role );
     }
 
     public boolean hasService( String role, String id )
     {
-        return getContainer().hasService( role, id );
+        return getContainer().hasComponent( role, id );
     }
 
     public void release( Object service )

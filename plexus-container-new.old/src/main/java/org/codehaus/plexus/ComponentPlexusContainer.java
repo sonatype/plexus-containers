@@ -65,7 +65,7 @@ public final class ComponentPlexusContainer
     public Object lookup( String role )
         throws ComponentLookupException
     {
-        if ( myPlexus.hasService( role ) )
+        if ( myPlexus.hasComponent( role ) )
         {
             return myPlexus.lookup( role );
         }
@@ -81,7 +81,7 @@ public final class ComponentPlexusContainer
     public Map lookupAll( String role )
         throws ComponentLookupException
     {
-        if ( myPlexus.hasService( role ) )
+        if ( myPlexus.hasComponent( role ) )
         {
             return myPlexus.lookupAll( role );
         }
@@ -102,7 +102,7 @@ public final class ComponentPlexusContainer
     public Object lookup( String role, String id )
         throws ComponentLookupException
     {
-        if ( myPlexus.hasService( role, id ) )
+        if ( myPlexus.hasComponent( role, id ) )
         {
             return myPlexus.lookup( role, id );
         }
@@ -115,31 +115,31 @@ public final class ComponentPlexusContainer
         return myPlexus.lookup( role, id );
     }
 
-    public boolean hasService( String role )
+    public boolean hasComponent( String role )
     {
-        if ( myPlexus.hasService( role ) )
+        if ( myPlexus.hasComponent( role ) )
         {
             return true;
         }
 
         if ( parentPlexus != null )
         {
-            return parentPlexus.hasService( role );
+            return parentPlexus.hasComponent( role );
         }
 
         return false;
     }
 
-    public boolean hasService( String role, String id )
+    public boolean hasComponent( String role, String id )
     {
-        if ( myPlexus.hasService( role, id ) )
+        if ( myPlexus.hasComponent( role, id ) )
         {
             return true;
         }
 
         if ( parentPlexus != null )
         {
-            return parentPlexus.hasService( role, id );
+            return parentPlexus.hasComponent( role, id );
         }
 
         return false;
