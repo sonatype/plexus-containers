@@ -206,7 +206,19 @@ public class DAG implements Cloneable, Serializable
     {
         final Vertex vertex = getVertex( label );
         
-        final List retValue = TopologicalSorter.sort( vertex );
+        List retValue = null;
+        
+        //optimization.
+        if ( vertex.isLeaf() )
+        {
+            retValue = new ArrayList( 1 );
+            
+            retValue.add( label );
+        }
+        else
+        {
+           retValue = TopologicalSorter.sort( vertex );
+        }       
         
         return retValue;
     }
