@@ -3,7 +3,9 @@ package org.codehaus.plexus;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import junit.framework.TestCase;
+
 import org.codehaus.plexus.context.Context;
 
 /**
@@ -180,12 +182,28 @@ public class PlexusTestCase
         getContainer().release( component );
     }
 
+    /**
+     * @deprecated Use String getTestPath() instead.
+     */
     public String getTestFile( String path )
     {
         return new File( basedir, path ).getAbsolutePath();
     }
 
+    /**
+     * @deprecated Use String getTestPath() instead.
+     */
     public String getTestFile( String basedir, String path )
+    {
+        return new File( basedir, path ).getAbsolutePath();
+    }
+
+    public String getTestPath( String path )
+    {
+        return new File( basedir, path ).getAbsolutePath();
+    }
+
+    public String getTestPath( String basedir, String path )
     {
         return new File( basedir, path ).getAbsolutePath();
     }
