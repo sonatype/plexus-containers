@@ -49,21 +49,18 @@
     <component>
       <role>org.codehaus.plexus.ServiceB</role>
       <implementation>org.codehaus.plexus.DefaultServiceB</implementation>
-      <lifecycle-handler>plexus</lifecycle-handler>
     </component>
 
     <component>
       <role>org.codehaus.plexus.ServiceC</role>
       <role-hint>first-instance</role-hint>
       <implementation>org.codehaus.plexus.DefaultServiceC</implementation>
-      <lifecycle-handler>plexus</lifecycle-handler>
     </component>
 
     <component>
       <role>org.codehaus.plexus.ServiceC</role>
       <role-hint>second-instance</role-hint>
       <implementation>org.codehaus.plexus.DefaultServiceC</implementation>
-      <lifecycle-handler>plexus</lifecycle-handler>
     </component>
 
     <component>
