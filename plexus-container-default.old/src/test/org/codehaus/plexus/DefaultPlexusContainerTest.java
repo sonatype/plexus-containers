@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.util.AbstractTestThread;
 import org.codehaus.plexus.util.TestThreadManager;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
+import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,18 +40,26 @@ public class DefaultPlexusContainerTest
         throws Exception
     {
         basedir = System.getProperty( "basedir" );
+
         classLoader = getClass().getClassLoader();
+
         configurationStream = DefaultPlexusContainerTest.class.getResourceAsStream( "DefaultPlexusContainerTest.xml" );
 
         // Make sure our testing necessities are alive.
         assertNotNull( configurationStream );
+
         assertNotNull( classLoader );
 
         container = new DefaultPlexusContainer();
+
         container.addContextValue( "basedir", basedir );
+
         container.addContextValue( "plexus.home", basedir + "/target/plexus-home" );
+
         container.setConfigurationResource( new InputStreamReader( configurationStream ) );
+
         container.initialize();
+
         container.start();
     }
 
@@ -59,6 +69,30 @@ public class DefaultPlexusContainerTest
         container.dispose();
         container = null;
     }
+
+    public void testLifecycleHandlerSetup()
+        throws Exception
+    {
+        LifecycleHandler lh = container.getComponentRepository().getDefaultLifecycleHandler();
+
+        assertNotNull( lh );
+
+        lh = container.getComponentRepository().getLifecycleHandler( "avalon" );
+
+        assertNotNull( lh );
+
+        try
+        {
+            lh = container.getComponentRepository().getLifecycleHandler( "non-existent-id" );
+
+            fail( "UndefinedLifecycleHandlerException should be thrown." );
+        }
+        catch( UndefinedLifecycleHandlerException e )
+        {
+            // do nothing.
+        }
+    }
+
 
     /**
      * Test container setup.
@@ -74,7 +108,12 @@ public class DefaultPlexusContainerTest
         // Java Component factory.
         // Singleton manager manager.
         ComponentFactory jcf = (ComponentFactory) container.getComponentRepository().lookup( ComponentFactory.ROLE + "java" );
+
         assertNotNull( jcf );
+
+        assertTrue( container.getComponentRepository().getComponentCount() > 0 );
+
+        assertEquals( "bar", System.getProperty( "foo" ) );
 
         // ----------------------------------------------------------------------
         //  ServiceDescriptors

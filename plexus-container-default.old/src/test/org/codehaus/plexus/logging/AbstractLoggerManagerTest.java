@@ -90,21 +90,6 @@ public abstract class AbstractLoggerManagerTest
         managerStop( manager );
     }
 
-    public void testDisabledLevelConfiguration() throws Exception
-    {
-        LoggerManager manager = managerStart( "disabled" );
-
-        Logger logger = extractRootLogger( manager );
-
-        checkDisabled(logger);
-
-        logger = extractLogger( manager );
-
-        checkDisabled( logger );
-
-        managerStop( manager );
-    }
-
     protected abstract Configuration createConfiguration(String threshold)
         throws Exception;
 
@@ -192,13 +177,5 @@ public abstract class AbstractLoggerManagerTest
         assertFalse( "warn disabled", logger.isWarnEnabled() );
         assertFalse( "error disabled", logger.isErrorEnabled() );
         assertTrue( "fatal enabled", logger.isFatalErrorEnabled() );
-    }
-
-    private void checkDisabled(Logger logger) {
-        assertFalse( "debug disabled", logger.isDebugEnabled() );
-        assertFalse( "info disabled", logger.isInfoEnabled() );
-        assertFalse( "warn disabled", logger.isWarnEnabled() );
-        assertFalse( "error disabled", logger.isErrorEnabled() );
-        assertFalse( "fatal disabled", logger.isFatalErrorEnabled() );
     }
 }

@@ -528,20 +528,6 @@ public class DefaultComponentRepository
      */
     protected void addComponentDescriptor( ComponentDescriptor descriptor )
     {
-        if ( getLogger().isDebugEnabled() )
-        {
-            StringBuffer buff = new StringBuffer();
-            buff.append( "Adding ComponentDescriptor. role=" );
-            buff.append( descriptor.getRole() );
-            buff.append( ",role-hint=" );
-            buff.append( descriptor.getRoleHint() );
-            buff.append( ",strategy=" );
-            buff.append( descriptor.getInstantiationStrategy() );
-            buff.append( ", impl=" );
-            buff.append( descriptor.getImplementation() );
-
-            getLogger().debug( buff.toString() );
-        }
         getComponentDescriptors().put( descriptor.getComponentKey(), descriptor );
     }
 
@@ -613,15 +599,6 @@ public class DefaultComponentRepository
                     getLogger().error( "Could not create component: " + key, e );
 
                     throw new ServiceException( key, "Could not create component for key " + key + "!", e );
-                }
-                if ( getLogger().isDebugEnabled() )
-                {
-                    StringBuffer buff = new StringBuffer();
-                    buff.append( "Obtained new component :role=" ).append( descriptor.getRole() );
-                    buff.append( ",impl=" ).append( descriptor.getImplementation() );
-                    buff.append( ",lifecycle-id=" ).append( descriptor.getLifecycleHandler() );
-                    buff.append( ",strategy=" ).append( descriptor.getInstantiationStrategy() );
-                    getLogger().debug( buff.toString() );
                 }
 
                 // We do this so we know what to do when releasing. Only have to do it once

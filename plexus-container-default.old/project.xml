@@ -115,6 +115,12 @@
 
   <dependencies>
 
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>xstream</artifactId>
+      <version>0.1-jvz</version>
+    </dependency>
+
     <!--
      |
      | Avalon Dependencies.

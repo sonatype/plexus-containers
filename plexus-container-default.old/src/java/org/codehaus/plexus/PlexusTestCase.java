@@ -35,14 +35,8 @@ public class PlexusTestCase
     public void setUp()
         throws Exception
     {
-        // For testing we want to set the root directory so that context
-        // values can retrieved without error.
-        if ( basedir == null )
-        {
-            basedir = new File( "" ).getCanonicalPath();
-        }
-
         File f = new File( basedir, "target/plexus-home" );
+
         System.setProperty( "plexus.home", f.getAbsolutePath() );
 
         if ( !f.isDirectory() )
@@ -199,35 +193,6 @@ public class PlexusTestCase
         throws Exception
     {
         return getContainer().getComponentRepository().lookup( role, id );
-    }
-
-    /** Retrieve a component by componentKey.
-     *
-     *  @param componentKey The componentKey.
-     *
-     *  @return A matching component.
-     *
-     *  @throws Exception If an error occurs.
-     *  @deprecated use lookup( componentKey )
-     */
-    protected Object getComponent( String componentKey )
-        throws Exception
-    {
-        return lookup( componentKey );
-    }
-
-    /**
-     *
-     * @param componentKey
-     * @param id
-     * @return
-     * @throws Exception
-     * @deprecated use lookup( componentKey, id )
-     */
-    protected Object getComponent( String componentKey, String id )
-        throws Exception
-    {
-        return lookup( componentKey, id );
     }
 
     protected void release( Object component )

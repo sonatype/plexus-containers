@@ -96,9 +96,5 @@ public class ConsoleLoggerManager
         {
             thresholdLevel = ConsoleLogger.LEVEL_FATAL;
         }
-        else if ( text.equals( "disabled" ) )
-        {
-            thresholdLevel = ConsoleLogger.LEVEL_DISABLED;
-        }
     }
 }

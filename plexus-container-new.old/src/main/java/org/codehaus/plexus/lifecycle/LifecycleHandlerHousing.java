@@ -1,6 +1,6 @@
 package org.codehaus.plexus.lifecycle;
 
-import org.apache.avalon.framework.configuration.Configuration;
+
 
 /**
  * Holds a LifecycleHandler.
@@ -18,11 +18,6 @@ public class LifecycleHandlerHousing
     private LifecycleHandler handler;
 
     /**
-     * Configuration for the lifecycle handler
-     */
-    private Configuration configuration;
-
-    /**
      * Lifecycle Handler implementation
      */
     private String implementation;
@@ -33,14 +28,6 @@ public class LifecycleHandlerHousing
 
     /** Used by humans?*/
     private String name;
-
-    /**
-     * @return
-     */
-    public Configuration getConfiguration()
-    {
-        return configuration;
-    }
 
     /**
      * @return
@@ -64,14 +51,6 @@ public class LifecycleHandlerHousing
     public String getImplementation()
     {
         return implementation;
-    }
-
-    /**
-     * @param configuration
-     */
-    public void setConfiguration( Configuration configuration )
-    {
-        this.configuration = configuration;
     }
 
     /**

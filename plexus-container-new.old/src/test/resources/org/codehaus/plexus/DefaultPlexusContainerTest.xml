@@ -2,6 +2,14 @@
 
   <configurations-directory>${basedir}/src/test-input/configurations-directory</configurations-directory>
 
+  <load-on-start>
+    <service role="org.codehaus.plexus.LoadOnStartService"/>
+  </load-on-start>
+
+  <system-properties>
+    <property name="foo" value="bar"/>
+  </system-properties>
+
   <logging>
     <implementation>org.codehaus.plexus.logging.ConsoleLoggerManager</implementation>
     <logger>
@@ -137,6 +145,13 @@
       <lifecycle-handler>arbitrary</lifecycle-handler>
       <configuration/>
     </component>
+
+    <component>
+      <role>org.codehaus.plexus.LoadOnStartService</role>
+      <implementation>org.codehaus.plexus.DefaultLoadOnStartService</implementation>
+      <configuration/>
+    </component>
+
 
   </components>
 

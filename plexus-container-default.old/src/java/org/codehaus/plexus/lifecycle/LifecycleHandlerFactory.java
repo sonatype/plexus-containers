@@ -38,8 +38,6 @@ public class LifecycleHandlerFactory
 
         housing.setId( id );
 
-        housing.setConfiguration( config );
-
         LifecycleHandler lifecycleHandler = (LifecycleHandler) getInstance( implementation, classLoader );
 
         // Setup logging for the lifecycle handler. Not used by components

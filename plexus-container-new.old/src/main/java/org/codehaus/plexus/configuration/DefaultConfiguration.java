@@ -17,19 +17,35 @@ public class DefaultConfiguration
     extends AbstractConfiguration
     implements Serializable
 {
-    /**
-     * An empty (length zero) array of configuration objects.
-     */
+    /** An empty (length zero) array of configuration objects. */
     protected static Configuration[] EMPTY_ARRAY = new Configuration[0];
 
+    /** */
     private String name;
+
+    /** */
     private String location;
+
+    /** */
     private String namespace;
+
+    /** */
     private String prefix;
+
+    /** */
     private HashMap attributes;
+
+    /** */
     private ArrayList children;
+
+    /** */
     private String value;
+
+    /** */
     private boolean readOnly;
+
+    /** */
+    private Configuration parent;
 
     /**
      * Create a new <code>DefaultConfiguration</code> manager.
@@ -237,12 +253,21 @@ public class DefaultConfiguration
 
         if ( createNew )
         {
-            return new DefaultConfiguration( name, "-" );
+            DefaultConfiguration c = new DefaultConfiguration( name, "-" );
+
+            c.setParent( this );
+
+            return c;
         }
         else
         {
             return null;
         }
+    }
+
+    public Configuration getChild( int i )
+    {
+        return (Configuration) children.get( i );
     }
 
     /**
@@ -319,6 +344,9 @@ public class DefaultConfiguration
         {
             children = new ArrayList();
         }
+
+        // Hack until we alter the configuration interface and move away from avalon.
+        ((DefaultConfiguration)configuration).setParent( this );
 
         children.add( configuration );
     }
@@ -426,5 +454,15 @@ public class DefaultConfiguration
             throw new IllegalStateException
                 ( "Configuration is read only and can not be modified" );
         }
+    }
+
+    public Configuration getParent()
+    {
+        return parent;
+    }
+
+    public void setParent( Configuration parent )
+    {
+        this.parent = parent;
     }
 }
