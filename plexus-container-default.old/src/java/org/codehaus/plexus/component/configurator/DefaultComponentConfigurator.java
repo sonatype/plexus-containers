@@ -1,6 +1,6 @@
 package org.codehaus.plexus.component.configurator;
 
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 
 /**
@@ -20,7 +20,7 @@ public class DefaultComponentConfigurator
         xstreamTool = new XStreamTool();
     }
 
-    public void configureComponent( Object component, Configuration configuration )
+    public void configureComponent( Object component, PlexusConfiguration configuration )
         throws ComponentConfigurationException
     {
         try

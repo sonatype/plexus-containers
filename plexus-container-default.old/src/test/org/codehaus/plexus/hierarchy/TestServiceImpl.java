@@ -4,8 +4,8 @@ package org.codehaus.plexus.hierarchy;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.Configuration;
-import org.codehaus.plexus.configuration.ConfigurationException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 
@@ -32,8 +32,8 @@ public class
         plexusName = (String) context.get( "plexus-name" );
     }
 
-    public void configure( Configuration config )
-        throws ConfigurationException
+    public void configure( PlexusConfiguration config )
+        throws PlexusConfigurationException
     {
         knownValue = config.getChild( "known-value" ).getValue();
     }

@@ -5,14 +5,14 @@ import com.thoughtworks.xstream.converters.ConverterLookup;
 import com.thoughtworks.xstream.objecttree.ObjectTree;
 import com.thoughtworks.xstream.xml.XMLReader;
 import com.thoughtworks.xstream.xml.XMLWriter;
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
-public class ConfigurationConverter
+public class PlexusConfigurationConverter
     implements Converter
 {
     public boolean canConvert( Class type )
     {
-        return Configuration.class.isAssignableFrom( type );
+        return PlexusConfiguration.class.isAssignableFrom( type );
     }
 
     public void toXML( ObjectTree objectGraph, XMLWriter xmlWriter, ConverterLookup converterLookup )
@@ -22,9 +22,9 @@ public class ConfigurationConverter
 
     public void fromXML( ObjectTree objectGraph, XMLReader xmlReader, ConverterLookup converterLookup, Class requiredType )
     {
-        ConfigurationReader reader = (ConfigurationReader) xmlReader;
+        PlexusConfigurationReader reader = (PlexusConfigurationReader) xmlReader;
 
-        Configuration configuration = (Configuration) reader.peek();
+        PlexusConfiguration configuration = (PlexusConfiguration) reader.peek();
 
         while ( xmlReader.nextChild() )
         {

@@ -1,8 +1,8 @@
 package org.codehaus.plexus.configuration.xstream;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.Configuration;
-import org.codehaus.plexus.configuration.DefaultConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
 import java.io.StringReader;
@@ -55,13 +55,13 @@ public class XStreamToolTest
 
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
-        Configuration c = cb.parse( new StringReader( configuration ) );
+        PlexusConfiguration c = cb.parse( new StringReader( configuration ) );
 
         Message message = (Message) builder.build( c, Message.class );
 
         messageValueTest( message );
 
-        DefaultConfiguration cc = builder.write( message );
+        DefaultPlexusConfiguration cc = builder.write( message );
 
         assertNotNull( cc );
 
@@ -143,7 +143,7 @@ public class XStreamToolTest
 
         assertEquals( "jason", person.getName() );
 
-        Configuration c = person.getConfiguration();
+        PlexusConfiguration c = person.getConfiguration();
 
         assertNotNull( c );
 

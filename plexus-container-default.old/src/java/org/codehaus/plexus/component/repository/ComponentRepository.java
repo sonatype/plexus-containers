@@ -3,7 +3,7 @@ package org.codehaus.plexus.component.repository;
 
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.Map;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface ComponentRepository
 {
-    void configure( Configuration configuration );
+    void configure( PlexusConfiguration configuration );
 
     void initialize()
         throws Exception;
@@ -27,7 +27,7 @@ public interface ComponentRepository
     void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws ComponentRepositoryException;
 
-    void addComponentDescriptor( Configuration configuration )
+    void addComponentDescriptor( PlexusConfiguration configuration )
         throws ComponentRepositoryException;
 
     public ComponentDescriptor getComponentDescriptor( String role );

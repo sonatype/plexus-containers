@@ -2,7 +2,7 @@ package org.codehaus.plexus;
 
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.ConfigurationResourceException;
+import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 
 import java.io.Reader;
 import java.util.Map;
@@ -42,7 +42,7 @@ public interface PlexusContainer
     void setClassLoader( ClassLoader classLoader );
 
     void setConfigurationResource( Reader configuration )
-        throws ConfigurationResourceException;
+        throws PlexusConfigurationResourceException;
 
     ClassLoader getClassLoader();
 

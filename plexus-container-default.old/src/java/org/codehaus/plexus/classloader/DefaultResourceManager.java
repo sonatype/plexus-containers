@@ -1,7 +1,7 @@
 package org.codehaus.plexus.classloader;
 
-import org.codehaus.plexus.configuration.Configuration;
-import org.codehaus.plexus.configuration.ConfigurationException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.io.File;
@@ -70,13 +70,13 @@ public class DefaultResourceManager
      *
      *  @param configuration The configuration.
      *
-     *  @throws ConfigurationException If an error occurs while attempting
+     *  @throws PlexusConfigurationException If an error occurs while attempting
      *          to perform configuration.
      */
-    public void configure( Configuration configuration )
-        throws ConfigurationException
+    public void configure( PlexusConfiguration configuration )
+        throws PlexusConfigurationException
     {
-        Configuration[] resourceConfigs = configuration.getChildren();
+        PlexusConfiguration[] resourceConfigs = configuration.getChildren();
 
         for ( int i = 0; i < resourceConfigs.length; ++i )
         {

@@ -15,10 +15,10 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.Configuration;
-import org.codehaus.plexus.configuration.ConfigurationMerger;
-import org.codehaus.plexus.configuration.ConfigurationResourceException;
-import org.codehaus.plexus.configuration.DefaultConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
+import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.context.ContextMapAdapter;
@@ -64,11 +64,11 @@ public class DefaultPlexusContainer
     private ComponentRepository componentRepository;
 
     /** Configuration for this container. */
-    private Configuration configuration;
+    private PlexusConfiguration configuration;
 
-    private Configuration defaultConfiguration;
+    private PlexusConfiguration defaultConfiguration;
 
-    private Configuration mergedConfiguration;
+    private PlexusConfiguration mergedConfiguration;
 
     /** The configuration resource. */
     private Reader configurationReader;
@@ -351,7 +351,7 @@ public class DefaultPlexusContainer
 
     /** @see PlexusContainer#setConfigurationResource(Reader) */
     public void setConfigurationResource( Reader configuration )
-        throws ConfigurationResourceException
+        throws PlexusConfigurationResourceException
     {
         this.configurationReader = configuration;
     }
@@ -380,7 +380,7 @@ public class DefaultPlexusContainer
     protected void loadOnStart()
         throws Exception
     {
-        Configuration[] loadOnStartServices = configuration.getChild( "load-on-start" ).getChildren( "service" );
+        PlexusConfiguration[] loadOnStartServices = configuration.getChild( "load-on-start" ).getChildren( "service" );
 
         for ( int i = 0; i < loadOnStartServices.length; i++ )
         {
@@ -483,8 +483,8 @@ public class DefaultPlexusContainer
 
         if ( s != null )
         {
-            DefaultConfiguration componentsConfiguration =
-                (DefaultConfiguration) getConfiguration().getChild( "components" );
+            DefaultPlexusConfiguration componentsConfiguration =
+                (DefaultPlexusConfiguration) getConfiguration().getChild( "components" );
 
             File configurationsDirectory = new File( s );
 
@@ -506,7 +506,7 @@ public class DefaultPlexusContainer
                 {
                     File conf = new File( configurationsDirectory, confs[i] );
 
-                    Configuration c = builder.parse( getInterpolationConfigurationReader( new FileReader( conf ) ) );
+                    PlexusConfiguration c = builder.parse( getInterpolationConfigurationReader( new FileReader( conf ) ) );
 
                     componentsConfiguration.addAllChildren( c.getChild( "components" ) );
                 }
@@ -514,21 +514,21 @@ public class DefaultPlexusContainer
         }
     }
 
-    private Configuration getMergedConfiguration()
+    private PlexusConfiguration getMergedConfiguration()
         throws Exception
     {
         if ( mergedConfiguration == null )
         {
-            mergedConfiguration = ConfigurationMerger.merge( getConfiguration(), getDefaultConfiguration() );
+            mergedConfiguration = PlexusConfigurationMerger.merge( getConfiguration(), getDefaultConfiguration() );
 
             // A little tweak for the lifecycle handlers
 
-            Configuration[] lifecycleHandlers = getConfiguration().getChild( "lifecycle-handlers" ).getChildren( "lifecycle-handler" );
+            PlexusConfiguration[] lifecycleHandlers = getConfiguration().getChild( "lifecycle-handlers" ).getChildren( "lifecycle-handler" );
 
             if ( lifecycleHandlers != null )
             {
-                DefaultConfiguration defaultLifecycleHandlers =
-                    (DefaultConfiguration) mergedConfiguration.getChild( "lifecycle-handler-manager" ).getChild( "lifecycle-handlers" );
+                DefaultPlexusConfiguration defaultLifecycleHandlers =
+                    (DefaultPlexusConfiguration) mergedConfiguration.getChild( "lifecycle-handler-manager" ).getChild( "lifecycle-handlers" );
 
                 for ( int i = 0; i < lifecycleHandlers.length; i++ )
                 {
@@ -589,7 +589,7 @@ public class DefaultPlexusContainer
     private void initializeSystemProperties()
         throws Exception
     {
-        Configuration[] systemProperties =
+        PlexusConfiguration[] systemProperties =
             getConfiguration().getChild( "system-properties" ).getChildren( "property" );
 
         for ( int i = 0; i < systemProperties.length; ++i )
@@ -618,12 +618,12 @@ public class DefaultPlexusContainer
         return loggerManager;
     }
 
-    private Configuration getConfiguration()
+    private PlexusConfiguration getConfiguration()
     {
         return configuration;
     }
 
-    private void setConfiguration( Configuration configuration )
+    private void setConfiguration( PlexusConfiguration configuration )
     {
         this.configuration = configuration;
     }
@@ -653,12 +653,12 @@ public class DefaultPlexusContainer
         this.componentRepository = componentRepository;
     }
 
-    private Configuration getDefaultConfiguration()
+    private PlexusConfiguration getDefaultConfiguration()
     {
         return defaultConfiguration;
     }
 
-    private void setDefaultConfiguration( Configuration defaultConfiguration )
+    private void setDefaultConfiguration( PlexusConfiguration defaultConfiguration )
     {
         this.defaultConfiguration = defaultConfiguration;
     }
@@ -705,9 +705,9 @@ public class DefaultPlexusContainer
 
         builder.alias( "component-manager-manager", DefaultComponentManagerManager.class );
 
-        Configuration c = mergedConfiguration.getChild( "component-manager-manager" );
+        PlexusConfiguration c = mergedConfiguration.getChild( "component-manager-manager" );
 
-        componentManagerManager = (ComponentManagerManager) builder.build( (Configuration) c, DefaultComponentManagerManager.class );
+        componentManagerManager = (ComponentManagerManager) builder.build( (PlexusConfiguration) c, DefaultComponentManagerManager.class );
     }
 
     public ComponentManager instantiateComponentManager( ComponentDescriptor descriptor )
@@ -780,7 +780,7 @@ public class DefaultPlexusContainer
 
         builder.alias( "lifecycle-handler-manager", DefaultLifecycleHandlerManager.class );
 
-        Configuration c = mergedConfiguration.getChild( "lifecycle-handler-manager" );
+        PlexusConfiguration c = mergedConfiguration.getChild( "lifecycle-handler-manager" );
 
         lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( c, DefaultLifecycleHandlerManager.class );
 
@@ -791,7 +791,7 @@ public class DefaultPlexusContainer
         lifecycleHandlerManager.addEntity( LifecycleHandler.COMPONENT_REPOSITORY, componentRepository );
 
         lifecycleHandlerManager.addEntity( LifecycleHandler.PLEXUS_CONTAINER, this );
-        
+
         lifecycleHandlerManager.addEntity( PlexusLifecycleHandler.COMPONENT_CONFIGURATOR, componentConfigurator );
 
         lifecycleHandlerManager.addEntity( "componentComposer", componentComposer );

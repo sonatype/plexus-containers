@@ -18,7 +18,7 @@ public class ConfigurationTestHelper
     /** Configuration builder. */
     private static XmlPullConfigurationBuilder configurationBuilder = new XmlPullConfigurationBuilder();
 
-    public static Configuration getTestConfiguration()
+    public static PlexusConfiguration getTestConfiguration()
         throws Exception
     {
         return configurationBuilder.parse( new StringReader( ConfigurationTestHelper.getXmlConfiguration() ) );
@@ -36,7 +36,7 @@ public class ConfigurationTestHelper
             "</configuration>";
     }
 
-    public static void testConfiguration( Configuration c )
+    public static void testConfiguration( PlexusConfiguration c )
         throws Exception
     {
         // Exercise all value/attribute retrieval methods.

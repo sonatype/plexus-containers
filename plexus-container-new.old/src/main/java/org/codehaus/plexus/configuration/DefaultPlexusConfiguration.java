@@ -5,20 +5,20 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 
-public class DefaultConfiguration
-    implements Configuration
+public class DefaultPlexusConfiguration
+    implements PlexusConfiguration
 {
     private String name;
+
+    private String value;
 
     private Map attributes;
 
     private List children;
 
-    private String value;
+    private PlexusConfiguration parent;
 
-    private Configuration parent;
-
-    public DefaultConfiguration( String name )
+    public DefaultPlexusConfiguration( String name )
     {
         this.name = name;
     }
@@ -29,7 +29,7 @@ public class DefaultConfiguration
     }
 
     public String getValue()
-        throws ConfigurationException
+        throws PlexusConfigurationException
     {
         if ( null != value )
         {
@@ -37,7 +37,7 @@ public class DefaultConfiguration
         }
         else
         {
-            throw new ConfigurationException( "No value is associated with the "
+            throw new PlexusConfigurationException( "No value is associated with the "
                                               + "configuration element \"" + getName() + "." );
         }
     }
@@ -48,7 +48,7 @@ public class DefaultConfiguration
         {
             return getValue();
         }
-        catch ( ConfigurationException ce )
+        catch ( PlexusConfigurationException ce )
         {
             return defaultValue;
         }
@@ -67,20 +67,20 @@ public class DefaultConfiguration
         }
     }
 
-    public Configuration[] getChildren()
+    public PlexusConfiguration[] getChildren()
     {
         if ( null == children )
         {
-            return new Configuration[0];
+            return new PlexusConfiguration[0];
         }
         else
         {
-            return (Configuration[]) children.toArray( new Configuration[0] );
+            return (PlexusConfiguration[]) children.toArray( new PlexusConfiguration[0] );
         }
     }
 
     public String getAttribute( String name )
-        throws ConfigurationException
+        throws PlexusConfigurationException
     {
         String value =
             ( null != attributes ) ? (String) attributes.get( name ) : null;
@@ -91,23 +91,23 @@ public class DefaultConfiguration
         }
         else
         {
-            throw new ConfigurationException(
+            throw new PlexusConfigurationException(
                 "No attribute named \"" + name + "\" is "
                 + "associated with the configuration element \""
                 + getName() + "." );
         }
     }
 
-    public Configuration getChild( int i )
+    public PlexusConfiguration getChild( int i )
     {
-        return (Configuration) children.get( i );
+        return (PlexusConfiguration) children.get( i );
     }
 
-    public Configuration[] getChildren( String name )
+    public PlexusConfiguration[] getChildren( String name )
     {
         if ( null == children )
         {
-            return new Configuration[0];
+            return new PlexusConfiguration[0];
         }
         else
         {
@@ -116,14 +116,14 @@ public class DefaultConfiguration
 
             for ( int i = 0; i < size; i++ )
             {
-                Configuration configuration = (Configuration) this.children.get( i );
+                PlexusConfiguration configuration = (PlexusConfiguration) this.children.get( i );
                 if ( name.equals( configuration.getName() ) )
                 {
                     children.add( configuration );
                 }
             }
 
-            return (Configuration[]) children.toArray( new Configuration[0] );
+            return (PlexusConfiguration[]) children.toArray( new PlexusConfiguration[0] );
         }
     }
 
@@ -141,7 +141,7 @@ public class DefaultConfiguration
         attributes.put( name, value );
     }
 
-    public void addChild( Configuration configuration )
+    public void addChild( PlexusConfiguration configuration )
     {
         if ( null == children )
         {
@@ -153,34 +153,40 @@ public class DefaultConfiguration
         children.add( configuration );
     }
 
-    public void addAll( Configuration other )
+    public void addAll( PlexusConfiguration other )
     {
         setValue( other.getValue( null ) );
+
         addAllAttributes( other );
+
         addAllChildren( other );
     }
 
-    public void addAllAttributes( Configuration other )
+    public void addAllAttributes( PlexusConfiguration other )
     {
         String[] attributes = other.getAttributeNames();
+
         for ( int i = 0; i < attributes.length; i++ )
         {
             String name = attributes[i];
+
             String value = other.getAttribute( name, null );
+
             setAttribute( name, value );
         }
     }
 
-    public void addAllChildren( Configuration other )
+    public void addAllChildren( PlexusConfiguration other )
     {
-        Configuration[] children = other.getChildren();
+        PlexusConfiguration[] children = other.getChildren();
+
         for ( int i = 0; i < children.length; i++ )
         {
             addChild( children[i] );
         }
     }
 
-    public void removeChild( Configuration configuration )
+    public void removeChild( PlexusConfiguration configuration )
     {
         if ( null == children )
         {
@@ -205,29 +211,30 @@ public class DefaultConfiguration
         {
             return getAttribute( name );
         }
-        catch ( ConfigurationException ce )
+        catch ( PlexusConfigurationException ce )
         {
             return defaultValue;
         }
     }
 
-    public Configuration getChild( String name )
+    public PlexusConfiguration getChild( String name )
     {
         return getChild( name, true );
     }
 
-    public Configuration getChild( String name, boolean createNew )
+    public PlexusConfiguration getChild( String name, boolean create )
     {
-        Configuration[] children = getChildren( name );
+        PlexusConfiguration[] children = getChildren( name );
+
         if ( children.length > 0 )
         {
             return children[0];
         }
         else
         {
-            if ( createNew )
+            if ( create )
             {
-                return new DefaultConfiguration( name );
+                return new DefaultPlexusConfiguration( name );
             }
             else
             {
@@ -236,12 +243,12 @@ public class DefaultConfiguration
         }
     }
 
-    public Configuration getParent()
+    public PlexusConfiguration getParent()
     {
         return parent;
     }
 
-    public void setParent( Configuration parent )
+    public void setParent( PlexusConfiguration parent )
     {
         this.parent = parent;
     }

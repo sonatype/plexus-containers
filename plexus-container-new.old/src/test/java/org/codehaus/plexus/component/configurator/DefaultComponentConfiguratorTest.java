@@ -2,7 +2,7 @@ package org.codehaus.plexus.component.configurator;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.io.StringReader;
 import java.util.List;
@@ -43,7 +43,7 @@ public class DefaultComponentConfiguratorTest
 
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
 
-        Configuration configuration = builder.parse( new StringReader( xml ) );
+        PlexusConfiguration configuration = builder.parse( new StringReader( xml ) );
 
         Component component = new Component();
 
@@ -71,7 +71,7 @@ public class DefaultComponentConfiguratorTest
 
         // Embedded Configuration
 
-        Configuration c = component.getConfiguration();
+        PlexusConfiguration c = component.getConfiguration();
 
         assertEquals( "jason", c.getChild( "name" ).getValue() );
     }

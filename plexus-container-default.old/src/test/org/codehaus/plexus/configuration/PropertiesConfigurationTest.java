@@ -27,7 +27,7 @@ public class PropertiesConfigurationTest
 
         properties.setProperty( "lazy", "false" );
 
-        PropertiesConfiguration c = new PropertiesConfiguration( properties );
+        PropertiesPlexusConfiguration c = new PropertiesPlexusConfiguration( properties );
 
         assertEquals( "jason", c.getChild( "name" ).getValue() );
 
@@ -119,7 +119,7 @@ public class PropertiesConfigurationTest
     public void testPublicConstructorPropertiesConfiguration()
         throws Exception
     {
-        PropertiesConfiguration configuration = new PropertiesConfiguration();
+        PropertiesPlexusConfiguration configuration = new PropertiesPlexusConfiguration();
 
         configuration.setProperty( "foo", "bar" );
 
@@ -138,7 +138,7 @@ public class PropertiesConfigurationTest
     public void testValueConfiguration()
         throws Exception
     {
-        PropertiesConfiguration.ValueConfiguration c = new PropertiesConfiguration.ValueConfiguration( "foo", "bar" );
+        PropertiesPlexusConfiguration.ValueConfiguration c = new PropertiesPlexusConfiguration.ValueConfiguration( "foo", "bar" );
 
         assertEquals( "foo", c.getName() );
 

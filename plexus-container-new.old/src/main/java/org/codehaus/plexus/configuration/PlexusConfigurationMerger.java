@@ -111,7 +111,7 @@ import java.util.Set;
  *
  * @author <a href="mailto:proyal@apache.org">Peter Royal</a>
  */
-public class ConfigurationMerger
+public class PlexusConfigurationMerger
 {
     /**
      * Merge two configurations.
@@ -121,12 +121,12 @@ public class ConfigurationMerger
      *
      * @return Result of merge
      *
-     * @exception ConfigurationException if unable to merge
+     * @exception PlexusConfigurationException if unable to merge
      */
-    public static Configuration merge( Configuration layer, Configuration base )
-        throws ConfigurationException
+    public static PlexusConfiguration merge( PlexusConfiguration layer, PlexusConfiguration base )
+        throws PlexusConfigurationException
     {
-        DefaultConfiguration merged = new DefaultConfiguration( base.getName() );
+        DefaultPlexusConfiguration merged = new DefaultPlexusConfiguration( base.getName() );
 
         copyAttributes( base, merged );
 
@@ -144,20 +144,20 @@ public class ConfigurationMerger
         return merged;
     }
 
-    private static void mergeChildren( Configuration layer,
-                                       Configuration base,
-                                       DefaultConfiguration merged )
-        throws ConfigurationException
+    private static void mergeChildren( PlexusConfiguration layer,
+                                       PlexusConfiguration base,
+                                       DefaultPlexusConfiguration merged )
+        throws PlexusConfigurationException
     {
-        Configuration[] layerChildren = layer.getChildren();
+        PlexusConfiguration[] layerChildren = layer.getChildren();
 
-        Configuration[] baseChildren = base.getChildren();
+        PlexusConfiguration[] baseChildren = base.getChildren();
 
         Set baseUsed = new HashSet();
 
         for ( int i = 0; i < layerChildren.length; i++ )
         {
-            Configuration mergeWith = getMergePartner( layerChildren[i], layer, base );
+            PlexusConfiguration mergeWith = getMergePartner( layerChildren[i], layer, base );
 
             if ( null == mergeWith )
             {
@@ -180,16 +180,16 @@ public class ConfigurationMerger
         }
     }
 
-    private static Configuration getMergePartner( Configuration toMerge,
-                                                  Configuration layer,
-                                                  Configuration base )
+    private static PlexusConfiguration getMergePartner( PlexusConfiguration toMerge,
+                                                  PlexusConfiguration layer,
+                                                  PlexusConfiguration base )
     {
-        Configuration[] layerKids = match( layer,
+        PlexusConfiguration[] layerKids = match( layer,
                                            toMerge.getName(),
                                            null,
                                            null );
 
-        Configuration[] baseKids = match( base,
+        PlexusConfiguration[] baseKids = match( base,
                                           toMerge.getName(),
                                           null,
                                           null );
@@ -202,21 +202,21 @@ public class ConfigurationMerger
         return null;
     }
 
-    private static String getValue( Configuration layer, Configuration base )
+    private static String getValue( PlexusConfiguration layer, PlexusConfiguration base )
     {
         try
         {
             return layer.getValue();
         }
-        catch ( ConfigurationException e )
+        catch ( PlexusConfigurationException e )
         {
             return base.getValue( null );
         }
     }
 
-    private static void copyAttributes( Configuration source,
-                                        DefaultConfiguration dest )
-        throws ConfigurationException
+    private static void copyAttributes( PlexusConfiguration source,
+                                        DefaultPlexusConfiguration dest )
+        throws PlexusConfigurationException
     {
         String[] names = source.getAttributeNames();
 
@@ -233,7 +233,7 @@ public class ConfigurationMerger
      * @param attribute the attribute name to filter (null will match any attribute name)
      * @return an array of configuration instances matching the query
      */
-    public static Configuration[] match( Configuration config,
+    public static PlexusConfiguration[] match( PlexusConfiguration config,
                                          String element,
                                          String attribute )
     {
@@ -248,13 +248,13 @@ public class ConfigurationMerger
      * @param value the attribute value to match (null will match any attribute value)
      * @return an array of configuration instances matching the query
      */
-    public static Configuration[] match( Configuration config,
+    public static PlexusConfiguration[] match( PlexusConfiguration config,
                                          String element,
                                          String attribute,
                                          String value )
     {
         ArrayList list = new ArrayList();
-        Configuration[] children = config.getChildren( element );
+        PlexusConfiguration[] children = config.getChildren( element );
 
         for ( int i = 0; i < children.length; i++ )
         {
@@ -277,6 +277,6 @@ public class ConfigurationMerger
             }
         }
 
-        return (Configuration[]) list.toArray( new Configuration[list.size()] );
+        return (PlexusConfiguration[]) list.toArray( new PlexusConfiguration[list.size()] );
     }
 }

@@ -14,7 +14,7 @@ public class ConfigurationResourceExceptionTest
 {
     public void testException()
     {
-        ConfigurationResourceException e = new ConfigurationResourceException( "bad doggy!" );
+        PlexusConfigurationResourceException e = new PlexusConfigurationResourceException( "bad doggy!" );
 
         assertEquals( "bad doggy!", e.getMessage() );
     }

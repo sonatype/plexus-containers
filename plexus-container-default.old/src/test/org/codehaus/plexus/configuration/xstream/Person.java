@@ -13,7 +13,7 @@ public class Person
 
     private String name;
 
-    private org.codehaus.plexus.configuration.Configuration configuration;
+    private org.codehaus.plexus.configuration.PlexusConfiguration configuration;
 
     private String occupation;
 
@@ -31,7 +31,7 @@ public class Person
         return name;
     }
 
-    public org.codehaus.plexus.configuration.Configuration getConfiguration()
+    public org.codehaus.plexus.configuration.PlexusConfiguration getConfiguration()
     {
         return configuration;
     }

@@ -1,7 +1,7 @@
 package org.codehaus.plexus.configuration.builder;
 
-import org.codehaus.plexus.configuration.Configuration;
-import org.codehaus.plexus.configuration.DefaultConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -22,14 +22,14 @@ public class XmlPullConfigurationBuilder
      * @return
      * @throws java.lang.Exception
      */
-    public Configuration parse( Reader reader )
+    public PlexusConfiguration parse( Reader reader )
         throws Exception
     {
         List elements = new ArrayList();
 
         List values = new ArrayList();
 
-        Configuration configuration = null;
+        PlexusConfiguration configuration = null;
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 
@@ -45,14 +45,14 @@ public class XmlPullConfigurationBuilder
             {
                 String rawName = parser.getName();
 
-                DefaultConfiguration childConfiguration = createConfiguration( rawName, getLocationString() );
+                DefaultPlexusConfiguration childConfiguration = createConfiguration( rawName, getLocationString() );
                 // depth of new childConfiguration (not decrementing here, childConfiguration
                 // is to be added)
                 int depth = elements.size();
 
                 if ( depth > 0 )
                 {
-                    DefaultConfiguration parent = (DefaultConfiguration) elements.get( depth - 1 );
+                    DefaultPlexusConfiguration parent = (DefaultPlexusConfiguration) elements.get( depth - 1 );
 
                     parent.addChild( childConfiguration );
                 }
@@ -88,7 +88,7 @@ public class XmlPullConfigurationBuilder
             {
                 int depth = elements.size() - 1;
 
-                DefaultConfiguration finishedConfiguration = (DefaultConfiguration) elements.remove( depth );
+                DefaultPlexusConfiguration finishedConfiguration = (DefaultPlexusConfiguration) elements.remove( depth );
 
                 String accumulatedValue = ( values.remove( depth ) ).toString();
 
@@ -141,10 +141,10 @@ public class XmlPullConfigurationBuilder
      * @param location a <code>String</code> value
      * @return a <code>DefaultConfiguration</code> value
      */
-    protected DefaultConfiguration createConfiguration( String localName,
+    protected DefaultPlexusConfiguration createConfiguration( String localName,
                                                         String location )
     {
-        return new DefaultConfiguration( localName );
+        return new DefaultPlexusConfiguration( localName );
     }
 
     /**

@@ -1,6 +1,6 @@
 package org.codehaus.plexus.logging;
 
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 
 /**
@@ -30,7 +30,7 @@ public class ConsoleLoggerManager
     /** The console logger used by the manager. */
     private ConsoleLogger consoleLogger;
 
-    public void configure( Configuration configuration )
+    public void configure( PlexusConfiguration configuration )
     {
         setThresholdLevel(
             configuration

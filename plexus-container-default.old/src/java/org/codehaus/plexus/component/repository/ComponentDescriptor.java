@@ -1,7 +1,7 @@
 package org.codehaus.plexus.component.repository;
 
 
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +25,7 @@ public class ComponentDescriptor
 
     private String version = null;
 
-    private Configuration configuration = null;
+    private PlexusConfiguration configuration = null;
 
     private String instantiationStrategy = null;
 
@@ -104,12 +104,12 @@ public class ComponentDescriptor
         return instantiationStrategy;
     }
 
-    public Configuration getConfiguration()
+    public PlexusConfiguration getConfiguration()
     {
         return configuration;
     }
 
-    public void setConfiguration( Configuration configuration )
+    public void setConfiguration( PlexusConfiguration configuration )
     {
         this.configuration = configuration;
     }

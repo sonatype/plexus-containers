@@ -5,7 +5,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentImplementatio
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class DefaultComponentRepository
 
     private static String COMPONENT = "component";
 
-    private Configuration configuration;
+    private PlexusConfiguration configuration;
 
     private Map componentDescriptorMaps;
 
@@ -47,7 +47,7 @@ public class DefaultComponentRepository
     // Accessors
     // ----------------------------------------------------------------------
 
-    protected Configuration getConfiguration()
+    protected PlexusConfiguration getConfiguration()
     {
         return configuration;
     }
@@ -76,7 +76,7 @@ public class DefaultComponentRepository
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    public void configure( Configuration configuration )
+    public void configure( PlexusConfiguration configuration )
     {
         this.configuration = configuration;
     }
@@ -98,7 +98,7 @@ public class DefaultComponentRepository
     private void initializeComponentDescriptorsFromUserConfiguration()
         throws Exception
     {
-        Configuration[] componentConfigurations = configuration.getChild( COMPONENTS ).getChildren( COMPONENT );
+        PlexusConfiguration[] componentConfigurations = configuration.getChild( COMPONENTS ).getChildren( COMPONENT );
 
         for ( int i = 0; i < componentConfigurations.length; i++ )
         {
@@ -118,7 +118,7 @@ public class DefaultComponentRepository
     //  Component Descriptor processing.
     // ----------------------------------------------------------------------
 
-    public void addComponentDescriptor( Configuration configuration )
+    public void addComponentDescriptor( PlexusConfiguration configuration )
         throws ComponentRepositoryException
     {
         ComponentDescriptor componentDescriptor = null;

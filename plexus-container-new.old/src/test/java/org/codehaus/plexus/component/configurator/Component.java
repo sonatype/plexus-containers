@@ -1,6 +1,6 @@
 package org.codehaus.plexus.component.configurator;
 
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class Component
     private double doubleValue;
     private String stringValue;
     private List importantThings;
-    private Configuration configuration;
+    private PlexusConfiguration configuration;
 
     public int getIntValue()
     {
@@ -51,7 +51,7 @@ public class Component
         return importantThings;
     }
 
-    public Configuration getConfiguration()
+    public PlexusConfiguration getConfiguration()
     {
         return configuration;
     }

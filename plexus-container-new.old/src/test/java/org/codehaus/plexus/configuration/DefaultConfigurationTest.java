@@ -60,7 +60,7 @@ import junit.framework.TestCase;
 public final class DefaultConfigurationTest
     extends TestCase
 {
-    private DefaultConfiguration configuration;
+    private DefaultPlexusConfiguration configuration;
 
     public DefaultConfigurationTest()
     {
@@ -74,7 +74,7 @@ public final class DefaultConfigurationTest
 
     public void setUp()
     {
-        configuration = new DefaultConfiguration( "a" );
+        configuration = new DefaultPlexusConfiguration( "a" );
     }
 
     public void tearDowm()
@@ -85,7 +85,7 @@ public final class DefaultConfigurationTest
     public void testWithHelper()
         throws Exception
     {
-        Configuration c = ConfigurationTestHelper.getTestConfiguration();
+        PlexusConfiguration c = ConfigurationTestHelper.getTestConfiguration();
 
         ConfigurationTestHelper.testConfiguration( c );
     }
@@ -93,9 +93,9 @@ public final class DefaultConfigurationTest
     public void testDynamicConfigurationCreation()
         throws Exception
     {
-        DefaultConfiguration a = new DefaultConfiguration( "a" );
+        DefaultPlexusConfiguration a = new DefaultPlexusConfiguration( "a" );
 
-        Configuration b = ConfigurationTestHelper.getTestConfiguration();
+        PlexusConfiguration b = ConfigurationTestHelper.getTestConfiguration();
 
         a.addAll( b );
 
@@ -124,7 +124,7 @@ public final class DefaultConfigurationTest
     public void testAddRemoveChild()
     {
         String childName = "child";
-        Configuration child = new DefaultConfiguration( childName );
+        PlexusConfiguration child = new DefaultPlexusConfiguration( childName );
 
         configuration.addChild( child );
         assertEquals( child, configuration.getChild( childName ) );

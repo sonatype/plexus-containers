@@ -1,7 +1,7 @@
 package org.codehaus.plexus.configuration.builder;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.io.StringReader;
 
@@ -25,7 +25,7 @@ public class XmlPullConfigurationBuilderTest
 
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
-        Configuration c = cb.parse( new StringReader( s ) );
+        PlexusConfiguration c = cb.parse( new StringReader( s ) );
 
         assertNotNull( c );
 
@@ -59,7 +59,7 @@ public class XmlPullConfigurationBuilderTest
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
 
-        Configuration c = cb.parse( new StringReader( s ) );
+        PlexusConfiguration c = cb.parse( new StringReader( s ) );
 
         assertNotNull( c );
 

@@ -1,6 +1,6 @@
 package org.codehaus.plexus.classloader;
 
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.factory.AbstractPlexusFactory;
 import org.codehaus.plexus.logging.LoggerManager;
 
@@ -10,7 +10,7 @@ import org.codehaus.plexus.logging.LoggerManager;
 public class ResourceManagerFactory
     extends AbstractPlexusFactory
 {
-    public static DefaultResourceManager create( Configuration configuration,
+    public static DefaultResourceManager create( PlexusConfiguration configuration,
                                                  LoggerManager loggerManager,
                                                  ClassLoader classLoader )
         throws Exception

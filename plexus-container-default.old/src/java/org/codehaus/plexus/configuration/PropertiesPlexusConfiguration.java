@@ -10,17 +10,17 @@ import java.util.Properties;
  *
  * @version $Id$
  */
-public class PropertiesConfiguration
-    extends DefaultConfiguration
+public class PropertiesPlexusConfiguration
+    extends DefaultPlexusConfiguration
 {
     private Properties properties;
 
-    public PropertiesConfiguration()
+    public PropertiesPlexusConfiguration()
     {
         super( "" );
     }
 
-    public PropertiesConfiguration( Properties properties )
+    public PropertiesPlexusConfiguration( Properties properties )
     {
         super( "" );
 
@@ -42,7 +42,7 @@ public class PropertiesConfiguration
         return properties;
     }
 
-    public Configuration getChild( String name )
+    public PlexusConfiguration getChild( String name )
     {
         String value = properties.getProperty( name );
 
@@ -74,12 +74,12 @@ public class PropertiesConfiguration
         throw new UnsupportedOperationException();
     }
 
-    public Configuration[] getChildren()
+    public PlexusConfiguration[] getChildren()
     {
         throw new UnsupportedOperationException();
     }
 
-    public Configuration[] getChildren( String name )
+    public PlexusConfiguration[] getChildren( String name )
     {
         throw new UnsupportedOperationException();
     }
@@ -99,7 +99,7 @@ public class PropertiesConfiguration
         throw new UnsupportedOperationException();
     }
 
-    public Configuration getChild( int i )
+    public PlexusConfiguration getChild( int i )
     {
         return null;
     }
@@ -110,7 +110,7 @@ public class PropertiesConfiguration
     }
 
     static class ValueConfiguration
-        extends DefaultConfiguration
+        extends DefaultPlexusConfiguration
     {
         private String name;
 
@@ -135,7 +135,7 @@ public class PropertiesConfiguration
             return value;
         }
 
-        public Configuration getChild( String name )
+        public PlexusConfiguration getChild( String name )
         {
             throw new UnsupportedOperationException();
         }
@@ -150,12 +150,12 @@ public class PropertiesConfiguration
             throw new UnsupportedOperationException();
         }
 
-        public Configuration[] getChildren()
+        public PlexusConfiguration[] getChildren()
         {
             throw new UnsupportedOperationException();
         }
 
-        public Configuration[] getChildren( String name )
+        public PlexusConfiguration[] getChildren( String name )
         {
             throw new UnsupportedOperationException();
         }
@@ -175,7 +175,7 @@ public class PropertiesConfiguration
             return "unknown";
         }
 
-        public Configuration getChild( int i )
+        public PlexusConfiguration getChild( int i )
         {
             return null;
         }

@@ -25,10 +25,10 @@ public class ConfigurationMergerTest
     private String layerXml;
 
     /**  Base configuration. */
-    private Configuration base;
+    private PlexusConfiguration base;
 
     /** Parent Configuration. */
-    private Configuration layer;
+    private PlexusConfiguration layer;
 
     public ConfigurationMergerTest( String s )
     {
@@ -69,9 +69,9 @@ public class ConfigurationMergerTest
     public void testWithHelper()
         throws Exception
     {
-        Configuration c = ConfigurationTestHelper.getTestConfiguration();
+        PlexusConfiguration c = ConfigurationTestHelper.getTestConfiguration();
 
-        Configuration cc = ConfigurationMerger.merge( new DefaultConfiguration( "" ), c );
+        PlexusConfiguration cc = PlexusConfigurationMerger.merge( new DefaultPlexusConfiguration( "" ), c );
 
         ConfigurationTestHelper.testConfiguration( cc );
     }
@@ -79,7 +79,7 @@ public class ConfigurationMergerTest
     public void testSimpleConfigurationCascading()
         throws Exception
     {
-        Configuration cc = ConfigurationMerger.merge( layer, base );
+        PlexusConfiguration cc = PlexusConfigurationMerger.merge( layer, base );
 
         // Take a value from the base.
         assertEquals( "jason", cc.getChild( "name" ).getValue() );
@@ -98,7 +98,7 @@ public class ConfigurationMergerTest
         assertEquals( 3, cc.getChild( "foo" ).getAttributeNames().length );
 
         // Create a new configuration.
-        Configuration c = cc.getChild( "new", true );
+        PlexusConfiguration c = cc.getChild( "new", true );
 
         assertNotNull( c );
     }

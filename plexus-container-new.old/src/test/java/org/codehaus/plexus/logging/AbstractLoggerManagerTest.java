@@ -1,7 +1,7 @@
 package org.codehaus.plexus.logging;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.io.File;
 
@@ -104,14 +104,14 @@ public abstract class AbstractLoggerManagerTest
         managerStop( manager );
     }
 
-    protected abstract Configuration createConfiguration( String threshold )
+    protected abstract PlexusConfiguration createConfiguration( String threshold )
         throws Exception;
 
     protected abstract LoggerManager createLoggerManager() throws Exception;
 
     private LoggerManager managerStart( String threshold ) throws Exception
     {
-        Configuration config = createConfiguration( threshold );
+        PlexusConfiguration config = createConfiguration( threshold );
 
         assertNotNull( config );
 

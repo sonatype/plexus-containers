@@ -6,9 +6,9 @@ package org.codehaus.plexus;
 
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.Configuration;
-import org.codehaus.plexus.configuration.ConfigurationException;
-import org.codehaus.plexus.configuration.ConfigurationResourceException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 
@@ -189,7 +189,7 @@ public final class ComponentPlexusContainer
     }
 
     public void setConfigurationResource( Reader configuration )
-        throws ConfigurationResourceException
+        throws PlexusConfigurationResourceException
     {
         throw new UnsupportedOperationException( "setConfigurationResource is not supported for ComponentPlexusContainer" );
     }
@@ -205,16 +205,16 @@ public final class ComponentPlexusContainer
         parentPlexus = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 
-    public void configure( Configuration configuration )
-        throws ConfigurationException
+    public void configure( PlexusConfiguration configuration )
+        throws PlexusConfigurationException
     {
         configurationName = configuration.getChild( PLEXUS_CONFIG ).getValue();
 
-        Configuration[] contextValues = configuration.getChildren( CONTEXT_VALUE );
+        PlexusConfiguration[] contextValues = configuration.getChildren( CONTEXT_VALUE );
 
         for ( int i = 0; i < contextValues.length; i++ )
         {
-            Configuration c = contextValues[i];
+            PlexusConfiguration c = contextValues[i];
 
             String name = c.getChild( CONTEXT_VALUE_NAME ).getValue();
 

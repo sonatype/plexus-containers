@@ -1,8 +1,8 @@
 package org.codehaus.plexus.logging.log4j;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.configuration.Configuration;
-import org.codehaus.plexus.configuration.DefaultConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.logging.AbstractLoggerManagerTest;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -64,23 +64,23 @@ public class Log4JLoggerManagerTest
         }
     }
 
-    protected Configuration createConfiguration( String threshold )
+    protected PlexusConfiguration createConfiguration( String threshold )
         throws Exception
     {
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
 
-        Configuration c = builder.parse( new StringReader( configuration ) );
+        PlexusConfiguration c = builder.parse( new StringReader( configuration ) );
 
         if ( threshold.equals( "disabled" ) )
         {
             threshold = "off";
         }
 
-        Configuration priorityNode = c.getChild( "logging" )
+        PlexusConfiguration priorityNode = c.getChild( "logging" )
             .getChild( "logger" )
             .getChild( "priority" );
 
-        ( (DefaultConfiguration) priorityNode ).setValue( threshold );
+        ( (DefaultPlexusConfiguration) priorityNode ).setValue( threshold );
 
         return c.getChild( "logging" );
     }
@@ -97,7 +97,7 @@ public class Log4JLoggerManagerTest
 
         Log4JLoggerManager loggerManager = new Log4JLoggerManager();
 
-        Configuration c = builder.parse( new StringReader( configuration ) );
+        PlexusConfiguration c = builder.parse( new StringReader( configuration ) );
 
         loggerManager.configure( c.getChild( DefaultPlexusContainer.LOGGING_TAG ) );
 
@@ -129,7 +129,7 @@ public class Log4JLoggerManagerTest
 
         Log4JLoggerManager loggerManager = new Log4JLoggerManager();
 
-        Configuration c = builder.parse( new StringReader( "<logging></logging>" ) );
+        PlexusConfiguration c = builder.parse( new StringReader( "<logging></logging>" ) );
 
         loggerManager.configure( c );
 

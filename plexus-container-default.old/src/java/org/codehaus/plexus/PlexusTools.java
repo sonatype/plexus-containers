@@ -1,7 +1,7 @@
 package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 
@@ -21,12 +21,12 @@ public class PlexusTools
     {
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
 
-        Configuration c = builder.parse( new StringReader( configuration ) );
+        PlexusConfiguration c = builder.parse( new StringReader( configuration ) );
 
         return buildComponentDescriptor( c );
     }
 
-    public static ComponentDescriptor buildComponentDescriptor( Configuration configuration )
+    public static ComponentDescriptor buildComponentDescriptor( PlexusConfiguration configuration )
         throws Exception
     {
         XStreamTool xstreamTool = new XStreamTool();
@@ -35,7 +35,7 @@ public class PlexusTools
 
         xstreamTool.alias( "requirement", String.class );
 
-        ComponentDescriptor cd = (ComponentDescriptor) xstreamTool.build( (Configuration) configuration, ComponentDescriptor.class );
+        ComponentDescriptor cd = (ComponentDescriptor) xstreamTool.build( (PlexusConfiguration) configuration, ComponentDescriptor.class );
 
         return cd;
     }

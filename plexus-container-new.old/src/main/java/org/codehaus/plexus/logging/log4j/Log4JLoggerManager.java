@@ -2,8 +2,8 @@ package org.codehaus.plexus.logging.log4j;
 
 
 import org.apache.log4j.PropertyConfigurator;
-import org.codehaus.plexus.configuration.Configuration;
-import org.codehaus.plexus.configuration.ConfigurationException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLoggerManager;
 import org.codehaus.plexus.logging.Logger;
 
@@ -85,10 +85,10 @@ public class Log4JLoggerManager
     private boolean rootLoggerSet = false;
 
     /** Logger configurations. */
-    private Configuration[] loggerConfigurations;
+    private PlexusConfiguration[] loggerConfigurations;
 
     /** Appender configurations. */
-    private Configuration[] appenderConfigurations;
+    private PlexusConfiguration[] appenderConfigurations;
 
     /** Log4j properties used to init log4j. */
     private Properties log4JProperties;
@@ -111,8 +111,8 @@ public class Log4JLoggerManager
     // Lifecycle Management
     // ----------------------------------------------------------------------
 
-    public void configure( Configuration configuration )
-        throws ConfigurationException
+    public void configure( PlexusConfiguration configuration )
+        throws PlexusConfigurationException
     {
         appenderConfigurations = configuration.getChildren( SINK_TAG );
         loggerConfigurations = configuration.getChildren( LOGGER_TAG );
@@ -169,10 +169,10 @@ public class Log4JLoggerManager
      *
      * @param loggerConfiguration
      * @return Log4j loggerConfiguration properties.
-     * @throws ConfigurationException
+     * @throws PlexusConfigurationException
      */
-    Properties createLoggerProperties( Configuration loggerConfiguration )
-        throws ConfigurationException
+    Properties createLoggerProperties( PlexusConfiguration loggerConfiguration )
+        throws PlexusConfigurationException
     {
         Properties loggerProperties = new Properties();
 
@@ -206,8 +206,8 @@ public class Log4JLoggerManager
      *
      * @return Log4j appenderConfiguration properties.
      */
-    Properties createAppenderProperties( Configuration appenderConfiguration )
-        throws ConfigurationException
+    Properties createAppenderProperties( PlexusConfiguration appenderConfiguration )
+        throws PlexusConfigurationException
     {
         Properties appenderProperties = new Properties();
 
@@ -215,7 +215,7 @@ public class Log4JLoggerManager
         String type = appenderConfiguration.getChild( TYPE_TAG ).getValue();
 
         // We need to look at the type and set any type specific properties.
-        Configuration typeConfiguration = appenderConfiguration.getChild( TYPE_CONFIGURATION_TAG );
+        PlexusConfiguration typeConfiguration = appenderConfiguration.getChild( TYPE_CONFIGURATION_TAG );
         String file = typeConfiguration.getChild( FILE_TAG ).getValue();
         String append = typeConfiguration.getChild( APPEND_TAG ).getValue();
 

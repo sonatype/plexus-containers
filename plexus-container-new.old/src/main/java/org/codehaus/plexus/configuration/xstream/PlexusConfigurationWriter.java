@@ -1,29 +1,29 @@
 package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.xml.XMLWriter;
-import org.codehaus.plexus.configuration.DefaultConfiguration;
+import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 
 import java.util.LinkedList;
 
-public class ConfigurationWriter implements XMLWriter
+public class PlexusConfigurationWriter implements XMLWriter
 {
     private LinkedList elementStack = new LinkedList();
 
-    private DefaultConfiguration configuration;
+    private DefaultPlexusConfiguration configuration;
 
-    public ConfigurationWriter()
+    public PlexusConfigurationWriter()
     {
 
     }
 
-    public DefaultConfiguration getConfiguration()
+    public DefaultPlexusConfiguration getConfiguration()
     {
         return configuration;
     }
 
     public void startElement( String name )
     {
-        DefaultConfiguration configuration = new DefaultConfiguration( name );
+        DefaultPlexusConfiguration configuration = new DefaultPlexusConfiguration( name );
 
         if ( this.configuration == null )
         {
@@ -52,8 +52,8 @@ public class ConfigurationWriter implements XMLWriter
         elementStack.removeLast();
     }
 
-    private DefaultConfiguration top()
+    private DefaultPlexusConfiguration top()
     {
-        return (DefaultConfiguration) elementStack.getLast();
+        return (DefaultPlexusConfiguration) elementStack.getLast();
     }
 }
