@@ -1276,13 +1276,13 @@ public class FileUtils
     }
 
     public static List getFiles( File directory, String includes, String excludes )
-        throws Exception
+        throws IOException
     {
         return getFiles( directory, includes, excludes, true );
     }
 
     public static List getFiles( File directory, String includes, String excludes, boolean includeBasedir )
-        throws Exception
+        throws IOException
     {
         List fileNames = getFileNames( directory, includes, excludes, includeBasedir );
 
@@ -1299,9 +1299,8 @@ public class FileUtils
     public static String FS = System.getProperty( "file.separator" );
 
     public static List getFileNames( File directory, String includes, String excludes, boolean includeBasedir )
-        throws Exception
+        throws IOException
     {
-
         DirectoryScanner scanner = new DirectoryScanner();
 
         scanner.setBasedir( directory );
@@ -1338,7 +1337,7 @@ public class FileUtils
     }
 
    public static void copyDirectory( File sourceDirectory, File destinationDirectory )
-        throws Exception
+        throws IOException
     {
         if ( ! sourceDirectory.exists() )
         {
