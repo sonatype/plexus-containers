@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
@@ -23,6 +23,11 @@ public abstract class AbstractComponentComposer
     protected void assignComponent( Object component, Object target )
         throws CompositionException
     {
+        if ( target == null )
+        {
+            throw new CompositionException( "Target object is null." );
+        }
+
         Class componentClass = component.getClass();
 
         Field[] fields = target.getClass().getDeclaredFields();
@@ -39,19 +44,20 @@ public abstract class AbstractComponentComposer
             }
         }
 
+        if ( field == null )
+        {
+            throw new CompositionException( "No field which is compatible in target object." );
+        }
+
         field.setAccessible( true );
 
         try
         {
             field.set( target, component );
         }
-        catch ( IllegalArgumentException e )
+        catch ( Exception e )
         {
-            throw new CompositionException( e.getMessage() );
-        }
-        catch ( IllegalAccessException e )
-        {
-            throw new CompositionException( e.getMessage() );
+            throw new CompositionException( "Error assigning field." );
         }
     }
 }
