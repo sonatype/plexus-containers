@@ -17,9 +17,9 @@ import java.util.Iterator;
 public class DefaultLifecycleHandlerManager
     implements LifecycleHandlerManager
 {
-    private List lifecycleHandlers;
+    private List lifecycleHandlers = null;
 
-    private String defaultLifecycleHandlerId;
+    private String defaultLifecycleHandlerId = null;
 
     public void initialize( LoggerManager loggerManager, Context context, ComponentRepository componentRepository )
         throws Exception
@@ -42,8 +42,6 @@ public class DefaultLifecycleHandlerManager
         throws UndefinedLifecycleHandlerException
     {
         LifecycleHandler lifecycleHandler = null;
-
-        System.out.println( "lifecycleHandlers = " + lifecycleHandlers );
 
         for ( Iterator iterator = lifecycleHandlers.iterator(); iterator.hasNext(); )
         {
