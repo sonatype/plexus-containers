@@ -35,9 +35,11 @@ public class PoolableComponentManager
     /**
      * @see ComponentManager#release(Object)
      */
-    public void release( Object component )
+    public boolean release( Object component )
     {
         pool.put( component );
+
+        return false;
     }
 
     /**
@@ -68,5 +70,10 @@ public class PoolableComponentManager
         }
 
         return component;
+    }
+
+    public InstanceManager createInstanceManager()
+    {
+        return new TrackingInstanceManager();
     }
 }

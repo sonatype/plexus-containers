@@ -21,7 +21,7 @@ public class ClassicSingletonComponentManager
     /**
      * @see org.codehaus.plexus.component.manager.ComponentManager#release(java.lang.Object)
      */
-    public void release( Object component )
+    public boolean release( Object component )
     {
         if ( singleton == component )
         {
@@ -30,12 +30,16 @@ public class ClassicSingletonComponentManager
             if ( !connected() )
             {
                 dispose();
+
+                return true;
             }
         }
         else
         {
             getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component );
         }
+
+        return false;
     }
 
     public void dispose()
@@ -61,5 +65,10 @@ public class ClassicSingletonComponentManager
         incrementConnectionCount();
 
         return singleton;
+    }
+
+    public InstanceManager createInstanceManager()
+    {
+        return new TrackingInstanceManager();
     }
 }

@@ -33,7 +33,7 @@ public interface ComponentManager
 
     void dispose();
 
-    void release( Object component );
+    boolean release( Object component );
 
     void suspend( Object component );
 
@@ -41,6 +41,8 @@ public interface ComponentManager
 
     Object getComponent()
         throws Exception;
+
+    InstanceManager createInstanceManager();
 
     ComponentDescriptor getComponentDescriptor();
 }

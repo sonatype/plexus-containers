@@ -29,8 +29,15 @@ public class PerLookupComponentManager
         return component;
     }
 
-    public void release( Object component )
+    public boolean release( Object component )
     {
         endComponentLifecycle( component );
+
+        return true;
+    }
+
+    public InstanceManager createInstanceManager()
+    {
+        return new NonTrackingInstanceManager();
     }
 }
