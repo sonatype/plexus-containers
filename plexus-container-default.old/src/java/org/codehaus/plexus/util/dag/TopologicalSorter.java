@@ -36,11 +36,23 @@ public class TopologicalSorter
         return dfs( graph );
     }
 
+    public static List sort( final Vertex vertex )
+    {
+        final List retValue = new ArrayList();
+        
+        final Map vertexStateMap = new HashMap();
+        
+        dfsVisit( vertex, vertexStateMap, retValue );
+        
+        return retValue;        
+    }
+    
+    
     private static List dfs( final DAG graph )
     {
         final List verticies = graph.getVerticies();
         
-        final List result = new ArrayList();
+        final List retValue = new ArrayList();
         
         final Map vertexStateMap = new HashMap();
         
@@ -50,11 +62,11 @@ public class TopologicalSorter
         
             if ( isNotVisited( vertex, vertexStateMap ) )
             {
-                dfsVisit( vertex, vertexStateMap, result );
+                dfsVisit( vertex, vertexStateMap, retValue );
             }
         }
         
-        return result;
+        return retValue;
     }
 
     /**

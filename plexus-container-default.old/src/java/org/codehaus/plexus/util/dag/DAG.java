@@ -75,19 +75,23 @@ public class DAG implements Cloneable, Serializable
      */
     public Vertex addVertex( final String label )
     {
+        Vertex retValue = null;
+        
         // check if vertex is alredy in DAG
         if ( vertexMap.containsKey( label ) )
         {
-            return (Vertex) vertexMap.get( label );
+            retValue = (Vertex) vertexMap.get( label );
         }
-
-        final Vertex vertex = new Vertex( label );
+        else
+        {
+           retValue = new Vertex( label );
         
-        vertexMap.put( label, vertex );
+           vertexMap.put( label, retValue );
         
-        vertexList.add( vertex );
+           vertexList.add( retValue );
+        }
         
-        return vertex;
+        return retValue;
     }
 
     public void addEdge( final String from, final String to )
@@ -124,7 +128,9 @@ public class DAG implements Cloneable, Serializable
             throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label2 + "' must exist" );
         }
         
-        return v1.getChildren().contains( v2 );
+        final boolean retValue = v1.getChildren().contains( v2 );
+        
+        return retValue;
 
     }
 
@@ -140,6 +146,7 @@ public class DAG implements Cloneable, Serializable
         {
             throw new IllegalArgumentException( "getChildLabels: A vertex for label '" + label + "' must exist" );
         }
+        
         return vertex.getChildLabels();
     }
     
@@ -165,9 +172,43 @@ public class DAG implements Cloneable, Serializable
      */
     public Object clone() throws CloneNotSupportedException 
     {                
-        Object o = super.clone();	// this is what's failing..               
+        Object retValue = super.clone();	// this is what's failing..               
         
-        return o;
+        return retValue;
+    }
+    
+    
+    /**
+     * Indicates if there is at least one edge leading to or from vertex of given label
+     * 
+     * @return <code>true</true> if this vertex is connected with other vertex,<code>false</code> otherwise
+     */
+    public boolean isConnected( final String label )
+    {
+        final Vertex vertex = getVertex( label );
+                
+        final boolean retValue = vertex.isConnected();
+        
+        return retValue;
+        
+
+    }
+    
+    
+    /**
+     * Return the list of labels of predessors in order decided by topological sort
+     * 
+     * @param label
+     * 
+     * @return The list of labels 
+     */
+    public List getPredessorLabels( final String label )
+    {
+        final Vertex vertex = getVertex( label );
+        
+        final List retValue = TopologicalSorter.sort( vertex );
+        
+        return retValue;
     }
    
     
