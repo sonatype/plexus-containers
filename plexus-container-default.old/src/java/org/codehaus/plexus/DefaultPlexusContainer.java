@@ -1,15 +1,11 @@
 package org.codehaus.plexus;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
@@ -22,6 +18,7 @@ import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
@@ -44,6 +41,19 @@ import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @todo clarify configuration handling vis-a-vis user vs default values
@@ -71,9 +81,9 @@ public class DefaultPlexusContainer
     private ClassRealm coreRealm;
 
     private ClassRealm plexusRealm;
-    
+
     private String name;
-    
+
     private ComponentRepository componentRepository;
 
     private ComponentManagerManager componentManagerManager;
@@ -440,17 +450,7 @@ public class DefaultPlexusContainer
         initializeSystemProperties();
     }
 
-    // We are assuming that any component which is designated as a component discovery
-    // listener is listed in the plexus.xml file that will be discovered and processed
-    // before the components.xml are discovered in JARs and processed.
-
-    /**
-     * TODO: Enhance the ComponentRepository so that it can take entire
-     * ComponentSetDescriptors instead of just ComponentDescriptors.
-     *
-     * @throws Exception 
-     */
-    public void discoverComponents()
+    public void registerComponentDiscoverytListeners()
         throws Exception
     {
         List listeners = componentDiscovererManager.getListenerDescriptors();
@@ -468,12 +468,29 @@ public class DefaultPlexusContainer
                 componentDiscovererManager.registerComponentDiscoveryListener( l );
             }
         }
+    }
+
+
+    // We are assuming that any component which is designated as a component discovery
+    // listener is listed in the plexus.xml file that will be discovered and processed
+    // before the components.xml are discovered in JARs and processed.
+
+    /**
+     * TODO: Enhance the ComponentRepository so that it can take entire
+     * ComponentSetDescriptors instead of just ComponentDescriptors.
+     *
+     * @throws Exception
+     */
+    public List discoverComponents( ClassRealm classRealm )
+        throws Exception
+    {
+        List discoveredComponentDescriptors = new ArrayList();
 
         for ( Iterator i = componentDiscovererManager.getComponentDiscoverers().iterator(); i.hasNext(); )
         {
             ComponentDiscoverer componentDiscoverer = (ComponentDiscoverer) i.next();
 
-            List componentSetDescriptors = componentDiscoverer.findComponents( plexusRealm );
+            List componentSetDescriptors = componentDiscoverer.findComponents( classRealm );
 
             for ( Iterator j = componentSetDescriptors.iterator(); j.hasNext(); )
             {
@@ -481,20 +498,28 @@ public class DefaultPlexusContainer
 
                 List componentDescriptors = componentSet.getComponents();
 
+
                 for ( Iterator k = componentDescriptors.iterator(); k.hasNext(); )
                 {
                     ComponentDescriptor componentDescriptor = (ComponentDescriptor) k.next();
-    
+
+                    componentDescriptor.setComponentSetDescriptor( componentSet );
+
                     // If the user has already defined a component descriptor for this particular
                     // component then do not let the discovered component descriptor override
                     // the user defined one.
                     if ( getComponentDescriptor( componentDescriptor.getComponentKey() ) == null )
                     {
+
                         addComponentDescriptor( componentDescriptor );
                     }
                 }
+
+                discoveredComponentDescriptors.addAll( componentDescriptors );
             }
         }
+
+        return discoveredComponentDescriptors;
     }
 
     // We need to be aware of dependencies between discovered components when the listed component
@@ -503,7 +528,9 @@ public class DefaultPlexusContainer
     public void start()
         throws Exception
     {
-        discoverComponents();
+        registerComponentDiscoverytListeners();
+
+        discoverComponents( plexusRealm );
 
         loadComponentsOnStart();
 
@@ -600,7 +627,7 @@ public class DefaultPlexusContainer
     {
         this.name = name;
     }
-    
+
     public ClassWorld getClassWorld()
     {
         return classWorld;
@@ -610,7 +637,7 @@ public class DefaultPlexusContainer
     {
         this.classWorld = classWorld;
     }
-    
+
     public ClassRealm getCoreRealm()
     {
         return coreRealm;
@@ -631,7 +658,61 @@ public class DefaultPlexusContainer
 
         // Create a name for our application if one doesn't exist.
         initializeName();
-        
+
+        if ( coreRealm == null )
+        {
+            try
+            {
+                coreRealm = classWorld.getRealm( "plexus.core" );
+            }
+            catch ( NoSuchRealmException e )
+            {
+                /* We are being loaded with someone who hasn't
+                 * given us any classworlds realms.  In this case,
+                 * we want to use the classes already in the
+                 * ClassLoader for our realm.
+                 */
+                coreRealm = classWorld.newRealm( "plexus.core", Thread.currentThread().getContextClassLoader() );
+            }
+        }
+
+        // We are in a non-embedded situation
+        if ( plexusRealm == null )
+        {
+            try
+            {
+                plexusRealm = coreRealm.getWorld().getRealm( "plexus.core.maven" );
+            }
+            catch ( NoSuchRealmException e )
+            {
+                //plexusRealm = coreRealm.getWorld().newRealm( "plexus.core.maven" );
+
+                // If no app realm can be found then we will make the plexusRealm
+                // the same as the app realm.
+
+                plexusRealm = coreRealm;
+            }
+
+            //plexusRealm.importFrom( coreRealm.getId(), "" );
+
+            addContextValue( "common.classloader", plexusRealm.getClassLoader() );
+
+            Thread.currentThread().setContextClassLoader( plexusRealm.getClassLoader() );
+        }
+    }
+
+
+    private void initializeClassWorlds2()
+        throws Exception
+    {
+        if ( classWorld == null )
+        {
+            classWorld = new ClassWorld();
+        }
+
+        // Create a name for our application if one doesn't exist.
+        initializeName();
+
         if ( coreRealm == null )
         {
             try
@@ -660,11 +741,11 @@ public class DefaultPlexusContainer
             {
                 plexusRealm = coreRealm.getWorld().newRealm( "plexus." + getName() );
             }
-    
+
             plexusRealm.importFrom( coreRealm.getId(), "" );
-            
+
             addContextValue( "common.classloader", plexusRealm.getClassLoader() );
-    
+
             Thread.currentThread().setContextClassLoader( plexusRealm.getClassLoader() );
         }
     }
@@ -677,7 +758,7 @@ public class DefaultPlexusContainer
         if ( name == null )
         {
             int i = 0;
-            
+
             while ( true )
             {
                 try
@@ -685,7 +766,7 @@ public class DefaultPlexusContainer
                     classWorld.getRealm( "plexus.app" + i );
                     i++;
                 }
-                catch (NoSuchRealmException e)
+                catch ( NoSuchRealmException e )
                 {
                     setName( "app" + i );
                     return;
@@ -719,7 +800,7 @@ public class DefaultPlexusContainer
     {
         // System userConfiguration
 
-        InputStream is = plexusRealm.getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
+        InputStream is = coreRealm.getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
 
         if ( is == null )
         {
@@ -938,6 +1019,118 @@ public class DefaultPlexusContainer
         }
     }
 
+    // ----------------------------------------------------------------------
+    // Dynamic component addition
+    // ----------------------------------------------------------------------
+
+    // We could have an option here for isolation ...
+
+    int realmTmpId = 0;
+
+    public void addComponent( Artifact component,
+                              ArtifactResolver artifactResolver,
+                              Set remoteRepositories,
+                              ArtifactRepository localRepository,
+                              ArtifactMetadataSource sourceReader,
+                              String[] artifactExcludes )
+        throws Exception
+    {
+        boolean isolatedRealm = false;
+
+        // I need an active filter and not an excludes list here.
+
+        // We have to create a completely fake realm here so that only the components
+        // in the JAR we don't want the process to touch any parent realms or
+        // ClassLoaders.
+
+        // ----------------------------------------------------------------------
+        // First we need to see if the artifact is present
+        // ----------------------------------------------------------------------
+
+        artifactResolver.resolve( component, remoteRepositories, localRepository );
+
+        realmTmpId++;
+
+        ClassRealm tmp = classWorld.newRealm( "tmp" + realmTmpId );
+
+        tmp.addConstituent( component.getFile().toURL() );
+
+        List componentDescriptors = discoverComponents( tmp );
+
+        classWorld.disposeRealm( "tmp" + realmTmpId );
+
+        for ( Iterator i = componentDescriptors.iterator(); i.hasNext(); )
+        {
+            ComponentDescriptor componentDescriptor = (ComponentDescriptor) i.next();
+
+            String componentKey = componentDescriptor.getComponentKey();
+
+            ClassRealm componentRealm;
+
+            if ( isolatedRealm )
+            {
+                componentRealm = classWorld.newRealm( componentKey );
+            }
+            else
+            {
+                componentRealm = plexusRealm.createChildRealm( componentKey );
+            }
+
+            componentRealm.addConstituent( component.getFile().toURL() );
+
+            if ( componentDescriptor.getComponentSetDescriptor().getDependencies() != null )
+            {
+                Set artifactsToResolve = new HashSet();
+
+                for ( Iterator j = componentDescriptor.getComponentSetDescriptor().getDependencies().iterator(); j.hasNext(); )
+                {
+                    ComponentDependency cd = (ComponentDependency) j.next();
+
+                    artifactsToResolve.add( createArtifact( cd ) );
+                }
+
+                ArtifactResolutionResult result = artifactResolver.resolveTransitively( artifactsToResolve,
+                                                                                        remoteRepositories,
+                                                                                        localRepository,
+                                                                                        sourceReader );
+
+                for ( Iterator k = result.getArtifacts().values().iterator(); k.hasNext(); )
+                {
+                    Artifact a = (Artifact) k.next();
+
+                    boolean include = true;
+
+                    for ( int b = 0; b < artifactExcludes.length; b++ )
+                    {
+                        if ( a.getArtifactId().equals( artifactExcludes[b] ) )
+                        {
+                            include = false;
+
+                            break;
+                        }
+                    }
+
+                    if ( include )
+                    {
+                        componentRealm.addConstituent( a.getFile().toURL() );
+                    }
+                }
+            }
+        }
+    }
+
+    private Artifact createArtifact( ComponentDependency cd )
+    {
+        return new DefaultArtifact( cd.getGroupId(),
+                                    cd.getArtifactId(),
+                                    cd.getVersion(),
+                                    "jar" );
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
     public void addJarResource( File jar )
         throws Exception
     {
@@ -986,7 +1179,7 @@ public class DefaultPlexusContainer
             componentFactory = componentFactoryManager.getDefaultComponentFactory();
         }
 
-         return componentFactory.newInstance( componentDescriptor, plexusRealm, this );
+        return componentFactory.newInstance( componentDescriptor, plexusRealm, this );
     }
 
     public void composeComponent( Object component, ComponentDescriptor componentDescriptor )

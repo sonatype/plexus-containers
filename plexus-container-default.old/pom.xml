@@ -12,80 +12,6 @@
   <version>0.16-SNAPSHOT</version>
   <name>plexus</name>
 
-  <developers>
-    <developer>
-      <name>Jason van Zyl</name>
-      <id>jvanzyl</id>
-      <email>jason@zenplex.com</email>
-      <organization>Zenplex</organization>
-      <roles>
-        <role>Developer</role>
-        <role>Release Manager</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>Pete Kazmier</name>
-      <id>kaz</id>
-      <email></email>
-      <organization></organization>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>James Taylor</name>
-      <id>jtaylor</id>
-      <email>james@jamestaylor.org</email>
-      <organization></organization>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>Dan Diephouse</name>
-      <id>dandiep</id>
-      <email>dan@envoisolutions.com</email>
-      <organization>Envoi solutions</organization>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>Kasper Nielsen</name>
-      <id>kasper</id>
-      <email>apache@kav.dk</email>
-      <organization></organization>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>Ben Walding</name>
-      <id>bwalding</id>
-      <email>bwalding@codehaus.org</email>
-      <organization>Walding Consulting Services</organization>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>Mark Wilkinson</name>
-      <id>mhw</id>
-      <email>mhw@kremvax.net</email>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>Michal Maczka</name>
-      <id>michal</id>
-      <email>mmaczka@interia.pl</email>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-  </developers>
-
   <dependencies>
     <dependency>
       <groupId>xstream</groupId>
@@ -111,6 +37,16 @@
       <groupId>asm</groupId>
       <artifactId>asm</artifactId>
       <version>1.3.4</version>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>wagon-api</artifactId>
+      <version>1.0-alpha-1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

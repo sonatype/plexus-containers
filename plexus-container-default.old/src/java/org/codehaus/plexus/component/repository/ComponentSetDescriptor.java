@@ -19,6 +19,8 @@ public class ComponentSetDescriptor
 
     private boolean isolatedRealm;
 
+    private String id;
+
     /**
      * Returns a list of {@link ComponentDescriptor}'s.
      * 
@@ -62,5 +64,15 @@ public class ComponentSetDescriptor
     public boolean isIsolatedRealm()
     {
         return isolatedRealm;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId( String id )
+    {
+        this.id = id;
     }
 }

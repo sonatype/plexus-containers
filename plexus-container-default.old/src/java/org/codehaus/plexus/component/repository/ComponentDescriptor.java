@@ -249,6 +249,11 @@ public class ComponentDescriptor
         this.componentSetDescriptor = componentSetDescriptor;
     }
 
+    public ComponentSetDescriptor getComponentSetDescriptor()
+    {
+        return componentSetDescriptor;
+    }
+
     public void setIsolatedRealm( boolean isolatedRealm )
     {
         this.isolatedRealm = isolatedRealm;

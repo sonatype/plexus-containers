@@ -1,11 +1,11 @@
 package org.codehaus.plexus.test.discovery;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryEvent;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -22,7 +22,7 @@ public class MockMavenPluginManager
         ComponentSetDescriptor componentSetDescriptor = event.getComponentSetDescriptor();
 
         List discoveredComponents = componentSetDescriptor.getComponents();
-
+        
         components.addAll( discoveredComponents );
     }
 

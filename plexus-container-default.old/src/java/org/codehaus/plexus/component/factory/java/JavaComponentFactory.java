@@ -6,6 +6,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.classworlds.NoSuchRealmException;
 
 import java.util.Iterator;
 
@@ -25,41 +26,28 @@ public class JavaComponentFactory
     public Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm, PlexusContainer container )
         throws ComponentInstantiationException
     {
+        ClassRealm componentClassRealm;
+
+        try
+        {
+            componentClassRealm = classRealm.getWorld().getRealm( componentDescriptor.getComponentKey() );
+        }
+        catch ( NoSuchRealmException e )
+        {
+            componentClassRealm = classRealm;
+        }
+
         try
         {
             String implementation = componentDescriptor.getImplementation();
-
-            ClassRealm componentClassRealm;
-
-            if ( componentDescriptor.isIsolatedRealm() )
-            {
-                componentClassRealm = classRealm.createChildRealm( componentDescriptor.getComponentKey() );
-
-                // ----------------------------------------------------------------------
-                // If we are running an isolated component then we need to look at the
-                // dependencies in the component descriptor
-                // ----------------------------------------------------------------------
-
-                if ( componentDescriptor.getDependencies() != null )
-                {
-                    for ( Iterator i = componentDescriptor.getDependencies().iterator(); i.hasNext(); )
-                    {
-                        ComponentDependency cd = (ComponentDependency) i.next();
-
-                        System.out.println( cd );
-                    }
-                }
-            }
-            else
-            {
-                componentClassRealm = classRealm;
-            }
 
             //String role = componentDescriptor.getRole();
 
             //String roleHint = componentDescriptor.getRoleHint();
 
             //Class roleClass = classLoader.loadClass( role );
+
+            //componentClassRealm.display();
 
             Class implementationClass = componentClassRealm.loadClass( implementation );
 
@@ -77,6 +65,8 @@ public class JavaComponentFactory
                 throw new InstantiationException( msg.toString() );
             }
             */
+
+            //componentClassRealm.display();
 
             Object instance = implementationClass.newInstance();
 
