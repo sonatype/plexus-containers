@@ -1,7 +1,10 @@
-package org.codehaus.plexus.component.discovery;
+package org.codehaus.plexus.test.discovery;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
+import org.codehaus.plexus.test.discovery.GoalDescriptor;
+import org.codehaus.plexus.test.discovery.MavenPluginDescriptor;
+import org.codehaus.plexus.component.discovery.AbstractComponentDiscoverer;
 
 import java.util.ArrayList;
 import java.util.List;

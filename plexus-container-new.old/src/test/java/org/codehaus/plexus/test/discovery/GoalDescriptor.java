@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.discovery;
+package org.codehaus.plexus.test.discovery;
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 

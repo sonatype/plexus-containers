@@ -30,28 +30,4 @@ public class ComponentDiscovererTest
 
         assertEquals( "org.codehaus.plexus.component.discovery.DefaultDiscoveredComponent", cd.getImplementation() );
     }
-
-    public void testMavenPluginDiscoverer()
-        throws Exception
-    {
-        ComponentDiscoverer componentDiscoverer = new MavenPluginDiscoverer();
-
-        List components = componentDiscoverer.findComponents( Thread.currentThread().getContextClassLoader() );
-
-        MavenPluginDescriptor pluginDescriptor = (MavenPluginDescriptor) components.get( 0 );
-
-        assertEquals( "org.apache.maven.plugin.Plugin", pluginDescriptor.getRole() );
-
-        assertEquals( "org.codehaus.plexus.component.discovery.MockMavenPlugin", pluginDescriptor.getImplementation() );
-
-        assertEquals( 1, pluginDescriptor.getGoals().size() );
-
-        GoalDescriptor goalDescriptor = (GoalDescriptor) pluginDescriptor.getGoals().get( 0 );
-
-        assertEquals( "antlr", goalDescriptor.getName() );
-
-        PlexusConfiguration c = goalDescriptor.getConfiguration();
-
-        assertEquals( "#maven.build.dest", c.getChild( "outputDirectory" ).getValue() );
-    }
 }

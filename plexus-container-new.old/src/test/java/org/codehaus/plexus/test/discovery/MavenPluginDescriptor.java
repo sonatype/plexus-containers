@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.discovery;
+package org.codehaus.plexus.test.discovery;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
@@ -20,7 +20,7 @@ public class MavenPluginDescriptor
 
     public String getRole()
     {
-        return "org.apache.maven.plugin.Plugin";
+        return "org.codehaus.plexus.test.discovery.MavenPlugin";
     }
 
     public String getRoleHint()
