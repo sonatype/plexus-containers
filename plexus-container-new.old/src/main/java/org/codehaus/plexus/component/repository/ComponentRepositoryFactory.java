@@ -6,6 +6,12 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.factory.AbstractPlexusFactory;
 import org.codehaus.plexus.logging.LoggerManager;
 
+/**
+ * @ todo we should probably put the component-repository specific within the components element
+ *   in the configuration so that everything can be encapsulated in one element and passed
+ *   into the factory. Currently we need the whole configuration because the factory needs
+ *   the component-repository element and the components element.
+ */
 public class ComponentRepositoryFactory
     extends AbstractPlexusFactory
 {

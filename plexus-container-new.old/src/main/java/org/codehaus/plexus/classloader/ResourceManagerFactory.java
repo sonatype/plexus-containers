@@ -4,6 +4,9 @@ import org.apache.avalon.framework.configuration.Configuration;
 import org.codehaus.plexus.factory.AbstractPlexusFactory;
 import org.codehaus.plexus.logging.LoggerManager;
 
+/**
+ * @todo encapsulate all resources related configurations under a single element.
+ */
 public class ResourceManagerFactory
     extends AbstractPlexusFactory
 {
