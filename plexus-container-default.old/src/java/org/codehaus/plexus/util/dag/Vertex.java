@@ -21,9 +21,9 @@ public class Vertex implements Cloneable, Serializable
     //Fields
     //------------------------------------------------------------
     private String label = null;
-    
+
     List children = new ArrayList();
-    
+
     List parents = new ArrayList();
     
     
@@ -53,75 +53,94 @@ public class Vertex implements Cloneable, Serializable
     }
 
     /**
-     *
      * @param vertex
      */
     public void addEdgeTo( final Vertex vertex )
     {
-        children.add( vertex );       
+        children.add( vertex );
     }
-    
-    
+
+
+    /**
+     * @param vertex
+     */
+    public void removeEdgeTo( final Vertex vertex )
+    {
+        children.remove( vertex );
+    }
+
+
     /**
      * @param vertex
      */
     public void addEdgeFrom( final Vertex vertex )
     {
-       parents.add(  vertex );        
+        parents.add( vertex );
     }
+
+    public void removeEdgeFrom( final Vertex vertex )
+    {
+
+        parents.remove( vertex );
+
+    }
+
 
     public List getChildren()
     {
         return children;
     }
-    
-    
+
+
     /**
-     * Get the labels used by the most direct children. 
+     * Get the labels used by the most direct children.
+     *
      * @return the labels used by the most direct children.
      */
     public List getChildLabels()
     {
         final List retValue = new ArrayList( children.size() );
-    
+
         for ( final Iterator iter = children.iterator(); iter.hasNext(); )
         {
-            final Vertex vertex = (Vertex) iter.next();
-        
+            final Vertex vertex = ( Vertex ) iter.next();
+
             retValue.add( vertex.getLabel() );
         }
         return retValue;
     }
-    
-    
+
+
     /**
      * Get the list the most direct ancestors (parents).
-     * @return list of parents 
+     *
+     * @return list of parents
      */
     public List getParents()
     {
         return parents;
     }
-    
-    
+
+
     /**
-     * Get the labels used by the most direct ancestors (parents). 
-     * @return the labels used parents 
+     * Get the labels used by the most direct ancestors (parents).
+     *
+     * @return the labels used parents
      */
     public List getParentLabels()
     {
         final List retValue = new ArrayList( parents.size() );
-        
+
         for ( final Iterator iter = parents.iterator(); iter.hasNext(); )
         {
-            final Vertex vertex = (Vertex) iter.next();
-        
+            final Vertex vertex = ( Vertex ) iter.next();
+
             retValue.add( vertex.getLabel() );
         }
         return retValue;
     }
-    
-    
+
+
     /**
      * Indicates if given vertex has no child
      * 
@@ -129,10 +148,10 @@ public class Vertex implements Cloneable, Serializable
      */
     public boolean isLeaf()
     {
-       return children.size() == 0;    
+        return children.size() == 0;
     }
-    
-    
+
+
     /**
      * Indicates if given vertex has no parent
      * 
@@ -140,10 +159,10 @@ public class Vertex implements Cloneable, Serializable
      */
     public boolean isRoot()
     {
-       return parents.size() == 0;    
+        return parents.size() == 0;
     }
-    
-    
+
+
     /**
      * Indicates if there is at least one edee leading to or from given vertex
      * 
@@ -151,17 +170,25 @@ public class Vertex implements Cloneable, Serializable
      */
     public boolean isConnected()
     {
-       return isRoot() || isLeaf();   
-    }
-    
-    
-    public Object clone() throws CloneNotSupportedException 
-    {         
-        Object o = super.clone();	// this is what's failing..               
-        
-        return o;
+        return isRoot() || isLeaf();
     }
 
-   
+
+    public Object clone() throws CloneNotSupportedException
+    {
+        // this is what's failing..
+        final Object retValue = super.clone();
+
+        return retValue;
+    }
+
+    public String toString()
+    {
+        return "Vertex{" +
+               "label='" + label + "'" +
+               "}";
+    }
+
+
 }
 

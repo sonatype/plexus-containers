@@ -1,18 +1,17 @@
 package org.codehaus.plexus.util.dag;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.io.Serializable;
 
 /**
  * DAG = Directed Acyclic Graph
  *
  * @author <a href="michal.maczka@dimatics.com">Michal Maczka</a>
  * @version $Id$
- *
  * @todo this class should be reanmed from DAG to Dag
  */
 public class DAG implements Cloneable, Serializable
@@ -24,10 +23,14 @@ public class DAG implements Cloneable, Serializable
      * Nodes will be kept in two data strucures at the same time
      * for faster processing
      */
-    /** Maps vertex's label to vertex */
+    /**
+     * Maps vertex's label to vertex
+     */
     private Map vertexMap = new HashMap();
 
-    /** Conatin list of all verticies */
+    /**
+     * Conatin list of all verticies
+     */
     private List vertexList = new ArrayList();
 
     // ------------------------------------------------------------
@@ -58,7 +61,7 @@ public class DAG implements Cloneable, Serializable
     public Set getLabels()
     {
         final Set retValue = vertexMap.keySet();
-        
+
         return retValue;
     }
 
@@ -69,9 +72,10 @@ public class DAG implements Cloneable, Serializable
     /**
      * Adds vertex to DAG. If vertex of given label alredy exist in DAG
      * no vertex is added
-     * @param label  The lable of the Vertex
-     * @return  New vertex if vertext of given label was not presenst in the DAG
-     *          or exising vertex if vertex of given labale was alredy added to DAG
+     *
+     * @param label The lable of the Vertex
+     * @return New vertex if vertext of given label was not presenst in the DAG
+     *         or exising vertex if vertex of given labale was alredy added to DAG
      */
     public Vertex addVertex( final String label )
     {
@@ -80,56 +84,88 @@ public class DAG implements Cloneable, Serializable
         // check if vertex is alredy in DAG
         if ( vertexMap.containsKey( label ) )
         {
-            retValue = (Vertex) vertexMap.get( label );
+            retValue = ( Vertex ) vertexMap.get( label );
         }
         else
         {
-           retValue = new Vertex( label );
-        
-           vertexMap.put( label, retValue );
-        
-           vertexList.add( retValue );
+            retValue = new Vertex( label );
+
+            vertexMap.put( label, retValue );
+
+            vertexList.add( retValue );
         }
-        
+
         return retValue;
     }
 
-    public void addEdge( final String from, final String to )
+    public void addEdge( final String from, final String to ) throws CycleDetectedException
     {
         final Vertex v1 = addVertex( from );
-        
+
         final Vertex v2 = addVertex( to );
-        
-        v1.addEdgeTo( v2 );
-        
-        v2.addEdgeFrom( v1 );
+
+        addEdge( v1, v2 );
     }
+
+    public void addEdge( final Vertex from, final Vertex to ) throws CycleDetectedException
+    {
+
+        from.addEdgeTo( to );
+
+        to.addEdgeFrom( from );
+
+        final List cycle = CycleDetector.introducesCycle( to );
+
+        if ( cycle != null )
+        {
+            // remove edge which introduced cycle
+
+            removeEdge( from, to );
+
+            final String msg = "Edge between '" + from + "' and '" + to + "' introduces to cycle in the graph";
+
+            throw new CycleDetectedException( msg, cycle );
+        }
+    }
+
+
+    public void removeEdge( final String from, final String to )
+    {
+        final Vertex v1 = addVertex( from );
+
+        final Vertex v2 = addVertex( to );
+
+        removeEdge( v1, v2 );
+    }
+
+    public void removeEdge( final Vertex from, final Vertex to )
+    {
+        from.removeEdgeTo( to );
+
+        to.removeEdgeFrom( from );
+    }
+
 
     public Vertex getVertex( final String label )
     {
-        final Vertex retValue = (Vertex) vertexMap.get( label );
-        
+        final Vertex retValue = ( Vertex ) vertexMap.get( label );
+
+        if ( retValue == null )
+        {
+            throw new IllegalArgumentException( "Vertex of label '" + label + "' does not exist" );
+        }
+
         return retValue;
     }
 
     public boolean hasEdge( final String label1, final String label2 )
     {
         final Vertex v1 = getVertex( label1 );
-        
-        if ( v1 == null )
-        {
-            throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label1 + "' must exist" );
-        }
-        
+
         final Vertex v2 = getVertex( label2 );
-        
-        if ( v2 == null )
-        {
-            throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label2 + "' must exist" );
-        }
-        
+
         final boolean retValue = v1.getChildren().contains( v2 );
-        
+
         return retValue;
 
     }
@@ -141,15 +177,10 @@ public class DAG implements Cloneable, Serializable
     public List getChildLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
-        
-        if ( vertex == null )
-        {
-            throw new IllegalArgumentException( "getChildLabels: A vertex for label '" + label + "' must exist" );
-        }
-        
+
         return vertex.getChildLabels();
     }
-    
+
     /**
      * @param label
      * @return
@@ -157,27 +188,23 @@ public class DAG implements Cloneable, Serializable
     public List getParentLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
-        
-        if ( vertex == null )
-        {
-            throw new IllegalArgumentException( "getChildLabels: A vertex for label '" + label + "' must exist" );
-        }
-        
+
         return vertex.getChildLabels();
     }
-    
-    
-    /**      
+
+
+    /**
      * @see java.lang.Object#clone()
      */
-    public Object clone() throws CloneNotSupportedException 
-    {                
-        Object retValue = super.clone();	// this is what's failing..               
-        
+    public Object clone() throws CloneNotSupportedException
+    {
+        // this is what's failing..
+        final Object retValue = super.clone();
+
         return retValue;
     }
-    
-    
+
+
     /**
      * Indicates if there is at least one edge leading to or from vertex of given label
      * 
@@ -186,45 +213,43 @@ public class DAG implements Cloneable, Serializable
     public boolean isConnected( final String label )
     {
         final Vertex vertex = getVertex( label );
-                
+
         final boolean retValue = vertex.isConnected();
-        
+
         return retValue;
-        
 
     }
-    
-    
+
+
     /**
-     * Return the list of labels of predessors in order decided by topological sort
-     * 
+     * Return the list of labels of successor in order decided by topological sort
+     *
      * @param label The label of the vertex whose predessors are serched
-     * 
-     * @return The list of labels. Returned list contains also 
-     * the label passed as parameter to this method. This label should 
-     * always be the last item in the list.  
+     *
+     * @return The list of labels. Returned list contains also
+     *         the label passed as parameter to this method. This label should
+     *         always be the last item in the list.
      */
-                    
-    public List getPredecessorLabels( final String label )
+    public List getSuccessorLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
-        
-        List retValue = null;
+
+        final List retValue;
         
         //optimization.
         if ( vertex.isLeaf() )
         {
             retValue = new ArrayList( 1 );
-            
+
             retValue.add( label );
         }
         else
         {
-           retValue = TopologicalSorter.sort( vertex );
-        }       
-        
+            retValue = TopologicalSorter.sort( vertex );
+        }
+
         return retValue;
     }
-   
-    
+
+
 }

@@ -3,7 +3,6 @@ package org.codehaus.plexus.component.composition;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.dag.DAG;
-import org.codehaus.plexus.util.dag.CycleDetector;
 
 import java.util.List;
 import java.util.Set;
@@ -26,17 +25,27 @@ public class DefaultCompositionResolver implements CompositionResolver
     public void addComponentDescriptor( final ComponentDescriptor componentDescriptor ) throws CompositionException
     {
         final String componentKey = componentDescriptor.getComponentKey();
+
         final Set requirements = componentDescriptor.getRequirements();
+
         for ( final Iterator iterator = requirements.iterator(); iterator.hasNext(); )
         {
             final ComponentRequirement requirement = ( ComponentRequirement ) iterator.next();
-            dag.addEdge( componentKey, requirement.getRole() );
+
+            try
+            {
+                dag.addEdge( componentKey, requirement.getRole() );
+            }
+            catch( Exception e)
+            {
+
+
+
+            }
         }
-        final List cycle = CycleDetector.hasCycle( dag );
-        if ( cycle!= null )
-        {
-             throw new  CompositionException ( CycleDetector.cycleToString( cycle ) );
-        }
+
+
+
     }
 
     /**
@@ -52,7 +61,7 @@ public class DefaultCompositionResolver implements CompositionResolver
     /**
      * @see org.codehaus.plexus.component.composition.CompositionResolver#findRequirements(java.lang.String)
      */
-    public List findRequirements( String componentKey )
+    public List findRequirements( final String componentKey )
     {        
         return dag.getParentLabels( componentKey );   
     }

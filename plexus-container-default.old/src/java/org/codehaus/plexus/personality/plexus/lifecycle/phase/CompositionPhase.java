@@ -1,8 +1,9 @@
 package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 
-import org.codehaus.plexus.component.composition.ComponentComposer;
 import org.codehaus.plexus.component.manager.ComponentManager;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
+import org.codehaus.plexus.PlexusContainer;
 
 /**
  * @todo this little example works but is indicative of of some decoupling that
@@ -17,8 +18,10 @@ public class CompositionPhase
     {
         // We only need to assemble a component if it specifies requirements.
 
-        ComponentComposer componentComposer = (ComponentComposer) manager.getContainer().lookup( ComponentComposer.ROLE );
+        PlexusContainer container = manager.getContainer();
 
-        componentComposer.assembleComponent( object, manager.getComponentDescriptor(), manager.getContainer() );
+        ComponentDescriptor descriptor = manager.getComponentDescriptor();
+
+        container.composeComponent( object, descriptor );
     }
 }

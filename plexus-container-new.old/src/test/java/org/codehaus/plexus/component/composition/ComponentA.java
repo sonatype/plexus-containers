@@ -9,4 +9,7 @@ package org.codehaus.plexus.component.composition;
  */
 public interface ComponentA
 {
+    String ROLE = ComponentA.class.getName();
+
+    ComponentB getComponentB();
 }

@@ -10,11 +10,16 @@ package org.codehaus.plexus.component.composition;
 public class DefaultComponentA
     implements ComponentA
 {
-    private DefaultComponentB componentB;
+    private ComponentB componentB;
+
+
+    private String host;
+    private String port;
 
     // Just so we can retrieve the value of componentB for testing. */
-    public DefaultComponentB getComponentB()
+    public ComponentB getComponentB()
     {
         return componentB;
     }
+
 }

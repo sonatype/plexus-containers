@@ -165,6 +165,24 @@ public class PlexusConfigurationMerger
         }
 
         // ----------------------------------------------------------------------
+        // Component factory manager
+        // ----------------------------------------------------------------------
+
+        PlexusConfiguration componentComposerManager =  user.getChild( "component-composer-manager" );
+
+        if ( componentComposerManager.getChildCount() != 0 )
+        {
+            mergedConfiguration.addChild( componentComposerManager );
+
+            copyComponentComposers( system.getChild( "component-composer-manager" ), componentComposerManager );
+        }
+        else
+        {
+            mergedConfiguration.addChild( system.getChild( "component-composer-manager" ) );
+        }
+
+
+        // ----------------------------------------------------------------------
         // Components
         // ----------------------------------------------------------------------
         // We grab the system components first and then add the user defined
@@ -203,6 +221,19 @@ public class PlexusConfigurationMerger
         for ( int i = 0; i < handlers.length; i++ )
         {
             dest.addChild( handlers[i] );
+        }
+    }
+
+
+    private static void copyComponentComposers( PlexusConfiguration source, PlexusConfiguration destination )
+    {
+        PlexusConfiguration composers[] = source.getChild( "component-composers" ).getChildren( "component-composer" );
+
+        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-composers" );
+
+        for ( int i = 0; i < composers.length; i++ )
+        {
+            dest.addChild( composers[i] );
         }
     }
 

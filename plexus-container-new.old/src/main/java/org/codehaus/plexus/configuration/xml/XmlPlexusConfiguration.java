@@ -99,6 +99,7 @@ public class XmlPlexusConfiguration
 
     public PlexusConfiguration getChild( String name )
     {
+
         Xpp3Dom child = dom.getChild( name );
 
         if ( child == null )

@@ -17,6 +17,9 @@ public class ComponentProfileDescriptor
 
     /** Component Manager Id. */
     private String componentManagerId;
+        
+    /** Component Composer Id. */
+    private String componentComposerId;
 
     // ----------------------------------------------------------------------
     // Accessors
@@ -51,4 +54,16 @@ public class ComponentProfileDescriptor
     {
         this.componentManagerId = componentManagerId;
     }
+    
+    
+    public String getComponentComposerId()
+    {
+        return componentComposerId;
+    }
+    
+    public void setComponentComposerId( String componentComposerId )
+    {
+        this.componentComposerId = componentComposerId;
+    }
+
 }

@@ -14,7 +14,7 @@ public class DefaultComponentComposerUsingSuperclassesTest
     public void testGetFieldByTypeWhereFieldResidesInTheSuperclass()
         throws Exception
     {
-        DefaultComponentComposer composer = new DefaultComponentComposer();
+        FieldComponentComposer composer = new FieldComponentComposer();
 
         DefaultComponent component = new DefaultComponent();
 
@@ -26,7 +26,7 @@ public class DefaultComponentComposerUsingSuperclassesTest
     public void testGetFieldByNameWhereFieldResidesInTheSuperclass()
     throws Exception
     {
-        DefaultComponentComposer composer = new DefaultComponentComposer();
+        FieldComponentComposer composer = new FieldComponentComposer();
 
         DefaultComponent component = new DefaultComponent();
         

@@ -29,20 +29,11 @@ public class CycleDetector
 
     public static List hasCycle( final DAG graph )
     {
-        return dfs( graph );
-    }
-
-
-    private static List dfs( final DAG graph )
-    {
         final List verticies = graph.getVerticies();
 
-
-        final LinkedList cycleStack = new LinkedList();
-
-        boolean hasCycle = false;
-
         final Map vertexStateMap = new HashMap();
+
+        List retValue = null;
 
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
@@ -50,14 +41,35 @@ public class CycleDetector
 
             if ( isNotVisited( vertex, vertexStateMap ) )
             {
-                hasCycle = dfsVisit( vertex, cycleStack, vertexStateMap );
+                retValue = introducesCycle( vertex, vertexStateMap );
 
-                if ( hasCycle )
+                if ( retValue != null )
                 {
                     break;
                 }
             }
         }
+
+        return retValue;
+
+    }
+
+
+    /**
+     * This method will be called when an egde leading to given vertex was added
+     * and we want to check if introduction of this edge has not resulted
+     * in apparition of cycle in the graph
+     *
+     * @param vertex
+     * @param vertexStateMap
+     * @return
+     */
+    public static List introducesCycle( final Vertex vertex, final Map vertexStateMap )
+    {
+        final LinkedList cycleStack = new LinkedList();
+
+        final boolean hasCycle = dfsVisit( vertex, cycleStack, vertexStateMap );
+
         if ( hasCycle )
         {
             // we have a situation like: [b, a, c, d, b, f, g, h].
@@ -70,21 +82,29 @@ public class CycleDetector
 
             final int pos = cycleStack.lastIndexOf( label );
 
-            final List cycle = cycleStack.subList( 0, pos + 1  );
+            final List cycle = cycleStack.subList( 0, pos + 1 );
 
             Collections.reverse( cycle );
 
             return cycle;
         }
-        return null;
 
+        return null;
+    }
+
+
+    public static List introducesCycle( final Vertex vertex )
+    {
+
+        final Map vertexStateMap = new HashMap();
+
+        return introducesCycle( vertex, vertexStateMap );
 
     }
 
     /**
      * @param vertex
      * @param vertexStateMap
-     *
      * @return
      */
     private static boolean isNotVisited( final Vertex vertex, final Map vertexStateMap )
@@ -93,6 +113,7 @@ public class CycleDetector
         {
             return true;
         }
+        
         final Integer state = ( Integer ) vertexStateMap.get( vertex );
 
         return NOT_VISTITED.equals( state );
@@ -101,7 +122,6 @@ public class CycleDetector
     /**
      * @param vertex
      * @param vertexStateMap
-     *
      * @return
      */
     private static boolean isVisiting( final Vertex vertex, final Map vertexStateMap )
@@ -147,22 +167,6 @@ public class CycleDetector
 
     }
 
-    public final static String cycleToString( final List cycle )
-    {
-        final StringBuffer buffer = new StringBuffer( );
 
-        buffer.append( "Cycle detected: " );
-
-        for ( Iterator iterator = cycle.iterator(); iterator.hasNext(); )
-        {
-            buffer.append( iterator.next() );
-
-            if ( iterator.hasNext() )
-            {
-                buffer.append( " --> " );
-            }
-        }
-        return buffer.toString();
-    }
 
 }

@@ -7,8 +7,6 @@ package org.codehaus.plexus.component.composition;
  *
  * @version $Id$
  */
-public interface ComponentB
-{
-     ComponentC getComponentC();
-     
+public class DefaultComponentC implements ComponentC
+{    
 }

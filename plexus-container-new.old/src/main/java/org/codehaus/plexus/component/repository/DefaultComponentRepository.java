@@ -58,9 +58,9 @@ public class DefaultComponentRepository
         return componentDescriptors.containsKey( role );
     }
 
-    public boolean hasComponent( String role, String id )
+    public boolean hasComponent( String role, String roleHint )
     {
-        return componentDescriptors.containsKey( role + id );
+        return componentDescriptors.containsKey( role + roleHint );
     }
 
     public Map getComponentDescriptorMap( String role )

@@ -1,5 +1,6 @@
 package org.codehaus.plexus.component.repository;
 
+import org.codehaus.plexus.component.composition.ComponentComposer;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
@@ -21,6 +22,10 @@ public class ComponentProfile
 
     /** Component Manager. */
     private ComponentManager componentManager;
+    
+    
+    /** Component Composer. */
+    private ComponentComposer componentComposer;
 
     // ----------------------------------------------------------------------
     // Accessors
@@ -55,4 +60,16 @@ public class ComponentProfile
     {
         this.componentManager = componentManager;
     }
+        
+    
+    public ComponentComposer getComponentComposer()
+    {
+        return componentComposer;
+    }
+    
+    public void setComponentComposer( ComponentComposer componentComposer )
+    {
+        this.componentComposer = componentComposer;
+    }
+
 }

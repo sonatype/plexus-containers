@@ -10,14 +10,14 @@ import java.lang.reflect.Field;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  */
-public class DefaultComponentComposerTest
+public class FieldComponentComposerTest
     extends TestCase
 {
     public void testGetFieldByName()
     {
         ComponentF componentF = new ComponentF();
 
-        final DefaultComponentComposer composer = new DefaultComponentComposer();
+        final FieldComponentComposer composer = new FieldComponentComposer();
 
         try
         {
@@ -64,7 +64,7 @@ public class DefaultComponentComposerTest
     {
         ComponentF componentF = new ComponentF();
 
-        final DefaultComponentComposer composer = new DefaultComponentComposer();
+        final FieldComponentComposer composer = new FieldComponentComposer();
 
         try
         {
@@ -133,7 +133,7 @@ public class DefaultComponentComposerTest
 
         componentDescriptor.addRequirement( requirementD );
 
-        final DefaultComponentComposer composer = new DefaultComponentComposer();
+        final FieldComponentComposer composer = new FieldComponentComposer();
 
         try
         {

@@ -13,4 +13,11 @@ public abstract class AbstractComponentComposer
     extends AbstractLogEnabled
     implements ComponentComposer
 {
+    private String id;
+
+    public String getId()
+    {
+        return id;
+    }
+
 }

@@ -9,4 +9,6 @@ package org.codehaus.plexus.component.composition;
  */
 public interface ComponentB
 {
+     ComponentC getComponentC();
+     
 }

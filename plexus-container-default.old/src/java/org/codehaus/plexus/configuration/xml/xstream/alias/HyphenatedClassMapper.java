@@ -37,7 +37,7 @@ public class HyphenatedClassMapper
     }
 
     public Class lookupType( String elementName )
-    {
+    {        
         if ( elementName.equals( "null" ) )
         {
             return null;

@@ -14,4 +14,54 @@ public class ComponentF
     private ComponentC[] componentC;
     private List componentD;
     private Map componentE;
+
+    public ComponentA getComponentA()
+    {
+        return componentA;
+    }
+
+    public void setComponentA( ComponentA componentA )
+    {
+        this.componentA = componentA;
+    }
+
+    public ComponentB getComponentB()
+    {
+        return componentB;
+    }
+
+    public void setComponentB( ComponentB componentB )
+    {
+        this.componentB = componentB;
+    }
+
+    public ComponentC[] getComponentC()
+    {
+        return componentC;
+    }
+
+    public void setComponentC( ComponentC[] componentC )
+    {
+        this.componentC = componentC;
+    }
+
+    public List getComponentD()
+    {
+        return componentD;
+    }
+
+    public void setComponentD( List componentD )
+    {
+        this.componentD = componentD;
+    }
+
+    public Map getComponentE()
+    {
+        return componentE;
+    }
+
+    public void setComponentE( Map componentE )
+    {
+        this.componentE = componentE;
+    }
 }

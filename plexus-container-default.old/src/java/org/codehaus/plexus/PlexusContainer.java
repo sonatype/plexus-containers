@@ -104,6 +104,9 @@ public interface PlexusContainer
     Object createComponentInstance( ComponentDescriptor componentDescriptor )
         throws Exception;
 
+    void composeComponent( Object component, ComponentDescriptor componentDescriptor )
+        throws Exception;
+
     // ----------------------------------------------------------------------
     // Discovery
     // ----------------------------------------------------------------------

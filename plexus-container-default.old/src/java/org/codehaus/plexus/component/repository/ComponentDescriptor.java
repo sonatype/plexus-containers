@@ -11,10 +11,13 @@ import java.util.Set;
  *  @author <a href="mailto:jason@zenplex.com">Jason van Zyl</a>
  *  @author <a href="mailto:bob@eng.werken.com">bob mcwhirter</a>
  *
+ *  @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
+ *
  *  @version $Id$
  */
 public class ComponentDescriptor
 {
+
     private String alias = null;
 
     private String role = null;
@@ -36,6 +39,10 @@ public class ComponentDescriptor
     private Set requirements;
 
     private String componentFactory;
+
+    private String componentComposer;
+
+
 
     // ----------------------------------------------------------------------
     //  Instance methods
@@ -154,4 +161,16 @@ public class ComponentDescriptor
     {
         this.componentFactory = componentFactory;
     }
+
+    public String getComponentComposer()
+    {
+        return componentComposer;
+    }
+
+
+    public void setComponentComposer( String componentComposer )
+    {
+        this.componentComposer = componentComposer;
+    }
+
 }
