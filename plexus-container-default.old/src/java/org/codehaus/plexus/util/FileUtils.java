@@ -65,6 +65,7 @@ import java.net.URL;
 import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 /*
@@ -1287,6 +1288,30 @@ public class FileUtils
     public static List getFiles( File directory, String includes, String excludes )
         throws Exception
     {
+        return getFiles( directory, includes, excludes, true );
+    }
+
+    public static List getFiles( File directory, String includes, String excludes, boolean includeBasedir )
+        throws Exception
+    {
+        List fileNames = getFileNames( directory, includes, excludes, includeBasedir );
+
+        List files = new ArrayList();
+
+        for ( Iterator i = fileNames.iterator(); i.hasNext(); )
+        {
+            files.add( new File( (String) i.next() ) );
+        }
+
+        return files;
+    }
+
+    public static String FS = System.getProperty( "file.separator" );
+
+    public static List getFileNames( File directory, String includes, String excludes, boolean includeBasedir )
+        throws Exception
+    {
+
         DirectoryScanner scanner = new DirectoryScanner();
 
         scanner.setBasedir( directory );
@@ -1309,7 +1334,14 @@ public class FileUtils
 
         for ( int i = 0; i < files.length; i++ )
         {
-            list.add( new File( directory, files[i] ) );
+            if ( includeBasedir )
+            {
+                list.add( directory + FS + files[i] );
+            }
+            else
+            {
+                list.add( files[i] );
+            }
         }
 
         return list;

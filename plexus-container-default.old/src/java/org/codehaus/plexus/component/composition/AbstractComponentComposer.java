@@ -1,6 +1,6 @@
 package org.codehaus.plexus.component.composition;
 
-
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  *
@@ -10,6 +10,7 @@ package org.codehaus.plexus.component.composition;
  * @version $Id$
  */
 public abstract class AbstractComponentComposer
+    extends AbstractLogEnabled
     implements ComponentComposer
 {
 }

@@ -11,7 +11,6 @@ import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -567,7 +566,13 @@ public class DefaultPlexusContainer
     private void initializeComponentRepository()
         throws Exception
     {
-        componentRepository = ComponentRepositoryFactory.create( configuration, getClassLoader() );
+        String implementation = configuration.getChild( "component-repository" ).getChild( "implementation" ).getValue();
+
+        componentRepository = (ComponentRepository) classLoader.loadClass( implementation ).newInstance();
+
+        componentRepository.configure( configuration );
+
+        componentRepository.initialize();
     }
 
     private void initializeSystemProperties()
@@ -752,6 +757,8 @@ public class DefaultPlexusContainer
             {
                 if ( jars[j].getAbsolutePath().endsWith( ".jar" ) )
                 {
+                    System.out.println( "jars[j] = " + jars[j] );
+
                     addJarResource( jars[j] );
                 }
             }
