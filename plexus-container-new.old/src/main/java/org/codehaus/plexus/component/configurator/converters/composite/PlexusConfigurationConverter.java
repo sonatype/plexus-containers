@@ -1,17 +1,18 @@
 package org.codehaus.plexus.component.configurator.converters.composite;
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
-import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
+import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Map;
 
-
-public class PlexusConfigurationConverter extends AbstractCompositeConverter
+/**
+ * Converter for  <code>org.codehaus.plexus.configuration.PlexusConfiguration</code>
+ * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
+ * @version $Id$
+ */
+public class PlexusConfigurationConverter extends AbstractConfigurationConverter
 {
     public boolean canConvert( Class type )
     {

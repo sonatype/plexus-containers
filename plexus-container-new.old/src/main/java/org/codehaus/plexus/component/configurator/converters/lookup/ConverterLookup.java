@@ -1,16 +1,12 @@
 package org.codehaus.plexus.component.configurator.converters.lookup;
 
-import org.codehaus.plexus.component.configurator.converters.composite.CompositeConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.Converter;
+import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 
 
 public interface ConverterLookup
 {
-    void registerCompositeConverter( CompositeConverter converter );
+    void registerConverter( ConfigurationConverter converter );
 
-    void registerBasicConverter( Converter converter );    
-
-    CompositeConverter lookupCompositeConverterForType( Class type );
-
-    Converter lookupBasicConverterForType( Class type );
+    ConfigurationConverter lookupConverterForType( Class type ) throws ComponentConfigurationException;
 }

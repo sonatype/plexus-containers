@@ -1,8 +1,8 @@
 package org.codehaus.plexus.component.configurator;
 
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /**
  *

@@ -1,15 +1,9 @@
 package org.codehaus.plexus.component.configurator;
 
-import org.codehaus.plexus.component.configurator.converters.basic.Converter;
-import org.codehaus.plexus.component.configurator.converters.composite.CompositeConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
-import org.codehaus.plexus.util.ReflectionUtils;
-
-import java.lang.reflect.Field;
 
 
 /**
@@ -41,6 +35,4 @@ public class BasicComponentConfigurator
 
         converter.processConfiguration( converterLookup, component, classLoader, configuration, componentDescriptor );        
     }
-
-
 }

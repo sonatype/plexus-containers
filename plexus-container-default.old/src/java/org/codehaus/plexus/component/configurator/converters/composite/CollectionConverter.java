@@ -1,22 +1,26 @@
 package org.codehaus.plexus.component.configurator.converters.composite;
 
-import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
-import org.codehaus.plexus.component.configurator.ComponentConfiguratorUtils;
+import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
+import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.lang.reflect.Modifier;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 
-public class CollectionConverter extends AbstractCompositeConverter
+/**
+ * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
+ * @version $Id$
+ */
+public class CollectionConverter extends AbstractConfigurationConverter
 {
     public boolean canConvert( Class type )
     {
@@ -79,7 +83,7 @@ public class CollectionConverter extends AbstractCompositeConverter
 
             String basePackage = componentClassname.substring( 0, componentClassname.lastIndexOf( "." ) );
 
-            String name = StringUtils.capitalizeFirstLetter( ComponentConfiguratorUtils.fromXML( conifgEntry ) );
+            String name = StringUtils.capitalizeFirstLetter( fromXML( conifgEntry ) );
 
             String classname = basePackage + "." + name;
 
@@ -87,7 +91,7 @@ public class CollectionConverter extends AbstractCompositeConverter
 
             childType = getClassForImplementationHint( childType, c, classLoader, componentDescriptor );
 
-            CompositeConverter converter = converterLookup.lookupCompositeConverterForType( childType );
+            ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
             Object object = converter.fromConfiguration( converterLookup, c, childType, classLoader, componentDescriptor );
 

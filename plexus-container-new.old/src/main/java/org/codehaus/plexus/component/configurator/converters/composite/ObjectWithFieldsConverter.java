@@ -1,22 +1,23 @@
 package org.codehaus.plexus.component.configurator.converters.composite;
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
-import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
-import org.codehaus.plexus.component.configurator.ComponentConfiguratorUtils;
+import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
+import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
-import org.codehaus.plexus.component.configurator.converters.basic.Converter;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Map;
-import java.lang.reflect.Field;
 
-
-public class ObjectWithFieldsConverter extends AbstractCompositeConverter
+/**
+ * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
+ * @version $Id$
+ */
+public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
 {
     public boolean canConvert( Class type )
     {
@@ -75,96 +76,38 @@ public class ObjectWithFieldsConverter extends AbstractCompositeConverter
 
             String elementName = childConfiguration.getName();
 
-            String fieldName = ComponentConfiguratorUtils.fromXML( elementName );
+            String fieldName = fromXML( elementName );
 
             Field field = getFieldByName( fieldName, object, componentDescriptor );
 
             Class fieldType = field.getType();
 
-            // if configuration has at least 1 child it means that
-            // we will use composite converter
-            if ( childConfiguration.getChildCount() > 0 )
+            ConfigurationConverter converter = converterLookup.lookupConverterForType( fieldType );
+
+            if ( converter == null )
             {
-                CompositeConverter converter = converterLookup.lookupCompositeConverterForType( fieldType );
+                String msg = "Error occured while configuring component ["
+                        + componentDescriptor.getHumanReadableKey()
+                        + "] No converter is capable to convert configuration entry <"
+                        + elementName
+                        + ">"
+                        + " to instance of class: '"
+                        + field.getType()
+                        + "' Field name: '"
+                        + fieldName
+                        + "', declaring class: ' "
+                        + object.getClass().getName()
+                        + "'";
 
-                if ( converter == null )
-                {
-                    String msg = "Error occured while configuring component ["
-                            + componentDescriptor.getHumanReadableKey()
-                            + "] No converter is capable to convert configuration entry <"
-                            + elementName
-                            + ">"
-                            + " to instance of class: '"
-                            + field.getType()
-                            + "' Field name: '"
-                            + fieldName
-                            + "', declaring class: ' "
-                            + object.getClass().getName()
-                            + "'";
-
-                    throw new ComponentConfigurationException( msg );
-                }
-
-                Object value = converter.fromConfiguration( converterLookup, childConfiguration, fieldType, classLoader, componentDescriptor );
-
-                setFieldValue( field, object, value, componentDescriptor );
+                throw new ComponentConfigurationException( msg );
             }
-            else
-            {
-                String configValue = null;
 
-                try
-                {
-                    configValue = childConfiguration.getValue();
-                }
-                catch ( PlexusConfigurationException e )
-                {
-                    String msg = "Error occured while reading config elment '"
-                            + elementName
-                            + "' of component "
-                            + componentDescriptor.getHumanReadableKey();
+            Object value = converter.fromConfiguration( converterLookup, childConfiguration, fieldType, classLoader, componentDescriptor );
 
-                    throw new ComponentConfigurationException( msg, e );
-                }
-
-                Converter converter = ( Converter ) converterLookup.lookupBasicConverterForType( fieldType );
-
-                if ( converter != null )
-                {
-                    Object value = converter.fromString( configValue );
-
-                    setFieldValue( field, object, value, componentDescriptor );
-                }
-                else
-                {
-                    // we do not have an appropriate converter
-                    // one thing which we can possibly do is to check
-                    // if class have a constructor which takes String
-                    // as the only parameter
-                    // With that trick we won't need converters for classes
-                    // like BigDecimal, BigInteger etc
-                    //
-                    // but I am not sure if this is a good idea in genral
-
-                    String msg = "Error occured while configuring component ["
-                            + componentDescriptor.getHumanReadableKey()
-                            + "] No converter is capable to convert configuration entry <"
-                            + elementName
-                            + ">"
-                            + configValue +
-                            "</" + elementName
-                            + "> to instance of class: '"
-                            + field.getType()
-                            + "' Field name: '"
-                            + fieldName
-                            + "', declaring class: ' "
-                            + object.getClass().getName()
-                            + "'";
-
-                    throw new ComponentConfigurationException( msg );
-                }
-            }
+            setFieldValue( field, object, value, componentDescriptor );
         }
+
+
     }
 
 
