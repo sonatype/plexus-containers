@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.codehaus.plexus.service.repository.factory.ComponentFactory;
 import org.codehaus.plexus.util.AbstractTestThread;
@@ -54,6 +55,13 @@ public class DefaultPlexusContainerTest
         container.start();
     }
 
+    public void tearDown()
+        throws Exception
+    {
+        container.dispose();
+        container = null;
+    }
+
     /**
      * Test container setup.
      *
@@ -78,6 +86,8 @@ public class DefaultPlexusContainerTest
         assertEquals( true, container.getComponentRepository().hasService( ServiceB.ROLE ) );
         assertEquals( true, container.getComponentRepository().hasService( ServiceC.ROLE + "only-instance" ) );
         assertEquals( true, container.getComponentRepository().hasService( ServiceG.ROLE ) );
+
+        container.getComponentRepository().release( jcf );
     }
 
     /**
@@ -119,6 +129,10 @@ public class DefaultPlexusContainerTest
         assertTrue( a0.equals( a1 ) );
         assertTrue( a1.equals( a2 ) );
         assertTrue( a2.equals( a0 ) );
+
+        container.getComponentRepository().release( a0 );
+        container.getComponentRepository().release( a1 );
+        container.getComponentRepository().release( a2 );
     }
 
     /**
@@ -156,6 +170,7 @@ public class DefaultPlexusContainerTest
 
         assertNotNull( serviceB2 );
 
+        container.getComponentRepository().release( serviceB1 );
     }
 
     /**
@@ -171,15 +186,13 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
 
         // Retrieve an instance of service c.
-        DefaultServiceC serviceC1 =
-            (DefaultServiceC) container.getComponentRepository().lookup( ServiceC.ROLE, "only-instance" );
+        DefaultServiceC serviceC1 = (DefaultServiceC) container.getComponentRepository().lookup( ServiceC.ROLE, "only-instance" );
 
         // Make sure the service is alive.
         assertNotNull( serviceC1 );
 
         // Retrieve the only instance again from the service repository.
-        DefaultServiceC serviceC2 =
-            (DefaultServiceC) container.getComponentRepository().lookup( ServiceC.ROLE, "only-instance" );
+        DefaultServiceC serviceC2 = (DefaultServiceC) container.getComponentRepository().lookup( ServiceC.ROLE, "only-instance" );
 
         // Make sure component is alive.
         assertNotNull( serviceC2 );
@@ -187,6 +200,8 @@ public class DefaultPlexusContainerTest
         // Let's make sure it gave us back the same instance.
         assertSame( serviceC1, serviceC2 );
 
+        container.getComponentRepository().release( serviceC1 );
+        container.getComponentRepository().release( serviceC2 );
     }
 
     /**
@@ -285,6 +300,8 @@ public class DefaultPlexusContainerTest
 
         assertNotSame( serviceE1, serviceE2 );
 
+        container.getComponentRepository().release( serviceE1 );
+        container.getComponentRepository().release( serviceE2 );
     }
 
     /**
@@ -311,6 +328,8 @@ public class DefaultPlexusContainerTest
         // correctly. For the test we are using ${plexus.home} which should be
         // interpolated so no "${" sequence should be present.
         assertFalse( serviceF.getPlexusHome().indexOf( "${" ) > 0 );
+
+        container.getComponentRepository().release( serviceF );
     }
 
     /**
@@ -329,8 +348,7 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
 
         // Retrieve an instance of service G.
-        DefaultServiceG serviceG =
-            (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+        DefaultServiceG serviceG = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
 
         // Make sure the service is alive.
         assertNotNull( serviceG );
@@ -348,12 +366,9 @@ public class DefaultPlexusContainerTest
         container.getComponentRepository().release( serviceG );
 
         // make sure we get the same instance back everytime
-        DefaultServiceG g0 =
-            (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
-        DefaultServiceG g1 =
-            (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
-        DefaultServiceG g2 =
-            (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+        DefaultServiceG g0 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+        DefaultServiceG g1 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+        DefaultServiceG g2 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
 
         assertTrue( g0.equals( g1 ) );
         assertTrue( g1.equals( g2 ) );
@@ -401,6 +416,10 @@ public class DefaultPlexusContainerTest
                 "Singleton component 'ServiceG' being instantiated multiple times. Failed test threads: "
                 + out );
         }
+
+        container.getComponentRepository().release( g0 );
+        container.getComponentRepository().release( g1 );
+        container.getComponentRepository().release( g2 );
     }
 
     class SingletonComponentTestThread extends AbstractTestThread
