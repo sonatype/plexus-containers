@@ -22,6 +22,8 @@ public class DefaultPlexusContainerTest
     private ClassLoader classLoader;
     /** Basedir for default container test. */
     private String basedir;
+    /** Default Container. */
+    private DefaultPlexusContainer container;
 
     /**
      * Constructor for the PlexusTest object
@@ -39,22 +41,22 @@ public class DefaultPlexusContainerTest
         basedir = System.getProperty( "basedir" );
         classLoader = getClass().getClassLoader();
         configurationStream = DefaultPlexusContainerTest.class.getResourceAsStream( "configuration.xml" );
-    }
 
-    public void testSetup()
-        throws Exception
-    {
         // Make sure our testing necessities are alive.
         assertNotNull( configurationStream );
         assertNotNull( classLoader );
 
-        DefaultPlexusContainer container = new DefaultPlexusContainer();
+        container = new DefaultPlexusContainer();
         container.addContextValue( "basedir", basedir );
         container.addContextValue( "plexus.home", basedir + "/target/plexus-home" );
         container.setConfigurationResource( new InputStreamReader( configurationStream ) );
         container.initialize();
         container.start();
+    }
 
+    public void testSetup()
+        throws Exception
+    {
         int defaultComponents = 0;
         int testComponents = 7;
 
@@ -237,6 +239,17 @@ public class DefaultPlexusContainerTest
         // interpolated so no "${" sequence should be present.
         assertFalse( serviceF.getPlexusHome().indexOf( "${" ) > 0 );
 
+    }
+
+    /**
+     * Test the SingletonKeepAlive instantiation strategy.
+     *
+     * @throws Exception
+     */
+    public void testSingletonKeepAlive()
+        throws Exception
+    {
+
         // ----------------------------------------------------------------------
         //  ServiceG - singleton-keep-alive
         //
@@ -305,9 +318,9 @@ public class DefaultPlexusContainerTest
         {
             //collect all failed tests
             StringBuffer out = new StringBuffer();
-            Iterator iter = reg.getFailedTests().iterator();
             String nl = System.getProperty( "line.separator" );
-            while ( iter.hasNext() )
+
+            for ( Iterator iter = reg.getFailedTests().iterator(); iter.hasNext(); )
             {
                 out.append( nl );
                 out.append( ( (SingletonComponentTestThread) iter.next() ).getErrorMsg() );
