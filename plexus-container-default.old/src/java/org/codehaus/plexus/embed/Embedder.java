@@ -6,8 +6,10 @@ import org.codehaus.plexus.PlexusContainer;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 /**
  * <tt>Embedder</tt> enables a client to embed Plexus into their
@@ -35,6 +37,9 @@ public class Embedder
 {
     /** Configuration resource or file. */
     private String configuration;
+    
+    /** Configuration resource URL */
+    private URL configurationURL;
 
     /** Plexus Container. */
     private PlexusContainer container;
@@ -100,7 +105,9 @@ public class Embedder
      * Set the configuration for the <tt>PlexusContainer</tt>.  This
      * configuration can either be a file or a resource in the
      * classpath.
-     *
+     * 
+     * @deprecated avoid this function - use @see setConfiguration(URL) instead
+     * 
      * @param configuration A file or resource in the classpath that
      * contains the configuration for the <tt>PlexusContainer</tt>.
      * @throws IllegalStateException If the embedder has already been
@@ -116,6 +123,26 @@ public class Embedder
 
         this.configuration = configuration;
     }
+    
+    /**
+     * Set the configuration for the <tt>PlexusContainer</tt>.  
+     * 
+     * @param configurationURL A URL that contains the configuration 
+     * for the <tt>PlexusContainer</tt>.
+     * @throws IllegalStateException If the embedder has already been
+     * started or stopped.
+     */
+    public void setConfiguration( URL configuration )
+    {
+        if ( embedderStarted || embedderStopped )
+        {
+            throw new IllegalStateException(
+                "Embedder has already been started" );
+        }
+
+        this.configurationURL = configuration;
+    }
+
 
     /**
      * Add a value to the <tt>PlexusContainer</tt>'s context.
@@ -198,8 +225,25 @@ public class Embedder
         stop();
     }
 
+    /**
+     * Tries a variety of methods to find the configuration resource.
+     * 
+     * BRW - I see this as fairly pointless as putting your config into the Embedder.class package
+     *       will be annoying. Far better to just force the end user to provide a URL and remove
+     *       all this logic.
+     * @return the stream containing the configuration
+     * @throws RuntimeException when the configuration can not be found / opened
+     */
     private InputStream findConfigurationInputStream()
     {
+        if (configurationURL != null) {
+            try {
+                return configurationURL.openStream();
+            } catch (IOException e){
+                throw new IllegalStateException( "The specified configuration resource cannot be found: " + configurationURL.toString());
+            }
+        }
+        
         InputStream is = getClass().getResourceAsStream( configuration );
 
         if ( is == null )
