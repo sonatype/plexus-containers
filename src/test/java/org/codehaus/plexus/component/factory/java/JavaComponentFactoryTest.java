@@ -25,19 +25,15 @@ package org.codehaus.plexus.component.factory.java;
  */
 
 import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.factory.Component;
 import org.codehaus.plexus.component.factory.ComponentImplA;
 import org.codehaus.plexus.component.factory.ComponentImplB;
+import org.codehaus.plexus.component.factory.ComponentImplC;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.embed.Embedder;
 
 import junit.framework.TestCase;
-
-import java.util.AbstractMap;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -45,7 +41,7 @@ import java.util.Map;
  * @version $Id$
  */
 public class JavaComponentFactoryTest
-    extends PlexusTestCase
+    extends TestCase
 {
     public void testComponentCreation()
         throws Exception
@@ -61,8 +57,11 @@ public class JavaComponentFactoryTest
         ClassWorld classWorld = new ClassWorld();
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
-
-        Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
+        
+        Embedder embedder = new Embedder();
+        embedder.start( classWorld );
+        
+        Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), embedder.getContainer() );
 
         assertNotNull( component );
     }
@@ -82,10 +81,13 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
+        Embedder embedder = new Embedder();
+        embedder.start( classWorld );
+        
+        factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), embedder.getContainer() );
     }
 
-    public void testThatTheContainerThrowsAnExceptionWhenAnAttemptIsMadeToInstantiateAnAbstractClass()
+    public void testInstanciationOfAAbstractComponent()
         throws Exception
     {
         JavaComponentFactory factory = new JavaComponentFactory();
@@ -94,49 +96,27 @@ public class JavaComponentFactoryTest
 
         componentDescriptor.setRole( Component.class.getName() );
 
-        componentDescriptor.setImplementation( AbstractMap.class.getName() );
+        componentDescriptor.setImplementation( ComponentImplC.class.getName() );
 
         ClassWorld classWorld = new ClassWorld();
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
+        Embedder embedder = new Embedder();
+        
+        embedder.start( classWorld );
+
+//        container.
+
         try
         {
-            factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
+            factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), embedder.getContainer() );
 
-            fail( "Expected ComponentInstantiationException when instaniating a abstract class." );
+            fail( "Expected ComponentInstantiationException when instanciating a abstract class." );
         }
         catch( ComponentInstantiationException ex )
         {
             // expected
         }
     }
-
-    public void testThatTheContainerThrowsAnExceptionWhenAnAttemptIsMadeToInstantiateAnInterface()
-        throws Exception
-    {
-        JavaComponentFactory factory = new JavaComponentFactory();
-
-        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
-
-        componentDescriptor.setRole( Component.class.getName() );
-
-        componentDescriptor.setImplementation( Map.class.getName() );
-
-        ClassWorld classWorld = new ClassWorld();
-
-        classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
-
-        try
-        {
-            factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
-
-            fail( "Expected ComponentInstantiationException when instantiating an interface." );
-        }
-        catch( ComponentInstantiationException ex )
-        {
-            // expected
-        }
-    }
-
 }

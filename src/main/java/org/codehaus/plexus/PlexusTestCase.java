@@ -191,7 +191,7 @@ public class PlexusTestCase
         {
             config = base + "-" + subname + ".xml";
         }
-
+        
         InputStream configStream = getResourceAsStream( config );
 
         return configStream;
