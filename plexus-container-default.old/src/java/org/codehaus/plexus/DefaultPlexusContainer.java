@@ -62,7 +62,7 @@ public class DefaultPlexusContainer
 
     private DefaultContext context;
 
-    private PlexusConfiguration configuration;
+    protected PlexusConfiguration configuration;
 
     private Reader configurationReader;
 
@@ -663,7 +663,7 @@ public class DefaultPlexusContainer
     // Configuration
     // ----------------------------------------------------------------------
 
-    private void initializeConfiguration()
+    protected void initializeConfiguration()
         throws Exception
     {
         // System userConfiguration
@@ -698,7 +698,7 @@ public class DefaultPlexusContainer
         }
     }
 
-    private Reader getInterpolationConfigurationReader( Reader reader )
+    protected Reader getInterpolationConfigurationReader( Reader reader )
     {
         InterpolationFilterReader interpolationFilterReader =
             new InterpolationFilterReader( reader, new ContextMapAdapter( context ) );

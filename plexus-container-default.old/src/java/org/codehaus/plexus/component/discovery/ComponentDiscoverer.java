@@ -22,7 +22,7 @@ public interface ComponentDiscoverer
 
     String getComponentType();
 
-    List createComponentDescriptors( Reader reader )
+    List createComponentDescriptors( Reader reader, String source )
         throws Exception;
 
     void setManager( ComponentDiscovererManager manager );

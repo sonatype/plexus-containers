@@ -38,23 +38,7 @@ public class MavenPluginDiscoverer
         return "maven-plugin";
     }
 
-    // ----------------------------------------------------------------------------------
-    // <plugin>
-    //   <implementation>org.apache.maven.plugin.AntlrPlugin</implementation>
-    //   <id>antlr</id>
-    //   <goals>
-    //     <goal>
-    //       <name>antlr</name>
-    //       <configuration>
-    //         <outputDirectory>#maven.build.dest</outputDirectory>
-    //         <resources>#project.build.resources</resources>
-    //       </configuration>
-    //     </goal>
-    //   </goals>
-    // </plugin>
-    // ----------------------------------------------------------------------------------
-
-    public List createComponentDescriptors( Reader componentDescriptorReader )
+    public List createComponentDescriptors( Reader componentDescriptorReader, String source )
         throws Exception
     {
         List componentDescriptors = new ArrayList();

@@ -60,7 +60,7 @@ public abstract class AbstractComponentDiscoverer
 
                 String s = os.toString();
 
-                for ( Iterator i = createComponentDescriptors( new StringReader( s ) ).iterator(); i.hasNext(); )
+                for ( Iterator i = createComponentDescriptors( new StringReader( s ), url.toString() ).iterator(); i.hasNext(); )
                 {
                     ComponentDescriptor componentDescriptor = (ComponentDescriptor) i.next();
 
