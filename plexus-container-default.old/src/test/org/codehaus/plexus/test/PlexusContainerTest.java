@@ -11,6 +11,7 @@ import org.codehaus.plexus.test.map.ActivityManager;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
+import org.codehaus.plexus.test.discovery.MavenPlugin;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -470,5 +471,13 @@ public class PlexusContainerTest
         DiscoveredComponent discoveredComponent = (DiscoveredComponent) container.lookup( DiscoveredComponent.ROLE );
 
         assertNotNull( discoveredComponent );
+    }
+
+    public void testLookupOfComponentThatShouldBeDiscoveredWithAUserSpecifiedComponentDiscoverer()
+        throws Exception
+    {
+        MavenPlugin mavenPlugin = (MavenPlugin) container.lookup( MavenPlugin.ROLE, "mocky" );
+
+        assertNotNull( mavenPlugin );
     }
 }
