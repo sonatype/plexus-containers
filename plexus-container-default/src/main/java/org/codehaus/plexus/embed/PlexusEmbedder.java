@@ -2,6 +2,8 @@
 package org.codehaus.plexus.embed;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.util.Properties;
 
@@ -29,7 +31,9 @@ public interface PlexusEmbedder
 
     void setClassWorld( ClassWorld classWorld );
 
-    void setConfiguration( URL configuration );
+    void setConfiguration( URL configuration ) throws IOException;
+
+    void setConfiguration( Reader configuration ) throws IOException;
 
     void addContextValue( Object key, Object value );
 
@@ -42,5 +46,5 @@ public interface PlexusEmbedder
     void start() throws Exception;
 
     void stop() throws Exception;
-    
+
 }
