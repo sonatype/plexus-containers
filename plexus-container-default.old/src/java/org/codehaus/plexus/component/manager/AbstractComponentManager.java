@@ -61,11 +61,6 @@ public abstract class AbstractComponentManager
         return configuration;
     }
 
-    public void setConfiguration( Configuration configuration )
-    {
-        this.configuration = configuration;
-    }
-
     public String getImplementation()
     {
         return implementation;
@@ -77,11 +72,6 @@ public abstract class AbstractComponentManager
     public void setLifecycleHandler( LifecycleHandler handler )
     {
         this.lifecycleHandler = handler;
-    }
-
-    public void setComponentImplementation( String implementation )
-    {
-        this.implementation = implementation;
     }
 
     public ClassLoader getClassLoader()
