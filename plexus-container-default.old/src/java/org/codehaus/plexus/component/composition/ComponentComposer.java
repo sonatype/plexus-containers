@@ -1,13 +1,15 @@
 package org.codehaus.plexus.component.composition;
 
-/**
- *
- *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
- * @version $Id$
- */
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.PlexusContainer;
+
 public interface ComponentComposer
 {
     static String ROLE = ComponentComposer.class.getName();
+
+    public void assembleComponent( Object component,
+                                   ComponentDescriptor componentDescriptor,
+                                   PlexusContainer container,
+                                   ComponentRepository componentRepository );
 }

@@ -32,8 +32,6 @@ public abstract class AbstractComponentComposer
                                    PlexusContainer container,
                                    ComponentRepository componentRepository )
     {
-
-
         // The graph being used needs to support additions and removals at runtime.
 
         // We will probably need access to the container and the repository ... hmmm.
