@@ -43,8 +43,12 @@ public abstract class AbstractLoggerManager
     protected String toMapKey( String role, String roleHint )
     {
          if ( roleHint == null )
+         {
              return role;
+         }
          else
+         {
              return role + ":" + roleHint;
+         }
     }
 }
