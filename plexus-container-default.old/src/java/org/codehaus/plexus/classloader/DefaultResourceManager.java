@@ -22,10 +22,6 @@ public class DefaultResourceManager
     /** The classloader to use for loading resources and classes. */
     private PlexusClassLoader plexusClassLoader;
 
-    // ----------------------------------------------------------------------
-    // Constructors
-    // ----------------------------------------------------------------------
-
     public DefaultResourceManager()
     {
     }
