@@ -250,7 +250,6 @@ public class DefaultPlexusContainer
         return components;
     }
 
-
     public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
@@ -442,6 +441,10 @@ public class DefaultPlexusContainer
         initializeSystemProperties();
     }
 
+    // We are assuming that any component which is designated as a component discovery
+    // listener is listed in the plexus.xml file that will be discovered and processed
+    // before the components.xml are discovered in JARs and processed.
+
     /**
      * TODO: Enhance the ComponentRepository so that it can take entire 
      *       ComponentSetDescriptors instead of just ComponentDescriptors.
@@ -451,6 +454,22 @@ public class DefaultPlexusContainer
     private void discoverComponents()
         throws Exception
     {
+        List listeners = componentDiscovererManager.getListenerDescriptors();
+
+        if ( listeners != null )
+        {
+            for ( Iterator i = listeners.iterator(); i.hasNext(); )
+            {
+                DiscoveryListenerDescriptor listenerDescriptor = (DiscoveryListenerDescriptor) i.next();
+
+                String role = listenerDescriptor.getRole();
+
+                ComponentDiscoveryListener l = (ComponentDiscoveryListener) lookup( role );
+
+                componentDiscovererManager.registerComponentDiscoveryListener( l );
+            }
+        }
+
         for ( Iterator i = componentDiscovererManager.getComponentDiscoverers().iterator(); i.hasNext(); )
         {
             ComponentDiscoverer componentDiscoverer = (ComponentDiscoverer) i.next();
@@ -485,22 +504,6 @@ public class DefaultPlexusContainer
     public void start()
         throws Exception
     {
-        List listeners = componentDiscovererManager.getListenerDescriptors();
-
-        if ( listeners != null )
-        {
-            for ( Iterator i = listeners.iterator(); i.hasNext(); )
-            {
-                DiscoveryListenerDescriptor listenerDescriptor = (DiscoveryListenerDescriptor) i.next();
-
-                String role = listenerDescriptor.getRole();
-
-                ComponentDiscoveryListener l = (ComponentDiscoveryListener) lookup( role );
-
-                componentDiscovererManager.registerComponentDiscoveryListener( l );
-            }
-        }
-
         discoverComponents();
 
         loadComponentsOnStart();
@@ -694,12 +697,44 @@ public class DefaultPlexusContainer
 
         PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( new InputStreamReader( is ) );
 
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        String PLEXUS_XML = "META-INF/plexus/plexus.xml";
+
+        InputStream plexusXml = getClassLoader().getResourceAsStream( PLEXUS_XML );
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        // Some of this could probably be collapsed as having a plexus.xml in your
+        // META-INF/plexus directory is probably a better solution then specifying
+        // a configuration with an URL but I'm leaving the configuration by URL
+        // as folks might be using it ... I made this change to accomodate Maven
+        // but I think it's better to discover a configuration in a standard
+        // place.
+
         if ( configurationReader != null )
         {
             // User userConfiguration
 
             PlexusConfiguration userConfiguration =
                 PlexusTools.buildConfiguration( getInterpolationConfigurationReader( configurationReader ) );
+
+            // Merger of systemConfiguration and user userConfiguration
+
+            configuration = PlexusConfigurationMerger.merge( userConfiguration, systemConfiguration );
+
+            processConfigurationsDirectory();
+        }
+        else if ( plexusXml != null )
+        {
+            // User userConfiguration
+
+            PlexusConfiguration userConfiguration =
+                PlexusTools.buildConfiguration( getInterpolationConfigurationReader( new InputStreamReader( plexusXml) ) );
 
             // Merger of systemConfiguration and user userConfiguration
 
@@ -733,8 +768,7 @@ public class DefaultPlexusContainer
 
         if ( s != null )
         {
-            XmlPlexusConfiguration componentsConfiguration =
-                (XmlPlexusConfiguration) configuration.getChild( "components" );
+            XmlPlexusConfiguration componentsConfiguration = (XmlPlexusConfiguration) configuration.getChild( "components" );
 
             File configurationsDirectory = new File( s );
 
