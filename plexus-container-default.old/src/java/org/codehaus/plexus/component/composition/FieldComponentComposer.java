@@ -21,20 +21,20 @@ import org.codehaus.plexus.component.repository.ComponentRequirement;
 public class FieldComponentComposer
     extends AbstractComponentComposer
 {
-    public List assembleComponent( final Object component,
-                                   final ComponentDescriptor componentDescriptor,
-                                   final PlexusContainer container )
-            throws CompositionException
+    public List assembleComponent( Object component,
+                                   ComponentDescriptor componentDescriptor,
+                                   PlexusContainer container )
+        throws CompositionException
     {
-        final List retValue = new LinkedList();
+        List retValue = new LinkedList();
 
-        final Set requirements = componentDescriptor.getRequirements();
+        Set requirements = componentDescriptor.getRequirements();
 
-        for ( final Iterator i = requirements.iterator(); i.hasNext(); )
+        for ( Iterator i = requirements.iterator(); i.hasNext(); )
         {
-            final ComponentRequirement requirement = ( ComponentRequirement ) i.next();
+            ComponentRequirement requirement = (ComponentRequirement) i.next();
 
-            final Field field = findMatchingField( component, componentDescriptor, requirement );
+            Field field = findMatchingField( component, componentDescriptor, requirement, container );
 
             // we want to use private fields.
             if ( !field.isAccessible() )
@@ -45,7 +45,7 @@ public class FieldComponentComposer
             // We have a field to which we should assigning component(s).
             // Cardinality is determined by field.getType() method
             // It can be array, map, collection or "ordinary" field
-            final List descriptors = assignRequirementToField( component, field, container, requirement );
+            List descriptors = assignRequirementToField( component, field, container, requirement );
 
             retValue.addAll( descriptors );
         }
@@ -53,23 +53,23 @@ public class FieldComponentComposer
         return retValue;
     }
 
-    private List assignRequirementToField( final Object component,
-                                           final Field field,
-                                           final PlexusContainer container,
-                                           final ComponentRequirement requirement )
-            throws CompositionException
+    private List assignRequirementToField( Object component,
+                                           Field field,
+                                           PlexusContainer container,
+                                           ComponentRequirement requirement )
+        throws CompositionException
     {
         try
         {
-            final List retValue;
+            List retValue;
 
-            final String role = requirement.getRole();
+            String role = requirement.getRole();
 
             if ( field.getType().isArray() )
             {
-                final List dependencies = container.lookupList( role );
+                List dependencies = container.lookupList( role );
 
-                final Object[] array = ( Object[] ) Array.newInstance( field.getType(), dependencies.size() );
+                Object[] array = (Object[]) Array.newInstance( field.getType(), dependencies.size() );
 
                 retValue = container.getComponentDescriptorList( role );
 
@@ -77,7 +77,7 @@ public class FieldComponentComposer
             }
             else if ( Map.class.isAssignableFrom( field.getType() ) )
             {
-                final Map dependencies = container.lookupMap( role );
+                Map dependencies = container.lookupMap( role );
 
                 retValue = container.getComponentDescriptorList( role );
 
@@ -85,7 +85,7 @@ public class FieldComponentComposer
             }
             else if ( List.class.isAssignableFrom( field.getType() ) )
             {
-                final List dependencies = container.lookupList( role );
+                List dependencies = container.lookupList( role );
 
                 retValue = container.getComponentDescriptorList( role );
 
@@ -93,7 +93,7 @@ public class FieldComponentComposer
             }
             else if ( Set.class.isAssignableFrom( field.getType() ) )
             {
-                final Map dependencies = container.lookupMap( role );
+                Map dependencies = container.lookupMap( role );
 
                 retValue = container.getComponentDescriptorList( role );
 
@@ -101,11 +101,11 @@ public class FieldComponentComposer
             }
             else //"ordinary" field
             {
-                final String key = requirement.getRequirementKey();
+                String key = requirement.getRequirementKey();
 
-                final Object dependency = container.lookup( key );
+                Object dependency = container.lookup( key );
 
-                final ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
 
                 retValue = new ArrayList( 1 );
 
@@ -122,12 +122,13 @@ public class FieldComponentComposer
         }
     }
 
-    protected Field findMatchingField( final Object component,
-                                       final ComponentDescriptor componentDescriptor,
-                                       final ComponentRequirement requirement )
-            throws CompositionException
+    protected Field findMatchingField( Object component,
+                                       ComponentDescriptor componentDescriptor,
+                                       ComponentRequirement requirement,
+                                       PlexusContainer container )
+        throws CompositionException
     {
-        final String fieldName = requirement.getFieldName();
+        String fieldName = requirement.getFieldName();
 
         Field field = null;
 
@@ -141,11 +142,18 @@ public class FieldComponentComposer
 
             try
             {
-                fieldClass = Thread.currentThread().getContextClassLoader().loadClass( requirement.getRole() );
+                if ( container != null )
+                {
+                    fieldClass = container.getComponentRealm( requirement.getRole() ).loadClass( requirement.getRole() );
+                }
+                else
+                {
+                    fieldClass = Thread.currentThread().getContextClassLoader().loadClass( requirement.getRole() );
+                }
             }
             catch ( ClassNotFoundException e )
             {
-                final StringBuffer msg = new StringBuffer( "Component Composition failed for component: ");
+                StringBuffer msg = new StringBuffer( "Component Composition failed for component: " );
 
                 msg.append( componentDescriptor.getHumanReadableKey() );
 
@@ -163,7 +171,7 @@ public class FieldComponentComposer
         return field;
     }
 
-    protected Field getFieldByNameIncludingSuperclasses( final Class componentClass, final String fieldName )
+    protected Field getFieldByNameIncludingSuperclasses( Class componentClass, String fieldName )
     {
         if ( Object.class.equals( componentClass ) )
         {
@@ -172,7 +180,7 @@ public class FieldComponentComposer
 
         try
         {
-            final Field field = componentClass.getDeclaredField( fieldName );
+            Field field = componentClass.getDeclaredField( fieldName );
 
             return field;
         }
@@ -182,20 +190,20 @@ public class FieldComponentComposer
         }
     }
 
-    protected Field getFieldByName( final Object component,
-                                    final String fieldName,
-                                    final ComponentDescriptor componentDescriptor )
-            throws CompositionException
+    protected Field getFieldByName( Object component,
+                                    String fieldName,
+                                    ComponentDescriptor componentDescriptor )
+        throws CompositionException
     {
-        final Field field = getFieldByNameIncludingSuperclasses( component.getClass(), fieldName );
+        Field field = getFieldByNameIncludingSuperclasses( component.getClass(), fieldName );
 
         if ( field == null )
         {
-            final StringBuffer msg = new StringBuffer( "Component Composition failed. No field of name: '" );
+            StringBuffer msg = new StringBuffer( "Component Composition failed. No field of name: '" );
 
             msg.append( fieldName );
 
-            msg.append( "' exists in component: ");
+            msg.append( "' exists in component: " );
 
             msg.append( componentDescriptor.getHumanReadableKey() );
 
@@ -205,24 +213,24 @@ public class FieldComponentComposer
         return field;
     }
 
-    protected Field getFieldByTypeIncludingSuperclasses( final Class componentClass,
-                                                         final Class type,
-                                                         final ComponentDescriptor componentDescriptor )
-            throws CompositionException
+    protected Field getFieldByTypeIncludingSuperclasses( Class componentClass,
+                                                         Class type,
+                                                         ComponentDescriptor componentDescriptor )
+        throws CompositionException
     {
         Field field = null;
 
-        final Class arrayType = Array.newInstance( type, 0 ).getClass();
+        Class arrayType = Array.newInstance( type, 0 ).getClass();
 
-        final Field[] fields = componentClass.getDeclaredFields();
+        Field[] fields = componentClass.getDeclaredFields();
 
         for ( int i = 0; i < fields.length; i++ )
         {
-            final Class fieldType = fields[ i ].getType();
+            Class fieldType = fields[i].getType();
 
             if ( fieldType.isAssignableFrom( type ) || fieldType.isAssignableFrom( arrayType ) )
             {
-                field = fields[ i ];
+                field = fields[i];
 
                 break;
             }
@@ -236,16 +244,16 @@ public class FieldComponentComposer
         return field;
     }
 
-    protected Field getFieldByType( final Object component,
-                                    final Class type,
-                                    final ComponentDescriptor componentDescriptor )
-            throws CompositionException
+    protected Field getFieldByType( Object component,
+                                    Class type,
+                                    ComponentDescriptor componentDescriptor )
+        throws CompositionException
     {
-        final Field field = getFieldByTypeIncludingSuperclasses( component.getClass(), type, componentDescriptor );
+        Field field = getFieldByTypeIncludingSuperclasses( component.getClass(), type, componentDescriptor );
 
         if ( field == null )
         {
-            final StringBuffer msg = new StringBuffer( "Component composition failed. No field of type: '" );
+            StringBuffer msg = new StringBuffer( "Component composition failed. No field of type: '" );
 
             msg.append( type );
 
@@ -260,7 +268,7 @@ public class FieldComponentComposer
                 msg.append( " Component: " );
 
                 msg.append( componentDescriptor.getHumanReadableKey() );
-            }            
+            }
 
             throw new CompositionException( msg.toString() );
         }
