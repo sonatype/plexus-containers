@@ -93,7 +93,7 @@ public class DefaultPlexusContainerTest
         assertEquals( true, serviceB.initialize );
 
         assertEquals( true, serviceB.start );
-        
+
         assertEquals( false, serviceB.stop );
 
         container.release( serviceB );
@@ -101,31 +101,100 @@ public class DefaultPlexusContainerTest
         assertEquals( true, serviceB.stop );
     }
 
-    public void testComponentLookupWithRoleHint()
+    /*
+     * Check that we can get references to a single component with a role
+     * hint.
+     */
+    public void testSingleComponentLookupWithRoleHint()
         throws Exception
     {
-        // ----------------------------------------------------------------------
-        //  ServiceC
-        // ----------------------------------------------------------------------
-
-        // Retrieve an manager of component c.
+        // Retrieve an instance of component c.
         DefaultServiceC serviceC1 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "first-instance" );
 
         // Make sure the component is alive.
         assertNotNull( serviceC1 );
 
-        // Retrieve the only manager again from the component repository.
+        assertTrue( serviceC1.started );
+
+        assertFalse( serviceC1.stopped );
+
+        // Retrieve a second reference to the same component.
         DefaultServiceC serviceC2 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "first-instance" );
 
         // Make sure component is alive.
         assertNotNull( serviceC2 );
 
-        // Let's make sure it gave us back the same manager.
+        assertTrue( serviceC2.started );
+
+        assertFalse( serviceC2.stopped );
+
+        // Let's make sure it gave us back the same component.
         assertSame( serviceC1, serviceC2 );
 
         container.release( serviceC1 );
 
+        // The component should still be alive.
+        assertTrue( serviceC2.started );
+
+        assertFalse( serviceC2.stopped );
+
         container.release( serviceC2 );
+
+        // The component should now have been stopped.
+        assertTrue( serviceC2.started );
+
+        assertTrue( serviceC2.stopped );
+    }
+
+    /*
+     * Check that distinct components with the same implementation are
+     * managed correctly.
+     */
+    public void testMultipleSingletonComponentInstances()
+        throws Exception
+    {
+        // Retrieve an instance of component c.
+        DefaultServiceC serviceC1 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "first-instance" );
+
+        // Make sure the component is alive.
+        assertNotNull( serviceC1 );
+
+        assertTrue( serviceC1.started );
+
+        assertFalse( serviceC1.stopped );
+
+        // Retrieve an instance of component c, with a different role hint.
+        // This should give us a different component instance.
+        DefaultServiceC serviceC2 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "second-instance" );
+
+        // Make sure component is alive.
+        assertNotNull( serviceC2 );
+
+        assertTrue( serviceC2.started );
+
+        assertFalse( serviceC2.stopped );
+
+        // The components should be distinct.
+        assertNotSame( serviceC1, serviceC2 );
+
+        container.release( serviceC1 );
+
+        // The first component should now have been stopped, the second
+        // one should still be alive.
+        assertTrue( serviceC1.started );
+
+        assertTrue( serviceC1.stopped );
+
+        assertTrue( serviceC2.started );
+
+        assertFalse( serviceC2.stopped );
+
+        container.release( serviceC2 );
+
+        // The second component should now have been stopped.
+        assertTrue( serviceC2.started );
+
+        assertTrue( serviceC2.stopped );
     }
 
     /**
