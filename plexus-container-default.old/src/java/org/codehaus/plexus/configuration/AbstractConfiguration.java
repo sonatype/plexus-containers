@@ -8,7 +8,11 @@ import org.apache.avalon.framework.configuration.ConfigurationException;
  * with methods that can be abstracted away from underlying implementations.
  *
  * @author <a href="mailto:dev@avalon.codehaus.org">Avalon Development Team</a>
+ *
  * @version CVS $Revision$ $Date$
+ *
+ * @todo decouple this from DefaultConfiguration which is inherently xml-centric.
+ * @todo remove all xml-centric notions from here.
  */
 public abstract class AbstractConfiguration
     implements Configuration
@@ -37,7 +41,7 @@ public abstract class AbstractConfiguration
     public int getValueAsInteger()
         throws ConfigurationException
     {
-        final String value = getValue().trim();
+        String value = getValue().trim();
 
         try
         {
@@ -58,9 +62,9 @@ public abstract class AbstractConfiguration
                 return Integer.parseInt( value );
             }
         }
-        catch ( final Exception nfe )
+        catch ( Exception nfe )
         {
-            final String message =
+            String message =
                 "Cannot parse the value \"" + value
                 + "\" as an integer in the configuration element \""
                 + getName() + "\" at " + getLocation();
@@ -77,13 +81,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public int getValueAsInteger( final int defaultValue )
+    public int getValueAsInteger( int defaultValue )
     {
         try
         {
             return getValueAsInteger();
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return defaultValue;
         }
@@ -101,7 +105,7 @@ public abstract class AbstractConfiguration
     public long getValueAsLong()
         throws ConfigurationException
     {
-        final String value = getValue().trim();
+        String value = getValue().trim();
         try
         {
             if ( value.startsWith( "0x" ) )
@@ -121,9 +125,9 @@ public abstract class AbstractConfiguration
                 return Long.parseLong( value );
             }
         }
-        catch ( final Exception nfe )
+        catch ( Exception nfe )
         {
-            final String message =
+            String message =
                 "Cannot parse the value \"" + value
                 + "\" as a long in the configuration element \""
                 + getName() + "\" at " + getLocation();
@@ -140,13 +144,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public long getValueAsLong( final long defaultValue )
+    public long getValueAsLong( long defaultValue )
     {
         try
         {
             return getValueAsLong();
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return defaultValue;
         }
@@ -161,14 +165,14 @@ public abstract class AbstractConfiguration
     public float getValueAsFloat()
         throws ConfigurationException
     {
-        final String value = getValue().trim();
+        String value = getValue().trim();
         try
         {
             return Float.parseFloat( value );
         }
-        catch ( final Exception nfe )
+        catch ( Exception nfe )
         {
-            final String message =
+            String message =
                 "Cannot parse the value \"" + value
                 + "\" as a float in the configuration element \""
                 + getName() + "\" at " + getLocation();
@@ -182,13 +186,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public float getValueAsFloat( final float defaultValue )
+    public float getValueAsFloat( float defaultValue )
     {
         try
         {
             return getValueAsFloat();
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return ( defaultValue );
         }
@@ -203,7 +207,7 @@ public abstract class AbstractConfiguration
     public boolean getValueAsBoolean()
         throws ConfigurationException
     {
-        final String value = getValue().trim();
+        String value = getValue().trim();
 
         if ( isTrue( value ) )
         {
@@ -215,7 +219,7 @@ public abstract class AbstractConfiguration
         }
         else
         {
-            final String message =
+            String message =
                 "Cannot parse the value \"" + value
                 + "\" as a boolean in the configuration element \""
                 + getName() + "\" at " + getLocation();
@@ -229,13 +233,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public boolean getValueAsBoolean( final boolean defaultValue )
+    public boolean getValueAsBoolean( boolean defaultValue )
     {
         try
         {
             return getValueAsBoolean();
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return defaultValue;
         }
@@ -247,13 +251,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public String getValue( final String defaultValue )
+    public String getValue( String defaultValue )
     {
         try
         {
             return getValue();
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return defaultValue;
         }
@@ -270,10 +274,10 @@ public abstract class AbstractConfiguration
      * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
      * @return the value
      */
-    public int getAttributeAsInteger( final String name )
+    public int getAttributeAsInteger( String name )
         throws ConfigurationException
     {
-        final String value = getAttribute( name ).trim();
+        String value = getAttribute( name ).trim();
         try
         {
             if ( value.startsWith( "0x" ) )
@@ -293,9 +297,9 @@ public abstract class AbstractConfiguration
                 return Integer.parseInt( value );
             }
         }
-        catch ( final Exception nfe )
+        catch ( Exception nfe )
         {
-            final String message =
+            String message =
                 "Cannot parse the value \"" + value
                 + "\" as an integer in the attribute \""
                 + name + "\" at " + getLocation();
@@ -314,13 +318,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public int getAttributeAsInteger( final String name, final int defaultValue )
+    public int getAttributeAsInteger( String name, int defaultValue )
     {
         try
         {
             return getAttributeAsInteger( name );
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return defaultValue;
         }
@@ -337,10 +341,10 @@ public abstract class AbstractConfiguration
      * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
      * @return the value
      */
-    public long getAttributeAsLong( final String name )
+    public long getAttributeAsLong( String name )
         throws ConfigurationException
     {
-        final String value = getAttribute( name );
+        String value = getAttribute( name );
 
         try
         {
@@ -361,9 +365,9 @@ public abstract class AbstractConfiguration
                 return Long.parseLong( value );
             }
         }
-        catch ( final Exception nfe )
+        catch ( Exception nfe )
         {
-            final String message =
+            String message =
                 "Cannot parse the value \"" + value
                 + "\" as a long in the attribute \""
                 + name + "\" at " + getLocation();
@@ -382,13 +386,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public long getAttributeAsLong( final String name, final long defaultValue )
+    public long getAttributeAsLong( String name, long defaultValue )
     {
         try
         {
             return getAttributeAsLong( name );
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return defaultValue;
         }
@@ -402,17 +406,17 @@ public abstract class AbstractConfiguration
      * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
      * @return the value
      */
-    public float getAttributeAsFloat( final String name )
+    public float getAttributeAsFloat( String name )
         throws ConfigurationException
     {
-        final String value = getAttribute( name );
+        String value = getAttribute( name );
         try
         {
             return Float.parseFloat( value );
         }
-        catch ( final Exception e )
+        catch ( Exception e )
         {
-            final String message =
+            String message =
                 "Cannot parse the value \"" + value
                 + "\" as a float in the attribute \""
                 + name + "\" at " + getLocation();
@@ -428,13 +432,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public float getAttributeAsFloat( final String name, final float defaultValue )
+    public float getAttributeAsFloat( String name, float defaultValue )
     {
         try
         {
             return getAttributeAsFloat( name );
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return defaultValue;
         }
@@ -448,10 +452,10 @@ public abstract class AbstractConfiguration
      * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
      * @return the value
      */
-    public boolean getAttributeAsBoolean( final String name )
+    public boolean getAttributeAsBoolean( String name )
         throws ConfigurationException
     {
-        final String value = getAttribute( name );
+        String value = getAttribute( name );
 
         if ( isTrue( value ) )
         {
@@ -463,7 +467,7 @@ public abstract class AbstractConfiguration
         }
         else
         {
-            final String message =
+            String message =
                 "Cannot parse the value \"" + value
                 + "\" as a boolean in the attribute \""
                 + name + "\" at " + getLocation();
@@ -471,7 +475,7 @@ public abstract class AbstractConfiguration
         }
     }
 
-    private boolean isTrue( final String value )
+    private boolean isTrue( String value )
     {
         return value.equalsIgnoreCase( "true" )
             || value.equalsIgnoreCase( "yes" )
@@ -479,7 +483,7 @@ public abstract class AbstractConfiguration
             || value.equalsIgnoreCase( "1" );
     }
 
-    private boolean isFalse( final String value )
+    private boolean isFalse( String value )
     {
         return value.equalsIgnoreCase( "false" )
             || value.equalsIgnoreCase( "no" )
@@ -495,13 +499,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public boolean getAttributeAsBoolean( final String name, final boolean defaultValue )
+    public boolean getAttributeAsBoolean( String name, boolean defaultValue )
     {
         try
         {
             return getAttributeAsBoolean( name );
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return defaultValue;
         }
@@ -515,13 +519,13 @@ public abstract class AbstractConfiguration
      * @param defaultValue the default value to return if value malformed or empty
      * @return the value
      */
-    public String getAttribute( final String name, final String defaultValue )
+    public String getAttribute( String name, String defaultValue )
     {
         try
         {
             return getAttribute( name );
         }
-        catch ( final ConfigurationException ce )
+        catch ( ConfigurationException ce )
         {
             return defaultValue;
         }
@@ -535,7 +539,7 @@ public abstract class AbstractConfiguration
      * @param name the name of the child
      * @return the child Configuration
      */
-    public Configuration getChild( final String name )
+    public Configuration getChild( String name )
     {
         return getChild( name, true );
     }
@@ -548,9 +552,9 @@ public abstract class AbstractConfiguration
      * @param createNew true if you want to create a new Configuration object if none exists
      * @return the child Configuration
      */
-    public Configuration getChild( final String name, final boolean createNew )
+    public Configuration getChild( String name, boolean createNew )
     {
-        final Configuration[] children = getChildren( name );
+        Configuration[] children = getChildren( name );
         if ( children.length > 0 )
         {
             return children[0];
