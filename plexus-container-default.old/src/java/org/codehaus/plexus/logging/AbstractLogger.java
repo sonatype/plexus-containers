@@ -16,6 +16,9 @@ public abstract class AbstractLogger
 
     public AbstractLogger( int threshold, String name )
     {
+        if( !isValidThreshold( threshold ) )
+            throw new RuntimeException( "threshold" );
+
         this.threshold = threshold;
         this.name = name;
     }
@@ -83,5 +86,23 @@ public abstract class AbstractLogger
     public boolean isFatalErrorEnabled()
     {
         return threshold <= LEVEL_FATAL;
+    }
+
+    protected boolean isValidThreshold( int threshold )
+    {
+        if( threshold == LEVEL_DEBUG )
+            return true;
+        if( threshold == LEVEL_INFO )
+            return true;
+        if( threshold == LEVEL_WARN )
+            return true;
+        if( threshold == LEVEL_ERROR )
+            return true;
+        if( threshold == LEVEL_FATAL )
+            return true;
+        if( threshold == LEVEL_DISABLED )
+            return true;
+
+        return false;
     }
 }
