@@ -9,7 +9,7 @@
   <goal name="pcd">
     <plexus:generate-component-descriptors
       srcDir="${pom.build.unitTestSourceDirectory}"
-      destDir="target/pcds"/>
+      destDir="target/test-classes"/>
   </goal>
 
 </project>
