@@ -88,6 +88,10 @@ public class PlexusConfigurationMerger
 
         mergedConfiguration.addChild( system.getChild( "component-manager-manager" ) );
 
+        // ----------------------------------------------------------------------
+        // Lifecycle handler managers
+        // ----------------------------------------------------------------------
+
         PlexusConfiguration lifecycleHandlerManager = user.getChild( "lifecycle-handler-manager" );
 
         if ( lifecycleHandlerManager.getChildCount() != 0 )
@@ -101,11 +105,21 @@ public class PlexusConfigurationMerger
             mergedConfiguration.addChild( system.getChild( "lifecycle-handler-manager" ) );
         }
 
+        // ----------------------------------------------------------------------
+        // Components
+        // ----------------------------------------------------------------------
+
         PlexusConfiguration components = user.getChild( "components" );
 
         if ( components.getChildCount() != 0 )
         {
             mergedConfiguration.addChild( components );
+
+            copyComponents( system.getChild( "components" ), components );
+        }
+        else
+        {
+            mergedConfiguration.addChild( system.getChild( "components" ) );
         }
 
         return mergedConfiguration;
@@ -120,6 +134,16 @@ public class PlexusConfigurationMerger
         for ( int i = 0; i < handlers.length; i++ )
         {
             dest.addChild( handlers[i] );
+        }
+    }
+
+    private static void copyComponents( PlexusConfiguration source, PlexusConfiguration destination )
+    {
+        PlexusConfiguration components[] = source.getChildren( "component" );
+
+        for ( int i = 0; i < components.length; i++ )
+        {
+            destination.addChild( components[i] );
         }
     }
 }
