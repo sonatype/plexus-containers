@@ -46,12 +46,6 @@ public class PoolableComponentManager
      */
     public void release( Object component )
     {
-        if ( component == null )
-        {
-            getLogger().warn( "Component attempted to be returned to pool, but this object does no appear to be from this pool. Component class=" + component.getClass() );
-            return;
-        }
-
         pool.put( component );
     }
 
