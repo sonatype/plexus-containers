@@ -165,12 +165,14 @@ public class DefaultPlexusContainerTest
 
         assertNotNull( serviceB1.getClassLoader() );
 
+        container.getComponentRepository().release( serviceB1 );
+
         // Retrieve another
         DefaultServiceB serviceB2 = (DefaultServiceB) container.getComponentRepository().lookup( ServiceB.ROLE );
 
         assertNotNull( serviceB2 );
 
-        container.getComponentRepository().release( serviceB1 );
+        container.getComponentRepository().release( serviceB2 );
     }
 
     /**
