@@ -13,7 +13,8 @@ import java.util.Map;
  * @author <a href="mailto:bert@tuaworks.co.nz">Bert van Brakel</a>
  * @version $Revision$
  */
-public abstract class AbstractMultipleInstanceManager extends AbstractInstanceManager
+public abstract class AbstractMultipleInstanceManager
+    extends AbstractInstanceManager
 {
 
     /** Component housings keyed by component. Used so we can dispose of

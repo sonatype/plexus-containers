@@ -16,9 +16,8 @@ import org.codehaus.plexus.logging.LoggerManager;
  */
 public interface ComponentRepository
 {
-    void configure(
-        Configuration defaultConfiguration,
-        Configuration configuration );
+    void configure( Configuration defaultConfiguration,
+                    Configuration configuration );
 
     void contextualize( Context context );
 
@@ -26,7 +25,8 @@ public interface ComponentRepository
      * Initialize this repository
      * @throws Exception
      */
-    void initialize() throws Exception;
+    void initialize()
+        throws Exception;
 
     /**
      * Lookup the component with the given role
@@ -36,9 +36,11 @@ public interface ComponentRepository
      * @throws ServiceException if no component with the given role exists, or there was an
      * error taking the component through a lifecycle
      */
-    Object lookup( String role ) throws ServiceException;
+    Object lookup( String role )
+        throws ServiceException;
 
-    Object lookup( String role, String id ) throws ServiceException;
+    Object lookup( String role, String id )
+        throws ServiceException;
 
     /**
      * Test if this repository manages the component with the given role

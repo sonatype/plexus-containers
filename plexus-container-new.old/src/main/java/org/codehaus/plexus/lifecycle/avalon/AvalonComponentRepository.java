@@ -56,7 +56,7 @@ public class AvalonComponentRepository extends DefaultComponentRepository
         ComponentDescriptor selector = new ComponentDescriptor();
         selector.setRole( descriptor.getRole() + "Selector" );
         selector.setImplementation( AvalonServiceSelector.class.getName() );
-        selector.setInstantiationStrategy( SINGLETON_STRATEGY );
+        selector.setInstantiationStrategy( DEFAULT_INSTANTIATION_STRATEGY );
 
         DefaultConfiguration config = new DefaultConfiguration( selector.getRole() );
         config.setAttribute( AvalonServiceSelector.SELECTABLE_ROLE_KEY,

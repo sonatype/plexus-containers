@@ -38,8 +38,7 @@ public class ClassicSingletonInstanceManager
 
             if ( connections == 0 )
             {
-                endComponentLifecycle( singleton );
-                singleton = null;
+                dispose();
             }
         }
         else
@@ -59,6 +58,7 @@ public class ClassicSingletonInstanceManager
         if ( singleton != null )
         {
             endComponentLifecycle( singleton );
+            singleton = null;
         }
     }
 

@@ -51,7 +51,9 @@ public class KeepAliveSingletonInstanceManager
         //Do we do this in a seperate thread? or block the current thread??
         //TODO
         if ( singleton != null )
+        {
             endComponentLifecycle( singleton );
+        }
     }
 
     /**

@@ -28,11 +28,10 @@ public class ComponentManager
     private ComponentRepository componentRespository;
 
     /** Constuctor. */
-    public ComponentManager(
-        ComponentDescriptor componentDescriptor,
-        ComponentRepository componentRepository,
-        ComponentDescriptor instanceManagerDescriptor,
-        ClassLoader classLoader )
+    public ComponentManager( ComponentDescriptor componentDescriptor,
+                             ComponentRepository componentRepository,
+                             ComponentDescriptor instanceManagerDescriptor,
+                             ClassLoader classLoader )
     {
         this.componentDescriptor = componentDescriptor;
         this.componentRespository = componentRepository;
@@ -44,16 +43,21 @@ public class ComponentManager
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    public void initialize() throws Exception
+    public void initialize()
+        throws Exception
     {
         Class c = classLoader.loadClass( instanceManagerDescriptor.getImplementation() );
+
         instanceManager = (InstanceManager) c.newInstance();
         instanceManager.setClassLoader( classLoader );
         instanceManager.setComponentImplementation( componentDescriptor.getImplementation() );
         instanceManager.setComponentManager( this );
+
         //the lifecyclehandler used is based on the component descriptor
         //look it up from the component repository
-        String id = componentDescriptor.getLifecycleHandlerId();
+
+        String id = componentDescriptor.getLifecycleHandler();
+
         if ( id == null )
         {
             //use the default handler
@@ -63,6 +67,7 @@ public class ComponentManager
         else
         {
             LifecycleHandler lh;
+
             try
             {
                 lh = getComponentRespository().getLifecycleHandler( id );
@@ -75,8 +80,10 @@ public class ComponentManager
                     + " required by component with role:"
                     + componentDescriptor.getRole() );
             }
+
             instanceManager.setLifecycleHandler( lh );
         }
+
         instanceManager.initialize();
     }
 
@@ -142,31 +149,11 @@ public class ComponentManager
     {
         return getInstanceManager().getComponent();
     }
-    /**
-     *
-     * @return
-     *//*
-    public ComponentHousing getComponentHousing() throws ServiceException
-    {
-        try
-        {
-            return getInstanceManager().getInstance();
-        }
-        catch (Exception e)
-        {
-            throw new ServiceException("instance-manager", e.getMessage(), e);
-        }
-    }*/
 
     private InstanceManager getInstanceManager()
     {
         return instanceManager;
     }
-
-    /*   public void setInstanceManager( InstanceManager instanceManager )
-       {
-           this.instanceManager = instanceManager;
-       }*/
 
     /**
      * Dispose this manager. This will also cause all components this manager

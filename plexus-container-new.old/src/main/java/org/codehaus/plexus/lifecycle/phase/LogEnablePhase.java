@@ -21,6 +21,7 @@ public class LogEnablePhase
                 final String message = "logger is null";
                 throw new IllegalArgumentException( message );
             }
+
             //give a new child logger named by the components class
             ( (LogEnabled) object ).enableLogging( logger.getChildLogger( object.getClass().getName() ) );
         }
