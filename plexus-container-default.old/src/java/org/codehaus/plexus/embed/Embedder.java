@@ -127,7 +127,7 @@ public class Embedder
     /**
      * Set the configuration for the <tt>PlexusContainer</tt>.
      *
-     * @param configurationURL A URL that contains the configuration
+     * @param configuration A URL that contains the configuration
      * for the <tt>PlexusContainer</tt>.
      * @throws IllegalStateException If the embedder has already been
      * started or stopped.
