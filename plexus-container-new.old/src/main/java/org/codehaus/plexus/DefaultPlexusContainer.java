@@ -86,6 +86,8 @@ public class DefaultPlexusContainer
 
     private ComponentComposerManager componentComposerManager;
 
+    private Map realmAliases;
+
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -422,9 +424,47 @@ public class DefaultPlexusContainer
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
+    protected void addRealmAlias( String alias, String realmId )
+    {
+        realmAliases.put( alias, realmId );
+    }
+
+    public ClassRealm getComponentRealm( String id )
+    {
+        ClassRealm classRealm;
+
+        try
+        {
+            // If there is an alias then use the alias
+            // We still need to account for the case where a component
+            // is a dependency of more than one component which is in
+            // an entirely different realm.
+
+            if ( realmAliases.get( id ) != null )
+            {
+                id = (String) realmAliases.get( id );
+            }
+
+            classRealm = classWorld.getRealm( id );
+        }
+        catch ( NoSuchRealmException e )
+        {
+            classRealm = plexusRealm;
+        }
+
+        return classRealm;
+    }
+
+    protected Map getRealmAliases()
+    {
+        return realmAliases;
+    }
+
     public void initialize()
         throws Exception
     {
+        realmAliases = new HashMap();
+
         initializeClassWorlds();
 
         initializeConfiguration();
