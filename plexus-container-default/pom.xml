@@ -1,14 +1,12 @@
-<model>
+<project>
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>plexus-containers</artifactId>
     <groupId>plexus</groupId>
+    <artifactId>plexus-containers</artifactId>
     <version>1.0-alpha-2-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
   <groupId>plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
-  <packaging>jar</packaging>
   <name>New Default Plexus Container</name>
   <version>1.0-alpha-2-SNAPSHOT</version>
-  <build />
-</model>
+</project>
