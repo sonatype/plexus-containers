@@ -1,10 +1,7 @@
 package org.codehaus.plexus.component.repository;
 
-/*
- * LICENSE
- */
-
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -21,44 +18,49 @@ public class ComponentSetDescriptor
 
     private String id;
 
-    /**
-     * Returns a list of {@link ComponentDescriptor}'s.
-     * 
-     * @return Returns a list of {@link ComponentDescriptor}'s.
-     */
     public List getComponents()
     {
         return components;
     }
 
-    /**
-     * Sets a <code>List</code> of {@link ComponentDescriptor}'s.
-     * 
-     * @param components A list of {@link ComponentDescriptor}'s.
-     */
+    public void addComponentDescriptor( ComponentDescriptor cd )
+    {
+        if ( components == null )
+        {
+            components = new ArrayList();
+        }
+
+        components.add( cd );
+    }
+
     public void setComponents( List components )
     {
         this.components = components;
     }
 
-    /**
-     * Returns a list of {@link ComponentDependency}'s.
-     * 
-     * @return Returns a list of {@link ComponentDependency}'s.
-     */
     public List getDependencies()
     {
         return dependencies;
     }
 
-    /**
-     * Sets a list of {@link ComponentDependency}'s.
-     * 
-     * @param dependencies A list of {@link ComponentDependency}'s.
-     */
+    public void addDependency( ComponentDependency cd )
+    {
+        if ( dependencies == null )
+        {
+            dependencies = new ArrayList();
+        }
+
+        dependencies.add( cd );
+    }
+
     public void setDependencies( List dependencies )
     {
         this.dependencies = dependencies;
+    }
+
+    public void setIsolatedRealm( boolean isolatedRealm )
+    {
+        this.isolatedRealm = isolatedRealm;
     }
 
     public boolean isIsolatedRealm()

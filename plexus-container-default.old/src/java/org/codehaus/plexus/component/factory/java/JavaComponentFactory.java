@@ -54,17 +54,17 @@ public class JavaComponentFactory
             }
             */
 
-            //componentClassRealm.display();
-
             Object instance = implementationClass.newInstance();
 
             return instance;
         }
         catch ( Exception e )
         {
-            componentClassRealm.display();
+            // ----------------------------------------------------------------------
             // Display the realm when there is an error, We should probably return a string here so we
             // can incorporate this into the error message for easy debugging.
+            // ----------------------------------------------------------------------
+            componentClassRealm.display();
 
             String msg = "Component " + componentDescriptor.getHumanReadableKey() + " cannot be instantiated: " + e.getMessage();
 

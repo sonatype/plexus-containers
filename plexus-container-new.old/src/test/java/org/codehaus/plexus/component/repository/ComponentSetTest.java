@@ -3,8 +3,8 @@ package org.codehaus.plexus.component.repository;
 import junit.framework.TestCase;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 
-import java.util.Set;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -55,7 +55,7 @@ public class ComponentSetTest
 
         assertEquals( "component-profile", c1.getComponentProfile() );
 
-        Set requirements = c1.getRequirements();
+        List requirements = c1.getRequirements();
 
         assertEquals( 2, requirements.size() );
 

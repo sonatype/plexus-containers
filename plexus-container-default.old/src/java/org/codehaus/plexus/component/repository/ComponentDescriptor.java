@@ -2,9 +2,8 @@ package org.codehaus.plexus.component.repository;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Component instantiation description.
@@ -36,7 +35,7 @@ public class ComponentDescriptor
 
     private String componentProfile = null;
 
-    private Set requirements;
+    private List requirements;
 
     private String componentFactory;
 
@@ -181,9 +180,19 @@ public class ComponentDescriptor
         return lifecycleHandler;
     }
 
+    public void setLifecycleHandler( String lifecycleHandler )
+    {
+        this.lifecycleHandler = lifecycleHandler;
+    }
+
     public String getComponentProfile()
     {
         return componentProfile;
+    }
+
+    public void setComponentProfile( String componentProfile )
+    {
+        this.componentProfile = componentProfile;
     }
 
     public void addRequirement( final ComponentRequirement requirement )
@@ -191,11 +200,11 @@ public class ComponentDescriptor
         getRequirements().add( requirement );
     }
 
-    public Set getRequirements()
+    public List getRequirements()
     {
         if ( requirements == null )
         {
-            requirements = new HashSet();
+            requirements = new ArrayList();
         }
         return requirements;
     }
