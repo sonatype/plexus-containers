@@ -7,6 +7,7 @@ import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.logging.AbstractLoggerManagerTest;
 import org.codehaus.plexus.logging.LoggerManager;
 
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Properties;
@@ -14,6 +15,20 @@ import java.util.Properties;
 public class Log4JLoggerManagerTest
     extends AbstractLoggerManagerTest
 {
+    public void setUp()
+    {
+        super.setUp();
+
+        String plexusHome = System.getProperty( "plexus.home" );
+
+        File f = new File( plexusHome, "logs" );
+
+        if ( !f.isDirectory() )
+        {
+            f.mkdir();
+        }
+    }
+
     protected Configuration createConfiguration(String threshold)
         throws Exception
     {
