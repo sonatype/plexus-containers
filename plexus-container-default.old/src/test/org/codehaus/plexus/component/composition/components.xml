@@ -33,9 +33,9 @@ So initially we are looking for
       <require>org.codehaus.plexus.ServiceB</require>
       <require>org.codehaus.plexus.ServiceC</require>
     </requires>
-    <default-configuration>
+    <configuration>
       <host>localhost</host>
       <port>10000</port>
-    </default-configuration>
+    </configuration>
   </component>
 </components>
