@@ -55,6 +55,9 @@
 
 package org.codehaus.plexus.logging;
 
+/**
+ * @version $Id$
+ */
 public interface LogEnabled
 {
     void enableLogging( Logger logger );

@@ -1,5 +1,10 @@
 package org.codehaus.plexus.logging;
 
+/**
+ * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @version $Id$
+ */
 public abstract class AbstractLogEnabled
     implements LogEnabled
 {

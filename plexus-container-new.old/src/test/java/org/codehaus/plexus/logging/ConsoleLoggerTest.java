@@ -8,8 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 /**
- *
- *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
@@ -19,7 +17,7 @@ public class ConsoleLoggerTest
 {
     public void testConsoleLogger()
     {
-        ConsoleLogger logger = new ConsoleLogger( ConsoleLogger.LEVEL_DEBUG );
+        ConsoleLogger logger = new ConsoleLogger( ConsoleLogger.LEVEL_DEBUG, "test" );
 
         assertTrue( logger.isDebugEnabled() );
 

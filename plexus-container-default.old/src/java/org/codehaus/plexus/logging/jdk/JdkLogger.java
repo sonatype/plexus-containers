@@ -8,32 +8,41 @@ package org.codehaus.plexus.logging.jdk;
  * with this distribution in the LICENSE.txt file.
  */
 
-import org.codehaus.plexus.logging.Logger;
-
 import java.util.logging.Level;
 
+import org.codehaus.plexus.logging.AbstractLogger;
+import org.codehaus.plexus.logging.Logger;
+
 /**
- * Logging facade implmentation for JDK1.4 logging toolkit.
- * The following lists the mapping between DNA log levels
- * and JDK1.4 log levels.
- *
+ * A logger for those who want to use the java 1.4+ logging facilities.
+ * 
+ * The mapping of the logging levels:
  * <ul>
- *   <li>trace ==&gt; finest</li>
- *   <li>debug ==&gt; fine</li>
- *   <li>info ==&gt; info</li>
- *   <li>warn ==&gt; warning</li>
- *   <li>error ==&gt; severe</li>
+ *   <li>LEVEL_DEBUG &lt;==&gt; Level.CONFIG</li>
+ *   <li>LEVEL_DEBUG &lt;==&gt; Level.ALL</li>
+ *   <li>LEVEL_DEBUG &lt;==&gt; Level.FINEST</li>
+ *   <li>LEVEL_DEBUG &lt;==&gt; Level.FINER</li>
+ *   <li>LEVEL_DEBUG &lt;==&gt; Level.FINE</li>
+ *   <li>LEVEL_INFO &lt;==&gt; Level.INFO</li>
+ *   <li>LEVEL_WARN &lt;==&gt; Level.WARNING</li>
+ *   <li>LEVEL_ERROR &lt;==&gt; Level.SEVERE</li>
+ *   <li>LEVEL_OFF &lt;==&gt; Level.OFF</li>
  * </ul>
+ * I don't know if debug is the right level for config -- Trygve.
  *
+ * @author <a href="www.jcontainer.org">The JContainer Group</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Revision$ $Date$
  */
 public class JdkLogger
-    implements Logger
+    extends AbstractLogger
 {
     private java.util.logging.Logger logger;
 
     public JdkLogger( java.util.logging.Logger logger )
     {
+        super( jdkLoggerLevelToThreshold( logger.getLevel() ), logger.getName());
+
         if ( null == logger )
         {
             throw new NullPointerException( "logger" );
@@ -51,11 +60,6 @@ public class JdkLogger
         logger.log( Level.FINEST, message, throwable );
     }
 
-    public boolean isTraceEnabled()
-    {
-        return logger.isLoggable( Level.FINEST );
-    }
-
     public void debug( String message )
     {
         logger.log( Level.FINE, message );
@@ -64,11 +68,6 @@ public class JdkLogger
     public void debug( String message, Throwable throwable )
     {
         logger.log( Level.FINE, message, throwable );
-    }
-
-    public boolean isDebugEnabled()
-    {
-        return logger.isLoggable( Level.FINE );
     }
 
     public void info( String message )
@@ -81,11 +80,6 @@ public class JdkLogger
         logger.log( Level.INFO, message, throwable );
     }
 
-    public boolean isInfoEnabled()
-    {
-        return logger.isLoggable( Level.INFO );
-    }
-
     public void warn( String message )
     {
         logger.log( Level.WARNING, message );
@@ -94,16 +88,6 @@ public class JdkLogger
     public void warn( String message, Throwable throwable )
     {
         logger.log( Level.WARNING, message, throwable );
-    }
-
-    public boolean isWarnEnabled()
-    {
-        return logger.isLoggable( Level.WARNING );
-    }
-
-    public boolean isFatalErrorEnabled()
-    {
-        return isErrorEnabled();
     }
 
     public void fatalError( String message )
@@ -126,15 +110,32 @@ public class JdkLogger
         logger.log( Level.SEVERE, message, throwable );
     }
 
-    public boolean isErrorEnabled()
-    {
-        return logger.isLoggable( Level.SEVERE );
-    }
-
     public Logger getChildLogger( String name )
     {
         String childName = logger.getName() + "." + name;
 
         return new JdkLogger( java.util.logging.Logger.getLogger( childName ) );
+    }
+
+    private static int jdkLoggerLevelToThreshold( Level level )
+    {
+        if( level == Level.CONFIG ) 
+            return LEVEL_DEBUG;
+        else if( level == Level.FINEST ) 
+            return LEVEL_DEBUG;
+        else if( level == Level.FINER ) 
+            return LEVEL_DEBUG;
+        else if( level == Level.FINE ) 
+            return LEVEL_DEBUG;
+        else if( level == Level.INFO ) 
+            return LEVEL_INFO;
+        else if( level == Level.WARNING ) 
+            return LEVEL_WARN;
+        else if( level == Level.SEVERE ) 
+            return LEVEL_ERROR;
+        else if( level == Level.OFF ) 
+            return LEVEL_DISABLED;
+        else
+            return LEVEL_DEBUG;
     }
 }

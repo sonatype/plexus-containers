@@ -89,9 +89,9 @@ public class DefaultPlexusContainer
     {
         context = new DefaultContext();
 
-        loggerManager = new ConsoleLoggerManager();
+        loggerManager = new ConsoleLoggerManager("debug");
 
-        enableLogging( loggerManager.getRootLogger() );
+        enableLogging( loggerManager.getLoggerForComponent( PlexusContainer.class.getName() ) );
     }
 
     // ----------------------------------------------------------------------
@@ -676,7 +676,7 @@ public class DefaultPlexusContainer
     {
         loggerManager = (LoggerManager) lookup( LoggerManager.ROLE );
 
-        enableLogging( loggerManager.getRootLogger() );
+        enableLogging( loggerManager.getLoggerForComponent( PlexusContainer.class.getName() ) );
     }
 
     private void initializeCoreComponents()
@@ -807,7 +807,7 @@ public class DefaultPlexusContainer
 
     public Logger getLogger()
     {
-        return loggerManager.getRootLogger();
+        return loggerManager.getLoggerForComponent( PlexusContainer.class.getName() );
     }
 
     public Object createComponentInstance( ComponentDescriptor componentDescriptor )

@@ -7,6 +7,7 @@ import org.codehaus.plexus.PlexusTestCase;
  * and {@link Logger} interfaces.
  *
  * @author Mark H. Wilkinson
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Revision$
  */
 public abstract class AbstractLoggerManagerTest
@@ -15,12 +16,65 @@ public abstract class AbstractLoggerManagerTest
     protected abstract LoggerManager createLoggerManager()
         throws Exception;
 
+    public void testSetThreshold()
+        throws Exception
+    {
+        LoggerManager manager;
+        Logger logger1, logger2;
+
+        manager = createLoggerManager();
+
+        manager.setThreshold( Logger.LEVEL_FATAL );
+        logger1 = manager.getLoggerForComponent( "role1", "roleHint1" );
+        assertEquals( Logger.LEVEL_FATAL, logger1.getThreshold() );
+
+        manager.setThreshold( Logger.LEVEL_DEBUG );
+        logger2 = manager.getLoggerForComponent( "role2", "roleHint2" );
+        assertEquals( Logger.LEVEL_FATAL, logger1.getThreshold() );
+        assertEquals( Logger.LEVEL_DEBUG, logger2.getThreshold() );
+    }
+
+    /**
+     * There is only one logger instance pr component even if looked up more that once.
+     */
+    public void testActiveLoggerCount()
+        throws Exception
+    {
+        LoggerManager manager;
+        Logger b, c1, c2;
+        Logger root;
+
+        manager = getManager( Logger.LEVEL_FATAL );
+        assertEquals(0, manager.getActiveLoggerCount());
+
+        b = manager.getLoggerForComponent( "b" );
+        assertEquals(1, manager.getActiveLoggerCount());
+
+        c1 = manager.getLoggerForComponent( "c", "1" );
+        c1 = manager.getLoggerForComponent( "c", "1" );
+        assertEquals(2, manager.getActiveLoggerCount());
+
+        c2 = manager.getLoggerForComponent( "c", "2" );
+        assertEquals(3, manager.getActiveLoggerCount());
+
+        manager.returnComponentLogger( "c", "1" );
+        assertEquals(2, manager.getActiveLoggerCount());
+
+        manager.returnComponentLogger( "c", "2" );
+        manager.returnComponentLogger( "c", "2" );
+        manager.returnComponentLogger( "c", "1" );
+        assertEquals(1, manager.getActiveLoggerCount());
+
+        manager.returnComponentLogger( "b" );
+        assertEquals(0, manager.getActiveLoggerCount());
+    }
+
     public void testDebugLevelConfiguration()
         throws Exception
     {
-        LoggerManager manager = managerStart( "debug" );
+        LoggerManager manager = getManager( Logger.LEVEL_DEBUG );
 
-        Logger logger = extractRootLogger( manager );
+        Logger logger = extractLogger( manager );
 
         checkDebugLevel( logger );
 
@@ -32,9 +86,9 @@ public abstract class AbstractLoggerManagerTest
     public void testInfoLevelConfiguration()
         throws Exception
     {
-        LoggerManager manager = managerStart( "info" );
+        LoggerManager manager = getManager( Logger.LEVEL_INFO );
 
-        Logger logger = extractRootLogger( manager );
+        Logger logger = extractLogger( manager );
 
         checkInfoLevel( logger );
 
@@ -46,9 +100,9 @@ public abstract class AbstractLoggerManagerTest
     public void testWarnLevelConfiguration()
         throws Exception
     {
-        LoggerManager manager = managerStart( "warn" );
+        LoggerManager manager = getManager( Logger.LEVEL_WARN );
 
-        Logger logger = extractRootLogger( manager );
+        Logger logger = extractLogger( manager );
 
         checkWarnLevel( logger );
 
@@ -60,9 +114,9 @@ public abstract class AbstractLoggerManagerTest
     public void testErrorLevelConfiguration()
         throws Exception
     {
-        LoggerManager manager = managerStart( "error" );
+        LoggerManager manager = getManager( Logger.LEVEL_ERROR );
 
-        Logger logger = extractRootLogger( manager );
+        Logger logger = extractLogger( manager );
 
         checkErrorLevel( logger );
 
@@ -74,9 +128,9 @@ public abstract class AbstractLoggerManagerTest
     public void testFatalLevelConfiguration()
         throws Exception
     {
-        LoggerManager manager = managerStart( "fatal" );
+        LoggerManager manager = getManager( Logger.LEVEL_FATAL );
 
-        Logger logger = extractRootLogger( manager );
+        Logger logger = extractLogger( manager );
 
         checkFatalLevel( logger );
 
@@ -85,7 +139,7 @@ public abstract class AbstractLoggerManagerTest
         checkFatalLevel( logger );
     }
 
-    private LoggerManager managerStart( String threshold )
+    private LoggerManager getManager( int threshold )
         throws Exception
     {
         LoggerManager manager = createLoggerManager();
@@ -96,7 +150,7 @@ public abstract class AbstractLoggerManagerTest
 
         return manager;
     }
-
+/*
     private Logger extractRootLogger( LoggerManager manager )
     {
         Logger logger = manager.getRootLogger();
@@ -105,12 +159,13 @@ public abstract class AbstractLoggerManagerTest
 
         return logger;
     }
-
+*/
     private Logger extractLogger( LoggerManager manager )
     {
-        Logger logger = manager.getLogger( "foo" );
+        Logger logger = manager.getLoggerForComponent( "foo" );
 
         assertNotNull( logger );
+        assertEquals( "foo", logger.getName() );
 
         return logger;
     }

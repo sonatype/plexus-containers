@@ -23,7 +23,7 @@ class MockLogger
         m_name = name;
     }
 
-    String getName()
+    public String getName()
     {
         return m_name;
     }
@@ -109,5 +109,10 @@ class MockLogger
     public boolean isErrorEnabled()
     {
         return false;
+    }
+
+    public int getThreshold()
+    {
+        return 0;
     }
 }

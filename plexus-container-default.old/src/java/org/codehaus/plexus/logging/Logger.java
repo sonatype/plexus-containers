@@ -55,8 +55,31 @@
 
 package org.codehaus.plexus.logging;
 
+/**
+ * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @version $Id$
+ */
 public interface Logger
 {
+    /** Typecode for debugging messages. */
+    int LEVEL_DEBUG = 0;
+
+    /** Typecode for informational messages. */
+    int LEVEL_INFO = 1;
+
+    /** Typecode for warning messages. */
+    int LEVEL_WARN = 2;
+
+    /** Typecode for error messages. */
+    int LEVEL_ERROR = 3;
+
+    /** Typecode for fatal error messages. */
+    int LEVEL_FATAL = 4;
+
+    /** Typecode for disabled log levels. */
+    int LEVEL_DISABLED = 5;
+
     void debug( String message );
 
     void debug( String message, Throwable throwable );
@@ -87,5 +110,14 @@ public interface Logger
 
     boolean isFatalErrorEnabled();
 
+    /**
+     * This one probably shouldn't be deprecated after all. One useful use case is when
+     * you have a server that creates a lot of threads and would like to create a child
+     * logger pr thread.
+     */
     Logger getChildLogger( String name );
+
+    int getThreshold();
+
+    String getName();
 }

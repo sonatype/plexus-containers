@@ -1,7 +1,7 @@
 package org.codehaus.plexus.logging.console;
 
+import org.codehaus.plexus.logging.AbstractLogger;
 import org.codehaus.plexus.logging.Logger;
-
 
 /**
  * Logger sending everything to the standard output streams.
@@ -9,49 +9,19 @@ import org.codehaus.plexus.logging.Logger;
  * does not have a logger to supply.
  *
  * @author <a href="mailto:dev@avalon.codehaus.org">Avalon Development Team</a>
- * @version CVS $Revision$ $Date$
+ * @version $Id$
  */
 public final class ConsoleLogger
-    implements Logger
+    extends AbstractLogger
 {
-    /** Typecode for debugging messages. */
-    public static final int LEVEL_DEBUG = 0;
-
-    /** Typecode for informational messages. */
-    public static final int LEVEL_INFO = 1;
-
-    /** Typecode for warning messages. */
-    public static final int LEVEL_WARN = 2;
-
-    /** Typecode for error messages. */
-    public static final int LEVEL_ERROR = 3;
-
-    /** Typecode for fatal error messages. */
-    public static final int LEVEL_FATAL = 4;
-
-    /** Typecode for disabled log levels. */
-    public static final int LEVEL_DISABLED = 5;
-
-    private int logLevel;
-
-    public ConsoleLogger()
+    public ConsoleLogger( int threshold, String name )
     {
-        this( LEVEL_DEBUG );
-    }
-
-    public ConsoleLogger( int logLevel )
-    {
-        this.logLevel = logLevel;
-    }
-
-    public void debug( String message )
-    {
-        debug( message, null );
+        super( threshold, name );
     }
 
     public void debug( String message, Throwable throwable )
     {
-        if ( logLevel <= LEVEL_DEBUG )
+        if ( isDebugEnabled() )
         {
             System.out.print( "[DEBUG] " );
             System.out.println( message );
@@ -63,19 +33,9 @@ public final class ConsoleLogger
         }
     }
 
-    public boolean isDebugEnabled()
-    {
-        return logLevel <= LEVEL_DEBUG;
-    }
-
-    public void info( String message )
-    {
-        info( message, null );
-    }
-
     public void info( String message, Throwable throwable )
     {
-        if ( logLevel <= LEVEL_INFO )
+        if ( isInfoEnabled() )
         {
             System.out.print( "[INFO] " );
             System.out.println( message );
@@ -87,19 +47,9 @@ public final class ConsoleLogger
         }
     }
 
-    public boolean isInfoEnabled()
-    {
-        return logLevel <= LEVEL_INFO;
-    }
-
-    public void warn( String message )
-    {
-        warn( message, null );
-    }
-
     public void warn( String message, Throwable throwable )
     {
-        if ( logLevel <= LEVEL_WARN )
+        if ( isWarnEnabled() )
         {
             System.out.print( "[WARNING] " );
             System.out.println( message );
@@ -111,19 +61,9 @@ public final class ConsoleLogger
         }
     }
 
-    public boolean isWarnEnabled()
-    {
-        return logLevel <= LEVEL_WARN;
-    }
-
-    public void error( String message )
-    {
-        error( message, null );
-    }
-
     public void error( String message, Throwable throwable )
     {
-        if ( logLevel <= LEVEL_ERROR )
+        if ( isErrorEnabled() )
         {
             System.out.print( "[ERROR] " );
             System.out.println( message );
@@ -135,19 +75,9 @@ public final class ConsoleLogger
         }
     }
 
-    public boolean isErrorEnabled()
-    {
-        return logLevel <= LEVEL_ERROR;
-    }
-
-    public void fatalError( String message )
-    {
-        fatalError( message, null );
-    }
-
     public void fatalError( String message, Throwable throwable )
     {
-        if ( logLevel <= LEVEL_FATAL )
+        if ( isFatalErrorEnabled() )
         {
             System.out.print( "[FATAL ERROR] " );
             System.out.println( message );
@@ -157,16 +87,6 @@ public final class ConsoleLogger
                 throwable.printStackTrace( System.out );
             }
         }
-    }
-
-    public boolean isFatalErrorEnabled()
-    {
-        return logLevel <= LEVEL_FATAL;
-    }
-
-    public void setLogLevel( int logLevel )
-    {
-        this.logLevel = logLevel;
     }
 
     public Logger getChildLogger( String name )
