@@ -129,6 +129,19 @@ public class DefaultArtifactEnabledContainer
                 }
 
                 // ----------------------------------------------------------------------
+                // NOTE!!!!
+                //
+                // This is the wrong way to do this I now realize. What i need to do is
+                // collect the metedata about the components i.e. just pull in the
+                // component descriptor and create the DAG. Then when the component is
+                // requested the first time, at that point create the realm and use
+                // the DAG to populate the realm correctly. This method below is
+                // leading to jumbled realms and the alias mechanism used is crap and
+                // won't be needed when I delay the creation of the realms using the 
+                // component metadata which is the way to go. jvz.
+                // ----------------------------------------------------------------------
+
+                // ----------------------------------------------------------------------
                 // I need to pass the exclusion parameters into the artifact resolution
                 // phase to prevent duplication entries.
                 // ----------------------------------------------------------------------
