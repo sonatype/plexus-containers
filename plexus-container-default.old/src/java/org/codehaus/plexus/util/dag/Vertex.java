@@ -43,7 +43,7 @@ public class Vertex
     }
 
     /**
-     * @return 
+     * @return
      */
     public String getLabel()
     {
@@ -63,14 +63,14 @@ public class Vertex
      * @return
      */
     public List getAdjacentLabels()
-    {        
+    {
         final List retValue = new ArrayList( adjacencyList.size() );
         for ( final Iterator iter = adjacencyList.iterator(); iter.hasNext(); )
         {
-            final Vertex vertex = ( Vertex ) iter.next();
+            final Vertex vertex = (Vertex) iter.next();
             retValue.add( vertex.getLabel() );
         }
         return retValue;
-    }         
+    }
 }
 

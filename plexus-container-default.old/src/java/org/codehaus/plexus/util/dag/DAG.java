@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * DAG = Directed Acyclic Graph
- * 
+ *
  * @author <a href="michal.maczka@dimatics.com">Michal Maczka</a>
  * @version $Id$
  */
@@ -44,14 +44,14 @@ public class DAG
     // ------------------------------------------------------------
 
     /**
-     * @return 
+     * @return
      */
     public List getVerticies()
     {
         return vertexList;
     }
-    
-    
+
+
     public Set getLabels()
     {
         final Set retValue = vertexMap.keySet();
@@ -74,7 +74,7 @@ public class DAG
         // check if vertex is alredy in DAG
         if ( vertexMap.containsKey( label ) )
         {
-            return ( Vertex ) vertexMap.get( label );
+            return (Vertex) vertexMap.get( label );
         }
 
         final Vertex vertex = new Vertex( label );
@@ -92,24 +92,24 @@ public class DAG
 
     public Vertex getVertex( final String label )
     {
-       final Vertex retValue = ( Vertex ) vertexMap.get( label );
-       return retValue;
+        final Vertex retValue = (Vertex) vertexMap.get( label );
+        return retValue;
     }
-    
+
     public boolean hasEdge( final String label1, final String label2 )
     {
         final Vertex v1 = getVertex( label1 );
-        if ( v1== null )
+        if ( v1 == null )
         {
             throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label1 + "' must exist" );
         }
         final Vertex v2 = getVertex( label2 );
-        if ( v2== null )
+        if ( v2 == null )
         {
             throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label2 + "' must exist" );
         }
         return v1.getAdjacencyList().contains( v2 );
-        
+
     }
 
     /**
@@ -122,7 +122,7 @@ public class DAG
         if ( vertex == null )
         {
             throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label + "' must exist" );
-        }            
-        return vertex.getAdjacentLabels();        
+        }
+        return vertex.getAdjacentLabels();
     }
 }

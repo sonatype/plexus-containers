@@ -38,7 +38,7 @@ public class CycleDetector
         final Map vertexStateMap = new HashMap();
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
-            final Vertex vertex = ( Vertex ) iter.next();
+            final Vertex vertex = (Vertex) iter.next();
             if ( isNotVisited( vertex, vertexStateMap ) )
             {
                 hasCycle = dfsVisit( vertex, vertexStateMap );
@@ -52,10 +52,10 @@ public class CycleDetector
     }
 
     /**
-     * @param vertex         
+     * @param vertex
      * @param vertexStateMap
-     * 
-     * @return 
+     *
+     * @return
      */
     private static boolean isNotVisited( final Vertex vertex, final Map vertexStateMap )
     {
@@ -63,19 +63,19 @@ public class CycleDetector
         {
             return true;
         }
-        final Integer state = ( Integer ) vertexStateMap.get( vertex );
+        final Integer state = (Integer) vertexStateMap.get( vertex );
         return NOT_VISTITED.equals( state );
     }
 
     /**
-     * @param vertex         
+     * @param vertex
      * @param vertexStateMap
-     * 
-     * @return 
+     *
+     * @return
      */
     private static boolean isVisiting( final Vertex vertex, final Map vertexStateMap )
     {
-        final Integer state = ( Integer ) vertexStateMap.get( vertex );
+        final Integer state = (Integer) vertexStateMap.get( vertex );
         return VISITING.equals( state );
     }
 
@@ -85,7 +85,7 @@ public class CycleDetector
         final List verticies = vertex.getAdjacencyList();
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
-            final Vertex v = ( Vertex ) iter.next();
+            final Vertex v = (Vertex) iter.next();
             if ( isNotVisited( v, vertexStateMap ) )
             {
                 dfsVisit( v, vertexStateMap );

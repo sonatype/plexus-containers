@@ -26,8 +26,8 @@ public class TopologicalSorter
     private final static Integer VISITED = new Integer( 2 );
 
     /**
-     * @param graph 
-     * 
+     * @param graph
+     *
      * @return List of String (vertex labels)
      */
 
@@ -43,7 +43,7 @@ public class TopologicalSorter
         final Map vertexStateMap = new HashMap();
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
-            final Vertex vertex = ( Vertex ) iter.next();
+            final Vertex vertex = (Vertex) iter.next();
             if ( isNotVisited( vertex, vertexStateMap ) )
             {
                 dfsVisit( vertex, vertexStateMap, result );
@@ -53,10 +53,10 @@ public class TopologicalSorter
     }
 
     /**
-     * @param vertex         
+     * @param vertex
      * @param vertexStateMap
-     * 
-     * @return 
+     *
+     * @return
      */
     private static boolean isNotVisited( final Vertex vertex, final Map vertexStateMap )
     {
@@ -64,7 +64,7 @@ public class TopologicalSorter
         {
             return true;
         }
-        final Integer state = ( Integer ) vertexStateMap.get( vertex );
+        final Integer state = (Integer) vertexStateMap.get( vertex );
         return NOT_VISTITED.equals( state );
     }
 
@@ -75,7 +75,7 @@ public class TopologicalSorter
         final List verticies = vertex.getAdjacencyList();
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
-            final Vertex v = ( Vertex ) iter.next();
+            final Vertex v = (Vertex) iter.next();
             if ( isNotVisited( v, vertexStateMap ) )
             {
                 dfsVisit( v, vertexStateMap, list );
