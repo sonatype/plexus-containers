@@ -21,11 +21,11 @@ import java.util.StringTokenizer;
  *
  * @version $Id$
  */
-public class ObjectBuilder
+public class XStreamTool
 {
     private XStream xstream;
 
-    public ObjectBuilder()
+    public XStreamTool()
     {
         HyphenatedElementMapper elementMapper = new HyphenatedElementMapper();
 

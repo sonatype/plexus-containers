@@ -1,7 +1,7 @@
 package org.codehaus.plexus.lifecycle;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.xstream.ObjectBuilder;
+import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.lifecycle.avalon.AvalonLifecycleHandler;
 
 import java.io.StringReader;
@@ -51,7 +51,7 @@ public class DefaultLifecycleHandlerManagerTest
             "  </lifecycle-handlers>" +
             "</lifecycle-handler-manager>";
 
-        ObjectBuilder builder = new ObjectBuilder();
+        XStreamTool builder = new XStreamTool();
 
         builder.alias( "lifecycle-handler-manager", DefaultLifecycleHandlerManager.class );
 

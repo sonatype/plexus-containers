@@ -8,7 +8,7 @@ import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xstream.ObjectBuilder;
+import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
@@ -203,7 +203,7 @@ public class DefaultComponentRepository
     private void initializeLifecycleHandlerManager()
         throws Exception
     {
-        ObjectBuilder builder = new ObjectBuilder();
+        XStreamTool builder = new XStreamTool();
 
         builder.alias( "lifecycle-handler-manager", DefaultLifecycleHandlerManager.class );
 
@@ -223,7 +223,7 @@ public class DefaultComponentRepository
     private void initializeComponentManagerManager()
         throws Exception
     {
-        ObjectBuilder builder = new ObjectBuilder();
+        XStreamTool builder = new XStreamTool();
 
         builder.alias( "component-manager-manager", DefaultComponentManagerManager.class );
 
@@ -305,7 +305,7 @@ public class DefaultComponentRepository
     protected ComponentDescriptor buildComponentDescriptor( Configuration configuration )
         throws Exception
     {
-        ObjectBuilder objectBuilder = new ObjectBuilder();
+        XStreamTool objectBuilder = new XStreamTool();
 
         objectBuilder.alias( "component", ComponentDescriptor.class );
 

@@ -1,7 +1,7 @@
 package org.codehaus.plexus.configuration.xstream.pipeline;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.xstream.ObjectBuilder;
+import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
@@ -32,7 +32,7 @@ public class PipelineBuilderTest
             "  </valves>" +
             "</pipeline>";
 
-        ObjectBuilder builder = new ObjectBuilder();
+        XStreamTool builder = new XStreamTool();
 
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
