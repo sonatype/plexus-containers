@@ -109,22 +109,6 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( fieldType );
 
-            if ( converter == null )
-            {
-                String msg = "No converter is capable to convert configuration entry <"
-                        + elementName
-                        + ">"
-                        + " to instance of class: '"
-                        + field.getType()
-                        + "' Field name: '"
-                        + fieldName
-                        + "', declaring class: ' "
-                        + object.getClass().getName()
-                        + "'";
-
-                throw new ComponentConfigurationException( msg );
-            }
-
             Object value = converter.fromConfiguration( converterLookup, childConfiguration, fieldType,
                                                         object.getClass(), classLoader );
 
