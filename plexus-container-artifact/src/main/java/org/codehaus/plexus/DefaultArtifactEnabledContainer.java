@@ -24,11 +24,6 @@ package org.codehaus.plexus;
  * SOFTWARE.
  */
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -36,13 +31,18 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 /**
+ * @author <a href="jason@maven.org">Jason van Zyl</a>
  * @author jdcasey
  * @version $Id$
  */
@@ -152,7 +152,7 @@ public class DefaultArtifactEnabledContainer
                     // Don't even attempt to transtively resolve artifacts we are excluding.
                     // ----------------------------------------------------------------------
 
-                    if ( filter.include( cd.getArtifactId() ) )
+                    if ( filter.include( new ComponentDependencyArtifactAdapter( cd ) ) )
                     {
                         artifactsToResolve.add( createArtifact( cd ) );
                     }
@@ -187,7 +187,7 @@ public class DefaultArtifactEnabledContainer
                 {
                     Artifact a = (Artifact) k.next();
 
-                    if ( filter.include( a.getArtifactId() ) )
+                    if ( filter.include( a ) )
                     {
                         componentRealm.addConstituent( a.getFile().toURL() );
                     }
@@ -230,6 +230,17 @@ public class DefaultArtifactEnabledContainer
             // ----------------------------------------------------------------------
 
             componentRealm.addConstituent( component.getFile().toURL() );
+        }
+    }
+
+    class ComponentDependencyArtifactAdapter
+        extends DefaultArtifact
+    {
+        private ComponentDependency cd;
+
+        public ComponentDependencyArtifactAdapter( ComponentDependency cd )
+        {
+            super( cd.getGroupId(), cd.getArtifactId(), cd.getVersion(), null, null, null );
         }
     }
 }
