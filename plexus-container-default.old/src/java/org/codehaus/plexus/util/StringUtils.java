@@ -81,7 +81,7 @@ public class StringUtils
 {
 
     /**
-     * <p><code>StringUtils<code> instances should NOT be constructed in
+     * <p><code>StringUtils</code> instances should NOT be constructed in
      * standard programming. Instead, the class should be used as
      * <code>StringUtils.trim(" foo ");</code>.</p>
      *
@@ -1122,7 +1122,7 @@ public class StringUtils
      * @param size size to pad to
      * @param delim String to pad with
      * @return right padded String
-     * @throws NullPointerException if str or delim is <code>null<code>
+     * @throws NullPointerException if str or delim is <code>null</code>
      * @throws ArithmeticException if delim is the empty String
      */
     public static String rightPad( String str, int size, String delim )
@@ -1138,12 +1138,12 @@ public class StringUtils
     /**
      * <p>Left pad a String with spaces.</p>
      *
-     * <p>The String is padded to the size of <code>n<code>.</p>
+     * <p>The String is padded to the size of <code>n</code>.</p>
      *
      * @param str String to pad out
      * @param size size to pad to
      * @return left padded String
-     * @throws NullPointerException if str or delim is <code>null<code>
+     * @throws NullPointerException if str or delim is <code>null</code>
      */
     public static String leftPad( String str, int size )
     {
