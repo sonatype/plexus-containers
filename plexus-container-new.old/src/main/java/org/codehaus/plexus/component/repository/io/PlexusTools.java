@@ -32,55 +32,55 @@ public class PlexusTools
         return buildConfiguration( new StringReader( configuration ) );
     }
 
-    public static ComponentDescriptor buildComponentDescriptor( String s )
+    public static ComponentDescriptor buildComponentDescriptor( String configuration )
         throws Exception
     {
-        return buildComponentDescriptor( buildConfiguration( s ) );
+        return buildComponentDescriptor( buildConfiguration( configuration ) );
     }
 
-    public static ComponentDescriptor buildComponentDescriptor( PlexusConfiguration c )
+    public static ComponentDescriptor buildComponentDescriptor( PlexusConfiguration configuration )
         throws Exception
     {
         ComponentDescriptor cd = new ComponentDescriptor();
 
-        cd.setRole( c.getChild( "role" ).getValue() );
+        cd.setRole( configuration.getChild( "role" ).getValue() );
 
-        cd.setRoleHint( c.getChild( "role-hint" ).getValue() );
+        cd.setRoleHint( configuration.getChild( "role-hint" ).getValue() );
 
-        cd.setImplementation( c.getChild( "implementation" ).getValue() );
+        cd.setImplementation( configuration.getChild( "implementation" ).getValue() );
 
-        cd.setVersion( c.getChild( "version" ).getValue() );
+        cd.setVersion( configuration.getChild( "version" ).getValue() );
 
-        cd.setComponentType( c.getChild( "component-type" ).getValue() );
+        cd.setComponentType( configuration.getChild( "component-type" ).getValue() );
 
-        cd.setInstantiationStrategy( c.getChild( "instantiation-strategy" ).getValue() );
+        cd.setInstantiationStrategy( configuration.getChild( "instantiation-strategy" ).getValue() );
 
-        cd.setLifecycleHandler( c.getChild( "lifecycle-handler" ).getValue() );
+        cd.setLifecycleHandler( configuration.getChild( "lifecycle-handler" ).getValue() );
 
-        cd.setComponentProfile( c.getChild( "component-profile" ).getValue() );
+        cd.setComponentProfile( configuration.getChild( "component-profile" ).getValue() );
 
-        cd.setComponentComposer( c.getChild( "component-composer" ).getValue() );
+        cd.setComponentComposer( configuration.getChild( "component-composer" ).getValue() );
 
-        cd.setComponentFactory( c.getChild( "component-factory" ).getValue() );
+        cd.setComponentFactory( configuration.getChild( "component-factory" ).getValue() );
 
-        cd.setDescription( c.getChild( "description" ).getValue() );
+        cd.setDescription( configuration.getChild( "description" ).getValue() );
 
-        cd.setAlias( c.getChild( "alias" ).getValue() );
+        cd.setAlias( configuration.getChild( "alias" ).getValue() );
 
-        String s = c.getChild( "isolated-realm" ).getValue();
+        String s = configuration.getChild( "isolated-realm" ).getValue();
 
         if ( s != null )
         {
             cd.setIsolatedRealm( s.equals( "true" ) ? true : false );
         }
 
-        cd.setConfiguration( c.getChild( "configuration" ) );
+        cd.setConfiguration( configuration.getChild( "configuration" ) );
 
         // ----------------------------------------------------------------------
         // Requirements
         // ----------------------------------------------------------------------
 
-        PlexusConfiguration[] requirements = c.getChild( "requirements" ).getChildren( "requirement" );
+        PlexusConfiguration[] requirements = configuration.getChild( "requirements" ).getChildren( "requirement" );
 
         for ( int i = 0; i < requirements.length; i++ )
         {
