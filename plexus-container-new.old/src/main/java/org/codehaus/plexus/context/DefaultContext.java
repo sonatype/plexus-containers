@@ -18,26 +18,28 @@ import java.util.Map;
 public class DefaultContext
     implements Context
 {
-    private static final class Hidden implements Serializable
-    {
-    }
+    /** */
+     private static  Hidden HIDDEN_MAKER = new Hidden();
 
-    private static final Hidden HIDDEN_MAKER = new Hidden();
+    /** Context data. */
+     private  Map contextData;
 
-    private final Map m_contextData;
-    private final Context m_parent;
-    private boolean m_readOnly;
+    /** Parent Context. */
+     private  Context parent;
 
-    /**
+     /** Is the context read only. */
+     private boolean readOnly;
+
+     /**
      * Create a Context with specified data and parent.
      *
      * @param contextData the context data
      * @param parent the parent Context (may be null)
      */
-    public DefaultContext( final Map contextData, final Context parent )
+    public DefaultContext( Map contextData, Context parent )
     {
-        m_parent = parent;
-        m_contextData = contextData;
+        this.parent = parent;
+        this.contextData = contextData;
     }
 
     /**
@@ -45,7 +47,7 @@ public class DefaultContext
      *
      * @param contextData the context data
      */
-    public DefaultContext( final Map contextData )
+    public DefaultContext( Map contextData )
     {
         this( contextData, null );
     }
@@ -55,7 +57,7 @@ public class DefaultContext
      *
      * @param parent the parent Context (may be null)
      */
-    public DefaultContext( final Context parent )
+    public DefaultContext( Context parent )
     {
         this( new Hashtable(), parent );
     }
@@ -76,17 +78,17 @@ public class DefaultContext
      * @return the item stored in context
      * @throws org.apache.avalon.framework.context.ContextException if item not present
      */
-    public Object get( final Object key )
+    public Object get( Object key )
         throws ContextException
     {
-        final Object data = m_contextData.get( key );
+        Object data = contextData.get( key );
 
         if ( null != data )
         {
             if ( data instanceof Hidden )
             {
                 // Always fail.
-                final String message = "Unable to locate " + key;
+                String message = "Unable to locate " + key;
                 throw new ContextException( message );
             }
 
@@ -99,15 +101,15 @@ public class DefaultContext
         }
 
         // If data was null, check the parent
-        if ( null == m_parent )
+        if ( null == parent )
         {
             // There was no parent, and no data
-            final String message =
+            String message =
                 "Unable to resolve context key: " + key;
             throw new ContextException( message );
         }
 
-        return m_parent.get( key );
+        return parent.get( key );
     }
 
     /**
@@ -117,17 +119,17 @@ public class DefaultContext
      * @param value the item
      * @throws java.lang.IllegalStateException if context is read only
      */
-    public void put( final Object key, final Object value )
+    public void put( Object key, Object value )
         throws IllegalStateException
     {
         checkWriteable();
         if ( null == value )
         {
-            m_contextData.remove( key );
+            contextData.remove( key );
         }
         else
         {
-            m_contextData.put( key, value );
+            contextData.put( key, value );
         }
     }
 
@@ -140,11 +142,11 @@ public class DefaultContext
      * @param key the items key
      * @throws java.lang.IllegalStateException if context is read only
      */
-    public void hide( final Object key )
+    public void hide( Object key )
         throws IllegalStateException
     {
         checkWriteable();
-        m_contextData.put( key, HIDDEN_MAKER );
+        contextData.put( key, HIDDEN_MAKER );
     }
 
     /**
@@ -152,9 +154,9 @@ public class DefaultContext
      *
      * @return the context data
      */
-    protected final Map getContextData()
+    protected Map getContextData()
     {
-        return m_contextData;
+        return contextData;
     }
 
     /**
@@ -162,9 +164,9 @@ public class DefaultContext
      *
      * @return the parent Context (may be null)
      */
-    protected final Context getParent()
+    protected Context getParent()
     {
-        return m_parent;
+        return parent;
     }
 
     /**
@@ -174,7 +176,7 @@ public class DefaultContext
      */
     public void makeReadOnly()
     {
-        m_readOnly = true;
+        readOnly = true;
     }
 
     /**
@@ -182,14 +184,20 @@ public class DefaultContext
      *
      * @throws java.lang.IllegalStateException if context is read only
      */
-    protected final void checkWriteable()
+    protected void checkWriteable()
         throws IllegalStateException
     {
-        if ( m_readOnly )
+        if ( readOnly )
         {
-            final String message =
+            String message =
                 "Context is read only and can not be modified";
             throw new IllegalStateException( message );
         }
     }
+
+    private static class Hidden
+        implements Serializable
+    {
+    }
+
 }
