@@ -1,6 +1,6 @@
 <plugin>
-  <implementation>org.codehaus.plexus.component.discovery.MockMavenPlugin</implementation>
-  <id>antlr</id>
+  <implementation>org.codehaus.plexus.test.discovery.MockMavenPlugin</implementation>
+  <id>mocky</id>
   <goals>
     <goal>
       <name>antlr</name>
