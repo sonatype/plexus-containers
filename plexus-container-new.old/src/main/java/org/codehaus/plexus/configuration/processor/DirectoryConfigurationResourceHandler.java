@@ -73,6 +73,11 @@ public class DirectoryConfigurationResourceHandler
 
         String includes = (String) parameters.get( "includes" );
 
+        if ( includes == null )
+        {
+            includes = "**/*.xml";
+        }
+
         String excludes = (String) parameters.get( "excludes" );
 
         try
@@ -84,18 +89,22 @@ public class DirectoryConfigurationResourceHandler
             // PlexusConfiguration and insert it into the source configuration.
             // ----------------------------------------------------------------------
 
-            for ( Iterator i = files.iterator(); i.hasNext(); )
+            PlexusConfiguration[] configurations = new PlexusConfiguration[files.size()];
+
+            for ( int i = 0; i < configurations.length; i++ )
             {
-                File configurationFile = (File) i.next();
+                File configurationFile = (File) files.get( i );
 
                 PlexusConfiguration configuration = PlexusTools.buildConfiguration( new FileReader( configurationFile ) );
+
+                configurations[i] = configuration;
             }
+
+            return configurations;
         }
         catch ( Exception e )
         {
             throw new ConfigurationProcessingException( e );
         }
-
-        return null;
     }
 }
