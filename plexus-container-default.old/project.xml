@@ -194,7 +194,6 @@
     <aspectSourceDirectory>${basedir}/src/aspect</aspectSourceDirectory>
     <unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory>
 
-    <!-- Unit test classes -->
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
