@@ -1,6 +1,7 @@
 package org.codehaus.plexus.component.discovery;
 
 import org.codehaus.plexus.PlexusTools;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.Enumeration;
@@ -62,13 +63,17 @@ public class DefaultComponentDiscoverer
 
                 for ( int i = 0; i < componentConfigurations.length; i++ )
                 {
-                    componentDescriptors.add( PlexusTools.buildComponentDescriptor( componentConfigurations[i] ) );
+                    PlexusConfiguration c = componentConfigurations[i];
+
+                    ComponentDescriptor cd = PlexusTools.buildComponentDescriptor( c );
+
+                    componentDescriptors.add( cd );
                 }
             }
         }
         catch ( Exception e )
         {
-            // do nothing
+            e.printStackTrace();
         }
 
         return componentDescriptors;
