@@ -185,10 +185,12 @@ public class Embedder
             throw new IllegalStateException( "Embedder cannot be restarted" );
         }
 
-        container.setConfigurationResource(
-            new InputStreamReader( findConfigurationInputStream() ) );
+        container.setConfigurationResource( new InputStreamReader( findConfigurationInputStream() ) );
+
         container.initialize();
+
         embedderStarted = true;
+
         container.start();
     }
 
@@ -203,18 +205,20 @@ public class Embedder
     public void stop()
         throws Exception
     {
-        if ( !embedderStarted )
-        {
-            throw new IllegalStateException( "Embedder not started" );
-        }
-
         if ( embedderStopped )
         {
             throw new IllegalStateException( "Embedder already stopped" );
         }
 
+        if ( !embedderStarted )
+        {
+            throw new IllegalStateException( "Embedder not started" );
+        }
+
         container.dispose();
+
         embedderStarted = false;
+
         embedderStopped = true;
     }
 
