@@ -63,6 +63,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 
 /*
@@ -1280,6 +1282,31 @@ public class FileUtils
         }
 
         return size;
+    }
+
+    public static List getFiles( File directory, String includes, String excludes )
+        throws Exception
+    {
+        DirectoryScanner scanner = new DirectoryScanner();
+
+        scanner.setBasedir( directory );
+
+        scanner.setIncludes( StringUtils.split( includes, "," ) );
+
+        scanner.setExcludes( StringUtils.split( excludes, "," ) );
+
+        scanner.scan();
+
+        String[] files = scanner.getIncludedFiles();
+
+        List list = new ArrayList();
+
+        for ( int i = 0; i < files.length; i++ )
+        {
+            list.add( new File( directory, files[i] ) );
+        }
+
+        return list;
     }
 
 }
