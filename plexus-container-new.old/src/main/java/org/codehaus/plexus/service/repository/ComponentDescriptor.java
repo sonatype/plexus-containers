@@ -211,7 +211,7 @@ public class ComponentDescriptor
     /**
      * Set the id of the lifecycle handler the component uses
      *
-     * @param string
+     * @param id
      */
     public void setLifecycleHandlerId( String id )
     {
