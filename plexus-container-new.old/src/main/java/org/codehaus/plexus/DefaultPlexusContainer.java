@@ -8,6 +8,7 @@ import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
@@ -651,9 +652,13 @@ public class DefaultPlexusContainer
     private void initializeComponentRepository()
         throws Exception
     {
-        String implementation = configuration.getChild( "component-repository" ).getChild( "implementation" ).getValue();
+        PlexusXStream builder = new PlexusXStream();
 
-        componentRepository = (ComponentRepository) classLoader.loadClass( implementation ).newInstance();
+        builder.alias( "component-repository", DefaultComponentRepository.class );
+
+        PlexusConfiguration c = configuration.getChild( "component-repository" );
+
+        componentRepository = (ComponentRepository) builder.build( c, DefaultComponentRepository.class );
 
         componentRepository.configure( configuration );
 

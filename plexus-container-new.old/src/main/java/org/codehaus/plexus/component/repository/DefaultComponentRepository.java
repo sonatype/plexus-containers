@@ -48,10 +48,6 @@ public class DefaultComponentRepository
         componentDescriptors = new HashMap();
 
         componentDescriptorMaps = new HashMap();
-
-        compositionResolver = new DefaultCompositionResolver();
-
-        componentDiscoverer = new DefaultComponentDiscoverer();
     }
 
     // ----------------------------------------------------------------------
