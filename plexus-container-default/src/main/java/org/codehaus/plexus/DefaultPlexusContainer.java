@@ -1196,7 +1196,7 @@ public class DefaultPlexusContainer
         }
         else
         {
-            throw new Exception( "The specified JAR repository doesn't exist or is not a directory." );
+            getLogger().warn( "The specified JAR repository doesn't exist or is not a directory." );
         }
     }
 
