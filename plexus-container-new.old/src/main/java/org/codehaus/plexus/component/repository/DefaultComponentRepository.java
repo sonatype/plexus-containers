@@ -4,7 +4,6 @@ import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.context.Context;
 import org.apache.avalon.framework.service.ServiceException;
-import org.apache.avalon.framework.service.ServiceManager;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
@@ -12,7 +11,6 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerFactory;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerHousing;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
-import org.codehaus.plexus.lifecycle.avalon.AvalonServiceManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.ThreadSafeMap;
@@ -108,7 +106,7 @@ public class DefaultComponentRepository
      * other components. Care must be taken no circular dependencies
      * are created.
      */
-    private ServiceManager service;
+    //private ServiceManager service;
 
     private ComponentDescriptorBuilder componentDescriptorBuilder;
 
@@ -124,9 +122,6 @@ public class DefaultComponentRepository
         compManagersByCompClass = new ThreadSafeMap();
 
         lifecycleHandlers = new HashMap();
-
-        // Why is this here? jvz. bad bad bad.
-        service = new AvalonServiceManager( this );
 
         componentDescriptorBuilder = new ComponentDescriptorBuilder();
     }
@@ -491,10 +486,7 @@ public class DefaultComponentRepository
                                                                             getComponentLogManager(),
                                                                             getClassLoader(),
                                                                             h,
-                                                                            descriptor,
-                                                                            service );
-
-        //componentManager.initialize();//performed in ComponentFactory
+                                                                            descriptor );
 
         //make the ComponentManager available for future requests
         getComponentManagers().put( descriptor.getComponentKey(), componentManager );
