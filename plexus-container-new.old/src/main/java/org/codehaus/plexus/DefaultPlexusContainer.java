@@ -46,10 +46,6 @@ import java.util.Map;
  *  @version $Id$
  *
  *  @todo Make ClassWorlds optional so we can make the runtime tiny.
- *  @todo the container itself must be able to behave like a normal
- *        component so that we can deal with hierachies. In the majority of
- *        cases the derived container will take a lot of configuration information
- *        from the parent.
  */
 public class DefaultPlexusContainer
     extends AbstractLogEnabled
