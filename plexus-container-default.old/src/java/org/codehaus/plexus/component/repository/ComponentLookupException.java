@@ -1,9 +1,9 @@
-package org.codehaus.plexus.component;
+package org.codehaus.plexus.component.repository;
 
 /**
  * The exception which is thrown by a component repository when
  * the requested component cannot be found.
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
