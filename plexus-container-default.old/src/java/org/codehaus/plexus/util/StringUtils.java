@@ -61,7 +61,7 @@ import java.util.StringTokenizer;
  * <p>Common <code>String</code> manipulation routines.</p>
  *
  * <p>Originally from
- * <a href="http://jakarta.codehaus.org/turbine/">Turbine</a> and the
+ * <a href="http://jakarta.apache.org/turbine/">Turbine</a> and the
  * GenerationJavaCore library.</p>
  *
  * @author <a href="mailto:jon@latchkey.com">Jon S. Stevens</a>
@@ -638,6 +638,55 @@ public class StringUtils
 
     // Replacing
     //--------------------------------------------------------------------------
+
+    /**
+     * <p>Replace a char with another char inside a larger String, once.</p>
+     *
+     * <p>A <code>null</code> reference passed to this method is a no-op.</p>
+     *
+     * @see #replace(String text, char repl, char with, int max)
+     * @param text text to search and replace in
+     * @param repl char to search for
+     * @param with char to replace with
+     * @return the text with any replacements processed
+     */
+    public static String replaceOnce( String text, char repl, char with )
+    {
+        return replace( text, repl, with, 1 );
+    }
+
+    /**
+     * <p>Replace all occurances of a char within another char.</p>
+     *
+     * <p>A <code>null</code> reference passed to this method is a no-op.</p>
+     *
+     * @see #replace(String text, char repl, char with, int max)
+     * @param text text to search and replace in
+     * @param repl char to search for
+     * @param with char to replace with
+     * @return the text with any replacements processed
+     */
+    public static String replace( String text, char repl, char with )
+    {
+        return replace( text, repl, with, -1 );
+    }
+
+    /**
+     * <p>Replace a char with another char inside a larger String,
+     * for the first <code>max</code> values of the search char.</p>
+     *
+     * <p>A <code>null</code> reference passed to this method is a no-op.</p>
+     *
+     * @param text text to search and replace in
+     * @param repl char to search for
+     * @param with char to replace with
+     * @param max maximum number of values to replace, or <code>-1</code> if no maximum
+     * @return the text with any replacements processed
+     */
+    public static String replace( String text, char repl, char with, int max )
+    {
+        return replace( text, String.valueOf( repl ), String.valueOf( with ), max );
+    }
 
     /**
      * <p>Replace a String with another String inside a larger String, once.</p>
