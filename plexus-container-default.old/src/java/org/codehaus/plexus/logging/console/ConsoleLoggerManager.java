@@ -44,6 +44,8 @@ public class ConsoleLoggerManager
     /** The number of active loggers in use. */
     private int loggerCount;
 
+    private boolean bootTimeLogger = false;
+
     /**
      */
     public ConsoleLoggerManager()
@@ -53,19 +55,24 @@ public class ConsoleLoggerManager
     /**
      * This special constructor is called directly when the container is bootstrapping itself.
      */
-    public ConsoleLoggerManager(String threshold)
+    public ConsoleLoggerManager( String threshold )
     {
         this.threshold = threshold;
+
+        bootTimeLogger = true;
+
         initialize();
     }
 
     public void initialize()
     {
         debug( "Initializing ConsoleLoggerManager: " + this.hashCode() + "." );
+//        if ( !bootTimeLogger )
+//            new Throwable().printStackTrace(System.err);
         currentThreshold = parseThreshold( threshold );
 
-        if(currentThreshold == -1)
-        {    
+        if ( currentThreshold == -1 )
+        {
             debug( "Could not parse the threshold level: '" + threshold + "', setting to debug." );
             currentThreshold = Logger.LEVEL_DEBUG;
         }
@@ -203,6 +210,7 @@ public class ConsoleLoggerManager
      */
     private void debug( String msg )
     {
-//        System.out.println( msg );
+//        if ( !bootTimeLogger )
+//            System.out.println( "[Console] " + msg );
     }
 }
