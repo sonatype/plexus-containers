@@ -9,6 +9,7 @@ import org.codehaus.plexus.component.configurator.DefaultComponentConfigurator;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
+import org.codehaus.plexus.component.manager.InstanceManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -52,6 +53,8 @@ public class DefaultPlexusContainer
     extends AbstractLogEnabled
     implements PlexusContainer
 {
+    private PlexusContainer parentContainer;
+
     private LoggerManager loggerManager;
 
     private DefaultContext context;
@@ -78,7 +81,7 @@ public class DefaultPlexusContainer
 
     private Map componentManagers = new HashMap();
 
-    private Map componentManagersByComponentClass = new HashMap();
+    private Map instanceManagers = new HashMap();
 
     private LifecycleHandlerManager lifecycleHandlerManager;
 
@@ -127,6 +130,11 @@ public class DefaultPlexusContainer
 
             if ( descriptor == null )
             {
+                if ( parentContainer != null )
+                {
+                    return parentContainer.lookup( componentKey );
+                }
+
                 getLogger().error( "Non existant component: " + componentKey );
 
                 String message = "Component descriptor cannot be found in the component repository: " + componentKey + ".";
@@ -146,34 +154,33 @@ public class DefaultPlexusContainer
 
                 throw new ComponentLookupException( message, e );
             }
-            try
-            {
-                component = componentManager.getComponent();
-            }
-            catch ( Exception e )
-            {
-                String message = "Cannot create component for " + componentKey + ".";
-
-                getLogger().error( message, e );
-
-                throw new ComponentLookupException( message, e );
-            }
-
-            componentManagersByComponentClass.put( component.getClass().getName(), componentManager );
         }
-        else
+
+        try
         {
-            try
-            {
-                component = componentManager.getComponent();
-            }
-            catch ( Exception e )
-            {
-                String message = "Cannot create component for " + componentKey + ".";
-
-                throw new ComponentLookupException( message, e );
-            }
+            component = componentManager.getComponent();
         }
+        catch ( Exception e )
+        {
+            String message = "Cannot create component for " + componentKey + ".";
+
+            getLogger().error( message, e );
+
+            throw new ComponentLookupException( message, e );
+        }
+
+        String componentClass = component.getClass().getName();
+
+        InstanceManager instanceManager = getInstanceManager( componentClass );
+
+        if ( instanceManager == null )
+        {
+            instanceManager = componentManager.createInstanceManager();
+
+            instanceManagers.put( componentClass, instanceManager );
+        }
+
+        instanceManager.register( component, componentManager );
 
         return component;
     }
@@ -251,6 +258,42 @@ public class DefaultPlexusContainer
     // Component Release
     // ----------------------------------------------------------------------
 
+    public void release( Object component )
+    {
+        if ( component == null )
+        {
+            return;
+        }
+
+        InstanceManager instanceManager = getInstanceManager( component.getClass().getName() );
+
+        ComponentManager componentManager = null;
+
+        if ( instanceManager != null )
+        {
+            componentManager = instanceManager.findComponentManager( component );
+        }
+
+        if ( componentManager == null )
+        {
+            if ( parentContainer != null )
+            {
+                parentContainer.release( component );
+            }
+            else
+            {
+                getLogger().warn( "Component manager not found for returned component. Ignored. component=" + component );
+            }
+        }
+        else
+        {
+            if ( componentManager.release( component ) )
+            {    
+                instanceManager.release( component );
+            }
+        }
+    }
+
     public void releaseAll( Map components )
     {
         for ( Iterator i = components.values().iterator(); i.hasNext(); )
@@ -303,18 +346,6 @@ public class DefaultPlexusContainer
         ComponentManager componentManager = findComponentManager( component );
 
         componentManager.resume( component );
-    }
-
-    public void release( Object component )
-    {
-        if ( component == null )
-        {
-            return;
-        }
-
-        ComponentManager componentManager = findComponentManager( component );
-
-        componentManager.release( component );
     }
 
     // ----------------------------------------------------------------------
@@ -380,6 +411,11 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     // Pre-initialization - can only be called prior to initialization
     // ----------------------------------------------------------------------
+
+    public void setParentPlexusContainer( PlexusContainer parentContainer )
+    {
+        this.parentContainer = parentContainer;
+    }
 
     public void addContextValue( Object key, Object value )
     {
@@ -693,7 +729,23 @@ public class DefaultPlexusContainer
 
     protected ComponentManager findComponentManager( Object component )
     {
-        return (ComponentManager) componentManagersByComponentClass.get( component.getClass().getName() );
+        InstanceManager instanceManager = getInstanceManager( component.getClass().getName() );
+
+        if ( instanceManager != null )
+        {
+            return instanceManager.findComponentManager( component );
+        }
+
+        return null;
+    }
+
+    // ----------------------------------------------------------------------
+    // Instance Managers
+    // ----------------------------------------------------------------------
+
+    InstanceManager getInstanceManager( String componentClass )
+    {
+        return (InstanceManager) instanceManagers.get( componentClass );
     }
 
     // ----------------------------------------------------------------------
