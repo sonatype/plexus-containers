@@ -3,6 +3,7 @@ package org.codehaus.plexus.test;
 import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
+import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.test.map.ActivityManager;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.list.Pipeline;
@@ -152,5 +153,13 @@ public class PlexusContainerTest
         throws Exception
     {
         ComponentConfigurator cc = (ComponentConfigurator) container.lookup( ComponentConfigurator.ROLE );
+    }
+
+    public void testLookupOfComponentThatShouldBeDiscovered()
+        throws Exception
+    {
+        DiscoveredComponent discoveredComponent = (DiscoveredComponent) container.lookup( DiscoveredComponent.ROLE );
+
+        assertNotNull( discoveredComponent );
     }
 }
