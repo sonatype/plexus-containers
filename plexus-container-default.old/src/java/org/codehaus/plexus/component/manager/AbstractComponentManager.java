@@ -121,7 +121,7 @@ public abstract class AbstractComponentManager
         }
         catch ( Exception e )
         {
-            getLogger().error( "Cannot start component lifecycle with role : " + getComponentDescriptor().getRole(), e );
+            getLogger().error( "Cannot start component lifecycle with role: " + getComponentDescriptor().getRole(), e );
         }
     }
 
@@ -133,7 +133,7 @@ public abstract class AbstractComponentManager
         }
         catch ( Exception e )
         {
-            getLogger().error( "Cannot suspend component with role : " + getComponentDescriptor().getRole(), e );
+            getLogger().error( "Cannot suspend component with role: " + getComponentDescriptor().getRole(), e );
         }
     }
 
@@ -145,7 +145,7 @@ public abstract class AbstractComponentManager
         }
         catch ( Exception e )
         {
-            getLogger().error( "Cannot suspend component with role : " + getComponentDescriptor().getRole(), e );
+            getLogger().error( "Cannot resume component with role: " + getComponentDescriptor().getRole(), e );
         }
     }
 
@@ -157,7 +157,7 @@ public abstract class AbstractComponentManager
         }
         catch ( Exception e )
         {
-            getLogger().error( "Cannot start component lifecycle with role : " + getComponentDescriptor().getRole(), e );
+            getLogger().error( "Cannot end component lifecycle with role: " + getComponentDescriptor().getRole(), e );
         }
     }
 }
