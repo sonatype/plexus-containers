@@ -479,17 +479,8 @@ public class DefaultComponentRepository
         disposeAllComponents();
     }
 
-    /**
-     * Method disposeAllComponents.
-     */
     protected void disposeAllComponents()
     {
-        // Use an array to get the list of componentManagers else we'll
-        // end up with a ConcurrentModificationException if we use an
-        // Iterator to cycle through the set because release() makes
-        // changes to the set as well.
-        //<== now not important as each component manager does this.
-
         for ( Iterator iter = getComponentManagers().values().iterator(); iter.hasNext(); )
         {
             try
