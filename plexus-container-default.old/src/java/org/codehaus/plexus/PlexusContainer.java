@@ -9,9 +9,6 @@ import java.util.Map;
 
 public interface PlexusContainer
 {
-    /**
-     * Interface's role.
-     */
     String ROLE = PlexusContainer.class.getName();
 
     Object lookup( String componentKey )

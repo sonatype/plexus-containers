@@ -146,19 +146,6 @@
       <version>1.0-rc3</version>
     </dependency>
 
-    <!-- Log4JLoggerManager -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.6</version>
-    </dependency>
-
-    <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>1.0-beta-1</version>
-    </dependency>
-
     <!-- Used for component-connector generation -->
     <dependency>
       <groupId>asm</groupId>
@@ -183,14 +170,19 @@
         <exclude>**/*HierarchyTest.java</exclude>
         <exclude>**/*Abstract*.java</exclude>
       </excludes>
-
       <resources>
         <resource>
-          <directory>${basedir}/src/test</directory>
+          <directory>src/test</directory>
           <includes>
             <include>**/*.xml</include>
             <include>**/*.properties</include>
             <include>**/*.conf</include>
+          </includes>
+        </resource>
+        <resource>
+          <directory>src/test-input</directory>
+          <includes>
+            <include>**/*.txt</include>
           </includes>
         </resource>
       </resources>

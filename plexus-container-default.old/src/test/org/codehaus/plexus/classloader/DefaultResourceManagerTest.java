@@ -3,7 +3,7 @@ package org.codehaus.plexus.classloader;
 import junit.framework.TestCase;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.logging.ConsoleLogger;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
 
 import java.io.File;
 import java.io.InputStream;

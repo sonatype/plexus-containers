@@ -2,6 +2,7 @@ package org.codehaus.plexus.logging;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

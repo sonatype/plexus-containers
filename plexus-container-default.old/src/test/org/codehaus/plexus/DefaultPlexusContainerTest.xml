@@ -13,7 +13,7 @@
   </system-properties>
 
   <logging>
-    <implementation>org.codehaus.plexus.logging.ConsoleLoggerManager</implementation>
+    <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
     <logger>
       <threshold>INFO</threshold>
     </logger>

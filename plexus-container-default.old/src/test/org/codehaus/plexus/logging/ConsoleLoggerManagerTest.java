@@ -3,9 +3,10 @@ package org.codehaus.plexus.logging;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
+import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
 /**
- * Test for {@link ConsoleLoggerManager} and {@link ConsoleLogger}.
+ * Test for {@link org.codehaus.plexus.logging.console.ConsoleLoggerManager} and {@link org.codehaus.plexus.logging.console.ConsoleLogger}.
  *
  * @author Mark H. Wilkinson
  * @version $Revision$
