@@ -27,14 +27,6 @@ public class ComponentRepositoryFactory
 
         ComponentRepository componentRepository = (ComponentRepository) getInstance( implementation, classLoader );
 
-        componentRepository.setComponentLogManager( loggerManager );
-
-        componentRepository.enableLogging( loggerManager.getLogger( "component-repository" ) );
-
-        componentRepository.contextualize( context );
-
-        componentRepository.setPlexusContainer( container );
-
         componentRepository.configure( configuration );
 
         componentRepository.initialize();

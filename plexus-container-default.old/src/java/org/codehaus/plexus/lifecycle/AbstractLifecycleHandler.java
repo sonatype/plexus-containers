@@ -15,18 +15,27 @@ public abstract class AbstractLifecycleHandler
     implements LifecycleHandler
 {
     private String id = null;
+
     private String name = null;
+
     private Map entities;
+
     private List beginSegment;
+
     private List suspendSegment;
+
     private List resumeSegment;
+
     private List endSegment;
 
     public AbstractLifecycleHandler()
     {
         beginSegment = new ArrayList();
+
         suspendSegment = new ArrayList();
+
         resumeSegment = new ArrayList();
+
         endSegment = new ArrayList();
     }
 
