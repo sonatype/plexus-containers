@@ -189,17 +189,4 @@ public class DefaultArtifactEnabledContainer
             componentRealm.addConstituent( component.getFile().toURL() );
         }
     }
-
-    protected boolean includeArtifact( String artifactId, String[] artifactExcludes )
-    {
-        for ( int b = 0; b < artifactExcludes.length; b++ )
-        {
-            if ( artifactId.equals( artifactExcludes[b] ) )
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
 }
