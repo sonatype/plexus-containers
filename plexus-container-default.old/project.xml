@@ -167,7 +167,6 @@
         <include>**/*Test.java</include>
       </includes>
       <excludes>
-        <exclude>**/ComponentDiscovererTest.java</exclude>
         <exclude>**/*Abstract*.java</exclude>
       </excludes>
       <resources>
