@@ -56,25 +56,31 @@ public class ObjectBuilderTest
 
         Configuration c = cb.parse( new StringReader( configuration ) );
 
-        Message m = (Message) builder.build( c, Message.class );
+        Message message = (Message) builder.build( c, Message.class );
 
-        assertEquals( "papinet", m.getGroupId() );
+        messageValueTest( message );
+    }
 
-        assertEquals( "Papinet", m.getGroupName() );
+    public void messageValueTest( Message message )
+        throws Exception
+    {
+        assertEquals( "papinet", message.getGroupId() );
 
-        assertEquals( "2.1", m.getGroupVersion() );
+        assertEquals( "Papinet", message.getGroupName() );
 
-        assertEquals( "invoice", m.getId() );
+        assertEquals( "2.1", message.getGroupVersion() );
 
-        assertEquals( "Invoice", m.getName() );
+        assertEquals( "invoice", message.getId() );
 
-        assertEquals( "org.foo.Bar", m.getClassName() );
+        assertEquals( "Invoice", message.getName() );
 
-        assertEquals( "unique-id-expression", m.getUniqueIdExpression() );
+        assertEquals( "org.foo.Bar", message.getClassName() );
 
-        assertEquals( "recipient-id-expression", m.getRecipientIdExpression() );
+        assertEquals( "unique-id-expression", message.getUniqueIdExpression() );
 
-        Summary summary = m.getSummary();
+        assertEquals( "recipient-id-expression", message.getRecipientIdExpression() );
+
+        Summary summary = message.getSummary();
 
         assertEquals( "invoice", summary.getId() );
 
@@ -92,7 +98,7 @@ public class ObjectBuilderTest
 
         assertEquals( "expression", e.getExpression() );
 
-        Message.InnerClass inner = m.getInnerClass();
+        Message.InnerClass inner = message.getInnerClass();
 
         assertNotNull( inner );
 
