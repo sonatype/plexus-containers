@@ -1,10 +1,10 @@
-package org.apache.plexus;
+package org.codehaus.plexus;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 
-import org.apache.plexus.service.repository.ComponentRepository;
+import org.codehaus.plexus.service.repository.ComponentRepository;
 
 /**
  * Aspect to identify "component leaks".  A component leak occurs when
