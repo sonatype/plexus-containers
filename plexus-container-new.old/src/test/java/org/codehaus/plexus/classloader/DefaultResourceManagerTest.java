@@ -2,6 +2,7 @@ package org.codehaus.plexus.classloader;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.logging.ConsoleLogger;
 
 import java.io.File;
@@ -83,7 +84,7 @@ public class DefaultResourceManagerTest
             "<nothing>nothing</nothing>" +
             "</resources>";
 
-        org.codehaus.plexus.configuration.Configuration configuration = builder.parse( new StringReader( xml ) );
+        Configuration configuration = builder.parse( new StringReader( xml ) );
 
         rm.configure( configuration );
 
