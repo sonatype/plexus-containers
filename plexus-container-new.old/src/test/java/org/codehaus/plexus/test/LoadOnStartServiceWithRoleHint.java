@@ -1,4 +1,4 @@
-package org.codehaus.plexus;
+package org.codehaus.plexus.test;
 
 /**
  *

@@ -14,7 +14,7 @@
 
   <lifecycle-handler-manager implementation="org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager">
     <lifecycle-handlers>
-      <lifecycle-handler implementation="org.codehaus.plexus.SimpleLifecycleHandler">
+      <lifecycle-handler implementation="org.codehaus.plexus.test.SimpleLifecycleHandler">
         <id>arbitrary</id>
         <name>Arbitrary Lifecycle Handler</name>
         <begin-segment>
@@ -38,8 +38,8 @@
     <!-- start: Component from original DefaultPlexusContainerTest -->
 
     <component>
-      <role>org.codehaus.plexus.ConfigurableComponent</role>
-      <implementation>org.codehaus.plexus.DefaultConfigurableComponent</implementation>
+      <role>org.codehaus.plexus.test.ConfigurableComponent</role>
+      <implementation>org.codehaus.plexus.test.DefaultConfigurableComponent</implementation>
       <configuration>
         <host>localhost</host>
         <port>10000</port>
@@ -47,49 +47,49 @@
     </component>
 
     <component>
-      <role>org.codehaus.plexus.ServiceB</role>
-      <implementation>org.codehaus.plexus.DefaultServiceB</implementation>
+      <role>org.codehaus.plexus.test.ServiceB</role>
+      <implementation>org.codehaus.plexus.test.DefaultServiceB</implementation>
     </component>
 
     <component>
-      <role>org.codehaus.plexus.ServiceC</role>
+      <role>org.codehaus.plexus.test.ServiceC</role>
       <role-hint>first-instance</role-hint>
-      <implementation>org.codehaus.plexus.DefaultServiceC</implementation>
+      <implementation>org.codehaus.plexus.test.DefaultServiceC</implementation>
     </component>
 
     <component>
-      <role>org.codehaus.plexus.ServiceC</role>
+      <role>org.codehaus.plexus.test.ServiceC</role>
       <role-hint>second-instance</role-hint>
-      <implementation>org.codehaus.plexus.DefaultServiceC</implementation>
+      <implementation>org.codehaus.plexus.test.DefaultServiceC</implementation>
     </component>
 
     <component>
-      <role>org.codehaus.plexus.ServiceD</role>
-      <implementation>org.codehaus.plexus.DefaultServiceD</implementation>
+      <role>org.codehaus.plexus.test.ServiceD</role>
+      <implementation>org.codehaus.plexus.test.DefaultServiceD</implementation>
       <instantiation-strategy>poolable</instantiation-strategy>
     </component>
 
     <component>
-      <role>org.codehaus.plexus.ServiceH</role>
-      <implementation>org.codehaus.plexus.DefaultServiceH</implementation>
+      <role>org.codehaus.plexus.test.ServiceH</role>
+      <implementation>org.codehaus.plexus.test.DefaultServiceH</implementation>
       <lifecycle-handler>arbitrary</lifecycle-handler>
     </component>
 
     <component>
-      <role>org.codehaus.plexus.LoadOnStartService</role>
-      <implementation>org.codehaus.plexus.DefaultLoadOnStartService</implementation>
+      <role>org.codehaus.plexus.test.LoadOnStartService</role>
+      <implementation>org.codehaus.plexus.test.DefaultLoadOnStartService</implementation>
       <configuration/>
     </component>
 
     <component>
-      <role>org.codehaus.plexus.LoadOnStartServiceWithRoleHint</role>
+      <role>org.codehaus.plexus.test.LoadOnStartServiceWithRoleHint</role>
       <role-hint>role-hint</role-hint>
-      <implementation>org.codehaus.plexus.DefaultLoadOnStartServiceWithRoleHint</implementation>
+      <implementation>org.codehaus.plexus.test.DefaultLoadOnStartServiceWithRoleHint</implementation>
     </component>
 
     <component>
-      <role>org.codehaus.plexus.logging.LoggerManager</role>
-      <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
+      <role>org.codehaus.plexus.test.logging.LoggerManager</role>
+      <implementation>org.codehaus.plexus.test.logging.console.ConsoleLoggerManager</implementation>
       <lifecycle-handler>basic</lifecycle-handler>
       <configuration>
         <threshold>fatal</threshold>

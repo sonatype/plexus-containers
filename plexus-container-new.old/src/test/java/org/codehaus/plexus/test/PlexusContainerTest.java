@@ -2,14 +2,6 @@ package org.codehaus.plexus.test;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.DefaultServiceB;
-import org.codehaus.plexus.ServiceB;
-import org.codehaus.plexus.DefaultServiceC;
-import org.codehaus.plexus.ServiceC;
-import org.codehaus.plexus.ServiceD;
-import org.codehaus.plexus.DefaultServiceD;
-import org.codehaus.plexus.DefaultServiceH;
-import org.codehaus.plexus.ServiceH;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.util.AbstractTestThread;
 import org.codehaus.plexus.util.TestThreadManager;
