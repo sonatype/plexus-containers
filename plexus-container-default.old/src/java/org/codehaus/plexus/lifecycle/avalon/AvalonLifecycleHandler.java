@@ -39,6 +39,7 @@ public class AvalonLifecycleHandler
         throws Exception
     {
         ComponentRepository cr = (ComponentRepository) getEntities().get( LifecycleHandler.SERVICE_REPOSITORY );
+
         addEntity( SERVICE_MANAGER, new AvalonServiceManager( cr ) );
     }
 }
