@@ -105,7 +105,9 @@ public class PlexusConfigurationMerger
         // Resources
         // ----------------------------------------------------------------------
 
-        mergedConfiguration.addChild( user.getChild( "resources" ) );
+        copyResources( system, mergedConfiguration );
+
+        copyResources( user, mergedConfiguration );
 
         // ----------------------------------------------------------------------
         // Component manager manager
@@ -198,6 +200,18 @@ public class PlexusConfigurationMerger
         copyComponents( user.getChild( "components" ), components );
 
         return mergedConfiguration;
+    }
+
+    private static void copyResources( PlexusConfiguration source, PlexusConfiguration destination )
+    {
+        PlexusConfiguration handlers[] = source.getChild( "resources" ).getChildren();
+
+        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "resources", false );
+
+        for ( int i = 0; i < handlers.length; i++ )
+        {
+            dest.addChild( handlers[i] );
+        }
     }
 
     private static void copyComponentDiscoverers( PlexusConfiguration source, PlexusConfiguration destination )

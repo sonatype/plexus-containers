@@ -1,5 +1,10 @@
 <plexus>
 
+  <resources>
+    <jar-resource>${foo.home}/jars</jar-resource>
+    <my-resource>${my.home}/resources</my-resource>
+  </resources>
+
   <configurations-directory>user-conf-dir</configurations-directory>
 
   <logging>

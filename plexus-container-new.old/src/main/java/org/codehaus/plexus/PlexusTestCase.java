@@ -65,11 +65,10 @@ public class PlexusTestCase
 
         customizeContext();
         
-        boolean hasPlexusHome =  getContext().contains( "plexus.home" );
+        boolean hasPlexusHome = getContext().contains( "plexus.home" );
 
         if ( !hasPlexusHome )
         {
-
             File f = new File( basedir, "target/plexus-home" );
 
             if ( !f.isDirectory() )

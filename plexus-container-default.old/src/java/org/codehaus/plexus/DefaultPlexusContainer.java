@@ -874,6 +874,7 @@ public class DefaultPlexusContainer
     // Resource Management
     // ----------------------------------------------------------------------
 
+    // TODO: Do not swallow exception
     public void initializeResources()
         throws PlexusConfigurationException
     {
@@ -899,7 +900,7 @@ public class DefaultPlexusContainer
             }
             catch ( Exception e )
             {
-                System.err.println( "error configuring resource: " + resourceConfigs[i].getValue() );
+                getLogger().error( "Error configuring resource: " + resourceConfigs[i].getName() + "=" + resourceConfigs[i].getValue(), e );
             }
         }
     }
@@ -907,6 +908,7 @@ public class DefaultPlexusContainer
     public void addJarResource( File jar )
         throws Exception
     {
+        System.out.println( jar.toURL() );
         coreRealm.addConstituent( jar.toURL() );
     }
 

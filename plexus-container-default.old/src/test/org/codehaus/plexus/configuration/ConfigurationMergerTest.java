@@ -90,5 +90,19 @@ public class ConfigurationMergerTest
         // are processed.
 
         assertEquals( "org.codehaus.plexus.ServiceA", components[3].getChild( "role" ).getValue() );
+
+        // Test the merging of the <resources> elements.
+
+        PlexusConfiguration[] resources = cc.getChild( "resources" ).getChildren();
+
+        assertEquals( 2, resources.length );
+
+        assertEquals( "jar-resource", resources[0].getName() );
+
+        assertEquals( "${foo.home}/jars", resources[0].getValue() );
+
+        assertEquals( "my-resource", resources[1].getName() );
+
+        assertEquals( "${my.home}/resources", resources[1].getValue() );
     }
 }
