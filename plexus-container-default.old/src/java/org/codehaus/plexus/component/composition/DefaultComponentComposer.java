@@ -9,7 +9,7 @@ package org.codehaus.plexus.component.composition;
  * @version $Id$
  */
 public class DefaultComponentComposer
-    implements ComponentComposer
+    extends AbstractComponentComposer
 {
     public void compose( Object component )
         throws CompositionException

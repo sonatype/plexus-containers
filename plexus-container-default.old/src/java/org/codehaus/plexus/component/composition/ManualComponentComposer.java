@@ -13,7 +13,7 @@ package org.codehaus.plexus.component.composition;
  * @version $Id$
  */
 public class ManualComponentComposer
-    implements ComponentComposer
+    extends AbstractComponentComposer
 {
     public void compose( Object component )
         throws CompositionException
