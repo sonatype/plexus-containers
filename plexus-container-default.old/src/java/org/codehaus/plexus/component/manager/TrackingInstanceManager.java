@@ -22,6 +22,11 @@ public final class TrackingInstanceManager
         instances.put( component, componentManager );
     }
 
+    public void release( Object component )
+    {
+        instances.remove( component );
+    }
+
     public ComponentManager findComponentManager( Object component )
     {
         return (ComponentManager) instances.get( component );

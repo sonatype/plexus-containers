@@ -4,8 +4,6 @@
 
 package org.codehaus.plexus.component.manager;
 
-import java.util.Map;
-
 /**
  * An instance manager that does not track the objects that have been created.
  * Instead it ensures that it is always used with a single type of 
@@ -34,6 +32,11 @@ public final class NonTrackingInstanceManager
                     + componentManager.getComponentDescriptor().getImplementation()
                     + " used with differing instantiation strategies" );
         }
+    }
+
+    public void release( Object component )
+    {
+        // do nothing
     }
 
     public ComponentManager findComponentManager( Object component )

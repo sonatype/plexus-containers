@@ -15,5 +15,7 @@ public interface InstanceManager
 {
     void register( Object component, ComponentManager componentManager );
 
+    void release( Object component );
+
     ComponentManager findComponentManager( Object component );
 }
