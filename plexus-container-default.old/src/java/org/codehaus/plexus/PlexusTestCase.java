@@ -13,6 +13,10 @@ public class PlexusTestCase
 
     public String basedir = System.getProperty( "basedir" );
 
+    public PlexusTestCase()
+    {
+    }
+
     public PlexusTestCase( String testName )
     {
         super( testName );
