@@ -1,7 +1,7 @@
 package org.codehaus.plexus.component.manager;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.xstream.XStreamTool;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
 
 import java.io.StringReader;
 
@@ -42,7 +42,7 @@ public class DefaultComponentManagerManagerTest
             "  </component-managers>" +
             "</component-manager-manager>";
 
-        XStreamTool builder = new XStreamTool();
+        PlexusXStream builder = new PlexusXStream();
 
         builder.alias( "component-manager-manager", DefaultComponentManagerManager.class );
 

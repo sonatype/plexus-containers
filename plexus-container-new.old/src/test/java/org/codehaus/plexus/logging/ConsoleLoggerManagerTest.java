@@ -2,7 +2,7 @@ package org.codehaus.plexus.logging;
 
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
 /**
@@ -16,13 +16,13 @@ public final class ConsoleLoggerManagerTest
 {
     protected PlexusConfiguration createConfiguration( String threshold )
     {
-        DefaultPlexusConfiguration config = new DefaultPlexusConfiguration( "logging" );
+        PlexusConfiguration config = new XmlPlexusConfiguration( "logging" );
 
-        DefaultPlexusConfiguration loggerNode = new DefaultPlexusConfiguration( "logger" );
+        PlexusConfiguration loggerNode = new XmlPlexusConfiguration( "logger" );
 
         config.addChild( loggerNode );
 
-        DefaultPlexusConfiguration thresholdNode = new DefaultPlexusConfiguration( "threshold" );
+        XmlPlexusConfiguration thresholdNode = new XmlPlexusConfiguration( "threshold" );
 
         loggerNode.addChild( thresholdNode );
 

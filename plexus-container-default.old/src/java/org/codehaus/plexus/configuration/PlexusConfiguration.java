@@ -57,35 +57,45 @@ package org.codehaus.plexus.configuration;
 
 public interface PlexusConfiguration
 {
+    // ----------------------------------------------------------------------
+    // Name handling
+    // ----------------------------------------------------------------------
+
     String getName();
 
-    PlexusConfiguration getChild( String child );
-
-    PlexusConfiguration getChild( String child, boolean createNew );
-
-    PlexusConfiguration[] getChildren();
-
-    PlexusConfiguration[] getChildren( String name );
-
-    String[] getAttributeNames();
-
-    String getAttribute( String paramName )
-        throws PlexusConfigurationException;
+    // ----------------------------------------------------------------------
+    // Value handling
+    // ----------------------------------------------------------------------
 
     String getValue()
         throws PlexusConfigurationException;
 
     String getValue( String defaultValue );
 
+    // ----------------------------------------------------------------------
+    // Attribute handling
+    // ----------------------------------------------------------------------
+
+    String[] getAttributeNames();
+
+    String getAttribute( String paramName )
+        throws PlexusConfigurationException;
+
     String getAttribute( String name, String defaultValue );
 
-    // Additional stuff for hierarchy
+    // ----------------------------------------------------------------------
+    // Child handling
+    // ----------------------------------------------------------------------
 
-    PlexusConfiguration getParent();
+    PlexusConfiguration getChild( String child );
 
-    void setParent( PlexusConfiguration configuration );
+    PlexusConfiguration getChild( String child, boolean createChild );
+
+    PlexusConfiguration[] getChildren();
+
+    PlexusConfiguration[] getChildren( String name );
+
+    void addChild( PlexusConfiguration configuration );
 
     int getChildCount();
-
-    PlexusConfiguration getChild( int i );
 }

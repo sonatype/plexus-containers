@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import java.io.StringReader;
 
-import org.codehaus.plexus.PlexusTools;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 
 /**
  *

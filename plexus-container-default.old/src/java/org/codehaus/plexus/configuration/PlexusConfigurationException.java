@@ -54,32 +54,14 @@
  */
 package org.codehaus.plexus.configuration;
 
-/**
- * Thrown when a <code>Configurable</code> component cannot be configured
- * properly, or if a value cannot be retrieved properly.
- *
- * @author <a href="mailto:dev@avalon.apache.org">Avalon Development Team</a>
- * @version CVS $Revision$ $Date$
- */
 public class PlexusConfigurationException
     extends Exception
 {
-    /**
-     * Construct a new <code>ConfigurationException</code> instance.
-     *
-     * @param message The detail message for this exception.
-     */
     public PlexusConfigurationException( String message )
     {
         this( message, null );
     }
 
-    /**
-     * Construct a new <code>ConfigurationException</code> instance.
-     *
-     * @param message The detail message for this exception.
-     * @param throwable the root cause of the exception
-     */
     public PlexusConfigurationException( String message, Throwable throwable )
     {
         super( message, throwable );

@@ -1,7 +1,7 @@
 package org.codehaus.plexus.component.repository;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.PlexusTools;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 
 import java.util.Set;
 import java.util.Iterator;

@@ -1,7 +1,7 @@
 package org.codehaus.plexus.component.configurator;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xstream.XStreamTool;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
 
 /**
  *
@@ -15,11 +15,11 @@ import org.codehaus.plexus.configuration.xstream.XStreamTool;
 public class DefaultComponentConfigurator
     implements ComponentConfigurator
 {
-    private XStreamTool xstreamTool;
+    private PlexusXStream xstreamTool;
 
     public DefaultComponentConfigurator()
     {
-        xstreamTool = new XStreamTool();
+        xstreamTool = new PlexusXStream();
     }
 
     public void configureComponent( Object component, PlexusConfiguration configuration )

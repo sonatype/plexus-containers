@@ -1,6 +1,6 @@
 package org.codehaus.plexus.component.repository;
 
-import org.codehaus.plexus.PlexusTools;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.composition.CompositionResolver;

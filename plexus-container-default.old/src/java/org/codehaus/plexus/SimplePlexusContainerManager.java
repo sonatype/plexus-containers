@@ -4,16 +4,17 @@
 
 package org.codehaus.plexus;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import org.codehaus.plexus.configuration.Property;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Iterator;
+import java.util.Properties;
 
 /**
  * SimplePlexusContainerManager
@@ -36,7 +37,7 @@ public class SimplePlexusContainerManager
 
     private String plexusConfig;
 
-    private Property[] contextValues;
+    private Properties contextValues;
 
     public void contextualize( Context context )
         throws ContextException
@@ -61,11 +62,11 @@ public class SimplePlexusContainerManager
 
         if ( contextValues != null )
         {
-            for ( int i = 0; i < contextValues.length; i++ )
+            for ( Iterator i = contextValues.keySet().iterator(); i.hasNext(); )
             {
-                Property p = contextValues[i];
+                String name = (String) i.next();
 
-                myPlexus.addContextValue( p.getName(), p.getValue() );
+                myPlexus.addContextValue( name, contextValues.getProperty( name ) );
             }
         }
 

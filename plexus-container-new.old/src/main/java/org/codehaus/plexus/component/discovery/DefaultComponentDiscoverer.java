@@ -1,6 +1,6 @@
 package org.codehaus.plexus.component.discovery;
 
-import org.codehaus.plexus.PlexusTools;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 

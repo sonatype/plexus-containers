@@ -14,12 +14,13 @@ import org.codehaus.plexus.component.manager.InstanceManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
-import org.codehaus.plexus.configuration.xstream.XStreamTool;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
@@ -643,8 +644,8 @@ public class DefaultPlexusContainer
 
         if ( s != null )
         {
-            DefaultPlexusConfiguration componentsConfiguration =
-                (DefaultPlexusConfiguration) configuration.getChild( "components" );
+            XmlPlexusConfiguration componentsConfiguration =
+                (XmlPlexusConfiguration) configuration.getChild( "components" );
 
             File configurationsDirectory = new File( s );
 
@@ -741,7 +742,7 @@ public class DefaultPlexusContainer
     private void initializeComponentManagerManager()
         throws Exception
     {
-        XStreamTool builder = new XStreamTool();
+        PlexusXStream builder = new PlexusXStream();
 
         builder.alias( "component-manager-manager", DefaultComponentManagerManager.class );
 
@@ -830,7 +831,7 @@ public class DefaultPlexusContainer
     private void initializeLifecycleHandlerManager()
         throws Exception
     {
-        XStreamTool builder = new XStreamTool();
+        PlexusXStream builder = new PlexusXStream();
 
         builder.alias( "lifecycle-handler-manager", DefaultLifecycleHandlerManager.class );
 

@@ -1,6 +1,11 @@
 package org.codehaus.plexus.configuration;
 
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
+/**
+ * @todo This merger explicity uses the XML implementation of the plexus configuration but
+ * it must work for configurations coming from any source.
+ */
 public class PlexusConfigurationMerger
 {
     // -----------------------------------+-----------------------------------------------------------------
@@ -29,7 +34,7 @@ public class PlexusConfigurationMerger
 
     public static PlexusConfiguration merge( PlexusConfiguration user, PlexusConfiguration system )
     {
-        DefaultPlexusConfiguration mergedConfiguration = new DefaultPlexusConfiguration( "plexus" );
+        XmlPlexusConfiguration mergedConfiguration = new XmlPlexusConfiguration( "plexus" );
 
         PlexusConfiguration loadOnStart = user.getChild( "load-on-start" );
 
@@ -110,7 +115,7 @@ public class PlexusConfigurationMerger
     {
         PlexusConfiguration handlers[] = source.getChild( "lifecycle-handlers" ).getChildren( "lifecycle-handler" );
 
-        DefaultPlexusConfiguration dest = (DefaultPlexusConfiguration) destination.getChild( "lifecycle-handlers" );
+        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "lifecycle-handlers" );
 
         for ( int i = 0; i < handlers.length; i++ )
         {

@@ -2002,7 +2002,7 @@ public class StringUtils
         return -1;
     }
 
-    static public String interpolate( String text, Map namespace )
+    public static String interpolate( String text, Map namespace )
     {
         Iterator keys = namespace.keySet().iterator();
 
@@ -2022,5 +2022,60 @@ public class StringUtils
             }
         }
         return text;
+    }
+
+    public static String removeAndHump( String data, String replaceThis )
+    {
+        String temp = null;
+
+        StringBuffer out = new StringBuffer();
+
+        temp = data;
+
+        StringTokenizer st = new StringTokenizer( temp, replaceThis );
+
+        while ( st.hasMoreTokens() )
+        {
+            String element = (String) st.nextElement();
+
+            out.append( capitalizeFirstLetter( element ) );
+        }
+
+        return out.toString();
+    }
+
+    public static String capitalizeFirstLetter( String data )
+    {
+        String firstLetter = data.substring( 0, 1 ).toUpperCase();
+
+        String restLetters = data.substring( 1 );
+
+        return firstLetter + restLetters;
+    }
+
+    public static String lowercaseFirstLetter( String data )
+    {
+        String firstLetter = data.substring( 0, 1 ).toLowerCase();
+
+        String restLetters = data.substring( 1 );
+
+        return firstLetter + restLetters;
+    }
+
+    public static String addAndDeHump( String view )
+    {
+        StringBuffer sb = new StringBuffer();
+
+        for ( int i = 0; i < view.length(); i++ )
+        {
+            if ( i != 0 && Character.isUpperCase( view.charAt( i ) ) )
+            {
+                sb.append( '-' );
+            }
+
+            sb.append( view.charAt( i ) );
+        }
+
+        return sb.toString().trim().toLowerCase();
     }
 }

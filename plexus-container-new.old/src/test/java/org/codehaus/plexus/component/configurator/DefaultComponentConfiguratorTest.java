@@ -1,7 +1,7 @@
 package org.codehaus.plexus.component.configurator;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.PlexusTools;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.io.StringReader;
