@@ -5,7 +5,7 @@
   <groupId>plexus</groupId>
   <artifactId>plexus</artifactId>
   <id>plexus</id>
-  <name>plexus</name>
+  <name>Plexus Container</name>
   <currentVersion>0.17-SNAPSHOT</currentVersion>
   <organization>
     <name>Codehaus</name>
