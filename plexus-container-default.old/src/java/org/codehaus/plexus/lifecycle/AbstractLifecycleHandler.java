@@ -14,10 +14,8 @@ public abstract class AbstractLifecycleHandler
     extends AbstractLogEnabled
     implements LifecycleHandler
 {
-    private String id;
-
-    private String name;
-
+    private String id = null;
+    private String name = null;
     private Map entities;
     private List beginSegment;
     private List suspendSegment;
@@ -52,11 +50,6 @@ public abstract class AbstractLifecycleHandler
         return entities;
     }
 
-    public void setEntities( Map entities )
-    {
-        this.entities = entities;
-    }
-
     public void addEntity( String key, Object entity )
     {
         getEntities().put( key, entity );
@@ -65,16 +58,6 @@ public abstract class AbstractLifecycleHandler
     // ----------------------------------------------------------------------
     // Begin Segment
     // ----------------------------------------------------------------------
-
-    public void setBeginSegment( List beginSegment )
-    {
-        this.beginSegment = beginSegment;
-    }
-
-    public void addBeginSegmentPhase( Phase phase )
-    {
-        getBeginSegment().add( phase );
-    }
 
     public List getBeginSegment()
     {
@@ -85,16 +68,6 @@ public abstract class AbstractLifecycleHandler
     // Suspend Segment
     // ----------------------------------------------------------------------
 
-    public void setSuspendSegment( List suspendSegment )
-    {
-        this.suspendSegment = suspendSegment;
-    }
-
-    public void addSuspendSegmentPhase( Phase phase )
-    {
-        getSuspendSegment().add( phase );
-    }
-
     public List getSuspendSegment()
     {
         return suspendSegment;
@@ -104,16 +77,6 @@ public abstract class AbstractLifecycleHandler
     // Resume Segment
     // ----------------------------------------------------------------------
 
-    public void setResumeSegment( List resumeSegment )
-    {
-        this.resumeSegment = resumeSegment;
-    }
-
-    public void addResumeSegmentPhase( Phase phase )
-    {
-        getResumeSegment().add( phase );
-    }
-
     public List getResumeSegment()
     {
         return resumeSegment;
@@ -122,16 +85,6 @@ public abstract class AbstractLifecycleHandler
     // ----------------------------------------------------------------------
     // End Segment
     // ----------------------------------------------------------------------
-
-    public void setEndSegment( List endSegment )
-    {
-        this.endSegment = endSegment;
-    }
-
-    public void addEndSegmentPhase( Phase phase )
-    {
-        getEndSegment().add( phase );
-    }
 
     public List getEndSegment()
     {

@@ -54,13 +54,5 @@ public interface LifecycleHandler
     void initialize()
         throws Exception;
 
-    void addBeginSegmentPhase( Phase phase );
-
-    void addSuspendSegmentPhase( Phase phase );
-
-    void addResumeSegmentPhase( Phase phase );
-
-    void addEndSegmentPhase( Phase phase );
-
     void enableLogging( Logger logger );
 }

@@ -29,7 +29,7 @@
    |
    -->
   <lifecycle-handlers>
-    <lifecycle-handler implementation="org.codehaus.plexus.lifecycle.SimpleLifecycleHandler">
+    <lifecycle-handler implementation="org.codehaus.plexus.SimpleLifecycleHandler">
       <id>arbitrary</id>
       <name>Arbitrary Lifecycle Handler</name>
       <begin-segment>

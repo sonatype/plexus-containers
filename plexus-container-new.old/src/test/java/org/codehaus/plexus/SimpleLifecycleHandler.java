@@ -1,4 +1,6 @@
-package org.codehaus.plexus.lifecycle;
+package org.codehaus.plexus;
+
+import org.codehaus.plexus.lifecycle.AbstractLifecycleHandler;
 
 /**
  *
