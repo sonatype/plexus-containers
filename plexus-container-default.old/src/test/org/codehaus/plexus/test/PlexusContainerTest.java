@@ -77,6 +77,10 @@ public class PlexusContainerTest
 
         assertNotNull( componentA );
 
+        assertEquals( "localhost", componentA.getHost() );
+
+        assertEquals( 10000, componentA.getPort() );
+
         ComponentB componentB = componentA.getComponentB();
 
         assertNotNull( componentB );
@@ -84,5 +88,11 @@ public class PlexusContainerTest
         ComponentC componentC = componentA.getComponentC();
 
         assertNotNull( componentC );
+
+        ComponentD componentD = componentC.getComponentD();
+
+        assertNotNull( componentD );
+
+        assertEquals( "jason", componentD.getName() );
     }
 }

@@ -1,12 +1,12 @@
 package org.codehaus.plexus.component.composition;
 
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.PlexusContainer;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
  *
@@ -35,15 +35,20 @@ public abstract class AbstractComponentComposer
                                    ComponentRepository componentRepository )
         throws Exception
     {
-        List requirements = componentRepository.getComponentDependencies( componentDescriptor );
-
-        for ( Iterator i = requirements.iterator(); i.hasNext(); )
+        if ( componentDescriptor.getRequirements().size() > 0 )
         {
-            String role = (String) i.next();
+            Set requirements = componentDescriptor.getRequirements();
 
-            Object requirement = container.lookup( role );
+            for ( Iterator i = requirements.iterator(); i.hasNext(); )
+            {
+                String role = (String) i.next();
 
-            assignComponent( component, requirement );
+                Object requirement = container.lookup( role );
+
+                assembleComponent( requirement, componentRepository.getComponentDescriptor( role ), container, componentRepository );
+
+                assignComponent( component, requirement );
+            }
         }
     }
 

@@ -7,6 +7,10 @@ public class DefaultComponentA
 
     private ComponentC componentC;
 
+    private String host;
+
+    private int port;
+
     public ComponentB getComponentB()
     {
         return componentB;
@@ -15,5 +19,15 @@ public class DefaultComponentA
     public ComponentC getComponentC()
     {
         return componentC;
+    }
+
+    public String getHost()
+    {
+        return host;
+    }
+
+    public int getPort()
+    {
+        return port;
     }
 }

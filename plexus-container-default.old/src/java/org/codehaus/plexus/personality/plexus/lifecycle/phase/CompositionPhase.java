@@ -22,19 +22,16 @@ public class CompositionPhase
     {
         // We only need to assemble a component if it specifies requirements.
 
-        if ( manager.getComponentDescriptor().getRequirements().size() > 0 )
-        {
-            ComponentComposer componentComposer =
-                (ComponentComposer) manager.getLifecycleHandler().getEntities().get( "componentComposer" );
+        ComponentComposer componentComposer =
+            (ComponentComposer) manager.getLifecycleHandler().getEntities().get( "componentComposer" );
 
-            Context context = (Context) manager.getLifecycleHandler().getEntities().get( LifecycleHandler.CONTEXT );
+        Context context = (Context) manager.getLifecycleHandler().getEntities().get( LifecycleHandler.CONTEXT );
 
-            PlexusContainer container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
+        PlexusContainer container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
 
-            ComponentRepository componentRepository =
-                (ComponentRepository) manager.getLifecycleHandler().getEntities().get( LifecycleHandler.COMPONENT_REPOSITORY );
+        ComponentRepository componentRepository =
+            (ComponentRepository) manager.getLifecycleHandler().getEntities().get( LifecycleHandler.COMPONENT_REPOSITORY );
 
-            componentComposer.assembleComponent( object, manager.getComponentDescriptor(), container, componentRepository );
-        }
+        componentComposer.assembleComponent( object, manager.getComponentDescriptor(), container, componentRepository );
     }
 }

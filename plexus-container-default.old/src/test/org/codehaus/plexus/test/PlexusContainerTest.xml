@@ -21,16 +21,10 @@
         <requirement>org.codehaus.plexus.test.ComponentB</requirement>
         <requirement>org.codehaus.plexus.test.ComponentC</requirement>
       </requirements>
-      <!--
-
-      We need to capture errors in xstream when a field that has been specified in the configuration
-      doesn't exist in the target object.
-
       <configuration>
         <host>localhost</host>
         <port>10000</port>
       </configuration>
-      -->
     </component>
     <component>
       <role>org.codehaus.plexus.test.ComponentB</role>
@@ -39,6 +33,16 @@
     <component>
       <role>org.codehaus.plexus.test.ComponentC</role>
       <implementation>org.codehaus.plexus.test.DefaultComponentC</implementation>
+      <requirements>
+        <requirement>org.codehaus.plexus.test.ComponentD</requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.test.ComponentD</role>
+      <implementation>org.codehaus.plexus.test.DefaultComponentD</implementation>
+      <configuration>
+        <name>jason</name>
+      </configuration>
     </component>
   </components>
 </plexus>

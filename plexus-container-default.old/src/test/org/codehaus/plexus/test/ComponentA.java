@@ -7,4 +7,8 @@ public interface ComponentA
     ComponentB getComponentB();
 
     ComponentC getComponentC();
+
+    String getHost();
+
+    int getPort();
 }
