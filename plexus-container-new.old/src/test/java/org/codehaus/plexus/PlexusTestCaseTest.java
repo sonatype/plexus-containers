@@ -73,32 +73,28 @@ public class PlexusTestCaseTest
 
         assertNotNull( tc.getClassLoader() );
 
-        File file;
-
-       // ----------------------------------------------------------------------
-       // getTestFile()
-       // ----------------------------------------------------------------------
-
-        file = tc.getTestFile( "project.xml" );
-
-        assertTrue( file.exists() );
-
-        file = tc.getTestFile( basedir, "project.xml" );
-
-        assertTrue( file.exists() );
-
-        // ----------------------------------------------------------------------
-        // getTestPath()
-        // ----------------------------------------------------------------------
-
-        file = new File( tc.getTestPath( "project.xml" ) );
-
-        assertTrue( file.exists() );
-
-        file = new File( tc.getTestPath( basedir, "project.xml" ) );
-
-        assertTrue( file.exists() );
-
         tc.tearDown();
+    }
+
+    public void testGetFile()
+    {
+        File file = PlexusTestCase.getTestFile( "pom.xml" );
+
+        assertTrue( file.exists() );
+
+        file = PlexusTestCase.getTestFile( basedir, "pom.xml" );
+
+        assertTrue( file.exists() );
+    }
+
+    public void testGetPath()
+    {
+        File file = new File( PlexusTestCase.getTestPath( "pom.xml" ) );
+
+        assertTrue( file.exists() );
+
+        file = new File( PlexusTestCase.getTestPath( basedir, "pom.xml" ) );
+
+        assertTrue( file.exists() );
     }
 }

@@ -1,12 +1,11 @@
 package org.codehaus.plexus.configuration.processor;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.component.repository.io.PlexusTools;
-
-import java.util.Map;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileNotFoundException;
+import java.util.Map;
+
+import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /*
  * The MIT License
@@ -51,7 +50,7 @@ public class FileConfigurationResourceHandler
 
         if ( !f.exists() )
         {
-            throw new ConfigurationResourceNotFoundException( "The specified resource " + f + " cannot be found." );            
+            throw new ConfigurationResourceNotFoundException( "The specified resource " + f + " cannot be found." );
         }
 
         try

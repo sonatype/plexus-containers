@@ -1,4 +1,4 @@
-package org.codehaus.plexus.util;
+package org.codehaus.plexus.internal.util;
 
 import java.lang.reflect.Field;
 

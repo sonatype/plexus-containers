@@ -1,4 +1,4 @@
-package org.codehaus.plexus.util;
+package org.codehaus.plexus.internal.util;
 
 /* ====================================================================
  * The Apache Software License, Version 1.1
@@ -1356,13 +1356,13 @@ public class FileUtils
 
     /**
      * Copies a entire directory structure.
-     * 
+     *
      * Note:
      * <ul>
      * <li>It will include empty directories.
      * <li>The <code>sourceDirectory</code> must exists.
      * </ul>
-     * 
+     *
      * @param sourceDirectory
      * @param destinationDirectory
      * @throws IOException

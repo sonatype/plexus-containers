@@ -27,14 +27,14 @@ package org.codehaus.plexus.test;
 import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.internal.util.AbstractTestThread;
+import org.codehaus.plexus.internal.util.TestThreadManager;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
-import org.codehaus.plexus.util.AbstractTestThread;
-import org.codehaus.plexus.util.TestThreadManager;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -126,35 +126,35 @@ public class PlexusContainerTest
 
         assertEquals( true, serviceB.stop );
     }
-    
+
     public void testConfigurableLifecyclePassage()
         throws Exception
     {
         DefaultServiceE serviceE = (DefaultServiceE) container.lookup( ServiceE.ROLE );
-    
+
         // Make sure the component is alive.
         assertNotNull( serviceE );
-    
+
         // Make sure the component went through all the lifecycle phases
         assertEquals( true, serviceE.enableLogging );
-    
+
         assertEquals( true, serviceE.contextualize );
-    
+
         assertEquals( true, serviceE.initialize );
-    
+
         assertEquals( true, serviceE.start );
-    
+
         assertEquals( false, serviceE.stop );
-        
+
         assertEquals( true, serviceE.serviced );
-    
+
         assertEquals( true, serviceE.configured );
-    
+
         container.release( serviceE );
-    
+
         assertEquals( true, serviceE.stop );
     }
-    
+
     /*
      * Check that we can get references to a single component with a role
      * hint.
@@ -249,65 +249,6 @@ public class PlexusContainerTest
         assertTrue( serviceC2.started );
 
         assertTrue( serviceC2.stopped );
-    }
-
-    /**
-     * Test poolable instantiation strategy.
-     *
-     * @throws Exception
-     */
-    public void testPoolableInstantiationStrategy()
-        throws Exception
-    {
-        // ----------------------------------------------------------------------
-        //  ServiceD
-        // ----------------------------------------------------------------------
-
-        // Retrieve an manager of component c.
-        ServiceD serviceD1 = (ServiceD) container.lookup( ServiceD.ROLE );
-
-        assertNotNull( serviceD1 );
-
-        ServiceD serviceD2 = (ServiceD) container.lookup( ServiceD.ROLE );
-
-        assertNotNull( serviceD2 );
-
-        ServiceD serviceD3 = (ServiceD) container.lookup( ServiceD.ROLE );
-
-        assertNotNull( serviceD3 );
-
-        assertNotSame( serviceD1, serviceD2 );
-
-        assertNotSame( serviceD2, serviceD3 );
-
-        assertNotSame( serviceD1, serviceD3 );
-
-        // Now let's release all the components.
-
-        container.release( serviceD1 );
-
-        container.release( serviceD2 );
-
-        container.release( serviceD3 );
-
-        ServiceD[] ds = new DefaultServiceD[30];
-
-        for ( int h = 0; h < 5; h++ )
-        {
-            // Consume all available components in the pool.
-
-            for ( int i = 0; i < 30; i++ )
-            {
-                ds[i] = (ServiceD) container.lookup( ServiceD.ROLE );
-            }
-
-            // Release them all.
-
-            for ( int i = 0; i < 30; i++ )
-            {
-                container.release( ds[i] );
-            }
-        }
     }
 
     // ----------------------------------------------------------------------

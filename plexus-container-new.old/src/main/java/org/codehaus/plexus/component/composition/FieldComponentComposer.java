@@ -34,9 +34,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.internal.util.ReflectionUtils;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.util.ReflectionUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>

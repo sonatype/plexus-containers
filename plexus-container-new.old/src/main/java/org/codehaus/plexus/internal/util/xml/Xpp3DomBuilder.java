@@ -1,11 +1,11 @@
-package org.codehaus.plexus.util.xml;
-
-import org.codehaus.plexus.util.xml.pull.MXParser;
-import org.codehaus.plexus.util.xml.pull.XmlPullParser;
+package org.codehaus.plexus.internal.util.xml;
 
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.codehaus.plexus.internal.util.xml.pull.MXParser;
+import org.codehaus.plexus.internal.util.xml.pull.XmlPullParser;
 
 public class Xpp3DomBuilder
 {
@@ -19,7 +19,7 @@ public class Xpp3DomBuilder
         Xpp3Dom configuration = null;
 
         XmlPullParser parser = new MXParser();
-            
+
         parser.setInput( reader );
 
         int eventType = parser.getEventType();

@@ -57,7 +57,6 @@ public class JavaComponentFactoryTest
         assertNotNull( component );
     }
 
-
     public void testComponentCreationWithNotMatchingRoleAndImplemenation()
         throws Exception
     {

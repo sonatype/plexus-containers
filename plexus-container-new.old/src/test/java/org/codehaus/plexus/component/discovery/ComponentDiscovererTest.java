@@ -54,7 +54,9 @@ public class ComponentDiscovererTest
 
         ClassRealm core = classWorld.newRealm( "core" );
 
-        core.addConstituent( new File( System.getProperty( "basedir"), "target/test-classes").toURL() );
+        File testClasses = new File( System.getProperty( "basedir" ), "target/test-classes" );
+
+        core.addConstituent( testClasses.toURL() );
 
         List componentSetDescriptors = componentDiscoverer.findComponents( new DefaultContext(), core );
 

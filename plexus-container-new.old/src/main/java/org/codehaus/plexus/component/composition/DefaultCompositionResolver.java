@@ -26,7 +26,7 @@ package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.util.dag.DAG;
+import org.codehaus.plexus.internal.util.dag.DAG;
 
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +43,7 @@ import java.util.List;
 public class DefaultCompositionResolver implements CompositionResolver
 {
     private DAG dag = new DAG();
-    
+
 
     public void addComponentDescriptor( final ComponentDescriptor componentDescriptor ) throws CompositionException
     {
@@ -72,20 +72,20 @@ public class DefaultCompositionResolver implements CompositionResolver
     }
 
     /**
-     * 
+     *
      * @see org.codehaus.plexus.component.composition.CompositionResolver#getRequirements(java.lang.String)
      */
     public List getRequirements( final String componentKey )
     {
-        return dag.getChildLabels( componentKey );        
+        return dag.getChildLabels( componentKey );
     }
-    
-    
+
+
     /**
      * @see org.codehaus.plexus.component.composition.CompositionResolver#findRequirements(java.lang.String)
      */
     public List findRequirements( final String componentKey )
-    {        
-        return dag.getParentLabels( componentKey );   
+    {
+        return dag.getParentLabels( componentKey );
     }
 }

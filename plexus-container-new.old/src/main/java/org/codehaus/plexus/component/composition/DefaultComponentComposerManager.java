@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.internal.util.StringUtils;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
@@ -43,7 +43,7 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
     private Map composerMap = new HashMap();
 
     private List componentComposers;
-    
+
     private String defaultComponentComposerId = "field";
 
     public void assembleComponent( final Object component,

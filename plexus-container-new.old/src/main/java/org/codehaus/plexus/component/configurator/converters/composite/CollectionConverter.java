@@ -30,7 +30,7 @@ import org.codehaus.plexus.component.configurator.converters.ConfigurationConver
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.internal.util.StringUtils;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

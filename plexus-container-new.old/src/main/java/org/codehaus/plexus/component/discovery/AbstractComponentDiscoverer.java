@@ -12,8 +12,8 @@ import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.internal.util.InterpolationFilterReader;
+import org.codehaus.plexus.internal.util.IOUtil;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>

@@ -48,7 +48,7 @@ public class DirectoryConfigurationResourceHandlerTest
 
         Map parameters = new HashMap();
 
-        parameters.put( "source", new File( basedir, "src/test-input/inline-configurations" ).getPath() );
+        parameters.put( "source", new File( basedir, "src/test/resources/inline-configurations" ).getPath() );
 
         PlexusConfiguration[] processed = h.handleRequest( parameters );
 

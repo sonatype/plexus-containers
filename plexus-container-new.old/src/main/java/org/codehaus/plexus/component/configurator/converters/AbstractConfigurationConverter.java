@@ -28,7 +28,7 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurationExceptio
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.internal.util.StringUtils;
 
 /**
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
@@ -49,11 +49,11 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
                                                    ClassLoader classLoader,
                                                    ComponentDescriptor componentDescriptor )
             throws ComponentConfigurationException
-    {        
+    {
         Class retValue = type;
 
         String implementation = configuration.getAttribute( IMPLEMENTATION, null );
-        
+
         if ( implementation != null )
         {
             try
@@ -72,7 +72,7 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
                 throw new ComponentConfigurationException( msg );
             }
         }
-        
+
 
         return retValue;
     }

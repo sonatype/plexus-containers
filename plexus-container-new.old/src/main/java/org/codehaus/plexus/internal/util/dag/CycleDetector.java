@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package org.codehaus.plexus.util.dag;
+package org.codehaus.plexus.internal.util.dag;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -113,7 +113,7 @@ public class CycleDetector
         {
             return true;
         }
-        
+
         final Integer state = ( Integer ) vertexStateMap.get( vertex );
 
         return NOT_VISTITED.equals( state );

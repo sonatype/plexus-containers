@@ -25,7 +25,7 @@ package org.codehaus.plexus.configuration.xml;
  */
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.internal.util.xml.Xpp3Dom;
 
 public class XmlPlexusConfiguration
     implements PlexusConfiguration
@@ -276,7 +276,7 @@ public class XmlPlexusConfiguration
 
         sb.append( indent( depth ) ).
             append( '<' ).
-            append( '/' ).            
+            append( '/' ).
             append( c.getName() ).
             append( '>' ).
             append( '\n' );

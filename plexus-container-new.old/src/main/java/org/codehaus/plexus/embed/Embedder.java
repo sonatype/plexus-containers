@@ -34,14 +34,14 @@ import java.util.Set;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.internal.util.PropertyUtils;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.util.PropertyUtils;
 
 public class Embedder implements PlexusEmbedder
 {
 
     private URL configurationURL;
-    
+
     /** Context properties */
     private Properties properties;
 
@@ -125,17 +125,17 @@ public class Embedder implements PlexusEmbedder
         container.addContextValue( key, value );
     }
 
-    
+
     public synchronized void setProperties( Properties properties )
     {
          this.properties = properties;
     }
-    
-    public synchronized void setProperties( File file ) 
+
+    public synchronized void setProperties( File file )
     {
-        properties = PropertyUtils.loadProperties( file );        
+        properties = PropertyUtils.loadProperties( file );
     }
-    
+
     protected synchronized void initializeContext()
     {
         Set keys = properties.keySet();
@@ -147,7 +147,7 @@ public class Embedder implements PlexusEmbedder
             String value = properties.getProperty( key );
 
             container.addContextValue( key, value );
-        }        
+        }
     }
 
     public synchronized void start( ClassWorld classWorld )
@@ -175,11 +175,11 @@ public class Embedder implements PlexusEmbedder
         {
             container.setConfigurationResource( new InputStreamReader( configurationURL.openStream() ) );
         }
-        
+
         if ( properties != null)
         {
             initializeContext();
-        }    
+        }
 
         container.initialize();
 

@@ -71,8 +71,8 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.internal.util.FileUtils;
+import org.codehaus.plexus.internal.util.InterpolationFilterReader;
 
 /**
  * @todo clarify configuration handling vis-a-vis user vs default values
@@ -786,7 +786,7 @@ public class DefaultPlexusContainer
             Thread.currentThread().setContextClassLoader( plexusRealm.getClassLoader() );
         }
     }
-    
+
     protected ClassRealm getContainerRealm() {
         return plexusRealm;
     }
@@ -864,7 +864,7 @@ public class DefaultPlexusContainer
             }
         }
     }
-    
+
     // ----------------------------------------------------------------------
     // Context
     // ----------------------------------------------------------------------
@@ -1082,7 +1082,7 @@ public class DefaultPlexusContainer
                     "' + which is needed by plexus to function properly cannot " +
                     "be instantiated. Implementation attribute was not specified in plexus.conf." +
                     "This is highly irregular, your plexus JAR is most likely corrupt.";
-            
+
             throw new ComponentConfigurationException( msg );
         }
 

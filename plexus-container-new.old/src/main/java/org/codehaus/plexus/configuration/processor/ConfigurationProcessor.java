@@ -1,11 +1,11 @@
 package org.codehaus.plexus.configuration.processor;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.internal.util.StringUtils;
 
 /*
  * The MIT License

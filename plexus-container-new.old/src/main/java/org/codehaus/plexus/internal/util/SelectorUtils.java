@@ -52,7 +52,7 @@
  * <http://www.codehaus.org/>.
  */
 
-package org.codehaus.plexus.util;
+package org.codehaus.plexus.internal.util;
 
 import java.io.File;
 import java.util.StringTokenizer;

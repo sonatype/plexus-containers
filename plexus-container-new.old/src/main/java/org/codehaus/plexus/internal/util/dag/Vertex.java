@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package org.codehaus.plexus.util.dag;
+package org.codehaus.plexus.internal.util.dag;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,8 +25,8 @@ public class Vertex implements Cloneable, Serializable
     List children = new ArrayList();
 
     List parents = new ArrayList();
-    
-    
+
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -42,7 +42,7 @@ public class Vertex implements Cloneable, Serializable
     // ------------------------------------------------------------
     // Accessors
     // ------------------------------------------------------------
-    
+
 
     /**
      * @return
@@ -143,7 +143,7 @@ public class Vertex implements Cloneable, Serializable
 
     /**
      * Indicates if given vertex has no child
-     * 
+     *
      * @return <code>true</true> if this vertex has no child, <code>false</code> otherwise
      */
     public boolean isLeaf()
@@ -154,7 +154,7 @@ public class Vertex implements Cloneable, Serializable
 
     /**
      * Indicates if given vertex has no parent
-     * 
+     *
      * @return <code>true</true> if this vertex has no parent, <code>false</code> otherwise
      */
     public boolean isRoot()
@@ -165,7 +165,7 @@ public class Vertex implements Cloneable, Serializable
 
     /**
      * Indicates if there is at least one edee leading to or from given vertex
-     * 
+     *
      * @return <code>true</true> if this vertex is connected with other vertex,<code>false</code> otherwise
      */
     public boolean isConnected()

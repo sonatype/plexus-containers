@@ -1,4 +1,4 @@
-package org.codehaus.plexus.util;
+package org.codehaus.plexus.internal.util;
 
 /* ====================================================================
  * The Apache Software License, Version 1.1
@@ -725,7 +725,7 @@ public final class IOUtil
 
     /**
      * Closes the input stream. The input stream can be null and any IOException's will be swallowed.
-     * 
+     *
      * @param inputStream The stream to close.
      */
     public static void close( InputStream inputStream )
@@ -747,7 +747,7 @@ public final class IOUtil
 
     /**
      * Closes the output stream. The output stream can be null and any IOException's will be swallowed.
-     * 
+     *
      * @param outputStream The stream to close.
      */
     public static void close( OutputStream outputStream )
@@ -769,7 +769,7 @@ public final class IOUtil
 
     /**
      * Closes the reader. The reader can be null and any IOException's will be swallowed.
-     * 
+     *
      * @param reader The reader to close.
      */
     public static void close( Reader reader )
@@ -791,7 +791,7 @@ public final class IOUtil
 
     /**
      * Closes the writer. The writer can be null and any IOException's will be swallowed.
-     * 
+     *
      * @param wrtier The writer to close.
      */
     public static void close( Writer writer )

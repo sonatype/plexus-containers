@@ -52,7 +52,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.codehaus.plexus.util.dag;
+package org.codehaus.plexus.internal.util.dag;
 
 import java.util.Iterator;
 import java.util.List;

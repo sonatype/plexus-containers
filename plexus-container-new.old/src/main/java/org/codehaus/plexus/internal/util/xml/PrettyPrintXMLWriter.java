@@ -1,4 +1,4 @@
-package org.codehaus.plexus.util.xml;
+package org.codehaus.plexus.internal.util.xml;
 
 import java.io.PrintWriter;
 import java.io.Writer;

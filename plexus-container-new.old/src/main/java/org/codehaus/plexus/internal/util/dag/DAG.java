@@ -1,4 +1,4 @@
-package org.codehaus.plexus.util.dag;
+package org.codehaus.plexus.internal.util.dag;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public class DAG implements Cloneable, Serializable
     public Vertex addVertex( final String label )
     {
         Vertex retValue = null;
-        
+
         // check if vertex is alredy in DAG
         if ( vertexMap.containsKey( label ) )
         {
@@ -202,7 +202,7 @@ public class DAG implements Cloneable, Serializable
 
     /**
      * Indicates if there is at least one edge leading to or from vertex of given label
-     * 
+     *
      * @return <code>true</true> if this vertex is connected with other vertex,<code>false</code> otherwise
      */
     public boolean isConnected( final String label )
@@ -230,7 +230,7 @@ public class DAG implements Cloneable, Serializable
         final Vertex vertex = getVertex( label );
 
         final List retValue;
-        
+
         //optimization.
         if ( vertex.isLeaf() )
         {
