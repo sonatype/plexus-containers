@@ -3,7 +3,6 @@ package org.codehaus.plexus.component.repository;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
-import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -11,7 +10,6 @@ import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +34,6 @@ public class DefaultComponentRepository
     private Map componentDescriptors;
 
     private CompositionResolver compositionResolver;
-
-    private ComponentDiscoverer componentDiscoverer;
 
     private ClassRealm classRealm;
 
@@ -100,8 +96,6 @@ public class DefaultComponentRepository
     public void initializeComponentDescriptors()
         throws Exception
     {
-        initializeComponentDescriptorsThatHaveBeenDiscovered();
-
         initializeComponentDescriptorsFromUserConfiguration();
     }
 
@@ -113,19 +107,6 @@ public class DefaultComponentRepository
         for ( int i = 0; i < componentConfigurations.length; i++ )
         {
             addComponentDescriptor( componentConfigurations[i] );
-        }
-    }
-
-    private void initializeComponentDescriptorsThatHaveBeenDiscovered()
-        throws Exception
-    {
-        List componentDescriptors = componentDiscoverer.findComponents( classRealm.getClassLoader() );
-
-        for ( Iterator i = componentDescriptors.iterator(); i.hasNext(); )
-        {
-            ComponentDescriptor componentDescriptor = (ComponentDescriptor) i.next();
-
-            addComponentDescriptor( componentDescriptor );
         }
     }
 
