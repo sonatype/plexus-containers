@@ -18,6 +18,8 @@ public class PlexusConfigurationMerger
     // -----------------------------------+-----------------------------------------------------------------
     // resource-manager                   | user ignore
     // -----------------------------------+-----------------------------------------------------------------
+    // resources                          | user
+    // -----------------------------------+-----------------------------------------------------------------
     // component-manager-manager          | user ignore
     // -----------------------------------+-----------------------------------------------------------------
     // lifecycle-handler-manager          | user wins, but system lifecycles show through
@@ -75,7 +77,6 @@ public class PlexusConfigurationMerger
             mergedConfiguration.addChild( system.getChild( "component-repository" ) );
         }
 
-        // TODO: merge with default plexus.conf
         mergedConfiguration.addChild( user.getChild( "resources" ) );
 
         mergedConfiguration.addChild( system.getChild( "resource-manager" ) );
