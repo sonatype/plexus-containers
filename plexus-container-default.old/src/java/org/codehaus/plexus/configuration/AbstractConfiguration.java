@@ -15,7 +15,7 @@ import org.apache.avalon.framework.configuration.ConfigurationException;
  * @todo remove all xml-centric notions from here.
  */
 public abstract class AbstractConfiguration
-    implements Configuration
+    implements PlexusConfiguration
 {
     /**
      * Returns the prefix of the namespace.  This is only used as a serialization
@@ -512,8 +512,15 @@ public abstract class AbstractConfiguration
         }
     }
 
-    public Configuration getParent()
+    PlexusConfiguration parent;
+
+    public PlexusConfiguration getParent()
     {
-        return null;
+        return parent;
+    }
+
+    public void setParent( PlexusConfiguration parent )
+    {
+        this.parent = parent;
     }
 }

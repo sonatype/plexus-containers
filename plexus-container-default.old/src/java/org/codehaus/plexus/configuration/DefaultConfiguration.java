@@ -44,9 +44,6 @@ public class DefaultConfiguration
     /** */
     private boolean readOnly;
 
-    /** */
-    private Configuration parent;
-
     /**
      * Create a new <code>DefaultConfiguration</code> manager.
      * @param name a <code>String</code> value
@@ -211,9 +208,9 @@ public class DefaultConfiguration
         }
     }
 
-    public Configuration getChild( int i )
+    public PlexusConfiguration getChild( int i )
     {
-        return (Configuration) children.get( i );
+        return (PlexusConfiguration) children.get( i );
     }
 
     /**
@@ -292,7 +289,7 @@ public class DefaultConfiguration
         }
 
         // Hack until we alter the configuration interface and move away from avalon.
-        ((DefaultConfiguration)configuration).setParent( this );
+        ((PlexusConfiguration)configuration).setParent( this );
 
         children.add( configuration );
     }
@@ -400,15 +397,5 @@ public class DefaultConfiguration
             throw new IllegalStateException
                 ( "Configuration is read only and can not be modified" );
         }
-    }
-
-    public Configuration getParent()
-    {
-        return parent;
-    }
-
-    public void setParent( Configuration parent )
-    {
-        this.parent = parent;
     }
 }

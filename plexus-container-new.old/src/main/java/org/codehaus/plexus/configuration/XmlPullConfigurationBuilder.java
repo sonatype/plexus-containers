@@ -1,6 +1,5 @@
 package org.codehaus.plexus.configuration;
 
-import org.apache.avalon.framework.configuration.Configuration;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -21,14 +20,14 @@ public class XmlPullConfigurationBuilder
      * @return
      * @throws Exception
      */
-    public Configuration parse( Reader reader )
+    public PlexusConfiguration parse( Reader reader )
         throws Exception
     {
         List elements = new ArrayList();
 
         List values = new ArrayList();
 
-        Configuration configuration = null;
+        PlexusConfiguration configuration = null;
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 

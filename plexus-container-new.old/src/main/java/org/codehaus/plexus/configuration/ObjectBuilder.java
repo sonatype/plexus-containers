@@ -1,16 +1,15 @@
 package org.codehaus.plexus.configuration;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.alias.ElementMapper;
-import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.alias.CannotResolveClassException;
+import com.thoughtworks.xstream.alias.ClassMapper;
+import com.thoughtworks.xstream.alias.ElementMapper;
 import com.thoughtworks.xstream.objecttree.reflection.JavaReflectionObjectFactory;
-import org.apache.avalon.framework.configuration.Configuration;
 
-import java.util.StringTokenizer;
-import java.util.Map;
-import java.util.HashMap;
 import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -46,10 +45,10 @@ public class ObjectBuilder
     {
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
 
-        return build( builder.parse( reader ), clazz );
+        return build( (PlexusConfiguration) builder.parse( reader ), clazz );
     }
 
-    public Object build( Configuration configuration, Class clazz )
+    public Object build( PlexusConfiguration configuration, Class clazz )
         throws Exception
     {
         ConfigurationReader reader = new ConfigurationReader( configuration );

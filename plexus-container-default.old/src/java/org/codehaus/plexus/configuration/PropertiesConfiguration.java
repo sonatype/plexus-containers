@@ -97,6 +97,16 @@ public class PropertiesConfiguration
         throw new UnsupportedOperationException();
     }
 
+    public PlexusConfiguration getChild( int i )
+    {
+        return null;
+    }
+
+    public int getChildCount()
+    {
+        return 0;
+    }
+
     static class ValueConfiguration
         extends AbstractConfiguration
     {
@@ -159,6 +169,16 @@ public class PropertiesConfiguration
         public String getLocation()
         {
             return "unknown";
+        }
+
+        public PlexusConfiguration getChild( int i )
+        {
+            return null;
+        }
+
+        public int getChildCount()
+        {
+            return 0;
         }
     }
 }

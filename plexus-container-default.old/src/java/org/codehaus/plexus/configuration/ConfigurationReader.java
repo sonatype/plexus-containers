@@ -2,7 +2,6 @@ package org.codehaus.plexus.configuration;
 
 import com.thoughtworks.xstream.xml.XMLReader;
 import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.configuration.Configuration;
 
 import java.util.LinkedList;
 
@@ -17,14 +16,14 @@ public class ConfigurationReader
     implements XMLReader
 {
     /** */
-    private DefaultConfiguration current;
+    private PlexusConfiguration current;
 
     /** */
     private LinkedList pointers = new LinkedList();
 
-    public ConfigurationReader( Configuration configuration )
+    public ConfigurationReader( PlexusConfiguration configuration )
     {
-        current = (DefaultConfiguration) configuration;
+        current = configuration;
 
         pointers.addLast( new Pointer() );
     }
@@ -86,7 +85,7 @@ public class ConfigurationReader
 
     public void pop()
     {
-        current = (DefaultConfiguration) current.getParent();
+        current = current.getParent();
         pointers.removeLast();
     }
 
