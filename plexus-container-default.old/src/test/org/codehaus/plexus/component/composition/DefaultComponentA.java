@@ -2,17 +2,18 @@ package org.codehaus.plexus.component.composition;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
  */
-public class ComponentA
+public class DefaultComponentA
+    implements ComponentA
 {
-    private ComponentB componentB;
+    private DefaultComponentB componentB;
 
     // Just so we can retrieve the value of componentB for testing. */
-    public ComponentB getComponentB()
+    public DefaultComponentB getComponentB()
     {
         return componentB;
     }

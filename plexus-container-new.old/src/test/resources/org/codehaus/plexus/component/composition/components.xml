@@ -22,20 +22,22 @@ So initially we are looking for
 - how to validate those parameters
 - provide default values where sensible
 
-
-
 -->
+
 <components>
   <component>
-    <role>org.codehaus.plexus.ServiceA</role>
-    <implementation>org.codehaus.plexus.DefaultServiceA</implementation>
+    <role>org.codehaus.plexus.component.composition.ComponentA</role>
+    <implementation>org.codehaus.plexus.component.composition.DefaultComponentA</implementation>
     <requirements>
-      <requirement>org.codehaus.plexus.ServiceB</requirement>
-      <requirement>org.codehaus.plexus.ServiceC</requirement>
+      <requirement>org.codehaus.plexus.component.composition.ComponentB</requirement>
     </requirements>
     <configuration>
       <host>localhost</host>
       <port>10000</port>
     </configuration>
+  </component>
+  <component>
+    <role>org.codehaus.plexus.component.composition.ComponentB</role>
+    <implementation>org.codehaus.plexus.component.composition.DefaultComponentB</implementation>
   </component>
 </components>

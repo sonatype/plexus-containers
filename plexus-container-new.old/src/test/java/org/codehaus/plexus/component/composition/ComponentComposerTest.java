@@ -17,11 +17,11 @@ public class ComponentComposerTest
     {
         DefaultComponentComposer composer = new DefaultComponentComposer();
 
-        ComponentA a = new ComponentA();
+        DefaultComponentA a = new DefaultComponentA();
 
-        composer.assignComponent( new ComponentB(), a );
+        composer.assignComponent( new DefaultComponentB(), a );
 
-        ComponentB b = a.getComponentB();
+        DefaultComponentB b = a.getComponentB();
 
         assertNotNull( b );
     }
@@ -31,7 +31,7 @@ public class ComponentComposerTest
     {
         DefaultComponentComposer composer = new DefaultComponentComposer();
 
-        ComponentA a = new ComponentA();
+        DefaultComponentA a = new DefaultComponentA();
 
         try
         {
@@ -48,11 +48,11 @@ public class ComponentComposerTest
     {
         DefaultComponentComposer composer = new DefaultComponentComposer();
 
-        ComponentA a = null;
+        DefaultComponentA a = null;
 
         try
         {
-            composer.assignComponent( new ComponentB(), a );
+            composer.assignComponent( new DefaultComponentB(), a );
         }
         catch ( CompositionException e )
         {
