@@ -1,3 +1,5 @@
+package org.codehaus.plexus.configuration;
+
 /*
 
  ============================================================================
@@ -48,8 +50,6 @@
  
 */
 
-package org.codehaus.plexus.configuration;
-
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 
@@ -61,27 +61,22 @@ import org.apache.avalon.framework.configuration.ConfigurationException;
  * of the resolution is unsucessful, the request is applied against the parent
  * configuration.  As a parent may also be a CascadingConfiguration, the evaluation
  * will be applied until a value is resolved against a class parent Configuration.
+ *
  * @author Stephen McConnell <mcconnell@osm.net>
+ *
  */
-public class CascadingConfiguration implements Configuration
+public class CascadingConfiguration
+    implements Configuration
 {
-    //=============================================================================
-    // state
-    //=============================================================================
-
     /**
      * The primary configuration.
      */
-    private final Configuration m_base;
+    private final Configuration base;
 
     /**
      * The fallback configuration.
      */
-    private final Configuration m_parent;
-
-    //=============================================================================
-    // constructors
-    //=============================================================================
+    private final Configuration parent;
 
     /**
      * Create a CascadingConfiguration with specified parent.  The base
@@ -99,25 +94,25 @@ public class CascadingConfiguration implements Configuration
     {
         if( base == null )
         {
-            m_base = new DefaultConfiguration( "-", null );
+            this.base = new DefaultConfiguration( "-", null );
         }
         else
         {
-            m_base = base;
+            this.base = base;
         }
         if( parent == null )
         {
-            m_parent = new DefaultConfiguration( "-", null );
+            this.parent = new DefaultConfiguration( "-", null );
         }
         else
         {
-            m_parent = parent;
+            this.parent = parent;
         }
     }
 
-    //=============================================================================
-    // Configuration
-    //=============================================================================
+    // ----------------------------------------------------------------------
+    // Accessors
+    // ----------------------------------------------------------------------
 
     /**
      * Return the name of the base node.
@@ -125,7 +120,7 @@ public class CascadingConfiguration implements Configuration
      */
     public String getName()
     {
-        return m_base.getName();
+        return base.getName();
     }
 
     /**
@@ -137,7 +132,7 @@ public class CascadingConfiguration implements Configuration
      */
     public String getLocation()
     {
-        return m_base.getLocation();
+        return base.getLocation();
     }
 
     /**
@@ -149,7 +144,7 @@ public class CascadingConfiguration implements Configuration
      */
     public String getNamespace() throws ConfigurationException
     {
-        return m_base.getNamespace();
+        return base.getNamespace();
     }
 
     /**
@@ -161,7 +156,7 @@ public class CascadingConfiguration implements Configuration
      */
     public Configuration getChild( String child )
     {
-        return new CascadingConfiguration( m_base.getChild( child ), m_parent.getChild( child ) );
+        return new CascadingConfiguration( base.getChild( child ), parent.getChild( child ) );
     }
 
     /**
@@ -182,12 +177,12 @@ public class CascadingConfiguration implements Configuration
         {
             return getChild( child );
         }
-        Configuration c = m_base.getChild( child, false );
+        Configuration c = base.getChild( child, false );
         if( c != null )
         {
             return c;
         }
-        return m_parent.getChild( child, false );
+        return parent.getChild( child, false );
     }
 
     /**
@@ -200,8 +195,8 @@ public class CascadingConfiguration implements Configuration
      */
     public Configuration[] getChildren()
     {
-        Configuration[] b = m_base.getChildren();
-        Configuration[] p = m_parent.getChildren();
+        Configuration[] b = base.getChildren();
+        Configuration[] p = parent.getChildren();
         Configuration[] result = new Configuration[ b.length + p.length ];
         System.arraycopy( b, 0, result, 0, b.length );
         System.arraycopy( p, 0, result, b.length, p.length );
@@ -220,8 +215,8 @@ public class CascadingConfiguration implements Configuration
      */
     public Configuration[] getChildren( String name )
     {
-        Configuration[] b = m_base.getChildren( name );
-        Configuration[] p = m_parent.getChildren( name );
+        Configuration[] b = base.getChildren( name );
+        Configuration[] p = parent.getChildren( name );
         Configuration[] result = new Configuration[ b.length + p.length ];
         System.arraycopy( b, 0, result, 0, b.length );
         System.arraycopy( p, 0, result, b.length, p.length );
@@ -242,8 +237,8 @@ public class CascadingConfiguration implements Configuration
     public String[] getAttributeNames()
     {
         java.util.Vector vector = new java.util.Vector();
-        String[] names = m_base.getAttributeNames();
-        String[] names2 = m_parent.getAttributeNames();
+        String[] names = base.getAttributeNames();
+        String[] names2 = parent.getAttributeNames();
         for( int i = 0; i < names.length; i++ )
         {
             vector.add( names[ i ] );
@@ -271,11 +266,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttribute( paramName );
+            return base.getAttribute( paramName );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttribute( paramName );
+            return parent.getAttribute( paramName );
         }
     }
 
@@ -291,11 +286,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttributeAsInteger( paramName );
+            return base.getAttributeAsInteger( paramName );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttributeAsInteger( paramName );
+            return parent.getAttributeAsInteger( paramName );
         }
     }
 
@@ -312,11 +307,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttributeAsLong( name );
+            return base.getAttributeAsLong( name );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttributeAsLong( name );
+            return parent.getAttributeAsLong( name );
         }
     }
 
@@ -332,11 +327,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttributeAsFloat( paramName );
+            return base.getAttributeAsFloat( paramName );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttributeAsFloat( paramName );
+            return parent.getAttributeAsFloat( paramName );
         }
     }
 
@@ -353,11 +348,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttributeAsBoolean( paramName );
+            return base.getAttributeAsBoolean( paramName );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttributeAsBoolean( paramName );
+            return parent.getAttributeAsBoolean( paramName );
         }
     }
 
@@ -372,11 +367,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValue();
+            return base.getValue();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValue();
+            return parent.getValue();
         }
     }
 
@@ -389,11 +384,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValueAsInteger();
+            return base.getValueAsInteger();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValueAsInteger();
+            return parent.getValueAsInteger();
         }
     }
 
@@ -407,11 +402,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValueAsFloat();
+            return base.getValueAsFloat();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValueAsFloat();
+            return parent.getValueAsFloat();
         }
     }
 
@@ -425,11 +420,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValueAsBoolean();
+            return base.getValueAsBoolean();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValueAsBoolean();
+            return parent.getValueAsBoolean();
         }
     }
 
@@ -443,11 +438,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValueAsLong();
+            return base.getValueAsLong();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValueAsLong();
+            return parent.getValueAsLong();
         }
     }
 
@@ -464,11 +459,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValue();
+            return base.getValue();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValue( defaultValue );
+            return parent.getValue( defaultValue );
         }
     }
 
@@ -485,11 +480,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValueAsInteger();
+            return base.getValueAsInteger();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValueAsInteger( defaultValue );
+            return parent.getValueAsInteger( defaultValue );
         }
     }
 
@@ -506,11 +501,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValueAsLong();
+            return base.getValueAsLong();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValueAsLong( defaultValue );
+            return parent.getValueAsLong( defaultValue );
         }
     }
 
@@ -527,11 +522,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValueAsFloat();
+            return base.getValueAsFloat();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValueAsFloat( defaultValue );
+            return parent.getValueAsFloat( defaultValue );
         }
     }
 
@@ -548,11 +543,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getValueAsBoolean();
+            return base.getValueAsBoolean();
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getValueAsBoolean( defaultValue );
+            return parent.getValueAsBoolean( defaultValue );
         }
     }
 
@@ -571,11 +566,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttribute( name );
+            return base.getAttribute( name );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttribute( name, defaultValue );
+            return parent.getAttribute( name, defaultValue );
         }
     }
 
@@ -594,11 +589,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttributeAsInteger( name );
+            return base.getAttributeAsInteger( name );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttributeAsInteger( name, defaultValue );
+            return parent.getAttributeAsInteger( name, defaultValue );
         }
     }
 
@@ -617,11 +612,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttributeAsLong( name );
+            return base.getAttributeAsLong( name );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttributeAsLong( name, defaultValue );
+            return parent.getAttributeAsLong( name, defaultValue );
         }
     }
 
@@ -640,11 +635,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttributeAsFloat( name );
+            return base.getAttributeAsFloat( name );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttributeAsFloat( name, defaultValue );
+            return parent.getAttributeAsFloat( name, defaultValue );
         }
     }
 
@@ -663,11 +658,11 @@ public class CascadingConfiguration implements Configuration
     {
         try
         {
-            return m_base.getAttributeAsBoolean( name );
+            return base.getAttributeAsBoolean( name );
         }
         catch( ConfigurationException e )
         {
-            return m_parent.getAttributeAsBoolean( name, defaultValue );
+            return parent.getAttributeAsBoolean( name, defaultValue );
         }
     }
 }
