@@ -161,8 +161,8 @@ public class Embedder
         container.setConfigurationResource(
             new InputStreamReader( findConfigurationInputStream() ) );
         container.initialize();
-        container.start();
         embedderStarted = true;
+        container.start();
     }
 
     /**
