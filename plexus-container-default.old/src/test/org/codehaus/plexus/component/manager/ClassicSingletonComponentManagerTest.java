@@ -8,7 +8,7 @@ class ComponentLookupThread extends Thread
 
     final PlexusContainer container;
 
-    private SlowComponent tc;
+    private SlowComponent component;
 
     public ComponentLookupThread( PlexusContainer container )
     {
@@ -19,8 +19,8 @@ class ComponentLookupThread extends Thread
     {
         try
         {
-            this.tc = (SlowComponent) container.lookup( SlowComponent.ROLE );
-            System.out.println( SlowComponent.ROLE + " acquired: " + tc );
+            this.component = (SlowComponent) container.lookup( SlowComponent.ROLE );
+            System.out.println( "Acquired: " + component );
         }
         catch ( Exception e )
         {
@@ -28,9 +28,9 @@ class ComponentLookupThread extends Thread
         }
     }
 
-    public synchronized SlowComponent getSlowComponent()
+    public synchronized SlowComponent getComponent()
     {
-        return tc;
+        return component;
     }
 }
 
@@ -54,29 +54,29 @@ public class ClassicSingletonComponentManagerTest extends PlexusTestCase
 
     public void test( int count ) throws Exception
     {
-        ComponentLookupThread tt[] = new ComponentLookupThread[ count ];
+        ComponentLookupThread components[] = new ComponentLookupThread[ count ];
         //Start them
         for ( int i = 0; i < count; i++ )
         {
-            tt[i] = new ComponentLookupThread( getContainer() );
-            tt[i].start();
+            components[i] = new ComponentLookupThread( getContainer() );
+            components[i].start();
         }
 
         //Wait for them to finish
         for ( int i = 0; i < count; i++ )
         {
-            while ( tt[i].getSlowComponent() == null )
+            while ( components[i].getComponent() == null )
             {
                 Thread.sleep( 100 );
             }
         }
 
         //Get master component
-        SlowComponent masterTC = (SlowComponent) lookup( SlowComponent.ROLE );
+        SlowComponent masterComponent = (SlowComponent) lookup( SlowComponent.ROLE );
         //Verify them
         for ( int i = 0; i < count; i++ )
         {
-            assertSame( "tt[" + i + "].getThrashComponent()", masterTC, tt[i].getSlowComponent() );
+            assertSame( "components[" + i + "].getComponent()", masterComponent, components[i].getComponent() );
         }
     }
 }
