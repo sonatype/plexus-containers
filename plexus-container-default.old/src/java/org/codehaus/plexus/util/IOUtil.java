@@ -718,4 +718,75 @@ public final class IOUtil
             return true;
         }
     }
+
+    ///////////////////////////////////////////////////////////////
+    // close()
+
+    /**
+     * A IOException ignoring method that simply closes the stream.
+     * 
+     * @param inputStream The stream to close.
+     */
+    public static void close( InputStream inputStream )
+    {
+        try
+        {
+            inputStream.close();
+        }
+        catch( IOException ex )
+        {
+            // ignore
+        }
+    }
+
+    /**
+     * A IOException ignoring method that simply closes the stream.
+     * 
+     * @param outputStream The stream to close.
+     */
+    public static void close( OutputStream outputStream )
+    {
+        try
+        {
+            outputStream.close();
+        }
+        catch( IOException ex )
+        {
+            // ignore
+        }
+    }
+
+    /**
+     * A IOException ignoring method that simply closes the reader.
+     * 
+     * @param reader The reader to close.
+     */
+    public static void close( Reader reader )
+    {
+        try
+        {
+            reader.close();
+        }
+        catch( IOException ex )
+        {
+            // ignore
+        }
+    }
+
+    /**
+     * A IOException ignoring method that simply closes the stream.
+     * 
+     * @param wrtier The writer to close.
+     */
+    public static void close( Writer writer )
+    {
+        try
+        {
+            writer.close();
+        }
+        catch( IOException ex )
+        {
+            // ignore
+        }
+    }
 }
