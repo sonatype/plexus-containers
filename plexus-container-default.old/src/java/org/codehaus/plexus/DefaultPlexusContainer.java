@@ -131,7 +131,9 @@ public class DefaultPlexusContainer
             {
                 getLogger().error( "Non existant component: " + componentKey );
 
-                throw new ComponentLookupException( "Non existant component: " + componentKey );
+                String message = "Component descriptor cannot be found in the component repository: " + componentKey + ".";
+
+                throw new ComponentLookupException( message );
             }
 
             try
@@ -140,9 +142,11 @@ public class DefaultPlexusContainer
             }
             catch ( Exception e )
             {
-                getLogger().error( "Could not create component: " + componentKey, e );
+                String message = "Cannot create component manager for " + componentKey + ", so we cannot provide a component instance. ";
 
-                throw new ComponentLookupException( "Could not create component for componentKey " + componentKey + "!", e );
+                getLogger().error( message, e );
+
+                throw new ComponentLookupException( message, e );
             }
             try
             {
@@ -150,9 +154,11 @@ public class DefaultPlexusContainer
             }
             catch ( Exception e )
             {
-                getLogger().error( "Could not create component: " + componentKey, e );
+                String message = "Cannot create component for " + componentKey + ".";
 
-                throw new ComponentLookupException( "Could not create component for component " + componentKey + "!", e );
+                getLogger().error( message, e );
+
+                throw new ComponentLookupException( message, e );
             }
 
             componentManagersByComponentClass.put( component.getClass().getName(), componentManager );
@@ -165,7 +171,9 @@ public class DefaultPlexusContainer
             }
             catch ( Exception e )
             {
-                throw new ComponentLookupException( "Error retrieving component from ComponentManager" );
+                String message = "Cannot create component for " + componentKey + ".";
+
+                throw new ComponentLookupException( message, e );
             }
         }
 
