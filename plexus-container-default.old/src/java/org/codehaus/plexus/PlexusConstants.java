@@ -38,7 +38,7 @@ public class PlexusConstants
     /** Configuration tag. */
     public static final String CONFIGURATION = "configuration";
 
-    /** Key to retrieve the main Plexus object **/
+    /** Key to retrieve the main PlexusContainer object from the context. **/
     public static final String PLEXUS_KEY = "plexus";
 
     /** Key to retrieve the <code>File</code> plexus root, if any. */
@@ -63,6 +63,12 @@ public class PlexusConstants
     /** Key to retrieve the <code>File</code> plexus runtime root, if
      any. */
     public static final String RESOURCE_MANAGER_KEY = "plexus:resource-manager";
+
+    /**
+     * Key to retrieve the Avalon <code>ServiceManager</code>, typically
+     * from the ServletContext.
+     */
+    public static final String SERVICE_MANAGER_KEY = "plexus:service-manager";
 
     /** Common classloader */
     public static final String COMMON_CLASSLOADER = "common.classloader";
