@@ -601,7 +601,7 @@ public class DefaultPlexusContainer
         {
             throw new IllegalStateException( "The internal default plexus.conf is missing. " +
                                              "This is highly irregular, your plexus JAR is " +
-                                             "most likely corrupt." );
+                                             "most likely corrupt. The class loader being used is: " + getClassLoader() );
         }
 
         PlexusConfiguration systemConfiguration =

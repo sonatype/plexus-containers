@@ -89,6 +89,8 @@ public interface PlexusConfiguration
 
     PlexusConfiguration getChild( String child );
 
+    PlexusConfiguration getChild( int i );
+
     PlexusConfiguration getChild( String child, boolean createChild );
 
     PlexusConfiguration[] getChildren();

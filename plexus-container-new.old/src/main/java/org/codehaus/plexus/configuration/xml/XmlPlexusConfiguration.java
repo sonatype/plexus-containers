@@ -109,6 +109,11 @@ public class XmlPlexusConfiguration
         return new XmlPlexusConfiguration( child );
     }
 
+    public PlexusConfiguration getChild( int i )
+    {
+        return new XmlPlexusConfiguration( dom.getChild( i ) );
+    }
+
     public PlexusConfiguration getChild( String name, boolean value )
     {
         return getChild( name );
