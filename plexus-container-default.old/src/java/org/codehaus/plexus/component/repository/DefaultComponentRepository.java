@@ -22,6 +22,7 @@ import java.util.Map;
 
 /**
  * @todo remove explicit avalon dependencies from here.
+ * @todo remove lifecycle handling from the repository.
  */
 public class DefaultComponentRepository
     extends AbstractLogEnabled
