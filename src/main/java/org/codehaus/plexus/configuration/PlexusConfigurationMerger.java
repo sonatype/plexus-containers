@@ -229,7 +229,7 @@ public class PlexusConfigurationMerger
     {
         PlexusConfiguration handlers[] = source.getChild( "resources" ).getChildren();
 
-        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "resources", false );
+        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "resources" );
 
         for ( int i = 0; i < handlers.length; i++ )
         {
