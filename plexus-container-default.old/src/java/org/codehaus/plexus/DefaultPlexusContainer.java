@@ -790,6 +790,8 @@ public class DefaultPlexusContainer
 
         lifecycleHandlerManager.addEntity( LifecycleHandler.COMPONENT_REPOSITORY, componentRepository );
 
+        lifecycleHandlerManager.addEntity( LifecycleHandler.PLEXUS_CONTAINER, this );
+        
         lifecycleHandlerManager.addEntity( PlexusLifecycleHandler.COMPONENT_CONFIGURATOR, componentConfigurator );
 
         lifecycleHandlerManager.addEntity( "componentComposer", componentComposer );
