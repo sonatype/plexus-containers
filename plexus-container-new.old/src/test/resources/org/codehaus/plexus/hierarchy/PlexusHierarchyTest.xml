@@ -1,0 +1,22 @@
+<configuration>
+
+  <components>
+    <component>
+      <role>org.codehaus.plexus.PlexusContainer</role>
+      <implementation>org.codehaus.plexus.ComponentPlexusContainer</implementation>
+      <configuration>
+        <configuration-name>org/codehaus/plexus/hierarchy/ChildPlexusOne.xml</configuration-name>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.PlexusContainer</role>
+      <role-hint>two</role-hint>
+      <implementation>org.codehaus.plexus.ComponentPlexusContainer</implementation>
+      <configuration>
+        <configuration-name>org/codehaus/plexus/hierarchy/ChildPlexusTwo.xml</configuration-name>
+      </configuration>
+    </component>
+  </components>
+
+</configuration>
