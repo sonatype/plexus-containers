@@ -19,11 +19,7 @@ public class AvalonServiceManager
     extends AbstractLogEnabled
     implements ServiceManager
 {
-    // ----------------------------------------------------------------------
-    // Instance members
-    // ----------------------------------------------------------------------
-
-    /** */
+    /** Plexus component repository. */
     private ComponentRepository componentRepository;
 
     // ----------------------------------------------------------------------
@@ -39,8 +35,7 @@ public class AvalonServiceManager
     {
         if ( componentRepository == null )
         {
-            throw new IllegalStateException(
-                "You cannot initialize an AvalonServiceManager with a null ComponentRespository" );
+            throw new IllegalStateException( "ComponentRespository is null." );
         }
 
         this.componentRepository = componentRepository;
