@@ -16,7 +16,7 @@ import org.codehaus.plexus.context.Context;
 public class PlexusTestCase
     extends TestCase
 {
-    private DefaultPlexusContainer container;
+    protected DefaultPlexusContainer container;
 
     public String basedir;
 

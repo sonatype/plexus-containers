@@ -44,11 +44,11 @@ public class PlexusTestCaseTest
 
         assertNotNull( tc.getClassLoader() );
 
-        File file = new File( tc.getTestFile( "project.xml" ) );
+        File file = new File( tc.getTestPath( "project.xml" ) );
 
         assertTrue( file.exists() );
 
-        file = new File( tc.getTestFile( basedir, "project.xml" ) );
+        file = new File( tc.getTestPath( basedir, "project.xml" ) );
 
         assertTrue( file.exists() );
 
