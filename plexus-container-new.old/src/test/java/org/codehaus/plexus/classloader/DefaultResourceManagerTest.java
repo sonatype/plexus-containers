@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
 
-import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.logging.ConsoleLogger;
 import org.apache.avalon.framework.configuration.Configuration;
 

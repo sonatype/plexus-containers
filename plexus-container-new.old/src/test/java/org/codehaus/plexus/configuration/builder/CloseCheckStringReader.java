@@ -1,4 +1,4 @@
-package org.codehaus.plexus.configuration;
+package org.codehaus.plexus.configuration.builder;
 
 import java.io.StringReader;
 

@@ -1,7 +1,7 @@
 package org.codehaus.plexus.component.manager;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.ObjectBuilder;
+import org.codehaus.plexus.configuration.xstream.ObjectBuilder;
 
 import java.io.StringReader;
 

@@ -7,7 +7,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
-import org.codehaus.plexus.configuration.ObjectBuilder;
+import org.codehaus.plexus.configuration.xstream.ObjectBuilder;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;

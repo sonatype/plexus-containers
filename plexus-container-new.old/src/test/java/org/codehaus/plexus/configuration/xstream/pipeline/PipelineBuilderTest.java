@@ -1,9 +1,9 @@
 package org.codehaus.plexus.configuration.xstream.pipeline;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.ObjectBuilder;
+import org.codehaus.plexus.configuration.xstream.ObjectBuilder;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
 import java.io.StringReader;
 
@@ -23,10 +23,10 @@ public class PipelineBuilderTest
         String configuration =
             "<pipeline>" +
             "  <valves>" +
-            "    <valve implementation='org.codehaus.plexus.configuration.pipeline.FirstValve'>" +
+            "    <valve implementation='org.codehaus.plexus.configuration.xstream.pipeline.FirstValve'>" +
             "      <name>MyLittlePony</name>" +
             "    </valve>" +
-            "    <valve implementation='org.codehaus.plexus.configuration.pipeline.SecondValve'>" +
+            "    <valve implementation='org.codehaus.plexus.configuration.xstream.pipeline.SecondValve'>" +
             "      <name>MyBiggerPony</name>" +
             "    </valve>" +
             "  </valves>" +

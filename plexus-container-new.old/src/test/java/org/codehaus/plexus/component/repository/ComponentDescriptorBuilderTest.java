@@ -2,7 +2,7 @@ package org.codehaus.plexus.component.repository;
 
 import junit.framework.TestCase;
 import org.apache.avalon.framework.configuration.Configuration;
-import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
 import java.io.StringReader;
 import java.util.Set;

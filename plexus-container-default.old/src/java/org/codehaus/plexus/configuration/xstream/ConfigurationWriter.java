@@ -1,8 +1,10 @@
-package org.codehaus.plexus.configuration;
+package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.xml.XMLWriter;
 
 import java.util.LinkedList;
+
+import org.codehaus.plexus.configuration.DefaultConfiguration;
 
 public class ConfigurationWriter implements XMLWriter
 {

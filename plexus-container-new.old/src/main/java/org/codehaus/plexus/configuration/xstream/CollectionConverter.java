@@ -1,4 +1,4 @@
-package org.codehaus.plexus.configuration;
+package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.converters.ConverterLookup;

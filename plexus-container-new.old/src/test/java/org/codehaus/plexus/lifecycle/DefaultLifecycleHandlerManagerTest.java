@@ -1,7 +1,7 @@
 package org.codehaus.plexus.lifecycle;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.ObjectBuilder;
+import org.codehaus.plexus.configuration.xstream.ObjectBuilder;
 import org.codehaus.plexus.lifecycle.avalon.AvalonLifecycleHandler;
 
 import java.io.StringReader;

@@ -1,4 +1,4 @@
-package org.codehaus.plexus.configuration;
+package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.ConverterLookup;
@@ -6,6 +6,7 @@ import com.thoughtworks.xstream.objecttree.ObjectTree;
 import com.thoughtworks.xstream.xml.XMLReader;
 import com.thoughtworks.xstream.xml.XMLWriter;
 import org.apache.avalon.framework.configuration.Configuration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 public class ConfigurationConverter
     implements Converter

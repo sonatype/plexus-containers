@@ -1,4 +1,4 @@
-package org.codehaus.plexus.configuration;
+package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.alias.CannotResolveClassException;
@@ -10,6 +10,10 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.DefaultConfiguration;
 
 /**
  *
