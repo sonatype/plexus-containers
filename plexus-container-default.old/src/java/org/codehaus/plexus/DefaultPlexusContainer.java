@@ -364,8 +364,6 @@ public class DefaultPlexusContainer
 
     public void dispose()
     {
-        getLogger().info( "Disposing ComponentRepository..." );
-
         disposeAllComponents();
     }
 
@@ -384,8 +382,6 @@ public class DefaultPlexusContainer
         }
 
         componentManagers.clear();
-
-        getLogger().info( "ComponentRepository disposed." );
     }
 
     // ----------------------------------------------------------------------
