@@ -137,9 +137,9 @@ public class FieldComponentComposerTest
 
         try
         {
-            composer.findMatchingField( componentF, componentDescriptor, requirementA   );
+            composer.findMatchingField( componentF, componentDescriptor, requirementA, null );
 
-            composer.findMatchingField( componentF, componentDescriptor, requirementD   );
+            composer.findMatchingField( componentF, componentDescriptor, requirementD, null );
         }
         catch ( CompositionException e )
         {
