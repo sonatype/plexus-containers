@@ -25,11 +25,14 @@ package org.codehaus.plexus;
  */
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 
 import junit.framework.TestCase;
 
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.test.DefaultLoadOnStartService;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -72,6 +75,30 @@ public class PlexusTestCaseTest
         assertTrue( component instanceof DiscoveredComponent );
 
         assertNotNull( tc.getClassLoader() );
+
+        tc.tearDown();
+    }
+
+    public void testLoadOnStartComponents()
+        throws Exception
+    {
+        final InputStream is = this.getClass().getClassLoader().getResourceAsStream( "org/codehaus/plexus/PlexusTestCaseTest.xml" );
+
+        assertNotNull( "Missing configuration", is );
+
+        PlexusTestCase tc = new PlexusTestCase() {
+            protected InputStream getConfiguration()
+                throws Exception
+            {
+                return is;
+            }
+        };
+
+        tc.setUp();
+
+        // Assert that the load on start component has started.
+
+        assertTrue( "The load on start components haven't been started.", DefaultLoadOnStartService.isStarted );
 
         tc.tearDown();
     }

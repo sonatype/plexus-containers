@@ -24,6 +24,7 @@ package org.codehaus.plexus.test;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
  *
@@ -33,6 +34,18 @@ package org.codehaus.plexus.test;
  * @version $Id$
  */
 public class DefaultLoadOnStartService
-    implements LoadOnStartService
+    implements LoadOnStartService, Startable
 {
+    public static boolean isStarted = false;
+
+    public void start()
+        throws Exception
+    {
+        isStarted = true;
+    }
+
+    public void stop()
+        throws Exception
+    {
+    }
 }

@@ -44,7 +44,7 @@ public class PlexusTestCase
 
     /**
      * @deprecated Use getBasedir(); instead of accessing this variable directly.
-     * 
+     *
      * When removing this variable rename basedirPath to basedir. Trygve.
      */
     protected String basedir;
@@ -98,7 +98,7 @@ public class PlexusTestCase
 
         if ( !hasPlexusHome )
         {
-            File f = new File( basedir, "target/plexus-home" );
+            File f = getTestFile( "target/plexus-home" );
 
             if ( !f.isDirectory() )
             {
@@ -229,10 +229,12 @@ public class PlexusTestCase
     public static File getTestFile( String basedir, String path )
     {
         File basedirFile = new File( basedir );
+
         if ( ! basedirFile.isAbsolute() )
         {
             basedirFile = getTestFile( basedir );
         }
+
         return new File( basedirFile, path );
     }
 
