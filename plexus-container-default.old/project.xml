@@ -159,6 +159,7 @@
       <version>1.0-beta-1</version>
     </dependency>
 
+    <!-- Used for component-connector generation -->
     <dependency>
       <groupId>asm</groupId>
       <artifactId>asm</artifactId>
