@@ -174,7 +174,7 @@ public class XmlPlexusConfiguration
 
     public void addChild( PlexusConfiguration configuration )
     {
-        dom.addChild( ((XmlPlexusConfiguration)configuration).getXpp3Dom() );
+        dom.addChild( ( (XmlPlexusConfiguration) configuration ).getXpp3Dom() );
     }
 
     public void addAllChildren( PlexusConfiguration other )
@@ -190,5 +190,121 @@ public class XmlPlexusConfiguration
     public int getChildCount()
     {
         return dom.getChildCount();
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        int depth = 0;
+
+        display( this, sb, depth );
+
+        return sb.toString();
+    }
+
+    private void display( PlexusConfiguration c, StringBuffer sb, int depth )
+    {
+        sb.append( indent( depth ) ).
+            append( '<' ).
+            append( c.getName() ).
+            append( '>' ).
+            append( '\n' );
+
+        int count = c.getChildCount();
+
+        for ( int i = 0; i < count; i++ )
+        {
+            PlexusConfiguration child = c.getChild( i );
+
+            int childCount = child.getChildCount();
+
+            depth++;
+
+            if ( childCount > 0 )
+            {
+                display( child, sb, depth );
+            }
+            else
+            {
+                try
+                {
+                    String value = child.getValue();
+
+                    if ( value != null )
+                    {
+                        sb.append( indent( depth ) ).
+                            append( '<' ).
+                            append( child.getName() );
+
+                        attributes( child, sb );
+
+                        sb.append( '>' ).
+                            append( child.getValue() ).
+                            append( '<' ).
+                            append( '/' ).
+                            append( child.getName() ).
+                            append( '>' ).
+                            append( '\n' );
+                    }
+                    else
+                    {
+                        sb.append( indent( depth ) ).
+                            append( '<' ).
+                            append( child.getName() );
+
+                        attributes( child, sb );
+
+                        sb.append( '/' ).
+                            append( '>' ).
+                            append( "\n" );
+                    }
+                }
+                catch ( Exception e )
+                {
+                    // do nothing
+                }
+            }
+
+            depth--;
+        }
+
+        sb.append( indent( depth ) ).
+            append( '<' ).
+            append( '/' ).            
+            append( c.getName() ).
+            append( '>' ).
+            append( '\n' );
+    }
+
+    private void attributes( PlexusConfiguration c, StringBuffer sb )
+    {
+        String[] names = c.getAttributeNames();
+
+        for ( int i = 0; i < names.length; i++ )
+        {
+            sb.append( ' ' ).
+                append( names[i] ).
+                append( '=' ).
+                append( '"' ).
+                append( c.getAttribute( names[i], null ) ).
+                append( '"' );
+        }
+    }
+
+    private String indent( int depth )
+    {
+        StringBuffer sb = new StringBuffer();
+
+        for ( int i = 0; i < depth; i++ )
+        {
+            sb.append( ' ' );
+        }
+
+        return sb.toString();
     }
 }

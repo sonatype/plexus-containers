@@ -1,12 +1,11 @@
 package org.codehaus.plexus.configuration.processor;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /*
  * The MIT License
@@ -48,7 +47,7 @@ public class ConfigurationProcessor
         handlers = new HashMap();
     }
 
-    protected void addConfigurationResourceHandler( ConfigurationResourceHandler handler )
+    public void addConfigurationResourceHandler( ConfigurationResourceHandler handler )
     {
         handlers.put( handler.getId(), handler );
     }
@@ -60,39 +59,79 @@ public class ConfigurationProcessor
     public PlexusConfiguration process( PlexusConfiguration configuration, Map variables )
         throws ConfigurationResourceNotFoundException, ConfigurationProcessingException
     {
-        XmlPlexusConfiguration pc = new XmlPlexusConfiguration( "configuration" );
+        XmlPlexusConfiguration processed = new XmlPlexusConfiguration( "configuration" );
 
-        PlexusConfiguration[] children = configuration.getChildren();
+        walk( configuration, processed, variables );
+
+        return processed;
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    protected void walk( PlexusConfiguration source, PlexusConfiguration processed, Map variables )
+        throws ConfigurationResourceNotFoundException, ConfigurationProcessingException
+    {
+        PlexusConfiguration[] children = source.getChildren();
 
         for ( int i = 0; i < children.length; i++ )
         {
             PlexusConfiguration child = children[i];
 
-            String elementName = child.getName();
+            int count = child.getChildCount();
 
-            // ----------------------------------------------------------------------
-            // Check to see if this element name matches the id of any of our
-            // configuration resource handlers.
-            // ----------------------------------------------------------------------
-
-            if ( handlers.containsKey( elementName ) )
+            if ( count > 0 )
             {
-                ConfigurationResourceHandler handler = (ConfigurationResourceHandler) handlers.get( elementName );
+                // ----------------------------------------------------------------------
+                // If we have a child with children itself then we must make a configuration
+                // with the name of the child, add that child to the processed configuration
+                // and walk the child.
+                //
+                // <configuration>
+                //   <child>
+                //     <entity>
+                //       <foo>bar</foo>
+                //     </entity>
+                //   </child>
+                // </configuration>
+                //
+                // ----------------------------------------------------------------------
 
-                PlexusConfiguration[] configurations = handler.handleRequest( createHandlerParameters( child, variables ) );
+                XmlPlexusConfiguration processedChild = new XmlPlexusConfiguration( child.getName() );
 
-                for ( int j = 0; j < configurations.length; j++ )
-                {
-                    pc.addChild( configurations[j] );
-                }
+                copyAttributes( child, processedChild );
+
+                processed.addChild( processedChild );
+
+                walk( child, processedChild, variables );
             }
             else
             {
-                pc.addChild( child );
+                String elementName = child.getName();
+
+                // ----------------------------------------------------------------------
+                // Check to see if this element name matches the id of any of our
+                // source resource handlers.
+                // ----------------------------------------------------------------------
+
+                if ( handlers.containsKey( elementName ) )
+                {
+                    ConfigurationResourceHandler handler = (ConfigurationResourceHandler) handlers.get( elementName );
+
+                    PlexusConfiguration[] configurations = handler.handleRequest( createHandlerParameters( child, variables ) );
+
+                    for ( int j = 0; j < configurations.length; j++ )
+                    {
+                        processed.addChild( configurations[j] );
+                    }
+                }
+                else
+                {
+                    processed.addChild( child );
+                }
             }
         }
-
-        return pc;
     }
 
     // ----------------------------------------------------------------------
@@ -117,4 +156,17 @@ public class ConfigurationProcessor
         return parameters;
     }
 
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    private void copyAttributes( PlexusConfiguration source, XmlPlexusConfiguration target )
+    {
+        String[] names = source.getAttributeNames();
+
+        for ( int i = 0; i < names.length; i++ )
+        {
+            target.setAttribute( names[i], source.getAttribute( names[i], null ) );
+        }
+    }
 }

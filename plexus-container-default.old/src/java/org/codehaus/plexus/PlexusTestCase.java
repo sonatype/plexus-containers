@@ -86,14 +86,9 @@ public class PlexusTestCase
             fail( e.getMessage() );
         }
 
-        basedir = getBasedir();
-
-//        container = new DefaultPlexusContainer();
         container = getContainerInstance();
 
-        //System.out.println( "Thread.currentThread().getContextClassLoader() = " + Thread.currentThread().getContextClassLoader() );
-
-        container.addContextValue( "basedir", basedir );
+        container.addContextValue( "basedir", getBasedir() );
 
         customizeContext();
 

@@ -49,6 +49,9 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.configuration.processor.ConfigurationProcessor;
+import org.codehaus.plexus.configuration.processor.FileConfigurationResourceHandler;
+import org.codehaus.plexus.configuration.processor.DirectoryConfigurationResourceHandler;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.context.Context;
@@ -946,6 +949,23 @@ public class DefaultPlexusContainer
 
             processConfigurationsDirectory();
         }
+
+        // ---------------------------------------------------------------------------
+        // Now that we have the configuration we will use the ConfigurationProcessor
+        // to inline any external configuration instructions.
+        //
+        // At his point the variables in the configuration have already been
+        // interpolated so we can send in an empty Map because the context
+        // values are already there.
+        // ---------------------------------------------------------------------------
+
+        ConfigurationProcessor p = new ConfigurationProcessor();
+
+        p.addConfigurationResourceHandler( new FileConfigurationResourceHandler() );
+
+        p.addConfigurationResourceHandler( new DirectoryConfigurationResourceHandler() );
+
+        configuration = p.process( configuration, new HashMap() );
     }
 
     protected Reader getInterpolationConfigurationReader( Reader reader )
