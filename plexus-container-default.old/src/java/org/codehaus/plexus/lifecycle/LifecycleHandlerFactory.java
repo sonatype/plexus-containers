@@ -11,18 +11,6 @@ import org.codehaus.plexus.component.repository.ComponentRepository;
 public class LifecycleHandlerFactory
     extends AbstractPlexusFactory
 {
-    /**
-     * Return a new  a LifecycleHandlerHousing, with an instantiated and initialized
-     * Lifecyclehandler
-     *
-     * @param config
-     * @param loggerManager
-     * @param classLoader
-     * @param context
-     * @param componentRepository
-     * @return
-     * @throws Exception
-     */
     public static LifecycleHandlerHousing createLifecycleHandlerHousing( Configuration config,
                                                                          LoggerManager loggerManager,
                                                                          ClassLoader classLoader,
@@ -33,36 +21,42 @@ public class LifecycleHandlerFactory
         LifecycleHandlerHousing housing = new LifecycleHandlerHousing();
 
         String implementation = config.getChild( "implementation" ).getValue( null );
+
         if ( implementation == null )
         {
             throw new ConfigurationException( "No lifecycle implementation" );
         }
+
         String id = config.getChild( "id" ).getValue( null );
+
         if ( id == null )
         {
             throw new ConfigurationException( "No role specified for lifecycle handler" );
         }
 
         housing.setImplementation( implementation );
+
         housing.setId( id );
+
         housing.setConfiguration( config );
-        LifecycleHandler lh = (LifecycleHandler) getInstance( implementation, classLoader );
+
+        LifecycleHandler lifecycleHandler = (LifecycleHandler) getInstance( implementation, classLoader );
 
         // Setup logging for the lifecycle handler. Not used by components
-        lh.enableLogging( loggerManager.getLogger( "lifecycle-handler:" + id ) );
+        lifecycleHandler.enableLogging( loggerManager.getLogger( "lifecycle-handler:" + id ) );
 
         Configuration[] a = config.getChild( "start-segment" ).getChildren( "phase" );
+
         for ( int i = 0; i < a.length; i++ )
         {
-            lh.addBeginSegmentPhase(
-                (Phase) getInstance( a[i].getAttribute( "implementation" ), classLoader ) );
+            lifecycleHandler.addBeginSegmentPhase( (Phase) getInstance( a[i].getAttribute( "implementation" ), classLoader ) );
         }
 
         Configuration[] b = config.getChild( "end-segment" ).getChildren( "phase" );
+
         for ( int i = 0; i < b.length; i++ )
         {
-            lh.addEndSegmentPhase(
-                (Phase) getInstance( b[i].getAttribute( "implementation" ), classLoader ) );
+            lifecycleHandler.addEndSegmentPhase( (Phase) getInstance( b[i].getAttribute( "implementation" ), classLoader ) );
         }
 
         // Add some standard entities to the lifecycle handler. The lifecycle
@@ -70,16 +64,19 @@ public class LifecycleHandlerFactory
         // of entities for its lifecycle phases. For example the AvalonLifecycleHandler
         // uses the ServiceRepository and adapts it to create an Avalon ServiceManager.
         // The entities MUST be added before initialization of the lifecyclehandler.
-        lh.addEntity( LifecycleHandler.LOGGER, loggerManager.getRootLogger() );
-        lh.addEntity( LifecycleHandler.CONTEXT, context );
-        lh.addEntity( LifecycleHandler.SERVICE_REPOSITORY, componentRepository );
+        lifecycleHandler.addEntity( LifecycleHandler.LOGGER, loggerManager.getRootLogger() );
+
+        lifecycleHandler.addEntity( LifecycleHandler.CONTEXT, context );
+
+        lifecycleHandler.addEntity( LifecycleHandler.SERVICE_REPOSITORY, componentRepository );
 
         // Initialize the lifecycle handler before returning the manager.
-        lh.configure( config.getChild( "configuration" ) );
-        lh.initialize();
+        lifecycleHandler.configure( config.getChild( "configuration" ) );
+
+        lifecycleHandler.initialize();
 
         //wrap the handler in an immutable wrapper. THis is so components can't modify it
-        housing.setHandler( lh );
+        housing.setHandler( lifecycleHandler );
 
         return housing;
     }
