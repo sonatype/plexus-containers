@@ -29,13 +29,15 @@ public class ConfigurationMergerTest
     public void setUp()
         throws Exception
     {
-        InputStream userStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "org/codehaus/plexus/configuration/avalon.xml" );
+        InputStream userStream =
+            Thread.currentThread().getContextClassLoader().getResourceAsStream( "org/codehaus/plexus/configuration/avalon.xml" );
 
         assertNotNull( userStream );
 
         user = PlexusTools.buildConfiguration( new InputStreamReader( userStream ) );
 
-        InputStream systemStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
+        InputStream systemStream =
+            Thread.currentThread().getContextClassLoader().getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
 
         assertNotNull( systemStream );
 
