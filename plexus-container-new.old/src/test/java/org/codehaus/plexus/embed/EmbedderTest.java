@@ -10,7 +10,8 @@ import java.net.URL;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  */
-public class EmbedderTest extends TestCase
+public class EmbedderTest
+    extends TestCase
 {
     /**
      * @deprecated this test is only required while Embedder has the old setConfiguration(String) method
@@ -203,5 +204,4 @@ public class EmbedderTest extends TestCase
             // do nothing
         }
     }
-
 }

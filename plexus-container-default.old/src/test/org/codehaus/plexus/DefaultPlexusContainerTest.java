@@ -112,31 +112,43 @@ public class DefaultPlexusContainerTest
         assertNotNull( serviceA );
 
         assertEquals( true, serviceA.enableLogging );
+
         assertEquals( true, serviceA.contextualize );
+
         assertEquals( true, serviceA.service );
+
         assertEquals( true, serviceA.configure );
+
         assertEquals( true, serviceA.initialize );
+
         assertEquals( true, serviceA.start );
 
         container.getComponentRepository().release( serviceA );
 
         assertEquals( true, serviceA.stop );
+
         assertEquals( true, serviceA.dispose );
 
         // make sure we get the same manager back everytime
         DefaultServiceA a0 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
+
         DefaultServiceA a1 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
+
         DefaultServiceA a2 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
 
         assertTrue( a0.equals( a1 ) );
+
         assertTrue( a1.equals( a2 ) );
+
         assertTrue( a2.equals( a0 ) );
 
-	// make sure that the component wasn't recycled
+	    // make sure that the component wasn't recycled
         assertFalse( serviceA.equals( a0 ) );
 
         container.getComponentRepository().release( a0 );
+
         container.getComponentRepository().release( a1 );
+
         container.getComponentRepository().release( a2 );
     }
 
@@ -162,10 +174,15 @@ public class DefaultPlexusContainerTest
         assertNotNull( serviceB1 );
 
         assertEquals( true, serviceB1.enableLogging );
+
         assertEquals( true, serviceB1.contextualize );
+
         assertEquals( true, serviceB1.service );
+
         assertEquals( true, serviceB1.configure );
+
         assertEquals( true, serviceB1.initialize );
+
         assertEquals( true, serviceB1.start );
 
         assertNotNull( serviceB1.getClassLoader() );
@@ -208,6 +225,7 @@ public class DefaultPlexusContainerTest
         assertSame( serviceC1, serviceC2 );
 
         container.getComponentRepository().release( serviceC1 );
+
         container.getComponentRepository().release( serviceC2 );
     }
 
@@ -225,30 +243,35 @@ public class DefaultPlexusContainerTest
 
         // Retrieve an manager of component c.
         ServiceD serviceD1 = (ServiceD) container.getComponentRepository().lookup( ServiceD.ROLE );
+
         assertNotNull( serviceD1 );
 
         ServiceD serviceD2 = (ServiceD) container.getComponentRepository().lookup( ServiceD.ROLE );
+
         assertNotNull( serviceD2 );
 
         ServiceD serviceD3 = (ServiceD) container.getComponentRepository().lookup( ServiceD.ROLE );
+
         assertNotNull( serviceD3 );
 
         assertNotSame( serviceD1, serviceD2 );
+
         assertNotSame( serviceD2, serviceD3 );
+
         assertNotSame( serviceD1, serviceD3 );
 
         // Now let's release all the components.
 
         container.getComponentRepository().release( serviceD1 );
+
         container.getComponentRepository().release( serviceD2 );
+
         container.getComponentRepository().release( serviceD3 );
 
         ServiceD[] ds = new DefaultServiceD[30];
 
         for ( int h = 0; h < 5; h++ )
         {
-            System.out.println( "Consume/Release iteration[ " + h + " ]" );
-
             // Consume all available components in the pool.
 
             for ( int i = 0; i < 30; i++ )
@@ -285,10 +308,15 @@ public class DefaultPlexusContainerTest
 
         // Check the lifecycle
         assertEquals( true, serviceE1.enableLogging );
+
         assertEquals( true, serviceE1.contextualize );
+
         assertEquals( true, serviceE1.service );
+
         assertEquals( true, serviceE1.configure );
+
         assertEquals( true, serviceE1.initialize );
+
         assertEquals( true, serviceE1.start );
 
         // Retrieve another
@@ -299,15 +327,21 @@ public class DefaultPlexusContainerTest
 
         // Check the lifecycle
         assertEquals( true, serviceE2.enableLogging );
+
         assertEquals( true, serviceE2.contextualize );
+
         assertEquals( true, serviceE2.service );
+
         assertEquals( true, serviceE2.configure );
+
         assertEquals( true, serviceE2.initialize );
+
         assertEquals( true, serviceE2.start );
 
         assertNotSame( serviceE1, serviceE2 );
 
         container.getComponentRepository().release( serviceE1 );
+
         container.getComponentRepository().release( serviceE2 );
     }
 
@@ -362,16 +396,23 @@ public class DefaultPlexusContainerTest
 
         // Make sure the component went through all the lifecycle phases
         assertTrue( serviceG.enableLogging );
+
         assertTrue( serviceG.contextualize );
+
         assertTrue( serviceG.service );
+
         assertTrue( serviceG.configure );
+
         assertTrue( serviceG.initialize );
+
         assertTrue( serviceG.start );
 
         container.getComponentRepository().suspend( serviceG );
+
         assertTrue( serviceG.suspend );
 
         container.getComponentRepository().resume( serviceG );
+
         assertTrue( serviceG.resume );
 
         // Now how do we make sure it has been released and decomissioned
@@ -380,21 +421,27 @@ public class DefaultPlexusContainerTest
 
         // make sure we get the same manager back everytime
         DefaultServiceG g0 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+
         DefaultServiceG g1 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+
         DefaultServiceG g2 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
 
         assertTrue( g0.equals( g1 ) );
+
         assertTrue( g1.equals( g2 ) );
+
         assertTrue( g2.equals( g0 ) );
 
         //Now try it again in seperate threads.Make sure the manager is the same for all threads
         TestThreadManager reg = new TestThreadManager( this );
+
         for ( int i = 0; i < 5; i++ )
         {
-            SingletonComponentTestThread st =
-                new SingletonComponentTestThread( reg, container, ServiceG.ROLE, g0 );
+            SingletonComponentTestThread st = new SingletonComponentTestThread( reg, container, ServiceG.ROLE, g0 );
+
             reg.registerThread( st );
         }
+
         reg.runTestThreads();
 
 		//now wait for the threads to finish..
@@ -413,28 +460,34 @@ public class DefaultPlexusContainerTest
      	}
 
         assertEquals( "Expected 5 test threads to of run", reg.getRunThreads().size(), 5 );
+
         //now test if any components were returned which was not the same manager
         if ( reg.hasFailedThreads() )
         {
             //collect all failed tests
+
             StringBuffer out = new StringBuffer();
+
             String nl = System.getProperty( "line.separator" );
 
             for ( Iterator iter = reg.getFailedTests().iterator(); iter.hasNext(); )
             {
                 out.append( nl );
+
                 out.append( ( (SingletonComponentTestThread) iter.next() ).getErrorMsg() );
             }
+
             fail(
                 "Singleton component 'ServiceG' being instantiated multiple times. Failed test threads: "
                 + out );
         }
 
         container.getComponentRepository().release( g0 );
+
         container.getComponentRepository().release( g1 );
+
         container.getComponentRepository().release( g2 );
     }
-
 
     // ----------------------------------------------------------------------
     // Test using an arbitrary component lifecycle handler
@@ -451,28 +504,35 @@ public class DefaultPlexusContainerTest
 
         // Make sure the component went through all the lifecycle phases
         assertEquals( true, serviceH.eeny );
+
         assertEquals( true, serviceH.meeny );
+
         assertEquals( true, serviceH.miny );
+
         assertEquals( true, serviceH.mo );
 
         container.getComponentRepository().release( serviceH );
     }
 
-    class SingletonComponentTestThread extends AbstractTestThread
+    class SingletonComponentTestThread
+        extends AbstractTestThread
     {
         private Object expectedComponent;
+
         private Object returnedComponent;
+
         private PlexusContainer container;
+
         private String role;
 
-        /**
-         *
-         */
         public SingletonComponentTestThread( PlexusContainer container, String role, Object expectedComponent )
         {
             super();
+
             this.expectedComponent = expectedComponent;
+
             this.container = container;
+
             this.role = role;
         }
 
@@ -482,8 +542,11 @@ public class DefaultPlexusContainerTest
         public SingletonComponentTestThread( TestThreadManager registry, PlexusContainer container, String role, Object expectedComponent )
         {
             super( registry );
+
             this.expectedComponent = expectedComponent;
+
             this.container = container;
+
             this.role = role;
         }
 
@@ -495,6 +558,7 @@ public class DefaultPlexusContainerTest
             try
             {
                 returnedComponent = container.getComponentRepository().lookup( role );
+
                 if ( returnedComponent == null )
                 {
                     setErrorMsg( "Null component returned" );
@@ -513,7 +577,5 @@ public class DefaultPlexusContainerTest
                 container.getComponentRepository().release( returnedComponent );
             }
         }
-
     }
-
 }
