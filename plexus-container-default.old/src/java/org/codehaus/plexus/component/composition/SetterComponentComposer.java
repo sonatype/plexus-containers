@@ -147,9 +147,7 @@ public class SetterComponentComposer extends AbstractComponentComposer
             statement.execute();
         }
         catch ( Exception e )
-        {
-            e.printStackTrace();
-
+        {           
             reportErrorCannotAssignRequiredComponent( descriptor, requirement, e );
         }
 

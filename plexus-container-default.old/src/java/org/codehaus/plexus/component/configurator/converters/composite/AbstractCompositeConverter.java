@@ -52,11 +52,6 @@ public abstract class AbstractCompositeConverter implements CompositeConverter
                 throw new ComponentConfigurationException( msg );
             }
         }
-        else
-        {
-            System.out.println( "no implementation hint: " + configuration.getName() );
-        }
-        System.out.println( "Class for hint " + type + " is:" + retValue );
 
         return retValue;
     }
