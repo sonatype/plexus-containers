@@ -2,6 +2,11 @@ package org.codehaus.plexus.component.repository;
 
 import org.apache.avalon.framework.configuration.Configuration;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
 /** Component instantiation description.
  *
  *  @author <a href="mailto:jason@zenplex.com">Jason van Zyl</a>
@@ -31,6 +36,9 @@ public class ComponentDescriptor
 
     /** Component profile id. */
     private String componentProfile;
+
+    /** List of required component interfaces. */
+    private Set requirements;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -164,5 +172,20 @@ public class ComponentDescriptor
     public void setComponentProfile( String componentProfile )
     {
         this.componentProfile = componentProfile;
+    }
+
+    public Set getRequirements()
+    {
+        if ( requirements == null )
+        {
+            requirements = new HashSet();
+        }
+
+        return requirements;
+    }
+
+    public void addRequirement( String role )
+    {
+        getRequirements().add( role );
     }
 }
