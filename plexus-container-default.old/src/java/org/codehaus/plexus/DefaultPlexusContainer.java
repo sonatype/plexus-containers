@@ -567,13 +567,8 @@ public class DefaultPlexusContainer
     private void initializeComponentRepository()
         throws Exception
     {
-        ComponentRepository componentRepository =
-            ComponentRepositoryFactory.create( getMergedConfiguration(),
-                                               getLoggerManager(),
-                                               this,
-                                               getClassLoader(),
-                                               getContext() );
-
+        ComponentRepository componentRepository = ComponentRepositoryFactory.create( getMergedConfiguration(),
+                                                                                     getClassLoader() );
         setComponentRepository( componentRepository );
     }
 
