@@ -9,6 +9,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.avalon.framework.service.ServiceManager;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.lifecycle.avalon.AvalonServiceManager;
@@ -107,6 +108,14 @@ public class PlexusServletContextListener implements ServletContextListener
         {
             throw new RuntimeException("Could not start Plexus!", e);
         }
+    }
+    
+    public static ServiceManager getServiceManager(ServletContext sc)  {
+        return (ServiceManager) sc.getAttribute(PLEXUS_SERVICE_MANAGER);
+    }
+
+    public static PlexusContainer getPlexusContainer(ServletContext sc)  {
+        return (PlexusContainer) sc.getAttribute(PLEXUS_CONTAINER);
     }
 
 }
