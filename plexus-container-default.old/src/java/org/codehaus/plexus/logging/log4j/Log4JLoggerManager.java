@@ -169,9 +169,9 @@ public class Log4JLoggerManager
         Properties p = new Properties();
 
         p.setProperty( "log4j.rootLogger", "INFO,console" );
-        p.setProperty( "log4j.appender.console", "org.codehaus.log4j.ConsoleAppender" );
+        p.setProperty( "log4j.appender.console", "org.apache.log4j.ConsoleAppender" );
         p.setProperty( "log4j.appender.console.threshold", " INFO" );
-        p.setProperty( "log4j.appender.console.layout", "org.codehaus.log4j.PatternLayout" );
+        p.setProperty( "log4j.appender.console.layout", "org.apache.log4j.PatternLayout" );
         p.setProperty( "log4j.appender.console.layout.ConversionPattern", "%-4r [%t] %-5p %c %x - %m%n" );
 
         return p;
@@ -239,7 +239,7 @@ public class Log4JLoggerManager
 
         if ( type.equals( "rollingFile" ) )
         {
-            appenderProperties.setProperty( base, "org.codehaus.log4j.RollingFileAppender" );
+            appenderProperties.setProperty( base, "org.apache.log4j.RollingFileAppender" );
             appenderProperties.setProperty( base + ".MaxBackupIndex",
                                             typeConfiguration.getChild( "maxBackupIndex" ).getValue() );
             appenderProperties.setProperty( base + ".MaxFileSize",
@@ -253,7 +253,7 @@ public class Log4JLoggerManager
         appenderProperties.setProperty( base + ".file", file );
         appenderProperties.setProperty( base + ".append", append );
         appenderProperties.setProperty( base + ".threshold", threshold );
-        appenderProperties.setProperty( base + ".layout", "org.codehaus.log4j.PatternLayout" );
+        appenderProperties.setProperty( base + ".layout", "org.apache.log4j.PatternLayout" );
         appenderProperties.setProperty( base + ".layout.conversionPattern", conversionPattern );
 
         return appenderProperties;
