@@ -46,13 +46,10 @@ public class PlexusTestCase
         catch ( Exception e )
         {
             System.out.println( "Error with configuration:" );
-            System.out.println( "configuration = " + configuration );
-            fail( e.getMessage() );
-        }
 
-        if ( configuration == null )
-        {
-            throw new IllegalStateException( "The configuration for your plexus test case cannot be null. " );
+            System.out.println( "configuration = " + configuration );
+
+            fail( e.getMessage() );
         }
 
         container = new DefaultPlexusContainer();
@@ -63,7 +60,10 @@ public class PlexusTestCase
 
         customizeContext();
 
-        container.setConfigurationResource( new InputStreamReader( configuration ) );
+        if ( configuration != null )
+        {
+            container.setConfigurationResource( new InputStreamReader( configuration ) );
+        }
 
         container.initialize();
 
@@ -89,6 +89,7 @@ public class PlexusTestCase
         throws Exception
     {
         container.dispose();
+
         container = null;
     }
 
@@ -107,6 +108,7 @@ public class PlexusTestCase
         throws Exception
     {
         String className = getClass().getName();
+
         String base = className.substring( className.lastIndexOf( "." ) + 1 );
 
         String config = null;

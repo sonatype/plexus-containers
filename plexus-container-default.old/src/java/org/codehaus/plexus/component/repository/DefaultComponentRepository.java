@@ -10,6 +10,7 @@ import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.DefaultComponentDiscoverer;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.classworlds.ClassRealm;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +40,8 @@ public class DefaultComponentRepository
     private CompositionResolver compositionResolver;
 
     private ComponentDiscoverer componentDiscoverer;
+
+    private ClassRealm classRealm;
 
     public DefaultComponentRepository()
     {
@@ -80,6 +83,11 @@ public class DefaultComponentRepository
         return (ComponentDescriptor) componentDescriptors.get( key );
     }
 
+    public void setClassRealm( ClassRealm classRealm )
+    {
+        this.classRealm = classRealm;
+    }
+
     // ----------------------------------------------------------------------
     // Lifecylce Management
     // ----------------------------------------------------------------------
@@ -117,11 +125,13 @@ public class DefaultComponentRepository
     private void initializeComponentDescriptorsThatHaveBeenDiscovered()
         throws Exception
     {
-        List componentDescriptors = componentDiscoverer.findComponents( null );
+        List componentDescriptors = componentDiscoverer.findComponents( classRealm.getClassLoader() );
 
         for ( Iterator i = componentDescriptors.iterator(); i.hasNext(); )
         {
-            addComponentDescriptor( (ComponentDescriptor) i.next() );
+            ComponentDescriptor componentDescriptor = (ComponentDescriptor) i.next();
+
+            addComponentDescriptor( componentDescriptor );
         }
     }
 

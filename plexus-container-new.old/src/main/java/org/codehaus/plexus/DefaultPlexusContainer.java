@@ -494,15 +494,22 @@ public class DefaultPlexusContainer
 
         PlexusConfiguration systemConfiguration = builder.parse( new InputStreamReader( is ) );
 
-        // User userConfiguration
+        if ( configurationReader != null )
+        {
+            // User userConfiguration
 
-        PlexusConfiguration userConfiguration = builder.parse( getInterpolationConfigurationReader( configurationReader ) );
+            PlexusConfiguration userConfiguration = builder.parse( getInterpolationConfigurationReader( configurationReader ) );
 
-        // Merger of systemConfiguration and user userConfiguration
+            // Merger of systemConfiguration and user userConfiguration
 
-        configuration = PlexusConfigurationMerger.merge( userConfiguration, systemConfiguration );
+            configuration = PlexusConfigurationMerger.merge( userConfiguration, systemConfiguration );
 
-        processConfigurationsDirectory();
+            processConfigurationsDirectory();
+        }
+        else
+        {
+            configuration = systemConfiguration;
+        }
     }
 
     private Reader getInterpolationConfigurationReader( Reader reader )
@@ -573,6 +580,8 @@ public class DefaultPlexusContainer
         componentRepository = (ComponentRepository) classLoader.loadClass( implementation ).newInstance();
 
         componentRepository.configure( configuration );
+
+        componentRepository.setClassRealm( classRealm );
 
         componentRepository.initialize();
     }

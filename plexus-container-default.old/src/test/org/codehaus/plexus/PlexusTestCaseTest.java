@@ -28,17 +28,6 @@ public class PlexusTestCaseTest
 
         try
         {
-            tc.setUp();
-
-            fail( "IllegalStateException should be thrown." );
-        }
-        catch ( IllegalStateException e )
-        {
-            // do nothing
-        }
-
-        try
-        {
             tc.lookup( "foo", "bar" );
 
             fail( "Exception should be thrown." );
