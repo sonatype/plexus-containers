@@ -143,6 +143,8 @@ public class EmbedderTest extends TestCase
 
         embed.setConfiguration( getClass().getResource( "EmbedderTest.xml" ) );
 
+        embed.addContextValue( "foo", "bar" );
+
         embed.start();
 
         try
