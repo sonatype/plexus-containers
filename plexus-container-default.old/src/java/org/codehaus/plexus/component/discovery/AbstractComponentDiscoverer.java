@@ -45,7 +45,7 @@ public abstract class AbstractComponentDiscoverer
 
         try
         {
-            for ( Enumeration e = classRealm.getResources( getComponentDescriptorLocation() ); e.hasMoreElements(); )
+            for ( Enumeration e = classRealm.findResources( getComponentDescriptorLocation() ); e.hasMoreElements(); )
             {
                 URL url = (URL) e.nextElement();
 

@@ -635,9 +635,10 @@ public class DefaultPlexusContainer
             }
         }
 
+        addContextValue( "common.classloader", coreRealm.getClassLoader() );
         //setClassLoader( coreRealm.getClassLoader() );
 
-        //Thread.currentThread().setContextClassLoader( classLoader );
+        Thread.currentThread().setContextClassLoader( coreRealm.getClassLoader() );
     }
 
     // ----------------------------------------------------------------------
