@@ -12,7 +12,7 @@ import java.io.StringReader;
  *
  * @version $Id$
  */
-public class CascadingConfigurationTest
+public class ConfigurationMergerTest
     extends TestCase
 {
     /** Configuration builder. */
@@ -21,16 +21,16 @@ public class CascadingConfigurationTest
     /** Base xml string for base configuration. */
     private String baseXml;
 
-    /** Parent xml string for parent configuration. */
-    private String parentXml;
+    /** Parent xml string for layer configuration. */
+    private String layerXml;
 
     /**  Base configuration. */
-    private Configuration base;
+    private PlexusConfiguration base;
 
     /** Parent Configuration. */
-    private Configuration parent;
+    private PlexusConfiguration layer;
 
-    public CascadingConfigurationTest( String s )
+    public ConfigurationMergerTest( String s )
     {
         super( s );
     }
@@ -40,30 +40,38 @@ public class CascadingConfigurationTest
     {
         configurationBuilder = new XmlPullConfigurationBuilder();
 
-        baseXml = "<conf>" +
-            "<type default='foo'>jason</type>" +
-            "<name>jason</name>" +
-            "<number>0</number>" +
-            "<boolean>true</boolean>" +
+        baseXml =
+            "<conf>" +
+            "  <type default='bar'>jason</type>" +
+            "  <name>jason</name>" +
+            "  <number>0</number>" +
+            "  <boolean>true</boolean>" +
+            "  <logging>" +
+            "    <implementation>base</implementation>" +
+            "  </logging>" +
             "</conf>";
 
-        parentXml = "<conf>" +
-            "<type default='bar'>jason</type>" +
-            "<occupation>procrastinator</occupation>" +
-            "<foo a1='1' a2='2' number='0'>bar</foo>" +
+        layerXml =
+            "<conf>" +
+            "  <type default='foo'>jason</type>" +
+            "  <occupation>procrastinator</occupation>" +
+            "  <foo a1='1' a2='2' number='0'>bar</foo>" +
+            "  <logging>" +
+            "    <implementation>layer</implementation>" +
+            "  </logging>" +
             "</conf>";
 
         base = configurationBuilder.parse( new StringReader( baseXml ) );
 
-        parent = configurationBuilder.parse( new StringReader( parentXml ) );
+        layer = configurationBuilder.parse( new StringReader( layerXml ) );
     }
 
     public void testWithHelper()
         throws Exception
     {
-        Configuration c = ConfigurationTestHelper.getTestConfiguration();
+        PlexusConfiguration c = ConfigurationTestHelper.getTestConfiguration();
 
-        CascadingConfiguration cc = new CascadingConfiguration( c, null );
+        Configuration cc = ConfigurationMerger.merge( new DefaultConfiguration( "" ), c );
 
         ConfigurationTestHelper.testConfiguration( cc );
     }
@@ -71,17 +79,19 @@ public class CascadingConfigurationTest
     public void testSimpleConfigurationCascading()
         throws Exception
     {
-        CascadingConfiguration cc = new CascadingConfiguration( base, parent );
+        Configuration cc = ConfigurationMerger.merge( layer, base );
 
         // Take a value from the base.
         assertEquals( "jason", cc.getChild( "name" ).getValue() );
 
-        // Take a value from the parent.
+        // Take a value from the layer.
         assertEquals( "procrastinator", cc.getChild( "occupation" ).getValue() );
 
-        // We want the 'default' attribute from the base, which effectively overrides
-        // the 'default' attribute in the parent configuration.
+        // We want the 'default' attribute from the layer, which effectively overrides
+        // the 'default' attribute in the base configuration.
         assertEquals( "foo", cc.getChild( "type" ).getAttribute( "default" ) );
+
+        assertEquals( "layer", cc.getChild( "logging" ).getChild( "implementation" ).getValue() );
 
         assertEquals( 0, cc.getChild( "number" ).getValueAsInteger() );
 
@@ -107,31 +117,5 @@ public class CascadingConfigurationTest
         assertEquals( 0, cc.getChild( "foo" ).getAttributeAsLong( "number" ) );
 
         assertEquals( new Float( 0 ), new Float( cc.getChild( "foo" ).getAttributeAsFloat( "number" ) ) );
-    }
-
-    public void testCascadingConfigurationWithNullParent()
-        throws Exception
-    {
-        CascadingConfiguration cc = new CascadingConfiguration( base, null );
-
-        // Take a value from the base.
-        assertEquals( "jason", cc.getChild( "name" ).getValue() );
-
-        assertEquals( "conf", cc.getName() );
-
-        assertNotNull( cc.getLocation() );
-
-        assertNotNull( cc.getNamespace() );
-    }
-
-    public void testCascadingConfigurationWithNullBase()
-        throws Exception
-    {
-        CascadingConfiguration cc = new CascadingConfiguration( null, parent );
-
-        // Take a value from the parent.
-        assertEquals( "procrastinator", cc.getChild( "occupation" ).getValue() );
-
-        assertEquals( "-", cc.getName() );
     }
 }

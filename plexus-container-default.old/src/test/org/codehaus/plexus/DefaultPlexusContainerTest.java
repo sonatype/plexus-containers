@@ -19,10 +19,13 @@ public class DefaultPlexusContainerTest
 {
     /** Configuration stream to use for default container test. */
     private InputStream configurationStream;
+
     /** Default container test classloader. */
     private ClassLoader classLoader;
+
     /** Basedir for default container test. */
     private String basedir;
+
     /** Default Container. */
     private DefaultPlexusContainer container;
 
@@ -93,12 +96,6 @@ public class DefaultPlexusContainerTest
         }
     }
 
-
-    /**
-     * Test container setup.
-     *
-     * @throws Exception
-     */
     public void testDefaultPlexusContainerSetup()
         throws Exception
     {

@@ -29,16 +29,15 @@
    |
    -->
   <lifecycle-handlers>
-    <lifecycle-handler>
+    <lifecycle-handler implementation="org.codehaus.plexus.lifecycle.SimpleLifecycleHandler">
       <id>arbitrary</id>
       <name>Arbitrary Lifecycle Handler</name>
-      <implementation>org.codehaus.plexus.lifecycle.SimpleLifecycleHandler</implementation>
-      <start-segment>
+      <begin-segment>
         <phase implementation="org.codehaus.plexus.lifecycle.phase.EenyPhase"/>
         <phase implementation="org.codehaus.plexus.lifecycle.phase.MeenyPhase"/>
         <phase implementation="org.codehaus.plexus.lifecycle.phase.MinyPhase"/>
         <phase implementation="org.codehaus.plexus.lifecycle.phase.MoPhase"/>
-      </start-segment>
+      </begin-segment>
       <suspend-segment>
       </suspend-segment>
       <resume-segment>

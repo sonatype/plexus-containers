@@ -1,7 +1,6 @@
 package org.codehaus.plexus.configuration;
 
 import junit.framework.TestCase;
-import org.apache.avalon.framework.configuration.Configuration;
 
 import java.io.StringReader;
 import java.util.List;
@@ -53,7 +52,7 @@ public class ObjectBuilderTest
 
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
-        Configuration c = cb.parse( new StringReader( configuration ) );
+        PlexusConfiguration c = cb.parse( new StringReader( configuration ) );
 
         Message message = (Message) builder.build( c, Message.class );
 

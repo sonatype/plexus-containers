@@ -19,14 +19,11 @@ public class ConfigurationTestHelper
     /** Configuration builder. */
     private static XmlPullConfigurationBuilder configurationBuilder = new XmlPullConfigurationBuilder();
 
-    public static Configuration getTestConfiguration()
+    public static PlexusConfiguration getTestConfiguration()
         throws Exception
     {
-        Configuration c = configurationBuilder.parse( new StringReader( ConfigurationTestHelper.getXmlConfiguration() ) );
-
-        return c;
+        return configurationBuilder.parse( new StringReader( ConfigurationTestHelper.getXmlConfiguration() ) );
     }
-
 
     public static String getXmlConfiguration()
     {

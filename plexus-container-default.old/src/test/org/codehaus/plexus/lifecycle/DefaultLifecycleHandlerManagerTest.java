@@ -22,7 +22,7 @@ public class DefaultLifecycleHandlerManagerTest
     {
         String configuration =
             "<lifecycle-handler-manager implementation='org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager'>" +
-            "  <default-lifecycle-handler>avalon</default-lifecycle-handler>" +
+            "  <default-lifecycle-handler-id>avalon</default-lifecycle-handler-id>" +
             "  <lifecycle-handlers>" +
             "    <lifecycle-handler implementation='org.codehaus.plexus.lifecycle.avalon.AvalonLifecycleHandler'>" +
             "      <id>avalon</id>" +
@@ -60,7 +60,7 @@ public class DefaultLifecycleHandlerManagerTest
 
         assertNotNull( lhm );
 
-        assertEquals( "avalon", lhm.getDefaultLifecycleHandler() );
+        assertEquals( "avalon", lhm.getDefaultLifecycleHandler().getId() );
 
         AvalonLifecycleHandler lh = (AvalonLifecycleHandler) lhm.getLifecycleHandler( "avalon" );
 
@@ -81,5 +81,11 @@ public class DefaultLifecycleHandlerManagerTest
         List endSegment = lh.getEndSegment();
 
         assertEquals( 2, endSegment.size() );
+
+        // Default lifecycle handler
+
+        LifecycleHandler defaultLifecycleHandler = lhm.getDefaultLifecycleHandler();
+
+        assertNotNull( defaultLifecycleHandler );
     }
 }

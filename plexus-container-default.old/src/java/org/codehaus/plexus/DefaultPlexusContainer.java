@@ -6,10 +6,11 @@ import org.codehaus.plexus.classloader.DefaultResourceManager;
 import org.codehaus.plexus.classloader.ResourceManagerFactory;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
-import org.codehaus.plexus.configuration.CascadingConfiguration;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.ConfigurationMerger;
 import org.codehaus.plexus.context.DefaultContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -57,7 +58,10 @@ public class DefaultPlexusContainer
     private ComponentRepository componentRepository;
 
     /** Configuration for this container. */
-    private Configuration configuration;
+    private PlexusConfiguration configuration;
+
+    /** Default configuration. */
+    private PlexusConfiguration defaultConfiguration;
 
     /** The configuration resource. */
     private Reader configurationReader;
@@ -81,9 +85,6 @@ public class DefaultPlexusContainer
 
     /** Default Configuration Builder. */
     private XmlPullConfigurationBuilder builder;
-
-    /** Default configuration. */
-    private Configuration defaultConfiguration;
 
     /** XML element used to start the logging configuration block. */
     public static final String LOGGING_TAG = "logging";
@@ -338,16 +339,32 @@ public class DefaultPlexusContainer
         }
     }
 
-    private Configuration cascadingConfiguration;
+    private Configuration mergedConfiguration;
 
-    private Configuration getCascadingConfiguration()
+    private Configuration getMergedConfiguration()
+        throws Exception
     {
-        if ( cascadingConfiguration == null )
+        if ( mergedConfiguration == null )
         {
-            cascadingConfiguration = new CascadingConfiguration( getConfiguration(), getDefaultConfiguration() );
+            mergedConfiguration = ConfigurationMerger.merge( getConfiguration(), getDefaultConfiguration() );
+
+            // A little tweak for the lifecycle handlers
+
+            Configuration[] lifecycleHandlers = getConfiguration().getChild( "lifecycle-handlers" ).getChildren( "lifecycle-handler" );
+
+            if ( lifecycleHandlers != null )
+            {
+                DefaultConfiguration defaultLifecycleHandlers =
+                    (DefaultConfiguration) mergedConfiguration.getChild( "lifecycle-handler-manager" ).getChild( "lifecycle-handlers" );
+
+                for ( int i = 0; i < lifecycleHandlers.length; i++ )
+                {
+                    defaultLifecycleHandlers.addChild( lifecycleHandlers[i] );
+                }
+            }
         }
 
-        return cascadingConfiguration;
+        return mergedConfiguration;
     }
 
     /**
@@ -358,7 +375,7 @@ public class DefaultPlexusContainer
     private void initializeLoggerManager()
         throws Exception
     {
-        LoggerManager loggerManager = LoggerManagerFactory.create( getCascadingConfiguration().getChild( LOGGING_TAG ), getClassLoader() );
+        LoggerManager loggerManager = LoggerManagerFactory.create( getMergedConfiguration().getChild( LOGGING_TAG ), getClassLoader() );
 
         enableLogging( loggerManager.getRootLogger() );
 
@@ -374,7 +391,7 @@ public class DefaultPlexusContainer
         throws Exception
     {
         ComponentRepository componentRepository =
-            ComponentRepositoryFactory.create( getCascadingConfiguration(),
+            ComponentRepositoryFactory.create( getMergedConfiguration(),
                                                getLoggerManager(),
                                                this,
                                                getClassLoader(),
@@ -392,7 +409,7 @@ public class DefaultPlexusContainer
         throws Exception
     {
         DefaultResourceManager rm =
-            ResourceManagerFactory.create( getCascadingConfiguration(),
+            ResourceManagerFactory.create( getMergedConfiguration(),
                                            getLoggerManager(),
                                            getClassLoader() );
 
@@ -457,12 +474,12 @@ public class DefaultPlexusContainer
      *
      * @return
      */
-    private Configuration getConfiguration()
+    private PlexusConfiguration getConfiguration()
     {
         return configuration;
     }
 
-    private void setConfiguration( Configuration configuration )
+    private void setConfiguration( PlexusConfiguration configuration )
     {
         this.configuration = configuration;
     }
@@ -508,7 +525,7 @@ public class DefaultPlexusContainer
      *
      * @return
      */
-    private Configuration getDefaultConfiguration()
+    private PlexusConfiguration getDefaultConfiguration()
     {
         return defaultConfiguration;
     }
@@ -517,7 +534,7 @@ public class DefaultPlexusContainer
      *
      * @param defaultConfiguration
      */
-    private void setDefaultConfiguration( Configuration defaultConfiguration )
+    private void setDefaultConfiguration( PlexusConfiguration defaultConfiguration )
     {
         this.defaultConfiguration = defaultConfiguration;
     }
