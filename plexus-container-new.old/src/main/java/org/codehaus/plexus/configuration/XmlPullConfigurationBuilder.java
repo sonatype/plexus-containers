@@ -6,7 +6,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.BitSet;
 
 /**
  * @author Jason van Zyl
@@ -30,8 +29,6 @@ public class XmlPullConfigurationBuilder
 
         ArrayList values = new ArrayList();
 
-        BitSet preserveSpace = new BitSet();
-
         Configuration configuration = null;
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -53,16 +50,11 @@ public class XmlPullConfigurationBuilder
                 // is to be added)
                 int depth = elements.size();
 
-                boolean childPreserveSpace = false; // top level element trims space by default
-
                 if ( depth > 0 )
                 {
                     DefaultConfiguration parent = (DefaultConfiguration) elements.get( depth - 1 );
 
                     parent.addChild( childConfiguration );
-
-                    // inherits parent's space preservation policy
-                    childPreserveSpace = preserveSpace.get( depth - 1 );
                 }
 
                 elements.add( childConfiguration );
@@ -77,23 +69,7 @@ public class XmlPullConfigurationBuilder
 
                     String value = parser.getAttributeValue( i );
 
-                    if ( !name.equals( "xml:space" ) )
-                    {
-                        childConfiguration.setAttribute( name, value );
-                    }
-                    else
-                    {
-                        childPreserveSpace = value.equals( "preserve" );
-                    }
-                }
-
-                if ( childPreserveSpace )
-                {
-                    preserveSpace.set( depth );
-                }
-                else
-                {
-                    preserveSpace.clear( depth );
+                    childConfiguration.setAttribute( name, value );
                 }
             }
             else if ( eventType == XmlPullParser.TEXT )
@@ -120,11 +96,8 @@ public class XmlPullConfigurationBuilder
                 {
                     // leaf node
                     String finishedValue;
-                    if ( preserveSpace.get( depth ) )
-                    {
-                        finishedValue = accumulatedValue;
-                    }
-                    else if ( 0 == accumulatedValue.length() )
+
+                    if ( 0 == accumulatedValue.length() )
                     {
                         finishedValue = null;
                     }
