@@ -34,9 +34,9 @@ public abstract class AbstractComponentManager
     /** Logger. */
     private Logger logger;
 
-    /**
-     *
-     */
+    /** Client connections. */
+    private int connections;
+
     public AbstractComponentManager()
     {
         super();
@@ -64,6 +64,11 @@ public abstract class AbstractComponentManager
     public String getImplementation()
     {
         return implementation;
+    }
+
+    public void setComponentImplementation( String implementation )
+    {
+        this.implementation = implementation;
     }
 
     /**
@@ -96,8 +101,6 @@ public abstract class AbstractComponentManager
     {
         return logger;
     }
-
-    private int connections;
 
     protected void incrementConnectionCount()
     {
