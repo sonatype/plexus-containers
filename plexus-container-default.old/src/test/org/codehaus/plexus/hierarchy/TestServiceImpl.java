@@ -30,7 +30,6 @@ public class TestServiceImpl
     {
         parentPlexus = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
 
-        System.out.println( "context.get().getClass() = " + context.get( "plexus-name").getClass() );
         plexusName = (String) context.get( "plexus-name" );
     }
 
