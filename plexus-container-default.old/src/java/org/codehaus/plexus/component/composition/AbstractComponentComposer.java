@@ -81,7 +81,7 @@ public abstract class AbstractComponentComposer
 
         if ( field == null )
         {
-            throw new CompositionException( "No field which is compatible in component object." );
+            throw new CompositionException( "No field which is compatible in component object: " + field.getName() );
         }
 
         field.setAccessible( true );
