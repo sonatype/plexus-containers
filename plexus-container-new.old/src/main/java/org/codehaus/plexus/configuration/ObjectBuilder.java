@@ -10,6 +10,7 @@ import org.apache.avalon.framework.configuration.Configuration;
 import java.util.StringTokenizer;
 import java.util.Map;
 import java.util.HashMap;
+import java.io.Reader;
 
 /**
  *
@@ -29,13 +30,27 @@ public class ObjectBuilder
         HyphenatedClassMapper classMapper = new HyphenatedClassMapper( elementMapper );
 
         xstream = new XStream( new JavaReflectionObjectFactory(),
-                               classMapper ,
+                               classMapper,
                                elementMapper );
 
         xstream.registerConverter( new CollectionConverter( classMapper ) );
     }
 
+    public void alias( String elementName, Class clazz )
+    {
+        xstream.alias( elementName, clazz );
+    }
+
+    public Object build( Reader reader, Class clazz )
+        throws Exception
+    {
+        XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
+
+        return build( builder.parse( reader ), clazz );
+    }
+
     public Object build( Configuration configuration, Class clazz )
+        throws Exception
     {
         ConfigurationReader reader = new ConfigurationReader( configuration );
 
@@ -47,6 +62,7 @@ public class ObjectBuilder
     }
 
     public DefaultConfiguration write( Object o )
+        throws Exception
     {
         ConfigurationWriter writer = new ConfigurationWriter();
 
@@ -121,6 +137,7 @@ public class ObjectBuilder
         implements ClassMapper
     {
         private Map typeToNameMap = new HashMap();
+        private Map nameToTypeMap = new HashMap();
         private Map baseTypeToDefaultTypeMap = new HashMap();
         private ElementMapper elementMapper;
         private String basePackage;
@@ -150,6 +167,8 @@ public class ObjectBuilder
 
                 return;
             }
+
+            nameToTypeMap.put( elementName, type.getName() );
 
             typeToNameMap.put( type, elementName );
 
@@ -200,7 +219,13 @@ public class ObjectBuilder
                 elementName = elementName.substring( 0, elementName.length() - 6 ); // cut off -array
             }
 
-            if ( elementName.indexOf( "." ) < 0 )
+            String mappedName = (String) nameToTypeMap.get( elementName );
+
+            if ( mappedName != null )
+            {
+                elementName = mappedName;
+            }
+            else if ( elementName.indexOf( "." ) < 0 )
             {
                 elementName = capitalizeFirstLetter( elementMapper.fromXml( elementName ) );
 
