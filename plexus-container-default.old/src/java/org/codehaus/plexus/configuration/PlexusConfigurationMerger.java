@@ -25,7 +25,6 @@ package org.codehaus.plexus.configuration;
  */
 
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
 /**
  * @todo This merger explicity uses the XML implementation of the plexus configuration but

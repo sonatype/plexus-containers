@@ -1,5 +1,6 @@
 package org.codehaus.plexus.component.discovery;
 
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
@@ -9,7 +10,10 @@ import java.util.List;
 
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.InterpolationFilterReader;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -39,7 +43,7 @@ public abstract class AbstractComponentDiscoverer
         this.manager = manager;
     }
 
-    public List findComponents( ClassRealm classRealm )
+    public List findComponents( Context context, ClassRealm classRealm )
     {
         List componentSetDescriptors = new ArrayList();
 
@@ -49,7 +53,10 @@ public abstract class AbstractComponentDiscoverer
             {
                 URL url = (URL) e.nextElement();
 
-                String descriptor = IOUtil.toString( url.openStream() );
+                InterpolationFilterReader input =
+                    new InterpolationFilterReader( new InputStreamReader( url.openStream() ), new ContextMapAdapter( context ) );
+
+                String descriptor = IOUtil.toString( input );
 
                 ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( new StringReader( descriptor ), url.toString() );
 

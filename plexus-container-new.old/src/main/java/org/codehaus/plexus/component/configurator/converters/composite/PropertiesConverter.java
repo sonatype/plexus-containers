@@ -92,7 +92,7 @@ public class PropertiesConverter
 
         String value = child.getChild( "value" ).getValue( null );
 
-        if ( key == null )
+        if ( name == null )
         {
             String msg = "Error occured while configuring component: " + componentDescriptor.getHumanReadableKey() + ". " +
                          "Converter: java.util.Properties. Trying to convert the configuration element: '" + element + "', missing child element 'name'.";
@@ -100,6 +100,6 @@ public class PropertiesConverter
             throw new ComponentConfigurationException( msg );
         }
 
-        properties.put( key, value );
+        properties.put( name, value );
     }
 }

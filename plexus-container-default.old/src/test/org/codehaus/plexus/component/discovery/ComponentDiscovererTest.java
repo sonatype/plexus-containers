@@ -24,15 +24,16 @@ package org.codehaus.plexus.component.discovery;
  * SOFTWARE.
  */
 
-import java.util.List;
 import java.io.File;
+import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.context.DefaultContext;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -55,7 +56,7 @@ public class ComponentDiscovererTest
 
         core.addConstituent( new File( System.getProperty( "basedir"), "target/test-classes").toURL() );
 
-        List componentSetDescriptors = componentDiscoverer.findComponents( core );
+        List componentSetDescriptors = componentDiscoverer.findComponents( new DefaultContext(), core );
 
         System.out.println( componentSetDescriptors.get( 0 ) );
 
