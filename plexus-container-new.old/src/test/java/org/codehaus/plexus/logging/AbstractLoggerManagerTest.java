@@ -1,5 +1,7 @@
 package org.codehaus.plexus.logging;
 
+import java.io.File;
+
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.logger.Logger;
 
@@ -15,6 +17,20 @@ import junit.framework.TestCase;
 public abstract class AbstractLoggerManagerTest
     extends TestCase
 {
+    public void setUp()
+    {
+        String basedir = System.getProperty( "basedir" );
+
+        File f = new File( basedir, "target/plexus-home" );
+
+        System.setProperty( "plexus.home", f.getAbsolutePath() );
+
+        if ( !f.isDirectory() )
+        {
+            f.mkdir();
+        }
+    }
+
     public void testDebugLevelConfiguration() throws Exception
     {
         LoggerManager manager = managerStart( "debug" );
