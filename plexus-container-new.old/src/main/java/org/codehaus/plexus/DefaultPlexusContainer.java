@@ -85,6 +85,9 @@ public class DefaultPlexusContainer
     /** Default configuration. */
     private Configuration defaultConfiguration;
 
+    /** XML element used to start the logging configuration block. */
+    public static final String LOGGING_TAG = "logging";
+
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -353,7 +356,7 @@ public class DefaultPlexusContainer
     private void initializeLoggerManager()
         throws Exception
     {
-        LoggerManager loggerManager = LoggerManagerFactory.create( getCascadingConfiguration(), getClassLoader() );
+        LoggerManager loggerManager = LoggerManagerFactory.create( getCascadingConfiguration().getChild( LOGGING_TAG ), getClassLoader() );
 
         enableLogging( loggerManager.getRootLogger() );
 
