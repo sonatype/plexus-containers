@@ -113,12 +113,14 @@
      |
      | E Service
      |
+     | This service implements Configurable, but the component configuration below
+     | deliberately omits the <configuration> element to verify that such elements
+     | are not mandatory.
      -->
     <component>
       <role>org.codehaus.plexus.ServiceE</role>
       <implementation>org.codehaus.plexus.DefaultServiceE</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
-      <configuration/>
     </component>
 
 

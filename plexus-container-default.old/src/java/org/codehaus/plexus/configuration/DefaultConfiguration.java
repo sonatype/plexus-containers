@@ -17,6 +17,9 @@ public class DefaultConfiguration
     extends AbstractConfiguration
     implements Serializable
 {
+    /** A configuration object that contains no information. */
+    public static final Configuration EMPTY_CONFIGURATION = new DefaultConfiguration( "" );
+
     /** An empty (length zero) array of configuration objects. */
     protected static Configuration[] EMPTY_ARRAY = new Configuration[0];
 

@@ -3,6 +3,7 @@ package org.codehaus.plexus.lifecycle.avalon.phase;
 import org.apache.avalon.framework.configuration.Configurable;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.codehaus.plexus.component.manager.ComponentManager;
+import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 
 public class ConfigurePhase
@@ -17,8 +18,7 @@ public class ConfigurePhase
         {
             if ( null == configuration )
             {
-                final String message = "configuration is null";
-                throw new IllegalArgumentException( message );
+                configuration = DefaultConfiguration.EMPTY_CONFIGURATION;
             }
             ( (Configurable) object ).configure( configuration );
         }
