@@ -14,7 +14,6 @@ import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.ThreadSafeMap;
-import org.codehaus.plexus.util.Tracer;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -611,7 +610,9 @@ public class DefaultComponentRepository
                 }
                 catch ( Exception e )
                 {
-                    throw new ServiceException( key, "Error retrieving component from ComponentManager. cause=" + Tracer.traceToString( e ) );
+                    getLogger().error( "Could not create component: " + key, e );
+
+                    throw new ServiceException( key, "Could not create component for key " + key + "!", e );
                 }
                 if ( getLogger().isDebugEnabled() )
                 {
