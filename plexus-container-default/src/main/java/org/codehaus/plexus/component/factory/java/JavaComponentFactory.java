@@ -71,6 +71,7 @@ public class JavaComponentFactory
         // Display the realm when there is an error, We should probably return a string here so we
         // can incorporate this into the error message for easy debugging.
         // ----------------------------------------------------------------------
+
         componentClassRealm.display();
 
         String msg = "Could not instanciate component: " + componentDescriptor.getHumanReadableKey();
