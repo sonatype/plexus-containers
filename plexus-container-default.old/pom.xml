@@ -8,8 +8,8 @@
     <version>1.0</version>
   </parent>
   <groupId>plexus</groupId>
-  <artifactId>plexus</artifactId>
-  <version>0.18-SNAPSHOT</version>
+  <artifactId>plexus-container-default</artifactId>
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <name>Plexus Container</name>
 
   <dependencies>
@@ -18,13 +18,11 @@
       <artifactId>plexus-container-api</artifactId>
       <version>0.18-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>0.18-SNAPSHOT</version>
     </dependency>
-
     <dependency>
       <groupId>xstream</groupId>
       <artifactId>xstream</artifactId>
@@ -96,5 +94,4 @@
       </resource>
     </resources>
   </build>
-
 </project>
