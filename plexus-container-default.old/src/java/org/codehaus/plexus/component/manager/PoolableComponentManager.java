@@ -3,7 +3,6 @@ package org.codehaus.plexus.component.manager;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
-import org.codehaus.plexus.configuration.ConfigurationUtil;
 import org.codehaus.plexus.util.SweeperPool;
 
 /**

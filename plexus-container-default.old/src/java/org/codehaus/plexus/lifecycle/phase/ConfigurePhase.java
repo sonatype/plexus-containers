@@ -3,7 +3,6 @@ package org.codehaus.plexus.lifecycle.phase;
 import org.apache.avalon.framework.configuration.Configurable;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.codehaus.plexus.component.manager.ComponentManager;
-import org.codehaus.plexus.configuration.ConfigurationUtil;
 
 public class ConfigurePhase
     extends AbstractPhase
