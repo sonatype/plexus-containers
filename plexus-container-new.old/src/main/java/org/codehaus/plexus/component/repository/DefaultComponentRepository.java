@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * @todo remove explicit avalon dependencies from here.
+ */
 public class DefaultComponentRepository
     extends AbstractLogEnabled
     implements ComponentRepository
@@ -36,25 +39,7 @@ public class DefaultComponentRepository
     /** Component tag. */
     private static String COMPONENT = "component";
 
-    /** Role tag. */
-    private static String ROLE = "role";
-
-    /** Role tag. */
-    private static String ROLE_HINT = "role-hint";
-
-    /** Implementation tag. */
-    private static String IMPLEMENTATION = "implementation";
-
-    /** Configuration tag. */
-    private static String INSTANTIATION_STRATEGY = "instantiation-strategy";
-
-    /** Configuration tag. */
-    private static String CONFIGURATION = "configuration";
-
-    /** Default instantiation strategy tag. */
-    protected static String DEFAULT_INSTANTIATION_STRATEGY = "singleton";
-
-    /** Instance manager tag. */
+       /** Instance manager tag. */
     private static String INSTANCE_MANAGER = "instance-manager";
 
     /** Instance managers tag. */
@@ -65,10 +50,6 @@ public class DefaultComponentRepository
 
     /** Lifecycle handlers tag. */
     private static String LIFECYCLE_HANDLERS = "lifecycle-handlers";
-
-    private static String REQUIREMENTS = "requirements";
-
-    private static String REQUIREMENT = "requirement";
 
     // ----------------------------------------------------------------------
     //  Instance Members
@@ -129,6 +110,8 @@ public class DefaultComponentRepository
      */
     private ServiceManager service;
 
+    private ComponentDescriptorBuilder componentDescriptorBuilder;
+
     /** Constructor. */
     public DefaultComponentRepository()
     {
@@ -142,7 +125,10 @@ public class DefaultComponentRepository
 
         lifecycleHandlers = new HashMap();
 
+        // Why is this here? jvz. bad bad bad.
         service = new AvalonServiceManager( this );
+
+        componentDescriptorBuilder = new ComponentDescriptorBuilder();
     }
 
     // ----------------------------------------------------------------------
@@ -413,7 +399,7 @@ public class DefaultComponentRepository
 
         for ( int i = 0; i < componentConfigurations.length; i++ )
         {
-            addComponentManagerDescriptor( createComponentDescriptor( componentConfigurations[i] ) );
+            addComponentManagerDescriptor( componentDescriptorBuilder.build( componentConfigurations[i] ) );
         }
 
         defaultInstantiationStrategy = getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute(
@@ -530,42 +516,8 @@ public class DefaultComponentRepository
 
         for ( int i = 0; i < componentConfigurations.length; i++ )
         {
-            addComponentDescriptor( createComponentDescriptor( componentConfigurations[i] ) );
+            addComponentDescriptor( componentDescriptorBuilder.build( componentConfigurations[i] ) );
         }
-    }
-
-    /**
-     * Create a component descriptor.
-     *
-     * @param configuration
-     * @return
-     * @throws Exception
-     */
-    ComponentDescriptor createComponentDescriptor( Configuration configuration )
-        throws Exception
-    {
-        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
-
-        componentDescriptor.setRole( configuration.getChild( ROLE ).getValue() );
-
-        componentDescriptor.setRoleHint( configuration.getChild( ROLE_HINT ).getValue( null ) );
-
-        componentDescriptor.setImplementation( configuration.getChild( IMPLEMENTATION ).getValue() );
-
-        componentDescriptor.setInstantiationStrategy( configuration.getChild( INSTANTIATION_STRATEGY ).getValue( null ) );
-
-        componentDescriptor.setLifecycleHandler( configuration.getChild( LIFECYCLE_HANDLER ).getValue( null ) );
-
-        componentDescriptor.setConfiguration( configuration.getChild( CONFIGURATION ) );
-
-        Configuration[] requirements = configuration.getChild( REQUIREMENTS ).getChildren( REQUIREMENT );
-
-        for ( int i = 0; i < requirements.length; i++ )
-        {
-            componentDescriptor.addRequirement( requirements[i].getValue() );
-        }
-
-        return componentDescriptor;
     }
 
     // ----------------------------------------------------------------------

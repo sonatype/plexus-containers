@@ -7,7 +7,6 @@ import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.service.ServiceManager;
 import org.apache.avalon.framework.service.ServiceSelector;
 import org.apache.avalon.framework.service.Serviceable;
-import org.codehaus.plexus.configuration.ConfigurationUtil;
 
 /**
  * PlexusServiceSelector selects components from the PlexusServiceBroker based

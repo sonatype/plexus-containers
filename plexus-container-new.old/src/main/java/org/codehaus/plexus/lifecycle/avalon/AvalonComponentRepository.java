@@ -16,10 +16,15 @@ import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 public class AvalonComponentRepository
     extends DefaultComponentRepository
 {
-    final private static String SELECTORS = "selectors";
-    
-    final private static String SELECTOR = "selector";
-    
+    /** Tag for selectors. */
+    private static String SELECTORS = "selectors";
+
+    /** Tag for selector. */
+    private static String SELECTOR = "selector";
+
+    /** Default instantiation strategy tag. */
+    private static String DEFAULT_INSTANTIATION_STRATEGY = "singleton";
+
     /** Role tag. */
     private static String ROLE = "role";
 
