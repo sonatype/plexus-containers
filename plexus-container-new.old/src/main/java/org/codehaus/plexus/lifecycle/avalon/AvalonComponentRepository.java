@@ -1,7 +1,8 @@
 package org.codehaus.plexus.lifecycle.avalon;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
 
@@ -41,7 +42,13 @@ public class AvalonComponentRepository
 
             d.setConfiguration( configuration );
 
-            addComponentDescriptor( d );
+            try
+            {
+                addComponentDescriptor( d );
+            }
+            catch ( ComponentRepositoryException e )
+            {
+            }
         }
 
         return super.lookup( componentKey );

@@ -7,6 +7,9 @@ import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
+import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
@@ -285,23 +288,53 @@ public class DefaultComponentRepository
 
         for ( int i = 0; i < componentConfigurations.length; i++ )
         {
-            addComponentDescriptor( PlexusTools.buildComponentDescriptor( componentConfigurations[i] ) );
+            addComponentDescriptor( componentConfigurations[i] );
         }
     }
 
     // ----------------------------------------------------------------------
-    //  Component Descriptor processing and Holder creation.
+    //  Component Descriptor processing.
     // ----------------------------------------------------------------------
 
-    /**
-     * Adds a component to the ServiceBroker.  If the component has a
-     * ServiceSelector, the appropriate action is taken.
-     *
-     * @param descriptor
-     */
-    public void addComponentDescriptor( ComponentDescriptor descriptor )
+    public void addComponentDescriptor( Configuration configuration )
+        throws ComponentRepositoryException
     {
-        getComponentDescriptors().put( descriptor.getComponentKey(), descriptor );
+        ComponentDescriptor componentDescriptor = null;
+        try
+        {
+            componentDescriptor = PlexusTools.buildComponentDescriptor( configuration );
+        }
+        catch ( Exception e )
+        {
+            throw new ComponentRepositoryException( "Cannot unmarshall component descriptor:", e );
+        }
+
+        addComponentDescriptor( componentDescriptor );
+    }
+
+    public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
+        throws ComponentRepositoryException
+    {
+        try
+        {
+            validateComponentDescriptor( componentDescriptor );
+        }
+        catch ( ComponentImplementationNotFoundException e )
+        {
+            throw new ComponentRepositoryException( "Component descriptor validation failed: ", e );
+        }
+
+        getComponentDescriptors().put( componentDescriptor.getComponentKey(), componentDescriptor );
+    }
+
+    protected void validateComponentDescriptor( ComponentDescriptor componentDescriptor )
+        throws ComponentImplementationNotFoundException
+    {
+        // Make sure the component implementation classes can be found.
+        // Make sure ComponentManager implementation can be found.
+        // Validate lifecycle.
+        // Validate the component configuration.
+        // Validate the component profile if one is used.
     }
 
     // ----------------------------------------------------------------------
@@ -347,9 +380,9 @@ public class DefaultComponentRepository
 
                 if ( descriptor == null )
                 {
-                    getLogger().error( "Non-existent component: " + key );
+                    getLogger().error( "Non existant component: " + key );
 
-                    throw new ComponentLookupException( "Non-existent component: " + key );
+                    throw new ComponentLookupException( "Non existant component:  " );
                 }
 
                 try

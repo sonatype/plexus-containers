@@ -158,10 +158,14 @@ public final class ComponentPlexusContainer
         parentPlexus = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 
+    private Configuration contextValues;
+
     public void configure( Configuration configuration )
         throws ConfigurationException
     {
-        configurationName = configuration.getChild( "configuration-name" ).getValue();
+        configurationName = configuration.getChild( "plexus-config" ).getValue();
+
+        contextValues = configuration.getChild( "context-value" );
     }
 
     public void initialize()
@@ -178,6 +182,8 @@ public final class ComponentPlexusContainer
         plexusEmbedder.initialize();
 
         plexusEmbedder.addContextValue( PlexusConstants.PLEXUS_KEY, this );
+
+        plexusEmbedder.addContextValue( contextValues.getChild( "name" ).getValue(), contextValues.getChild( "value" ).getValue() );
     }
 
     public void start()

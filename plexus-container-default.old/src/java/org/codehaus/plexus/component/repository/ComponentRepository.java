@@ -3,8 +3,9 @@ package org.codehaus.plexus.component.repository;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.context.Context;
 import org.apache.avalon.framework.logger.Logger;
-import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.logging.LoggerManager;
 
 /**
@@ -47,5 +48,9 @@ public interface ComponentRepository
 
     void setComponentLogManager( LoggerManager logManager );
 
-    void addComponentDescriptor( ComponentDescriptor componentDescriptor );
+    void addComponentDescriptor( ComponentDescriptor componentDescriptor )
+        throws ComponentRepositoryException;
+
+    void addComponentDescriptor( Configuration configuration )
+        throws ComponentRepositoryException;
 }

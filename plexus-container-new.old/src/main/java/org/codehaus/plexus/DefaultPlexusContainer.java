@@ -5,7 +5,7 @@ import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.classloader.DefaultResourceManager;
 import org.codehaus.plexus.classloader.ResourceManagerFactory;
-import org.codehaus.plexus.component.repository.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.configuration.ConfigurationMerger;

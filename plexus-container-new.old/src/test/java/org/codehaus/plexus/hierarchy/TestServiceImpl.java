@@ -9,7 +9,7 @@ import org.apache.avalon.framework.context.Contextualizable;
 
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 /**
  * Simple implementation of the {@link TestService} Component interface.
@@ -30,6 +30,7 @@ public class TestServiceImpl
     {
         parentPlexus = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
 
+        System.out.println( "context.get().getClass() = " + context.get( "plexus-name").getClass() );
         plexusName = (String) context.get( "plexus-name" );
     }
 

@@ -4,7 +4,7 @@ import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.service.ServiceManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.component.repository.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 /**
  * Extended <code>ServiceManager</code> implementation.

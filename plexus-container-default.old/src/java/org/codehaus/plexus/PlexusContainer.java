@@ -1,7 +1,7 @@
 package org.codehaus.plexus;
 
 import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.plexus.component.repository.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 
 import java.io.Reader;

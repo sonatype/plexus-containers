@@ -2,7 +2,7 @@ package org.codehaus.plexus.embed;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

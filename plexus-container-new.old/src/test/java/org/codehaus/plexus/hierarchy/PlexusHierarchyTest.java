@@ -4,7 +4,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusTestCase;
 
 /**
- * Test for {@link ComponentPlexusContainer}.
+ * Test for {@link org.codehaus.plexus.ComponentPlexusContainer}.
  *
  * @author <a href="mailto:mhw@kremvax.net">Mark Wilkinson</a>
  */
