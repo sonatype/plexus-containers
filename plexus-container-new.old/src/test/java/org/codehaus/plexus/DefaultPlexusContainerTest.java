@@ -189,6 +189,15 @@ public class DefaultPlexusContainerTest
         assertNotSame( serviceD2, serviceD3 );
         assertNotSame( serviceD1, serviceD3 );
 
+    }
+
+    /**
+     *
+     * @throws Exception
+     */
+    public void testPerLookupInstantiationStrategy()
+        throws Exception
+    {
         // ----------------------------------------------------------------------
         // Per-lookup component
         // ----------------------------------------------------------------------
@@ -256,7 +265,7 @@ public class DefaultPlexusContainerTest
      *
      * @throws Exception
      */
-    public void testSingletonKeepAlive()
+    public void testSingletonKeepAliveInstantiationStrategy()
         throws Exception
     {
 
