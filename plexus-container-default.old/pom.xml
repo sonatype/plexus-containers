@@ -1,67 +1,45 @@
-<?xml version="1.0"?>
-
-<project>
-  <modelVersion>4.0.0</modelVersion>
+<model>
   <parent>
-    <groupId>plexus</groupId>
     <artifactId>plexus-containers</artifactId>
+    <groupId>plexus</groupId>
     <version>1.0</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
-  <version>1.0-alpha-1-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>Default Plexus Container</name>
-
+  <version>1.0-alpha-1-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-container-api</artifactId>
       <version>1.0-alpha-1-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
-
   <build>
-    <nagEmailAddress>plexus-dev@plexus.codehaus.org</nagEmailAddress>
     <sourceDirectory>src/java</sourceDirectory>
-    <aspectSourceDirectory>src/aspect</aspectSourceDirectory>
-    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
-    <unitTest>
-      <includes>
-        <include>**/*Test.java</include>
-      </includes>
-      <excludes>
-        <exclude>**/BasicComponentConfiguratorTest.java</exclude>
-        <exclude>**/*Abstract*.java</exclude>
-        <exclude>**/JavaComponentFactoryTest.java</exclude>
-      </excludes>
-      <resources>
-        <resource>
-          <directory>src/test</directory>
-          <includes>
-            <include>**/*.xml</include>
-            <include>**/*.properties</include>
-            <include>**/*.conf</include>
-          </includes>
-        </resource>
-        <resource>
-          <directory>src/test-input</directory>
-          <includes>
-            <include>**/*.txt</include>
-          </includes>
-        </resource>
-      </resources>
-    </unitTest>
+    <testSourceDirectory>src/test</testSourceDirectory>
     <resources>
       <resource>
         <directory>src/conf</directory>
-        <targetPath>org/codehaus/plexus</targetPath>
-        <includes>
-          <include>**/*.conf</include>
-        </includes>
+        <includes>**/*.conf</includes>
       </resource>
       <resource>
         <directory>src/templates</directory>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test</directory>
+        <includes>**/*.xml,**/*.properties,**/*.conf</includes>
+      </testResource>
+      <testResource>
+        <directory>src/test-input</directory>
+        <includes>**/*.txt</includes>
+      </testResource>
+    </testResources>
   </build>
-</project>
+</model>
