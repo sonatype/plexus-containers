@@ -1,5 +1,7 @@
 package org.codehaus.plexus;
 
+import junit.framework.TestCase;
+
 /**
  * This is the start of the sketch which outlines some of the things
  * I would like to do with components during runtime.
@@ -17,12 +19,13 @@ package org.codehaus.plexus;
  * 6. Resume the component
  * 7. Let the component perform its role
  * 8. Release the component
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
  */
 public class DyanamicComponentKungFuTest
+    extends TestCase
 {
     public void testAdditionOfComponentDuringContainerRuntime()
         throws Exception
