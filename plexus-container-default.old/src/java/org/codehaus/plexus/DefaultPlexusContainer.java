@@ -1,7 +1,5 @@
 package org.codehaus.plexus;
 
-import com.werken.classworlds.ClassWorld;
-import com.werken.classworlds.NoSuchRealmException;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.classloader.DefaultResourceManager;
@@ -19,6 +17,8 @@ import org.codehaus.plexus.logging.LoggerManagerFactory;
 import org.codehaus.plexus.util.ContextMapAdapter;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.NoSuchRealmException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -329,8 +329,6 @@ public class DefaultPlexusContainer
                 for ( int i = 0; i < confs.length; i++ )
                 {
                     File conf = new File( configurationsDirectory, confs[i] );
-
-                    System.out.println( "additional conf file = " + conf );
 
                     Configuration c = builder.parse( getInterpolationConfigurationReader( new FileReader( conf ) ) );
 
