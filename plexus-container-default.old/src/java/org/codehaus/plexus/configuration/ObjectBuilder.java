@@ -24,9 +24,15 @@ public class ObjectBuilder
 
     public ObjectBuilder()
     {
+        HyphenatedElementMapper elementMapper = new HyphenatedElementMapper();
+
+        HyphenatedClassMapper classMapper = new HyphenatedClassMapper( elementMapper );
+
         xstream = new XStream( new JavaReflectionObjectFactory(),
-                               new HyphenatedClassMapper( new HyphenatedElementMapper() ),
-                               new HyphenatedElementMapper() );
+                               classMapper ,
+                               elementMapper );
+
+        xstream.registerConverter( new CollectionConverter( classMapper ) );
     }
 
     public Object build( Configuration configuration, Class clazz )
