@@ -88,17 +88,10 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
         }
         catch ( Exception e )
         {
-            String msg = "Error configuring component: "
-                    + componentDescriptor.getHumanReadableKey()
-                    + ". Class '"
-                    + classname
-                    + "' cannot be loaded";
-
-            throw new ComponentConfigurationException( msg );
+            throw new ComponentConfigurationException( "Error configuring component: " + componentDescriptor.getHumanReadableKey() + ".", e );
         }
 
         return retValue;
-
     }
 
     protected Object instantiateObject( String classname, ClassLoader classLoader, ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
