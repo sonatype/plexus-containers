@@ -13,7 +13,7 @@ package org.codehaus.plexus.component.manager;
 public class KeepAliveSingletonComponentManager
     extends AbstractComponentManager
 {
-    private Object lock;
+    private Object lock = new Object();
 
     private Object singleton;
 

@@ -29,11 +29,11 @@ public class JavaComponentFactory
         
         String implementation = componentDescriptor.getImplementation();
                 
-        Class roleClass = classLoader.loadClass( role );
+        //Class roleClass = classLoader.loadClass( role );
         
         Class implementationClass = classLoader.loadClass( implementation );
 
-        boolean implementationMatch = roleClass.isAssignableFrom( implementationClass );        
+        //boolean implementationMatch = roleClass.isAssignableFrom( implementationClass );        
 
         /*
         if ( !implementationMatch )
