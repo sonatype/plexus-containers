@@ -10,7 +10,7 @@
   <groupId>plexus</groupId>
   <artifactId>plexus</artifactId>
   <version>0.17-SNAPSHOT</version>
-  <name>plexus</name>
+  <name>Plexus Container</name>
 
   <dependencies>
     <dependency>
