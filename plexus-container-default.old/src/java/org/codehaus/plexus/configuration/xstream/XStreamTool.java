@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- *
- *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
