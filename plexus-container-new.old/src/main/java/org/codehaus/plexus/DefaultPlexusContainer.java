@@ -76,6 +76,14 @@ public class DefaultPlexusContainer
 
     private ComponentComposer componentComposer;
 
+    private ComponentManagerManager componentManagerManager;
+
+    private Map componentManagers = new HashMap();
+
+    private Map componentManagersByComponentClass = new HashMap();
+
+    private LifecycleHandlerManager lifecycleHandlerManager;
+
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -262,7 +270,6 @@ public class DefaultPlexusContainer
             release( component );
         }
     }
-
 
     public boolean hasComponent( String componentKey )
     {
@@ -653,12 +660,6 @@ public class DefaultPlexusContainer
     // Component Managers
     // ----------------------------------------------------------------------
 
-    private ComponentManagerManager componentManagerManager;
-
-    private Map componentManagers = new HashMap();
-
-    private Map componentManagersByComponentClass = new HashMap();
-
     private void initializeComponentManagerManager()
         throws Exception
     {
@@ -731,8 +732,6 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     // Lifecycle Handlers
     // ----------------------------------------------------------------------
-
-    private LifecycleHandlerManager lifecycleHandlerManager;
 
     private void initializeLifecycleHandlerManager()
         throws Exception
