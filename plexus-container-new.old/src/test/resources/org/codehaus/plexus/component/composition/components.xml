@@ -29,10 +29,10 @@ So initially we are looking for
   <component>
     <role>org.codehaus.plexus.ServiceA</role>
     <implementation>org.codehaus.plexus.DefaultServiceA</implementation>
-    <requires>
-      <require>org.codehaus.plexus.ServiceB</require>
-      <require>org.codehaus.plexus.ServiceC</require>
-    </requires>
+    <requirements>
+      <requirement>org.codehaus.plexus.ServiceB</requirement>
+      <requirement>org.codehaus.plexus.ServiceC</requirement>
+    </requirements>
     <configuration>
       <host>localhost</host>
       <port>10000</port>
