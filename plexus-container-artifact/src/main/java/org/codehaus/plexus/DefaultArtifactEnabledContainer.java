@@ -50,9 +50,9 @@ public class DefaultArtifactEnabledContainer
     extends DefaultPlexusContainer
     implements ArtifactEnabledContainer
 {
-    
+
     private ArtifactConstructionSupport artifactConstructionSupport = new ArtifactConstructionSupport();
-    
+
     public DefaultArtifactEnabledContainer()
     {
         super();
@@ -92,7 +92,7 @@ public class DefaultArtifactEnabledContainer
         // First we need to see if the artifact is present
         // ----------------------------------------------------------------------
 
-        artifactResolver.resolve( component, remoteRepositories, localRepository );
+        component = artifactResolver.resolve( component, remoteRepositories, localRepository );
 
         realmTmpId++;
 
