@@ -98,6 +98,7 @@ public class DefaultComponentRepository
     /** Parent containers context */
     private Context context;
 
+    /** Logger manager. */
     private LoggerManager loggerManager;
 
     /** The manager manager descriptors. Seperate from the other
@@ -105,10 +106,13 @@ public class DefaultComponentRepository
      * by instantiation strategy*/
     private Map componentManagerDescriptors;
 
+    /** Lifecycle handlers. */
     private Map lifecycleHandlers;
 
+    /** Default instantiation strategy. */
     private String defaultInstantiationStrategy;
 
+    /** Default lifecycle handler. */
     private LifecycleHandler defaultLifecycleHandler;
 
     /**
@@ -118,21 +122,27 @@ public class DefaultComponentRepository
      */
     private Object lookupLock = new Object();
 
-	/** ServiceManager given to InstanceManagers if they need access to
-	 * other components. Care must be taken no circular dependencies
-	 * are created.
-	 *  */
-	private ServiceManager service;
+    /**
+     * ServiceManager given to InstanceManagers if they need access to
+     * other components. Care must be taken no circular dependencies
+     * are created.
+     */
+    private ServiceManager service;
 
     /** Constructor. */
     public DefaultComponentRepository()
     {
         componentDescriptors = new HashMap();
+
         componentManagerDescriptors = new HashMap();
+
         componentManagers = new ThreadSafeMap();
+
         compManagersByCompClass = new ThreadSafeMap();
+
         lifecycleHandlers = new HashMap();
-		service = new AvalonServiceManager( this );
+
+        service = new AvalonServiceManager( this );
     }
 
     // ----------------------------------------------------------------------
