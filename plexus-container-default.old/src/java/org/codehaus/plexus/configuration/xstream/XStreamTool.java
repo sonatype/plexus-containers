@@ -107,14 +107,14 @@ public class XStreamTool
         return out.toString();
     }
 
-    public String capitalizeFirstLetter( String data )
+    private String capitalizeFirstLetter( String data )
     {
         String firstLetter = data.substring( 0, 1 ).toUpperCase();
         String restLetters = data.substring( 1 );
         return firstLetter + restLetters;
     }
 
-    public String lowercaseFirstLetter( String data )
+    private String lowercaseFirstLetter( String data )
     {
         String firstLetter = data.substring( 0, 1 ).toLowerCase();
         String restLetters = data.substring( 1 );
