@@ -104,6 +104,8 @@ public final class DefaultConfigurationTest
         Configuration b = ConfigurationTestHelper.getTestConfiguration();
 
         a.addAll( b );
+
+        assertEquals( "foo", b.getValue( "foo" ) );
     }
 
     public void testGetValue()

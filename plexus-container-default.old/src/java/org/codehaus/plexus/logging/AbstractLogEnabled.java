@@ -13,16 +13,16 @@ public abstract class AbstractLogEnabled
     implements LogEnabled
 {
     ///Base Logger manager
-    private Logger m_logger;
+    private Logger logger;
 
     /**
      * Set the components logger.
      *
      * @param logger the logger
      */
-    public void enableLogging( final Logger logger )
+    public void enableLogging( Logger logger )
     {
-        m_logger = logger;
+        this.logger = logger;
     }
 
     /**
@@ -31,14 +31,14 @@ public abstract class AbstractLogEnabled
      * because it protects other users against future changes. It
      * also means they do not have to use our naming convention.
      *
-     * <p>There is no performance penalty as this is a final method
+     * <p>There is no performance penalty as this is a  method
      * and will be inlined by the JVM.</p>
      *
      * @return the Logger
      */
-    protected final Logger getLogger()
+    protected Logger getLogger()
     {
-        return m_logger;
+        return logger;
     }
 
     /**
@@ -46,9 +46,9 @@ public abstract class AbstractLogEnabled
      *
      * @param component the component to pass logger object to
      */
-    protected void setupLogger( final Object component )
+    protected void setupLogger( Object component )
     {
-        setupLogger( component, (String) null );
+        setupLogger( component, logger );
     }
 
     /**
@@ -58,13 +58,18 @@ public abstract class AbstractLogEnabled
      * @param component the component to pass logger object to
      * @param subCategory the subcategory to use (may be null)
      */
-    protected void setupLogger( final Object component, final String subCategory )
+    protected void setupLogger( Object component, String subCategory )
     {
-        Logger logger = m_logger;
+        if ( subCategory == null )
+        {
+            throw new IllegalStateException( "Logging category must be defined." );
+        }
+
+        Logger logger = this.logger;
 
         if ( null != subCategory )
         {
-            logger = m_logger.getChildLogger( subCategory );
+            logger = this.logger.getChildLogger( subCategory );
         }
 
         setupLogger( component, logger );
@@ -76,7 +81,7 @@ public abstract class AbstractLogEnabled
      * @param component the component to pass logger object to
      * @param logger the Logger
      */
-    protected void setupLogger( final Object component, final Logger logger )
+    protected void setupLogger( Object component, Logger logger )
     {
         if ( component instanceof LogEnabled )
         {

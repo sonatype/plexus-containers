@@ -114,11 +114,6 @@ public class Log4JLoggerManager
     // Lifecycle Management
     // ----------------------------------------------------------------------
 
-    public void setLog4JProperties( Properties log4JProperties )
-    {
-        this.log4JProperties = log4JProperties;
-    }
-
     /** @see Configurable#configure */
     public void configure( Configuration configuration )
         throws ConfigurationException

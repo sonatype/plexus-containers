@@ -72,5 +72,13 @@ public class Log4JLoggerManagerTest
 
         // This is coming back with a trailing string for some reason
         assertEquals( "INFO", p.getProperty( "log4j.appender.console.threshold" ) );
+
+        assertNotNull( loggerManager.getRootLogger() );
+
+        assertNotNull( loggerManager.getLogger( "foo" ) );
+
+        loggerManager.start();
+
+        loggerManager.stop();
     }
 }
