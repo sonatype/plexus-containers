@@ -36,8 +36,7 @@ public class CollectionUtils
      */
     public static Map mergeMaps( Map dominantMap, Map recessiveMap )
     {
-        Map result = new HashMap();
-
+        
         if ( dominantMap == null && recessiveMap == null )
         {
             return null;
@@ -50,8 +49,10 @@ public class CollectionUtils
 
         if ( dominantMap == null && recessiveMap != null )
         {
-            return recessiveMap;
+            return recessiveMap;        
         }
+        
+        Map result = new HashMap();
 
         // Grab the keys from the dominant and recessive maps.
         Set dominantMapKeys = dominantMap.keySet();
