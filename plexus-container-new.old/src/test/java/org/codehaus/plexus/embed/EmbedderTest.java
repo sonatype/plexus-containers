@@ -21,19 +21,25 @@ public class EmbedderTest extends TestCase
         //This really only works because the EmbedderTest is in the same package as the Embedder
         embedder.setConfiguration( "EmbedderTest.xml" );
 
+        embedder.addContextValue( "foo", "bar" );
+
         embedder.start();
 
         assertTrue( embedder.hasService( MockComponent.ROLE ) );
 
         assertNotNull( embedder.getContainer() );
 
-        Object component = embedder.lookup( MockComponent.ROLE );
+        MockComponent component = (MockComponent) embedder.lookup( MockComponent.ROLE );
+
+        assertEquals( "bar", component.getFoo() );
 
         assertNotNull( component );
 
         assertEquals( "I AM MOCKCOMPONENT", component.toString() );
 
-        Object componentWithHint = embedder.lookup( MockComponent.ROLE, "foo" );
+        assertTrue( embedder.hasService( MockComponent.ROLE, "foo" ) );
+
+        MockComponent componentWithHint = (MockComponent) embedder.lookup( MockComponent.ROLE, "foo" );
 
         assertNotNull( componentWithHint );
 
