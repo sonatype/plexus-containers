@@ -16,14 +16,14 @@ import java.util.List;
 public abstract class AbstractCompositionResolverTest
     extends TestCase
 {
-    
+
     /**
-     * 
+     *
      * @return
      */
     protected abstract CompositionResolver getCompositionResolver();
-    
-    
+
+
     // ------------------------------------------------------------------------
     //
     //     +-------+           +-------+
@@ -74,16 +74,16 @@ public abstract class AbstractCompositionResolverTest
         compositionResolver.addComponentDescriptor( c3 );
 
         List dependencies = compositionResolver.getComponentDependencies( c1.getComponentKey() );
-        
+
         assertEquals( 2, dependencies.size() );
-               
+
         assertTrue( dependencies.contains( c2.getRole() ) );
 
         assertTrue( dependencies.contains( c3.getRole() ) );
 
         assertEquals( 2, dependencies.size() );
     }
-    
+
     // ------------------------------------------------------------------------
     //
     //     +-------+           +-------+
@@ -167,17 +167,17 @@ public abstract class AbstractCompositionResolverTest
         assertEquals( 2, dependencies.size() );
 
         // I just leave this at the moment as I am just 99% sure that this is not needed and not
-        // correct. compositionResolver.getComponentDependencies() should return only direct dependencies 
-        // 
-        // I will need to add a method like getSortedComponents() 
-        // which will do topological sort of DAG and return list of ordered component which can be used 
-        // by ComponentComposer. 
+        // correct. compositionResolver.getComponentDependencies() should return only direct dependencies
+        //
+        // I will need to add a method like getSortedComponents()
+        // which will do topological sort of DAG and return list of ordered component which can be used
+        // by ComponentComposer.
         // Possibility of checking if there are cycles probably also must be exposed in API (DAG has it alredy)
         // and it should be used
         // I can implement cycle detecting from single node (source) as after adding new component
-        // we don't have to probably check entire graph but we will probably have to check 
-        // if there are cycles. 
-        
+        // we don't have to probably check entire graph but we will probably have to check
+        // if there are cycles.
+
         /**
         // c5 must come before c3
         assertTrue( dependencies.indexOf( "c5" ) < dependencies.indexOf( "c3" ) );
@@ -185,12 +185,5 @@ public abstract class AbstractCompositionResolverTest
         // c4 must come before c3
         assertTrue( dependencies.indexOf( "c4" ) < dependencies.indexOf( "c3" ) );
         */
-        
-          
-        
-        
-        
-        
     }
-        
 }
