@@ -5,13 +5,6 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.logging.Logger;
 
-/**
- * Base InstanceManager
- *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
- * @version $Id$
- */
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
 {
@@ -44,10 +37,6 @@ public abstract class AbstractComponentManager
         return null;
     }
 
-    // ----------------------------------------------------------------------
-    // Accessors
-    // ----------------------------------------------------------------------
-
     public ComponentDescriptor getComponentDescriptor()
     {
         return componentDescriptor;
@@ -68,9 +57,6 @@ public abstract class AbstractComponentManager
         return classLoader;
     }
 
-    /**
-     * @return
-     */
     protected Logger getLogger()
     {
         return logger;
@@ -116,10 +102,6 @@ public abstract class AbstractComponentManager
         throws Exception
     {
     }
-
-    // ----------------------------------------------------------------------
-    // Implementation
-    // ----------------------------------------------------------------------
 
     protected Object createComponentInstance()
         throws Exception
