@@ -22,6 +22,8 @@ public class ComponentDiscovererTest
     {
         ComponentDiscoverer componentDiscoverer = new DefaultComponentDiscoverer();
 
+        componentDiscoverer.setManager( new DefaultComponentDiscovererManager() );
+
         List components = componentDiscoverer.findComponents( Thread.currentThread().getContextClassLoader() );
 
         ComponentDescriptor cd = (ComponentDescriptor) components.get( 0 );

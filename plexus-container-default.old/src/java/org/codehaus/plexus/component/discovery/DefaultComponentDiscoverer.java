@@ -21,6 +21,11 @@ public class DefaultComponentDiscoverer
         return "META-INF/plexus/components.xml";
     }
 
+    public String getComponentType()
+    {
+        return "plexus";
+    }
+
     public List createComponentDescriptors( PlexusConfiguration componentDescriptorConfiguration )
         throws Exception
     {

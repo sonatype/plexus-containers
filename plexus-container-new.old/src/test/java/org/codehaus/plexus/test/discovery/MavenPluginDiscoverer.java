@@ -30,10 +30,14 @@ public class MavenPluginDiscoverer
         xstream.alias( "goal", GoalDescriptor.class );
     }
 
-
     public String getComponentDescriptorLocation()
     {
         return "META-INF/maven/plugin.xml";
+    }
+
+    public String getComponentType()
+    {
+        return "maven-plugin";
     }
 
     // ----------------------------------------------------------------------------------

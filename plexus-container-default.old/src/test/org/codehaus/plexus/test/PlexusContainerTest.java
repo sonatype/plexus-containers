@@ -7,6 +7,8 @@ import org.codehaus.plexus.util.AbstractTestThread;
 import org.codehaus.plexus.util.TestThreadManager;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
+import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
+import org.codehaus.plexus.component.discovery.ComponentDiscoveryEvent;
 import org.codehaus.plexus.test.map.ActivityManager;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.list.Pipeline;
@@ -29,11 +31,8 @@ public class PlexusContainerTest
 
     private DefaultPlexusContainer container;
 
-    /**
-     * Constructor for the PlexusTest object
-     *
-     * @param name
-     */
+    private MockMavenComponentDiscoveryListener componentDiscoveryListener;
+
     public PlexusContainerTest( String name )
     {
         super( name );
@@ -61,6 +60,10 @@ public class PlexusContainerTest
         container.setConfigurationResource( new InputStreamReader( configurationStream ) );
 
         container.initialize();
+
+        componentDiscoveryListener = new MockMavenComponentDiscoveryListener();
+
+        container.registerComponentDiscoveryListener( componentDiscoveryListener );
 
         container.start();
     }
@@ -479,5 +482,21 @@ public class PlexusContainerTest
         MavenPlugin mavenPlugin = (MavenPlugin) container.lookup( MavenPlugin.ROLE, "mocky" );
 
         assertNotNull( mavenPlugin );
+
+        assertTrue( componentDiscoveryListener.discoveryEventRegistered );
+    }
+
+    class MockMavenComponentDiscoveryListener
+        implements ComponentDiscoveryListener
+    {
+        boolean discoveryEventRegistered = false;
+
+        public void componentDiscovered( ComponentDiscoveryEvent event )
+        {
+            if ( event.getComponentType().equals( "maven-plugin" ) )
+            {
+                discoveryEventRegistered = true;
+            }
+        }
     }
 }

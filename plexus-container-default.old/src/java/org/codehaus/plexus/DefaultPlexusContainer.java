@@ -10,6 +10,7 @@ import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
+import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -408,8 +409,6 @@ public class DefaultPlexusContainer
 
         // Should be safe now to lookup any component aside from the cmm and lhm
 
-        discoverComponents();
-
         initializeLoggerManager();
 
         initializeContext();
@@ -438,6 +437,8 @@ public class DefaultPlexusContainer
     public void start()
         throws Exception
     {
+        discoverComponents();
+
         loadComponentsOnStart();
 
         configuration = null;
@@ -717,6 +718,8 @@ public class DefaultPlexusContainer
 
         componentDiscovererManager = (ComponentDiscovererManager) builder.build( c );
 
+        componentDiscovererManager.initialize();
+
         // Component factory manager
 
         c = configuration.getChild( "component-factory-manager" );
@@ -824,5 +827,19 @@ public class DefaultPlexusContainer
         }
 
         return componentFactory.newInstance( componentDescriptor.getImplementation(), getClassLoader() );
+    }
+
+    // ----------------------------------------------------------------------
+    // Discovery
+    // ----------------------------------------------------------------------
+
+    public void registerComponentDiscoveryListener( ComponentDiscoveryListener listener )
+    {
+        componentDiscovererManager.registerComponentDiscoveryListener( listener );
+    }
+
+    public void removeComponentDiscoveryListener( ComponentDiscoveryListener listener )
+    {
+        componentDiscovererManager.removeComponentDiscoveryListener( listener );
     }
 }

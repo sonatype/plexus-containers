@@ -2,6 +2,7 @@ package org.codehaus.plexus.component.discovery;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -11,16 +12,16 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- *
- *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
- * @version $Id$
- */
 public abstract class AbstractComponentDiscoverer
     implements ComponentDiscoverer
 {
+    private ComponentDiscovererManager manager;
+
+    public void setManager( ComponentDiscovererManager manager )
+    {
+        this.manager = manager;
+    }
+
     public List findComponents( ClassLoader classLoader )
     {
         if ( classLoader == null )
@@ -64,7 +65,13 @@ public abstract class AbstractComponentDiscoverer
 
                 for ( Iterator i = createComponentDescriptors( configuration ).iterator(); i.hasNext(); )
                 {
-                    componentDescriptors.add( i.next() );
+                    ComponentDescriptor componentDescriptor = (ComponentDescriptor) i.next();
+
+                    ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentDescriptor, getComponentType() );
+
+                    manager.fireComponentDiscoveryEvent( event );
+
+                    componentDescriptors.add( componentDescriptor );
                 }
             }
         }

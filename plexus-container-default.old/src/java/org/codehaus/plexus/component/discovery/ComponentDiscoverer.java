@@ -19,6 +19,10 @@ public interface ComponentDiscoverer
 
     String getComponentDescriptorLocation();
 
+    String getComponentType();
+
     List createComponentDescriptors( PlexusConfiguration componentDescriptorConfiguration )
         throws Exception;
+
+    void setManager( ComponentDiscovererManager manager );
 }

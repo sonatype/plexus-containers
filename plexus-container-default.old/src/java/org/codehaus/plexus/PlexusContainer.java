@@ -2,6 +2,7 @@ package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
@@ -102,4 +103,12 @@ public interface PlexusContainer
 
     Object createComponentInstance( ComponentDescriptor componentDescriptor )
         throws Exception;
+
+    // ----------------------------------------------------------------------
+    // Discovery
+    // ----------------------------------------------------------------------
+
+    void registerComponentDiscoveryListener( ComponentDiscoveryListener listener );
+
+    void removeComponentDiscoveryListener( ComponentDiscoveryListener listener );
 }
