@@ -50,7 +50,7 @@ public class AvalonServiceSelectorTest
 
         assertTrue( selector.isSelectable( "only-instance" ) );
 
-        assertTrue( selector instanceof CustomServiceSelector );
+        assertTrue( selector instanceof AvalonServiceSelector );
         
         ServiceC serviceC = (ServiceC) selector.select( "only-instance" );
 

@@ -73,4 +73,6 @@ public interface ComponentRepository
 
     /** Set the logManager to be used for components */
     void setComponentLogManager( LoggerManager logManager );
+
+    void addComponentDescriptor( ComponentDescriptor componentDescriptor );
 }

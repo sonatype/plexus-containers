@@ -300,7 +300,7 @@ public class DefaultComponentRepository
      *
      * @param descriptor
      */
-    protected void addComponentDescriptor( ComponentDescriptor descriptor )
+    public void addComponentDescriptor( ComponentDescriptor descriptor )
     {
         getComponentDescriptors().put( descriptor.getComponentKey(), descriptor );
     }

@@ -61,6 +61,11 @@ public class ComponentDescriptor
         return role;
     }
 
+    public void setRole( String role )
+    {
+        this.role = role;
+    }
+
     public String getRoleHint()
     {
         return roleHint;
@@ -73,6 +78,11 @@ public class ComponentDescriptor
     public String getImplementation()
     {
         return implementation;
+    }
+
+    public void setImplementation( String implementation )
+    {
+        this.implementation = implementation;
     }
 
     /**
@@ -91,6 +101,11 @@ public class ComponentDescriptor
     public Configuration getConfiguration()
     {
         return configuration;
+    }
+
+    public void setConfiguration( Configuration configuration )
+    {
+        this.configuration = configuration;
     }
 
     /**
