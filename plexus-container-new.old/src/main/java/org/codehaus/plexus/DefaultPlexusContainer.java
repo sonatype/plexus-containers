@@ -60,10 +60,6 @@ public class DefaultPlexusContainer
 
     private PlexusConfiguration configuration;
 
-    private PlexusConfiguration defaultConfiguration;
-
-    private PlexusConfiguration mergedConfiguration;
-
     private Reader configurationReader;
 
     private ClassWorld classWorld;
@@ -353,10 +349,6 @@ public class DefaultPlexusContainer
         loadComponentsOnStart();
 
         configuration = null;
-
-        defaultConfiguration = null;
-
-        mergedConfiguration = null;
     }
 
     public void dispose()
@@ -499,7 +491,7 @@ public class DefaultPlexusContainer
     private void initializeConfiguration()
         throws Exception
     {
-        // System configuration
+        // System userConfiguration
 
         InputStream is = getClassLoader().getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
 
@@ -510,17 +502,17 @@ public class DefaultPlexusContainer
                                              "most likely corrupt." );
         }
 
-        defaultConfiguration = builder.parse( new InputStreamReader( is ) );
+        PlexusConfiguration systemConfiguration = builder.parse( new InputStreamReader( is ) );
 
-        // User configuration
+        // User userConfiguration
 
-        configuration = builder.parse( getInterpolationConfigurationReader( configurationReader ) );
+        PlexusConfiguration userConfiguration = builder.parse( getInterpolationConfigurationReader( configurationReader ) );
+
+        // Merger of systemConfiguration and user userConfiguration
+
+        configuration = PlexusConfigurationMerger.merge( userConfiguration, systemConfiguration );
 
         processConfigurationsDirectory();
-
-        // Merger of system and user configuration
-
-        mergedConfiguration = getMergedConfiguration();
     }
 
     private Reader getInterpolationConfigurationReader( Reader reader )
@@ -566,16 +558,10 @@ public class DefaultPlexusContainer
         }
     }
 
-    private PlexusConfiguration getMergedConfiguration()
-        throws Exception
-    {
-        return PlexusConfigurationMerger.merge( configuration, defaultConfiguration );
-    }
-
     private void initializeLoggerManager()
         throws Exception
     {
-        loggerManager = LoggerManagerFactory.create( mergedConfiguration.getChild( "logging" ), getClassLoader() );
+        loggerManager = LoggerManagerFactory.create( configuration.getChild( "logging" ), getClassLoader() );
 
         enableLogging( loggerManager.getRootLogger() );
     }
@@ -583,7 +569,7 @@ public class DefaultPlexusContainer
     private void initializeComponentRepository()
         throws Exception
     {
-        componentRepository = ComponentRepositoryFactory.create( mergedConfiguration, getClassLoader() );
+        componentRepository = ComponentRepositoryFactory.create( configuration, getClassLoader() );
     }
 
     private void initializeSystemProperties()
@@ -667,7 +653,7 @@ public class DefaultPlexusContainer
 
         builder.alias( "component-manager-manager", DefaultComponentManagerManager.class );
 
-        PlexusConfiguration c = mergedConfiguration.getChild( "component-manager-manager" );
+        PlexusConfiguration c = configuration.getChild( "component-manager-manager" );
 
         componentManagerManager = (ComponentManagerManager) builder.build( c, DefaultComponentManagerManager.class );
     }
@@ -740,7 +726,7 @@ public class DefaultPlexusContainer
 
         builder.alias( "lifecycle-handler-manager", DefaultLifecycleHandlerManager.class );
 
-        PlexusConfiguration c = mergedConfiguration.getChild( "lifecycle-handler-manager" );
+        PlexusConfiguration c = configuration.getChild( "lifecycle-handler-manager" );
 
         lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( c, DefaultLifecycleHandlerManager.class );
 
@@ -766,7 +752,7 @@ public class DefaultPlexusContainer
     public void initializeResources()
         throws PlexusConfigurationException
     {
-        PlexusConfiguration[] resourceConfigs = mergedConfiguration.getChild( "resources" ).getChildren();
+        PlexusConfiguration[] resourceConfigs = configuration.getChild( "resources" ).getChildren();
 
         for ( int i = 0; i < resourceConfigs.length; ++i )
         {
