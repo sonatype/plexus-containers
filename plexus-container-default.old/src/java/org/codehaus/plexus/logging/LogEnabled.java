@@ -55,19 +55,7 @@
 
 package org.codehaus.plexus.logging;
 
-/**
- * Components that need to log can implement this interface to
- * be provided Loggers.
- *
- * @author <a href="mailto:dev@avalon.apache.org">Avalon Development Team</a>
- * @version CVS $Revision$ $Date$
- */
 public interface LogEnabled
 {
-    /**
-     * Provide component with a logger.
-     *
-     * @param logger the logger. Must not be <code>null</code>.
-     */
     void enableLogging( Logger logger );
 }

@@ -1,10 +1,4 @@
 <plexus>
-  <logging>
-    <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
-    <logger>
-      <threshold>fatal</threshold>
-    </logger>
-  </logging>
   <components>
     <component>
       <role>org.codehaus.plexus.test.Component</role>

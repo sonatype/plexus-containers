@@ -12,13 +12,6 @@
     <property name="foo" value="bar"/>
   </system-properties>
 
-  <logging>
-    <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
-    <logger>
-      <threshold>fatal</threshold>
-    </logger>
-  </logging>
-
   <component-repository>
     <implementation>org.codehaus.plexus.component.repository.DefaultComponentRepository</implementation>
   </component-repository>

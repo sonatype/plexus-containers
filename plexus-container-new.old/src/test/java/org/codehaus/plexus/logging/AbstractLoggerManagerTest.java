@@ -1,6 +1,6 @@
 package org.codehaus.plexus.logging;
 
-import junit.framework.TestCase;
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.io.File;
@@ -13,10 +13,13 @@ import java.io.File;
  * @version $Revision$
  */
 public abstract class AbstractLoggerManagerTest
-    extends TestCase
+    extends PlexusTestCase
 {
     public void setUp()
+        throws Exception
     {
+        super.setUp();
+
         String basedir = System.getProperty( "basedir" );
 
         File f = new File( basedir, "target/plexus-home" );
@@ -29,7 +32,8 @@ public abstract class AbstractLoggerManagerTest
         }
     }
 
-    public void testDebugLevelConfiguration() throws Exception
+    public void testDebugLevelConfiguration()
+        throws Exception
     {
         LoggerManager manager = managerStart( "debug" );
 
@@ -44,7 +48,8 @@ public abstract class AbstractLoggerManagerTest
         managerStop( manager );
     }
 
-    public void testInfoLevelConfiguration() throws Exception
+    public void testInfoLevelConfiguration()
+        throws Exception
     {
         LoggerManager manager = managerStart( "info" );
 
@@ -59,7 +64,8 @@ public abstract class AbstractLoggerManagerTest
         managerStop( manager );
     }
 
-    public void testWarnLevelConfiguration() throws Exception
+    public void testWarnLevelConfiguration()
+        throws Exception
     {
         LoggerManager manager = managerStart( "warn" );
 
@@ -74,7 +80,8 @@ public abstract class AbstractLoggerManagerTest
         managerStop( manager );
     }
 
-    public void testErrorLevelConfiguration() throws Exception
+    public void testErrorLevelConfiguration()
+        throws Exception
     {
         LoggerManager manager = managerStart( "error" );
 
@@ -89,7 +96,8 @@ public abstract class AbstractLoggerManagerTest
         managerStop( manager );
     }
 
-    public void testFatalLevelConfiguration() throws Exception
+    public void testFatalLevelConfiguration()
+        throws Exception
     {
         LoggerManager manager = managerStart( "fatal" );
 
@@ -107,19 +115,17 @@ public abstract class AbstractLoggerManagerTest
     protected abstract PlexusConfiguration createConfiguration( String threshold )
         throws Exception;
 
-    protected abstract LoggerManager createLoggerManager() throws Exception;
+    protected abstract LoggerManager createLoggerManager()
+        throws Exception;
 
-    private LoggerManager managerStart( String threshold ) throws Exception
+    private LoggerManager managerStart( String threshold )
+        throws Exception
     {
-        PlexusConfiguration config = createConfiguration( threshold );
-
-        assertNotNull( config );
-
         LoggerManager manager = createLoggerManager();
 
-        assertNotNull( manager );
+        manager.setThreshold( threshold );
 
-        manager.configure( config );
+        assertNotNull( manager );
 
         manager.initialize();
 
@@ -146,7 +152,8 @@ public abstract class AbstractLoggerManagerTest
         return logger;
     }
 
-    private void managerStop( LoggerManager manager ) throws Exception
+    private void managerStop( LoggerManager manager )
+        throws Exception
     {
         assertNotNull( manager );
 

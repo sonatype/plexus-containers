@@ -1,16 +1,16 @@
 package org.codehaus.plexus.logging;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
+
 
 public interface LoggerManager
 {
+    String ROLE = LoggerManager.class.getName();
+
+    void setThreshold( String threshold );
+
     Logger getRootLogger();
 
     Logger getLogger( String name );
-
-    void configure( PlexusConfiguration configuration )
-        throws PlexusConfigurationException;
 
     void initialize()
         throws Exception;

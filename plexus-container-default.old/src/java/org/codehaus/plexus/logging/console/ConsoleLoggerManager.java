@@ -1,9 +1,7 @@
 package org.codehaus.plexus.logging.console;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.LoggerManager;
 
 
 /**
@@ -21,33 +19,23 @@ import org.codehaus.plexus.logging.Logger;
 public class ConsoleLoggerManager
     implements LoggerManager
 {
-    /** XML element used to start the logger configuration. */
-    private static final String LOGGER_TAG = "logger";
-
-    /** XML element used to set the threshold of the console logger. */
-    private static final String THRESHOLD_TAG = "threshold";
-
     /** Message of this level or higher will be logged. */
-    private int thresholdLevel;
+    private int threshold;
 
     /** The console logger used by the manager. */
     private ConsoleLogger consoleLogger;
 
-    public void configure( PlexusConfiguration configuration )
+    public ConsoleLoggerManager()
     {
-        setThresholdLevel(
-            configuration
-            .getChild( LOGGER_TAG )
-            .getChild( THRESHOLD_TAG )
-            .getValue( "info" )
-            .trim()
-            .toLowerCase() );
+        consoleLogger = new ConsoleLogger( threshold );
+
+        setThreshold( "info" );
     }
 
     public void initialize()
         throws Exception
     {
-        consoleLogger = new ConsoleLogger( thresholdLevel );
+        consoleLogger = new ConsoleLogger( threshold );
     }
 
     public void start()
@@ -69,35 +57,27 @@ public class ConsoleLoggerManager
         return consoleLogger.getChildLogger( name );
     }
 
-    /**
-     * Sets the threshold for the console logger created by this
-     * manager.
-     *
-     * @param text The threshold level specified as a string which can
-     * be one of the following: debug, info, warn, error, fatal,
-     * disabled.
-     */
-    private void setThresholdLevel( String text )
+    public void setThreshold( String text )
     {
         if ( text.equals( "debug" ) )
         {
-            thresholdLevel = ConsoleLogger.LEVEL_DEBUG;
+            threshold = ConsoleLogger.LEVEL_DEBUG;
         }
         else if ( text.equals( "info" ) )
         {
-            thresholdLevel = ConsoleLogger.LEVEL_INFO;
+            threshold = ConsoleLogger.LEVEL_INFO;
         }
         else if ( text.equals( "warn" ) )
         {
-            thresholdLevel = ConsoleLogger.LEVEL_WARN;
+            threshold = ConsoleLogger.LEVEL_WARN;
         }
         else if ( text.equals( "error" ) )
         {
-            thresholdLevel = ConsoleLogger.LEVEL_ERROR;
+            threshold = ConsoleLogger.LEVEL_ERROR;
         }
         else if ( text.equals( "fatal" ) )
         {
-            thresholdLevel = ConsoleLogger.LEVEL_FATAL;
+            threshold = ConsoleLogger.LEVEL_FATAL;
         }
     }
 }

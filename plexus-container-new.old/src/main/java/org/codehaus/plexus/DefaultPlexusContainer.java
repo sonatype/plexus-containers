@@ -24,6 +24,7 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
+import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 
@@ -82,6 +83,8 @@ public class DefaultPlexusContainer
     public DefaultPlexusContainer()
     {
         context = new DefaultContext();
+
+        enableLogging( new ConsoleLoggerManager().getRootLogger() );
     }
 
     // ----------------------------------------------------------------------
@@ -212,7 +215,7 @@ public class DefaultPlexusContainer
             {
                 ComponentDescriptor descriptor = (ComponentDescriptor) i.next();
 
-                String roleHint =  descriptor.getRoleHint();
+                String roleHint = descriptor.getRoleHint();
 
                 Object component;
 
@@ -415,13 +418,13 @@ public class DefaultPlexusContainer
 
         initializeComponentRepository();
 
-        // Should be safe now to lookup any component aside from the cmm and lhm
-
-        initializeLoggerManager();
-
         initializeLifecycleHandlerManager();
 
         initializeComponentManagerManager();
+
+        // Should be safe now to lookup any component aside from the cmm and lhm
+
+        initializeLoggerManager();
 
         initializeContext();
 
@@ -551,7 +554,7 @@ public class DefaultPlexusContainer
         catch ( NoSuchRealmException e )
         {
             if ( classLoader != null &&
-                 classRealm != null )
+                classRealm != null )
             {
                 classRealm = classWorld.newRealm( "core", classLoader );
             }
@@ -660,15 +663,7 @@ public class DefaultPlexusContainer
     private void initializeLoggerManager()
         throws Exception
     {
-        String implementation = configuration.getChild( "logging" ).getChild( "implementation" ).getValue( null );
-
-        loggerManager = (LoggerManager) classLoader.loadClass( implementation ).newInstance();
-
-        loggerManager.configure( configuration );
-
-        loggerManager.initialize();
-
-        loggerManager.start();
+        loggerManager = (LoggerManager) lookup( LoggerManager.ROLE );
 
         enableLogging( loggerManager.getRootLogger() );
     }
@@ -751,11 +746,7 @@ public class DefaultPlexusContainer
             componentManager = componentManagerManager.getComponentManager( instantiationId );
         }
 
-        componentManager.setup( this,
-                                loggerManager.getLogger( "component-manager" ),
-                                getClassLoader(),
-                                lifecycleHandler,
-                                descriptor );
+        componentManager.setup( this, getLogger().getChildLogger( "component-manager" ), getClassLoader(), lifecycleHandler, descriptor );
 
         componentManager.initialize();
 
@@ -810,9 +801,6 @@ public class DefaultPlexusContainer
         PlexusConfiguration c = configuration.getChild( "lifecycle-handler-manager" );
 
         lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( c, DefaultLifecycleHandlerManager.class );
-
-        // obtainable in phase via the container which is accessible from the component manager
-        lifecycleHandlerManager.addEntity( LifecycleHandler.LOGGER, loggerManager.getRootLogger() );
 
         // obtainable in phase via the container which is accessible from the component manager
         lifecycleHandlerManager.addEntity( LifecycleHandler.CONTEXT, context );

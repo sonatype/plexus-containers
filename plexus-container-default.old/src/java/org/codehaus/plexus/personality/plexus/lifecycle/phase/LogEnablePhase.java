@@ -4,6 +4,7 @@ import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.LoggerManager;
 
 public class LogEnablePhase
     extends AbstractPhase
@@ -11,10 +12,12 @@ public class LogEnablePhase
     public void execute( Object object, ComponentManager manager )
         throws Exception
     {
-        Logger logger = (Logger) manager.getLifecycleHandler().getEntities().get("logger");
-
         if ( object instanceof LogEnabled )
         {
+            LoggerManager lm = (LoggerManager) manager.getContainer().lookup( LoggerManager.ROLE );
+
+            Logger logger = lm.getRootLogger();
+
             if ( null == logger )
             {
                 final String message = "logger is null";
