@@ -15,10 +15,8 @@ import java.util.LinkedList;
 public class ConfigurationReader
     implements XMLReader
 {
-    /** */
     private PlexusConfiguration current;
 
-    /** */
     private LinkedList pointers = new LinkedList();
 
     public ConfigurationReader( PlexusConfiguration configuration )
@@ -72,21 +70,29 @@ public class ConfigurationReader
         if ( pointer.v < current.getChildCount() )
         {
             pointers.addLast( new Pointer() );
-            current = (DefaultConfiguration) current.getChild( pointer.v );
+
+            current = current.getChild( pointer.v );
+
             pointer.v++;
+
             return true;
         }
         else
         {
             return false;
         }
-
     }
 
     public void pop()
     {
         current = current.getParent();
+
         pointers.removeLast();
+    }
+
+    public Object peek()
+    {
+        return current;
     }
 
     private class Pointer

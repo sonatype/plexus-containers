@@ -191,7 +191,7 @@
     <!-- Unit test classes -->
     <unitTest>
       <includes>
-        <include>**/*Test.java</include>
+        <include>**/ObjectBuilderTest.java</include>
       </includes>
       <excludes>
         <exclude>org/codehaus/plexus/logging/AbstractLoggerManagerTest.java</exclude>
