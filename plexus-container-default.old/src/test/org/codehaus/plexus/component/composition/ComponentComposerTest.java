@@ -12,6 +12,9 @@ import junit.framework.TestCase;
 public class ComponentComposerTest
     extends TestCase
 {
+    public void testDummy()
+    {
+    }
 //    public void testComponentAssignment()
 //        throws Exception
 //    {
