@@ -67,8 +67,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-
-/*
+/**
  * This class provides basic facilities for manipulating files and file paths.
  *
  * <h3>Path-related methods</h3>
@@ -109,10 +108,8 @@ import java.util.Vector;
  * @author <a href="mailto:jefft@codehaus.org">Jeff Turner</a>
  * @version $Id$
  */
-
 public class FileUtils
 {
-
     /**
      * The number of bytes in a kilobyte.
      */
