@@ -328,6 +328,8 @@ public class DefaultPlexusContainer
 
         initializeConfiguration();
 
+        configurationReader = null;
+
         initializeLoggerManager();
 
         initializeComponentRepository();
@@ -351,6 +353,12 @@ public class DefaultPlexusContainer
         throws Exception
     {
         loadOnStart();
+
+        configuration = null;
+
+        defaultConfiguration = null;
+
+        mergedConfiguration = null;
     }
 
     public void dispose()
