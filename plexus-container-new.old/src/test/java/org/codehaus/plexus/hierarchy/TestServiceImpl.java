@@ -4,10 +4,9 @@ package org.codehaus.plexus.hierarchy;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 /**
  * Simple implementation of the {@link TestService} Component interface.
@@ -16,7 +15,7 @@ import org.codehaus.plexus.context.ContextException;
  */
 public class
     TestServiceImpl
-    implements TestService//, Contextualizable, Configurable
+    implements TestService, Contextualizable
 {
     private PlexusContainer parentPlexus;
 
@@ -30,12 +29,6 @@ public class
         parentPlexus = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
 
         plexusName = (String) context.get( "plexus-name" );
-    }
-
-    public void configure( PlexusConfiguration config )
-        throws PlexusConfigurationException
-    {
-        knownValue = config.getChild( "known-value" ).getValue();
     }
 
     public String getPlexusName()
