@@ -150,6 +150,16 @@ public class DefaultPlexusContainerTest
 
         assertNotNull( serviceB2 );
 
+    }
+
+    /**
+     * Test component lookup for a component that has a role hint.
+     *
+     * @throws Exception
+     */
+    public void testComponentLookupWithRoleHint()
+        throws Exception
+    {
         // ----------------------------------------------------------------------
         //  ServiceC
         // ----------------------------------------------------------------------
@@ -171,6 +181,16 @@ public class DefaultPlexusContainerTest
         // Let's make sure it gave us back the same instance.
         assertSame( serviceC1, serviceC2 );
 
+    }
+
+    /**
+     * Test poolable instantiation strategy.
+     *
+     * @throws Exception
+     */
+    public void testPoolableInstantiationStrategy()
+        throws Exception
+    {
         // ----------------------------------------------------------------------
         //  ServiceD
         // ----------------------------------------------------------------------
@@ -188,10 +208,10 @@ public class DefaultPlexusContainerTest
         assertNotSame( serviceD1, serviceD2 );
         assertNotSame( serviceD2, serviceD3 );
         assertNotSame( serviceD1, serviceD3 );
-
     }
 
     /**
+     * Test per-lookup instantiation strategy.
      *
      * @throws Exception
      */
