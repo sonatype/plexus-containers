@@ -12,6 +12,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentRepositoryExc
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.classworlds.ClassRealm;
 
 public interface PlexusContainer
 {
@@ -133,4 +134,5 @@ public interface PlexusContainer
     void addJarRepository( File repository )
         throws Exception;
 
+    ClassRealm getComponentRealm( String id );
 }
