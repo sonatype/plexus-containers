@@ -144,7 +144,7 @@ public class FieldComponentComposer
         catch ( Exception e )
         {
             throw new CompositionException( "Composition failed of field " + field.getName() + " " +
-                                            "in object of type " + component.getClass().getName() + ":" + e.getMessage() );
+                                            "in object of type " + component.getClass().getName() + ":" + e.getMessage(), e );
         }
     }
 
