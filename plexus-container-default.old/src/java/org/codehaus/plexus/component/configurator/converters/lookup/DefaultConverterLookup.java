@@ -1,7 +1,6 @@
 package org.codehaus.plexus.component.configurator.converters.lookup;
 
-import org.codehaus.plexus.component.configurator.converters.basic.BigDecimalConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.BigIntegerConverter;
+//import org.codehaus.plexus.component.configurator.converters.basic.BigIntegerConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.BooleanConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.ByteConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.CharConverter;
@@ -147,9 +146,7 @@ public class DefaultConverterLookup implements ConverterLookup
 
         registerBasicConverter( new DateConverter() );
 
-        registerBasicConverter( new BigDecimalConverter() );
-
-        registerBasicConverter( new BigIntegerConverter() );
+        //registerBasicConverter( new BigIntegerConverter() );
     }
 
     private void registerDefaultCompositeConverters()
