@@ -1,6 +1,5 @@
 package org.codehaus.plexus.component.repository;
 
-
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.HashSet;
@@ -9,10 +8,10 @@ import java.util.Set;
 /**
  * Component instantiation description.
  *
- *  @author <a href="mailto:jason@zenplex.com">Jason van Zyl</a>
- *  @author <a href="mailto:bob@eng.werken.com">bob mcwhirter</a>
- *  @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
- *  @version $Id$
+ * @author <a href="mailto:jason@zenplex.com">Jason van Zyl</a>
+ * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter</a>
+ * @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
+ * @version $Id$
  */
 public class ComponentDescriptor
 {
@@ -25,6 +24,8 @@ public class ComponentDescriptor
     private String implementation = null;
 
     private String version = null;
+
+    private String componentType = null;
 
     private PlexusConfiguration configuration = null;
 
@@ -127,6 +128,16 @@ public class ComponentDescriptor
     public void setVersion( String version )
     {
         this.version = version;
+    }
+
+    public String getComponentType()
+    {
+        return componentType;
+    }
+
+    public void setComponentType( String componentType )
+    {
+        this.componentType = componentType;
     }
 
     public String getInstantiationStrategy()

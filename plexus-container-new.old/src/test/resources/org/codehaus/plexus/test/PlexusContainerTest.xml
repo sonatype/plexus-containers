@@ -215,5 +215,15 @@
       </configuration>
     </component>
 
+    <component>
+      <role>org.codehaus.plexus.test.ComponentMissingRequirements</role>
+      <implementation>org.codehaus.plexus.test.DefaultComponent</implementation>
+      <requirements>
+        <requirement>
+          <role>NonExistingComponent</role>
+        </requirement>
+      </requirements>
+    </component>
+
  </components>
 </plexus>

@@ -442,6 +442,12 @@ public class DefaultPlexusContainer
         initializeSystemProperties();
     }
 
+    /**
+     * TODO: Enhance the ComponentRepository so that it can take entire 
+     *       ComponentSetDescriptors instead of just ComponentDescriptors.
+     * 
+     * @throws Exception
+     */
     private void discoverComponents()
         throws Exception
     {
@@ -449,20 +455,25 @@ public class DefaultPlexusContainer
         {
             ComponentDiscoverer componentDiscoverer = (ComponentDiscoverer) i.next();
 
-            ComponentSetDescriptor componentSet = componentDiscoverer.findComponents( getClassLoader() );
+            List componentSetDescriptors = componentDiscoverer.findComponents( getClassLoader() );
 
-            List componentDescriptors = componentSet.getComponents();
-
-            for ( Iterator j = componentDescriptors.iterator(); j.hasNext(); )
+            for ( Iterator j = componentSetDescriptors.iterator(); j.hasNext(); )
             {
-                ComponentDescriptor componentDescriptor = (ComponentDescriptor) j.next();
+                ComponentSetDescriptor componentSet = (ComponentSetDescriptor) j.next();
 
-                // If the user has already defined a component descriptor for this particular
-                // component then do not let the discovered component descriptor override
-                // the user defined one.
-                if ( getComponentDescriptor( componentDescriptor.getComponentKey() ) == null )
+                List componentDescriptors = componentSet.getComponents();
+
+                for ( Iterator k = componentDescriptors.iterator(); k.hasNext(); )
                 {
-                    addComponentDescriptor( componentDescriptor );
+                    ComponentDescriptor componentDescriptor = (ComponentDescriptor) k.next();
+    
+                    // If the user has already defined a component descriptor for this particular
+                    // component then do not let the discovered component descriptor override
+                    // the user defined one.
+                    if ( getComponentDescriptor( componentDescriptor.getComponentKey() ) == null )
+                    {
+                        addComponentDescriptor( componentDescriptor );
+                    }
                 }
             }
         }

@@ -1,27 +1,18 @@
 package org.codehaus.plexus.component.discovery;
 
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 
 public class ComponentDiscoveryEvent
 {
-    private ComponentDescriptor componentDescriptor;
+    private ComponentSetDescriptor componentSetDescriptor;
 
-    private String componentType;
-
-    public ComponentDiscoveryEvent( ComponentDescriptor componentDescriptor, String componentType )
+    public ComponentDiscoveryEvent( ComponentSetDescriptor componentSetDescriptor )
     {
-        this.componentDescriptor = componentDescriptor;
-
-        this.componentType = componentType;
+        this.componentSetDescriptor = componentSetDescriptor;
     }
 
-    public ComponentDescriptor getComponentDescriptor()
+    public ComponentSetDescriptor getComponentSetDescriptor()
     {
-        return componentDescriptor;
-    }
-
-    public String getComponentType()
-    {
-        return componentType;
+        return componentSetDescriptor;
     }
 }

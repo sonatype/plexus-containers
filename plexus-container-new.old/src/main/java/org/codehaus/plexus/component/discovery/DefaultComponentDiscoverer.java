@@ -10,10 +10,7 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 
 /**
- *
- *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
  * @version $Id$
  */
 public class DefaultComponentDiscoverer
@@ -22,11 +19,6 @@ public class DefaultComponentDiscoverer
     public String getComponentDescriptorLocation()
     {
         return "META-INF/plexus/components.xml";
-    }
-
-    public String getComponentType()
-    {
-        return "plexus";
     }
 
     public ComponentSetDescriptor createComponentDescriptors( Reader componentDescriptorReader, String source )
@@ -56,11 +48,15 @@ public class DefaultComponentDiscoverer
                 throw new Exception( "Cannot process component descriptor: " + source, e );                
             }
 
+            componentDescriptor.setComponentType( "plexus" );
+
             componentDescriptors.add( componentDescriptor );
         }
 
         componentSetDescriptor.setComponents( componentDescriptors );
-        
+
+        // TODO: read and store the dependencies
+
         return componentSetDescriptor;
     }
 }

@@ -1,18 +1,18 @@
 package org.codehaus.plexus.component.repository;
 
-
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.classworlds.ClassRealm;
-
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
+
+import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
  * Like the avalon component manager. Central point to get the components from.
- *
- *
+ * 
+ * TODO: Enhance the ComponentRepository so that it can take entire 
+ *       ComponentSetDescriptors instead of just ComponentDescriptors.
  */
 public interface ComponentRepository
 {

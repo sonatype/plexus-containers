@@ -22,7 +22,13 @@ public class ComponentDiscovererTest
 
         componentDiscoverer.setManager( new DefaultComponentDiscovererManager() );
 
-        ComponentSetDescriptor componentSet = componentDiscoverer.findComponents( Thread.currentThread().getContextClassLoader() );
+        List componentSetDescriptors = componentDiscoverer.findComponents( Thread.currentThread().getContextClassLoader() );
+
+        assertEquals( 1, componentSetDescriptors.size() );
+
+        assertEquals( ComponentSetDescriptor.class.getName(), componentSetDescriptors.get( 0 ).getClass().getName() );
+
+        ComponentSetDescriptor componentSet = (ComponentSetDescriptor) componentSetDescriptors.get( 0 );
 
         List components = componentSet.getComponents();
 
