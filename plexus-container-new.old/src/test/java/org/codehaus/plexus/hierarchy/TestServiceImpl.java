@@ -12,30 +12,41 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentLookupException;
 
 /**
- * Simple implementation of the {@link TestService} Avalon interface.
+ * Simple implementation of the {@link TestService} Component interface.
  *
  * @author <a href="mailto:mhw@kremvax.net">Mark Wilkinson</a>
  */
-public class TestServiceImpl implements TestService, Contextualizable, Configurable {
+public class TestServiceImpl
+    implements TestService, Contextualizable, Configurable
+{
     private PlexusContainer parentPlexus;
 
     private String knownValue;
 
-    public void contextualize(Context context) throws ContextException {
-        parentPlexus = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
+    public void contextualize( Context context )
+        throws ContextException
+    {
+        parentPlexus = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 
-    public void configure(Configuration config) throws ConfigurationException {
-        knownValue = config.getChild("known-value").getValue();
+    public void configure(Configuration config)
+        throws ConfigurationException
+    {
+        knownValue = config.getChild( "known-value" ).getValue();
     }
 
-    public String getKnownValue() {
+    public String getKnownValue()
+    {
         return knownValue;
     }
 
-    public String getSiblingKnownValue(String id) throws ComponentLookupException {
-        PlexusContainer sibling = (PlexusContainer) parentPlexus.lookup(PlexusContainer.ROLE, id);
-        TestService service = (TestService) sibling.lookup(TestService.ROLE);
+    public String getSiblingKnownValue(String id)
+        throws ComponentLookupException
+    {
+        PlexusContainer sibling = (PlexusContainer) parentPlexus.lookup( PlexusContainer.ROLE, id );
+
+        TestService service = (TestService) sibling.lookup( TestService.ROLE );
+
         return service.getKnownValue();
     }
 }
