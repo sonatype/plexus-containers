@@ -1,7 +1,7 @@
 <!--
 
 A simple start at component meta data that we will initially glean from the
-sources and produce using qdox. I don't consider this idea as I believe this
+sources and produce using qdox. I don't consider this ideal as I believe this
 information should come from the model but the tool chain doesn't exist.
 
 I also feel much of this information before declared in sources is bad. First
