@@ -1,10 +1,8 @@
 package org.codehaus.plexus.lifecycle;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.logger.Logger;
-import org.codehaus.plexus.lifecycle.phase.Phase;
 import org.codehaus.plexus.component.manager.ComponentManager;
+import org.codehaus.plexus.lifecycle.phase.Phase;
 
 import java.util.Map;
 
