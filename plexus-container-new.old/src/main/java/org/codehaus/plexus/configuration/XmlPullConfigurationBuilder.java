@@ -6,6 +6,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jason van Zyl
@@ -25,9 +26,9 @@ public class XmlPullConfigurationBuilder
     public Configuration parse( Reader reader )
         throws Exception
     {
-        ArrayList elements = new ArrayList();
+        List elements = new ArrayList();
 
-        ArrayList values = new ArrayList();
+        List values = new ArrayList();
 
         Configuration configuration = null;
 
