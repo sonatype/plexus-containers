@@ -66,6 +66,8 @@ public class DefaultLifecycleHandlerManagerTest
 
         assertNotNull( lh );
 
+        assertEquals( "Avalon Lifecycle Handler", lh.getName() );
+
         List beginSegment = lh.getBeginSegment();
 
         assertEquals( 6, beginSegment.size() );

@@ -1,6 +1,7 @@
 package org.codehaus.plexus.component.composition;
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 import java.util.List;
@@ -16,30 +17,34 @@ public class CompositionResolverTest
     extends TestCase
 {
     public void testSimpleComponentResolution()
+        throws Exception
     {
-        String c1Role = "c1";
+        String cc1 =
+            "<component>" +
+            "  <role>c1</role>" +
+            "  <requirements>" +
+            "    <requirement>c2</requirement>" +
+            "    <requirement>c3</requirement>" +
+            "  </requirements>" +
+            "</component>";
 
-        String c2Role = "c2";
+        String cc2 =
+            "<component>" +
+            "  <role>c2</role>" +
+            "</component>";
 
-        String c3Role = "c3";
+        String cc3 =
+            "<component>" +
+            "  <role>c3</role>" +
+            "</component>";
 
         CompositionResolver cr = new CompositionResolver();
 
-        ComponentDescriptor c1 = new ComponentDescriptor();
+        ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
 
-        c1.setRole( c1Role );
+        ComponentDescriptor c2 = PlexusTools.buildComponentDescriptor( cc2 );
 
-        c1.addRequirement( c2Role );
-
-        c1.addRequirement( c3Role );
-
-        ComponentDescriptor c2 = new ComponentDescriptor();
-
-        c2.setRole( c2Role );
-
-        ComponentDescriptor c3 = new ComponentDescriptor();
-
-        c3.setRole( c3Role );
+        ComponentDescriptor c3 = PlexusTools.buildComponentDescriptor( cc3 );
 
         cr.addComponentDescriptor( c1 );
 
@@ -49,9 +54,9 @@ public class CompositionResolverTest
 
         List dependencies = cr.getComponentDependencies( c1.getComponentKey() );
 
-        assertTrue( dependencies.contains( c2Role ) );
+        assertTrue( dependencies.contains( c2.getRole() ) );
 
-        assertTrue( dependencies.contains( c3Role ) );
+        assertTrue( dependencies.contains( c3.getRole() ) );
 
         assertEquals( 2, dependencies.size() );
     }

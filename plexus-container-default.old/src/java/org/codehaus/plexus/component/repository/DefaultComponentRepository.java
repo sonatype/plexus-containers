@@ -4,6 +4,7 @@ import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.context.Context;
 import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
@@ -285,23 +286,8 @@ public class DefaultComponentRepository
 
         for ( int i = 0; i < componentConfigurations.length; i++ )
         {
-            addComponentDescriptor( buildComponentDescriptor( componentConfigurations[i] ) );
+            addComponentDescriptor( PlexusTools.buildComponentDescriptor( componentConfigurations[i] ) );
         }
-    }
-
-    protected ComponentDescriptor buildComponentDescriptor( Configuration configuration )
-        throws Exception
-    {
-        XStreamTool objectBuilder = new XStreamTool();
-
-        objectBuilder.alias( "component", ComponentDescriptor.class );
-
-        objectBuilder.alias( "requirement", String.class );
-
-        ComponentDescriptor cd =
-            (ComponentDescriptor) objectBuilder.build(  (PlexusConfiguration) configuration, ComponentDescriptor.class );
-
-        return cd;
     }
 
     // ----------------------------------------------------------------------

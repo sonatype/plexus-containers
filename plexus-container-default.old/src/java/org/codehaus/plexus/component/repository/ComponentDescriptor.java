@@ -39,16 +39,6 @@ public class ComponentDescriptor
     private Set requirements;
 
     // ----------------------------------------------------------------------
-    // Constructors
-    // ----------------------------------------------------------------------
-
-    /** Construct.
-     */
-    public ComponentDescriptor()
-    {
-    }
-
-    // ----------------------------------------------------------------------
     //  Instance methods
     // ----------------------------------------------------------------------
 
@@ -124,32 +114,5 @@ public class ComponentDescriptor
         }
 
         return requirements;
-    }
-
-    // Need these until other tests are fixed not to use setters
-
-    public void setRole( String role )
-    {
-        this.role = role;
-    }
-
-    public void setRoleHint( String roleHint )
-    {
-        this.roleHint = roleHint;
-    }
-
-    public void setConfiguration( Configuration configuration )
-    {
-        this.configuration = configuration;
-    }
-
-    public void setInstantiationStrategy( String instantiationStrategy )
-    {
-        this.instantiationStrategy = instantiationStrategy;
-    }
-
-    public void addRequirement( String requirement )
-    {
-        getRequirements().add( requirement );
     }
 }
