@@ -1,7 +1,7 @@
 <configuration>
 
   <logging>
-    <implementation>org.codehaus.plexus.logging.ConsoleLoggerManager</implementation>
+    <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
     <logger>
       <threshold>ERROR</threshold>
     </logger>
@@ -13,10 +13,12 @@
       <implementation>org.codehaus.plexus.ComponentPlexusContainer</implementation>
       <configuration>
         <plexus-config>org/codehaus/plexus/hierarchy/ChildPlexusOne.xml</plexus-config>
-        <context-value>
-          <name>plexus-name</name>
-          <value>ChildPlexusOne</value>
-        </context-value>
+        <context-values>
+          <property>
+            <name>plexus-name</name>
+            <value>ChildPlexusOne</value>
+          </property>
+        </context-values>
       </configuration>
     </component>
 
@@ -26,10 +28,12 @@
       <implementation>org.codehaus.plexus.ComponentPlexusContainer</implementation>
       <configuration>
         <plexus-config>org/codehaus/plexus/hierarchy/ChildPlexusTwo.xml</plexus-config>
-        <context-value>
-          <name>plexus-name</name>
-          <value>ChildPlexusTwo</value>
-        </context-value>
+        <context-values>
+          <property>
+            <name>plexus-name</name>
+            <value>ChildPlexusTwo</value>
+          </property>
+        </context-values>
       </configuration>
     </component>
   </components>
