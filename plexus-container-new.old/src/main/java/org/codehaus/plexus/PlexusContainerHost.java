@@ -147,6 +147,8 @@ public class PlexusContainerHost
                     //ignore
                 }
             }
+            
+            PlexusContainerHost.class.notifyAll();
         }
     }
 
@@ -167,12 +169,31 @@ public class PlexusContainerHost
         {
             PlexusContainerHost host = new PlexusContainerHost();
             host.start( classWorld, args[0] );
+            
+            while ( !host.isStopped() )
+            {
+                try
+                {
+                    PlexusContainerHost.class.wait();
+                }
+                catch ( InterruptedException e )
+                {
+                }
+            }
         }
         catch ( Exception e )
         {
             e.printStackTrace();
             System.exit( 2 );
         }
+    }
+
+    /**
+     * @return
+     */
+    private boolean isStopped()
+    {
+        return isStopped;
     }
 }
 
