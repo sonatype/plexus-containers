@@ -42,7 +42,7 @@ public class ComponentDiscovererTest
 
         assertEquals( "org.apache.maven.plugin.Plugin", pluginDescriptor.getRole() );
 
-        assertEquals( "org.apache.maven.plugin.AntlrPlugin", pluginDescriptor.getImplementation() );
+        assertEquals( "org.codehaus.plexus.discovery.MockMavenPlugin", pluginDescriptor.getImplementation() );
 
         assertEquals( 1, pluginDescriptor.getGoals().size() );
 

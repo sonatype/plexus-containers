@@ -9,4 +9,5 @@ package org.codehaus.plexus.component.discovery;
  */
 public interface DiscoveredComponent
 {
+    String ROLE = DiscoveredComponent.class.getName();
 }

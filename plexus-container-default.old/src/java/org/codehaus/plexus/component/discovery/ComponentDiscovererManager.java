@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component.discovery;
 
+import java.util.List;
+
 /**
  *
  * 
@@ -7,7 +9,7 @@ package org.codehaus.plexus.component.discovery;
  *
  * @version $Id$
  */
-public interface DiscoveredComponent
+public interface ComponentDiscovererManager
 {
-    String ROLE = DiscoveredComponent.class.getName();
+    List getComponentDiscoverers();
 }

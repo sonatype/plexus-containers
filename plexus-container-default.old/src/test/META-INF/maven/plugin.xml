@@ -1,5 +1,5 @@
 <plugin>
-  <implementation>org.apache.maven.plugin.AntlrPlugin</implementation>
+  <implementation>org.codehaus.plexus.discovery.MockMavenPlugin</implementation>
   <id>antlr</id>
   <goals>
     <goal>
