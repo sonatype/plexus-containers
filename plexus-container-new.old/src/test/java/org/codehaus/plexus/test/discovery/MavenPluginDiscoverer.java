@@ -1,11 +1,12 @@
 package org.codehaus.plexus.test.discovery;
 
-import org.codehaus.plexus.component.discovery.AbstractComponentDiscoverer;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
-
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.codehaus.plexus.component.discovery.AbstractComponentDiscoverer;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
 
 /**
  *
@@ -38,7 +39,7 @@ public class MavenPluginDiscoverer
         return "maven-plugin";
     }
 
-    public List createComponentDescriptors( Reader componentDescriptorReader, String source )
+    public ComponentSetDescriptor createComponentDescriptors( Reader componentDescriptorReader, String source )
         throws Exception
     {
         List componentDescriptors = new ArrayList();
@@ -47,6 +48,10 @@ public class MavenPluginDiscoverer
 
         componentDescriptors.add( pluginDescriptor );
 
-        return componentDescriptors;
+        ComponentSetDescriptor componentSetDescriptor = new ComponentSetDescriptor();
+
+        componentSetDescriptor.setComponents( componentDescriptors );
+
+        return componentSetDescriptor;
     }
 }

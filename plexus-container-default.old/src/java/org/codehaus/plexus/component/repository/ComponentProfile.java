@@ -6,8 +6,6 @@ import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 
 /**
- *
- *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
@@ -21,8 +19,7 @@ public class ComponentProfile
     private LifecycleHandler lifecycleHandler;
 
     /** Component Manager. */
-    private ComponentManager componentManager;
-    
+    private ComponentManager componentManager;    
     
     /** Component Composer. */
     private ComponentComposer componentComposer;
@@ -60,8 +57,7 @@ public class ComponentProfile
     {
         this.componentManager = componentManager;
     }
-        
-    
+
     public ComponentComposer getComponentComposer()
     {
         return componentComposer;

@@ -1,5 +1,9 @@
 package org.codehaus.plexus.component.repository;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
@@ -8,10 +12,6 @@ import org.codehaus.plexus.component.repository.exception.ComponentRepositoryExc
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @todo We need to process component descriptors from a specified configuration file in addition
@@ -161,7 +161,6 @@ public class DefaultComponentRepository
             map.put( roleHint, componentDescriptor );
         }
 
-
         try
         {
             compositionResolver.addComponentDescriptor( componentDescriptor );
@@ -170,7 +169,6 @@ public class DefaultComponentRepository
         {
             throw new ComponentRepositoryException( e.getMessage() , e );
         }
-
 
         componentDescriptors.put( componentDescriptor.getComponentKey(), componentDescriptor );
     }

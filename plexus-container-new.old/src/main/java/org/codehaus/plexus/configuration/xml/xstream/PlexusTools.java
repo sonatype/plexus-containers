@@ -1,7 +1,7 @@
 package org.codehaus.plexus.configuration.xml.xstream;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentSet;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
@@ -38,10 +38,10 @@ public class PlexusTools
         return cd;
     }
 
-    public static ComponentSet buildComponentSet( PlexusConfiguration configuration )
+    public static ComponentSetDescriptor buildComponentSet( PlexusConfiguration configuration )
         throws Exception
     {
-        ComponentSet cs = (ComponentSet) xstream.build( configuration, ComponentSet.class );
+        ComponentSetDescriptor cs = (ComponentSetDescriptor) xstream.build( configuration, ComponentSetDescriptor.class );
 
         return cs;
     }

@@ -1,10 +1,5 @@
 package org.codehaus.plexus.component.composition;
 
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -19,13 +14,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
 public class SetterComponentComposer extends AbstractComponentComposer
 {
-
     public List assembleComponent( final Object component,
                                    final ComponentDescriptor descriptor,
                                    final PlexusContainer container ) throws CompositionException, UndefinedComponentComposerException
@@ -59,13 +58,11 @@ public class SetterComponentComposer extends AbstractComponentComposer
                 final List descriptors = setProperty( component, descriptor, requirement, propertyDescriptor, container );
 
                 retValue.addAll( descriptors );
-
             }
             else
             {
                 reportErrorNoSuchProperty( descriptor, requirement );
             }
-
         }
 
         return retValue;
@@ -77,7 +74,6 @@ public class SetterComponentComposer extends AbstractComponentComposer
                               final PropertyDescriptor propertyDescriptor,
                               final PlexusContainer container ) throws CompositionException
     {
-
         List retValue = null;
 
         final Method writeMethod = propertyDescriptor.getWriteMethod();
@@ -138,7 +134,6 @@ public class SetterComponentComposer extends AbstractComponentComposer
 
                 params[ 0 ] = dependency;
             }
-
         }
         catch ( ComponentLookupException e )
         {
@@ -156,14 +151,10 @@ public class SetterComponentComposer extends AbstractComponentComposer
             e.printStackTrace();
 
             reportErrorCannotAssignRequiredComponent( descriptor, requirement, e );
-
-
         }
 
         return retValue;
-
     }
-
 
     /**
      * @param requirement
@@ -188,7 +179,6 @@ public class SetterComponentComposer extends AbstractComponentComposer
         }
 
         return retValue;
-
     }
 
     /**
@@ -215,7 +205,6 @@ public class SetterComponentComposer extends AbstractComponentComposer
         return retValue;
     }
 
-
     protected PropertyDescriptor getPropertyDescriptorByType( final String type,
                                                               final PropertyDescriptor[] propertyDescriptors )
     {
@@ -227,17 +216,14 @@ public class SetterComponentComposer extends AbstractComponentComposer
 
             if ( propertyDescriptor.getPropertyType().toString().indexOf( type ) > 0 )
             {
-
                 retValue = propertyDescriptor;
 
                 break;
             }
-
         }
 
         return retValue;
     }
-
 
     private void reportErrorNoSuchProperty( final ComponentDescriptor descriptor,
                                             final ComponentRequirement requirement ) throws CompositionException
@@ -251,7 +237,6 @@ public class SetterComponentComposer extends AbstractComponentComposer
         throw new CompositionException( msg );
     }
 
-
     private void reportErrorCannotAssignRequiredComponent( final ComponentDescriptor descriptor,
                                                            final ComponentRequirement requirement,
                                                            final Exception e ) throws CompositionException
@@ -262,7 +247,6 @@ public class SetterComponentComposer extends AbstractComponentComposer
 
         throw new CompositionException( msg );
     }
-
 
     private void reportErrorCannotLookupRequiredComponent( final ComponentDescriptor descriptor,
                                                            final ComponentRequirement requirement,
@@ -275,26 +259,20 @@ public class SetterComponentComposer extends AbstractComponentComposer
         throw new CompositionException( msg, cause );
     }
 
-
     /**
      * @param descriptor
      */
     private void reportErrorFailedToIntrospect( final ComponentDescriptor descriptor ) throws CompositionException
     {
-
-        final String causeDescriprion = "Failed to introspect component class.";
-
         final String msg = getErrorMessage( descriptor, null, null );
 
         throw new CompositionException( msg );
     }
 
-
     private String getErrorMessage( final ComponentDescriptor descriptor,
                                     final ComponentRequirement requirement,
                                     final String causeDescription )
     {
-
         final StringBuffer msg = new StringBuffer( "Component composition failed." );
 
         msg.append( "  Failed to resolve requirement for component of role: '" );
@@ -322,8 +300,5 @@ public class SetterComponentComposer extends AbstractComponentComposer
         }
 
         return msg.toString();
-
     }
-
-
 }

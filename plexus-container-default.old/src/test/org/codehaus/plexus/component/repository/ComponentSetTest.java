@@ -45,7 +45,7 @@ public class ComponentSetTest
             "  </dependencies>" +
             "</component-set>";
 
-        ComponentSet cs = PlexusTools.buildComponentSet( PlexusTools.buildConfiguration( xml ) );
+        ComponentSetDescriptor cs = PlexusTools.buildComponentSet( PlexusTools.buildConfiguration( xml ) );
 
         ComponentDescriptor c1 = (ComponentDescriptor) cs.getComponents().get( 0 );
 

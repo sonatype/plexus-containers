@@ -1,12 +1,13 @@
 package org.codehaus.plexus.component.discovery;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.Reader;
+
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 
 /**
  *
@@ -28,10 +29,12 @@ public class DefaultComponentDiscoverer
         return "plexus";
     }
 
-    public List createComponentDescriptors( Reader componentDescriptorReader, String source )
+    public ComponentSetDescriptor createComponentDescriptors( Reader componentDescriptorReader, String source )
         throws Exception
     {
         PlexusConfiguration componentDescriptorConfiguration = PlexusTools.buildConfiguration( componentDescriptorReader );
+
+        ComponentSetDescriptor componentSetDescriptor = new ComponentSetDescriptor();
 
         List componentDescriptors = new ArrayList();
 
@@ -56,6 +59,8 @@ public class DefaultComponentDiscoverer
             componentDescriptors.add( componentDescriptor );
         }
 
-        return componentDescriptors;
+        componentSetDescriptor.setComponents( componentDescriptors );
+        
+        return componentSetDescriptor;
     }
 }

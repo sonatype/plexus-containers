@@ -5,6 +5,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -21,7 +22,9 @@ public class ComponentDiscovererTest
 
         componentDiscoverer.setManager( new DefaultComponentDiscovererManager() );
 
-        List components = componentDiscoverer.findComponents( Thread.currentThread().getContextClassLoader() );
+        ComponentSetDescriptor componentSet = componentDiscoverer.findComponents( Thread.currentThread().getContextClassLoader() );
+
+        List components = componentSet.getComponents();
 
         ComponentDescriptor cd = (ComponentDescriptor) components.get( 0 );
 

@@ -8,7 +8,7 @@ import com.thoughtworks.xstream.xml.xpp3.Xpp3DomXMLWriter;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.component.repository.ComponentSet;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.alias.HyphenatedClassMapper;
@@ -32,7 +32,7 @@ public class PlexusXStream
 
         alias( "configuration", PlexusConfiguration.class, XmlPlexusConfiguration.class );
 
-        alias( "component-set", ComponentSet.class );
+        alias( "component-set", ComponentSetDescriptor.class );
 
         alias( "component", ComponentDescriptor.class );
 

@@ -1,15 +1,14 @@
 package org.codehaus.plexus.component.composition;
 
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.util.StringUtils;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
@@ -17,13 +16,11 @@ import java.util.Map;
  */
 public class DefaultComponentComposerManager implements ComponentComposerManager
 {
-
     private Map composerMap = new HashMap();
 
     private List componentComposers;
     
     private String defaultComponentComposerId = "field";
-
 
     public void assembleComponent( final Object component,
                                    final ComponentDescriptor componentDescriptor,
@@ -51,9 +48,7 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
         // @todo: michal: we need to build the graph of component dependencies
         // and detect cycles.  Not sure exactly when and how it should happen
         //assembleComponents( descriptors, container );
-
     }
-
 
     protected ComponentComposer getComponentComposer( final String id ) throws UndefinedComponentComposerException
     {
@@ -62,7 +57,6 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
         if ( composerMap.containsKey( id ) )
         {
             retValue = ( ComponentComposer ) composerMap.get( id );
-
         }
         else
         {
@@ -75,7 +69,6 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
         }
 
         return retValue;
-
     }
 
     private ComponentComposer findComponentComposer( final String id )
@@ -91,15 +84,9 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
                 retValue = componentComposer;
 
                 break;
-
             }
-
         }
 
         return retValue;
     }
-
-
-
-
 }

@@ -3,7 +3,6 @@ package org.codehaus.plexus.component.factory.java;
 import org.codehaus.plexus.component.factory.AbstractComponentFactory;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
-
 /**
  * Component Factory for components written in Java Language which have default no parameter constructor
  *
@@ -15,7 +14,6 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 public class JavaComponentFactory
     extends AbstractComponentFactory
 {
-    
     /**
      * 
      * @todo which exception shold be thrown if '!implementationMatch'? 
@@ -23,14 +21,14 @@ public class JavaComponentFactory
     public Object newInstance( ComponentDescriptor componentDescriptor, ClassLoader classLoader )
         throws ClassNotFoundException, InstantiationException, IllegalAccessException
     {
-        String role = componentDescriptor.getRole();
-        
-        String roleHint = componentDescriptor.getRoleHint();
-        
+        //String role = componentDescriptor.getRole();
+
+        //String roleHint = componentDescriptor.getRoleHint();
+
         String implementation = componentDescriptor.getImplementation();
-                
+
         //Class roleClass = classLoader.loadClass( role );
-        
+
         Class implementationClass = classLoader.loadClass( implementation );
 
         //boolean implementationMatch = roleClass.isAssignableFrom( implementationClass );        

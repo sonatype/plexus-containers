@@ -6,18 +6,16 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import java.util.HashSet;
 import java.util.Set;
 
-/** Component instantiation description.
+/**
+ * Component instantiation description.
  *
  *  @author <a href="mailto:jason@zenplex.com">Jason van Zyl</a>
  *  @author <a href="mailto:bob@eng.werken.com">bob mcwhirter</a>
- *
  *  @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
- *
  *  @version $Id$
  */
 public class ComponentDescriptor
 {
-
     private String alias = null;
 
     private String role = null;
@@ -61,27 +59,26 @@ public class ComponentDescriptor
     public String getHumanReadableKey()
     {
         StringBuffer key = new StringBuffer();
-        
+
         key.append(" role: '" + role + "'" );            
-            
+
         key.append( ", implementation: '" + implementation  + "'" );
-            
+
         if ( roleHint != null )
         {
             key.append( ", roleHint: '" + roleHint  + "'" );
         }
-        
+
         if ( alias != null )
         {
             key.append( ", alias: '" + alias  + "'" );
         }
-        
+
         String retValue = key.toString();
-        
+
         return retValue;
     }
-    
-    
+
     public String getAlias()
     {
         return alias;
@@ -190,7 +187,6 @@ public class ComponentDescriptor
     {
         return componentComposer;
     }
-
 
     public void setComponentComposer( String componentComposer )
     {

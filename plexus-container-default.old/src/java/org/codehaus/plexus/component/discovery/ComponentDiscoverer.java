@@ -1,9 +1,9 @@
 package org.codehaus.plexus.component.discovery;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-
-import java.util.List;
 import java.io.Reader;
+import java.util.List;
+
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 
 /**
  *
@@ -16,14 +16,7 @@ public interface ComponentDiscoverer
 {
     static String ROLE = ComponentDiscoverer.class.getName();
 
-    List findComponents( ClassLoader classLoader );
-
-    String getComponentDescriptorLocation();
-
-    String getComponentType();
-
-    List createComponentDescriptors( Reader reader, String source )
-        throws Exception;
-
     void setManager( ComponentDiscovererManager manager );
+
+    ComponentSetDescriptor findComponents( ClassLoader classLoader );
 }
