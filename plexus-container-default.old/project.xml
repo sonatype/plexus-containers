@@ -16,9 +16,6 @@
   <package>org.codehaus.plexus</package>
   <logo>/images/plexus-logo.gif</logo>
 
-  <!-- Gump integration -->
-  <gumpRepositoryId>jakarta</gumpRepositoryId>
-
   <description>
   </description>
 
