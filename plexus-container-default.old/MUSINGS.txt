@@ -1,4 +1,4 @@
-Just some random thoughts I had while reviewing the plexus code.  Some
+	Just some random thoughts I had while reviewing the plexus code.  Some
 are very detailed and specific, while others are more general.  -pete
 
 + PlexusContainer.setConfigurationResource(Reader) is in the

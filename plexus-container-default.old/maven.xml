@@ -25,4 +25,10 @@
 
   </goal>
 
+  <goal name="pom-install">
+    <copy
+      file="project.xml"
+      tofile="${maven.repo.local}/plexus/poms/${pom.artifactId}-${pom.currentVersion}.pom"/>
+  </goal>
+
 </project>
