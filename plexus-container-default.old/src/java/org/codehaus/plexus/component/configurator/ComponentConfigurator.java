@@ -11,5 +11,6 @@ import org.codehaus.plexus.configuration.Configuration;
  */
 public interface ComponentConfigurator
 {
-    void configureComponent( Object component, Configuration configuration );
+    void configureComponent( Object component, Configuration configuration )
+        throws ComponentConfigurationException;
 }

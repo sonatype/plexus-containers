@@ -15,14 +15,21 @@ public class DefaultComponentConfigurator
 {
     private XStreamTool xstreamTool;
 
-    public void configureComponent( Object component, Configuration configuration )
-    {
-
-    }
-
-    public void initialize()
-        throws Exception
+    public DefaultComponentConfigurator()
     {
         xstreamTool = new XStreamTool();
+    }
+
+    public void configureComponent( Object component, Configuration configuration )
+        throws ComponentConfigurationException
+    {
+        try
+        {
+            xstreamTool.build( configuration, component );
+        }
+        catch ( Exception e )
+        {
+            throw new ComponentConfigurationException( "Error configuring component: ", e );
+        }
     }
 }
