@@ -12,14 +12,10 @@ public class DefaultComponentA
 
     private ComponentC componentC;
 
-    /**
-     * @default localhost
-     */
+    /** @default localhost */
     private String host;
 
-    /**
-     * @default 10000
-     */
+    /** @default 10000 */
     private int port;
 
     public ComponentB getComponentB()
