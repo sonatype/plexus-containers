@@ -7,6 +7,8 @@ package org.codehaus.plexus.component.repository;
  */
 public class ComponentDependency
 {
+    private static final String DEAULT_DEPENDENCY_TYPE = "jar";
+    
     /** */
     private String groupId;
 
@@ -14,11 +16,11 @@ public class ComponentDependency
     private String artifactId;
 
     /** */
-    private String type;
+    private String type = DEAULT_DEPENDENCY_TYPE;
 
     /** */
     private String version;
-
+    
     /**
      * @return Returns the artifactId.
      */

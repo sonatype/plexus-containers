@@ -163,7 +163,11 @@ public class PlexusTools
 
             cd.setGroupId( d.getChild( "group-id" ).getValue() );
 
-            cd.setType( d.getChild( "type" ).getValue() );
+            String type = d.getChild( "type" ).getValue();
+            if(type != null)
+            {
+                cd.setType( type );
+            }
 
             cd.setVersion( d.getChild( "version" ).getValue() );
 
