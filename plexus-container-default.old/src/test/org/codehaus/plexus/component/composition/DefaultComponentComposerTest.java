@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  */
-public class DefaultComponetComposerTest
+public class DefaultComponentComposerTest
     extends TestCase
 {
     public void testGetFieldByName()
