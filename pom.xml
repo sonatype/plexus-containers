@@ -3,12 +3,11 @@
   <parent>
     <groupId>plexus</groupId>
     <artifactId>plexus-containers</artifactId>
-    <version>1.0-alpha-2-SNAPSHOT</version>
+    <version>1.0-alpha-2</version>
   </parent>
   <groupId>plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
-  <name>New Default Plexus Container</name>
-  <version>1.0-alpha-2-SNAPSHOT</version>
+  <name>Default Plexus Container</name>
   <dependencies>
     <!-- TODO: remove this, but currently PlexusTestCase requires it -->
     <dependency>
