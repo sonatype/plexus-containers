@@ -34,6 +34,8 @@ import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
@@ -136,13 +138,7 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
         assertEquals( "bollywood", component.getAddress() );
     }
 
-
-    /**
-     * @todo THIS Tests work for new component configurator but does not work
-     * for old component configurator
-     * @throws Exception
-     */
-    public void _testComponentConfigurationWhereFieldsAreCollections()
+    public void testComponentConfigurationWhereFieldsAreCollections()
             throws Exception
     {
         String xml =
@@ -178,16 +174,27 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         cc.configureComponent( component, configuration );
 
+        Vector vector = component.getVector();
+
+        assertEquals( "life", ( ( ImportantThing ) vector.get( 0 ) ).getName() );
+
+        assertEquals( 1, vector.size() );
+
+        Set set = component.getSet();
+
+        assertEquals( 1, set.size() );
+
+        Object[] setContents = set.toArray();
+
+        assertEquals( "life", ( ( ImportantThing ) setContents[0] ).getName() );
+
         List list = component.getList();
-
-        assertNotNull( list );
-
-        System.out.println( "list: " + list );
 
         assertEquals( list.getClass(), LinkedList.class );
 
-        assertEquals( 1, list.size() );
+        assertEquals( "life", ( ( ImportantThing ) list.get( 0 ) ).getName() );
 
+        assertEquals( 1, list.size() );
     }
 
     public void testComponentConfigurationWithCompositeFields()
