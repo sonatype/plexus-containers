@@ -19,7 +19,11 @@ class ComponentLookupThread extends Thread
     {
         try
         {
-            this.component = (SlowComponent) container.lookup( SlowComponent.ROLE );
+            SlowComponent tmpComponent = (SlowComponent) container.lookup( SlowComponent.ROLE );
+            synchronized ( this )
+            {
+                this.component = tmpComponent;
+            }
             System.out.println( "Acquired: " + component );
         }
         catch ( Exception e )
@@ -28,17 +32,22 @@ class ComponentLookupThread extends Thread
         }
     }
 
-    public synchronized SlowComponent getComponent()
+    public SlowComponent getComponent()
     {
-        return component;
+        synchronized ( this )
+        {
+            return component;
+        }
     }
 }
 
 /**
  * @author Ben Walding
  */
+
 public class ClassicSingletonComponentManagerTest extends PlexusTestCase
 {
+
     public void testThreads1() throws Exception
     {
         test( 1 );
