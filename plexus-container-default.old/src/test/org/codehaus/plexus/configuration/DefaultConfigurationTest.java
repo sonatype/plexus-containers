@@ -99,13 +99,11 @@ public final class DefaultConfigurationTest
     {
         DefaultConfiguration a = new DefaultConfiguration( "a", "a" );
 
-        DefaultConfiguration b = new DefaultConfiguration( "b", "b" );
+        assertNotNull( a.getPrefix() );
+
+        Configuration b = ConfigurationTestHelper.getTestConfiguration();
 
         a.addAll( b );
-
-        assertNotNull( b.getPrefix() );
-
-        System.out.println( "a.getChildCount() = " + a.getChildCount() );
     }
 
     public void testGetValue()

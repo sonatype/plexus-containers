@@ -87,19 +87,10 @@ public class DefaultConfiguration
      * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
      * @since 4.1
      */
-    public String getNamespace() throws ConfigurationException
+    public String getNamespace()
+        throws ConfigurationException
     {
-        if ( null != namespace )
-        {
-            return namespace;
-        }
-        else
-        {
-            throw new ConfigurationException
-                ( "No namespace (not even default \"\") is associated with the "
-                  + "configuration element \"" + getName()
-                  + "\" at " + getLocation() );
-        }
+        return namespace;
     }
 
     /**
@@ -108,20 +99,10 @@ public class DefaultConfiguration
      * @throws org.apache.avalon.framework.configuration.ConfigurationException if prefix is not present (<code>null</code>).
      * @since 4.1
      */
-    protected String getPrefix() throws ConfigurationException
+    protected String getPrefix()
+        throws ConfigurationException
     {
-        if ( null != prefix )
-        {
-            return prefix;
-        }
-        else
-        {
-            throw new ConfigurationException
-                ( "No prefix (not even default \"\") is associated with the "
-                  + "configuration element \"" + getName()
-                  + "\" at " + getLocation() );
-        }
-
+        return prefix;
     }
 
     /**

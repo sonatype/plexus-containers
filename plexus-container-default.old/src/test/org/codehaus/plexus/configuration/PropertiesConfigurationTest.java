@@ -184,6 +184,16 @@ public class PropertiesConfigurationTest
 
         try
         {
+            c.getChild( "foo" );
+
+            fail( "UnsupportedOperationException should be thrown." );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+        }
+
+        try
+        {
             c.getChildren();
 
             fail( "UnsupportedOperationException should be thrown." );
