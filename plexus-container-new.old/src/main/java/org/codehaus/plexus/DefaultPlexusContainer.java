@@ -3,8 +3,6 @@ package org.codehaus.plexus;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.DuplicateRealmException;
 import org.codehaus.classworlds.NoSuchRealmException;
-import org.codehaus.plexus.classloader.DefaultResourceManager;
-import org.codehaus.plexus.classloader.ResourceManagerFactory;
 import org.codehaus.plexus.component.composition.ComponentComposer;
 import org.codehaus.plexus.component.composition.DefaultComponentComposer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
@@ -18,8 +16,9 @@ import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
+import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.context.ContextMapAdapter;
@@ -31,7 +30,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.LoggerManagerFactory;
 import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
-import org.codehaus.plexus.util.DirectoryScanner;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 
 import java.io.File;
@@ -71,12 +70,7 @@ public class DefaultPlexusContainer
 
     private ClassLoader classLoader;
 
-    private DefaultResourceManager resourceManager;
-
     private XmlPullConfigurationBuilder builder;
-
-    //!! needs to be removed
-    public static final String LOGGING_TAG = "logging";
 
     private ComponentConfigurator componentConfigurator;
 
@@ -325,17 +319,11 @@ public class DefaultPlexusContainer
     {
         initializeClassLoader();
 
-        initializeDefaultConfiguration();
-
         initializeConfiguration();
-
-        mergedConfiguration = getMergedConfiguration();
-
-        configurationReader = null;
 
         initializeLoggerManager();
 
-        initializeResourceManager();
+        initializeResources();
 
         initializeComponentRepository();
 
@@ -355,7 +343,7 @@ public class DefaultPlexusContainer
     public void start()
         throws Exception
     {
-        loadOnStart();
+        loadComponentsOnStart();
 
         configuration = null;
 
@@ -440,7 +428,7 @@ public class DefaultPlexusContainer
     /**
      *  Load specifies roles during server startup.
      */
-    protected void loadOnStart()
+    protected void loadComponentsOnStart()
         throws Exception
     {
         PlexusConfiguration[] loadOnStartServices = configuration.getChild( "load-on-start" ).getChildren( "service" );
@@ -498,14 +486,14 @@ public class DefaultPlexusContainer
     {
         addContextValue( PlexusConstants.PLEXUS_KEY, this );
 
-        addContextValue( PlexusConstants.RESOURCE_MANAGER_KEY, resourceManager );
-
         addContextValue( PlexusConstants.COMMON_CLASSLOADER, getClassLoader() );
     }
 
-    private void initializeDefaultConfiguration()
+    private void initializeConfiguration()
         throws Exception
     {
+        // System configuration
+
         InputStream is = getClassLoader().getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
 
         if ( is == null )
@@ -515,15 +503,17 @@ public class DefaultPlexusContainer
                                              "most likely corrupt." );
         }
 
-        setDefaultConfiguration( builder.parse( new InputStreamReader( is ) ) );
-    }
+        defaultConfiguration = builder.parse( new InputStreamReader( is ) );
 
-    private void initializeConfiguration()
-        throws Exception
-    {
-        setConfiguration( builder.parse( getInterpolationConfigurationReader( getConfigurationReader() ) ) );
+        // User configuration
+
+        configuration = builder.parse( getInterpolationConfigurationReader( configurationReader ) );
 
         processConfigurationsDirectory();
+
+        // Merger of system and user configuration
+
+        mergedConfiguration = getMergedConfiguration();
     }
 
     private Reader getInterpolationConfigurationReader( Reader reader )
@@ -542,12 +532,12 @@ public class DefaultPlexusContainer
     private void processConfigurationsDirectory()
         throws Exception
     {
-        String s = getConfiguration().getChild( "configurations-directory" ).getValue( null );
+        String s = configuration.getChild( "configurations-directory" ).getValue( null );
 
         if ( s != null )
         {
             DefaultPlexusConfiguration componentsConfiguration =
-                (DefaultPlexusConfiguration) getConfiguration().getChild( "components" );
+                (DefaultPlexusConfiguration) configuration.getChild( "components" );
 
             File configurationsDirectory = new File( s );
 
@@ -555,19 +545,11 @@ public class DefaultPlexusContainer
                 &&
                 configurationsDirectory.isDirectory() )
             {
-                DirectoryScanner scanner = new DirectoryScanner();
+                List confs = FileUtils.getFiles( configurationsDirectory, "**/*.conf", "**/*.xml" );
 
-                scanner.setBasedir( configurationsDirectory );
-
-                scanner.setIncludes( new String[]{"**/*.conf", "**/*.xml"} );
-
-                scanner.scan();
-
-                String[] confs = scanner.getIncludedFiles();
-
-                for ( int i = 0; i < confs.length; i++ )
+                for ( Iterator i = confs.iterator(); i.hasNext(); )
                 {
-                    File conf = new File( configurationsDirectory, confs[i] );
+                    File conf = (File) i.next();
 
                     PlexusConfiguration c = builder.parse( getInterpolationConfigurationReader( new FileReader( conf ) ) );
 
@@ -580,56 +562,27 @@ public class DefaultPlexusContainer
     private PlexusConfiguration getMergedConfiguration()
         throws Exception
     {
-        return PlexusConfigurationMerger.merge( getConfiguration(), getDefaultConfiguration() );
+        return PlexusConfigurationMerger.merge( configuration, defaultConfiguration );
     }
 
     private void initializeLoggerManager()
         throws Exception
     {
-        LoggerManager loggerManager = LoggerManagerFactory.create( mergedConfiguration.getChild( LOGGING_TAG ), getClassLoader() );
+        loggerManager = LoggerManagerFactory.create( mergedConfiguration.getChild( "logging" ), getClassLoader() );
 
         enableLogging( loggerManager.getRootLogger() );
-
-        setLoggerManager( loggerManager );
     }
 
     private void initializeComponentRepository()
         throws Exception
     {
-        ComponentRepository componentRepository = ComponentRepositoryFactory.create( mergedConfiguration,
-                                                                                     getClassLoader() );
-        setComponentRepository( componentRepository );
+        componentRepository = ComponentRepositoryFactory.create( mergedConfiguration, getClassLoader() );
     }
 
-    private void initializeResourceManager()
-        throws Exception
-    {
-        DefaultResourceManager rm =
-            ResourceManagerFactory.create( mergedConfiguration,
-                                           getLoggerManager(),
-                                           getClassWorld().getRealm( "core" ) );
-
-        // This needs to be completely clarified. If the container becomes the boundary
-        // and barrier between all behaviour in plexus then the subsystems like classworlds
-        // can't undermine the barrier. This behaviour is also dependent on composite
-        // and primitive components a la SOFA.
-
-        setResourceManager( rm );
-    }
-
-    /**
-     * Initialize system properties.
-     *
-     * If the application needs to setup any system properties than they will
-     * be initialized here.
-     *
-     * @throws Exception
-     */
     private void initializeSystemProperties()
         throws Exception
     {
-        PlexusConfiguration[] systemProperties =
-            getConfiguration().getChild( "system-properties" ).getChildren( "property" );
+        PlexusConfiguration[] systemProperties = configuration.getChild( "system-properties" ).getChildren( "property" );
 
         for ( int i = 0; i < systemProperties.length; ++i )
         {
@@ -647,36 +600,6 @@ public class DefaultPlexusContainer
     // Internal Accessors
     // ----------------------------------------------------------------------
 
-    private void setLoggerManager( LoggerManager loggerManager )
-    {
-        this.loggerManager = loggerManager;
-    }
-
-    private LoggerManager getLoggerManager()
-    {
-        return loggerManager;
-    }
-
-    private PlexusConfiguration getConfiguration()
-    {
-        return configuration;
-    }
-
-    private void setConfiguration( PlexusConfiguration configuration )
-    {
-        this.configuration = configuration;
-    }
-
-    private Reader getConfigurationReader()
-    {
-        return configurationReader;
-    }
-
-    private void setResourceManager( DefaultResourceManager resourceManager )
-    {
-        this.resourceManager = resourceManager;
-    }
-
     private DefaultContext getContext()
     {
         if ( context == null )
@@ -685,21 +608,6 @@ public class DefaultPlexusContainer
         }
 
         return context;
-    }
-
-    private void setComponentRepository( ComponentRepository componentRepository )
-    {
-        this.componentRepository = componentRepository;
-    }
-
-    private PlexusConfiguration getDefaultConfiguration()
-    {
-        return defaultConfiguration;
-    }
-
-    private void setDefaultConfiguration( PlexusConfiguration defaultConfiguration )
-    {
-        this.defaultConfiguration = defaultConfiguration;
     }
 
     private ClassWorld getClassWorld()
@@ -850,5 +758,57 @@ public class DefaultPlexusContainer
         lifecycleHandlerManager.addEntity( "componentComposer", componentComposer );
 
         lifecycleHandlerManager.initialize();
+    }
+
+    // ----------------------------------------------------------------------
+    // Resource Management
+    // ----------------------------------------------------------------------
+
+    public void initializeResources()
+        throws PlexusConfigurationException
+    {
+        PlexusConfiguration[] resourceConfigs = mergedConfiguration.getChild( "resources" ).getChildren();
+
+        for ( int i = 0; i < resourceConfigs.length; ++i )
+        {
+            try
+            {
+                if ( resourceConfigs[i].getName().equals( "jar-repository" ) )
+                {
+                    addJarRepository( new File( resourceConfigs[i].getValue() ) );
+                }
+            }
+            catch ( Exception e )
+            {
+                getLogger().error( "error configuring resource: " + resourceConfigs[i].getValue(), e );
+            }
+        }
+    }
+
+    public void addJarResource( File jar )
+        throws Exception
+    {
+        classWorld.getRealm( "core" ).addConstituent( jar.toURL() );
+    }
+
+    public void addJarRepository( File repository )
+        throws Exception
+    {
+        if ( repository.exists() && repository.isDirectory() )
+        {
+            File[] jars = repository.listFiles();
+
+            for ( int j = 0; j < jars.length; j++ )
+            {
+                if ( jars[j].getAbsolutePath().endsWith( ".jar" ) )
+                {
+                    addJarResource( jars[j] );
+                }
+            }
+        }
+        else
+        {
+            throw new Exception( "The specified JAR repository doesn't exist or is not a directory." );
+        }
     }
 }
