@@ -151,6 +151,8 @@ public class DefaultComponentRepository
             map.put( roleHint, componentDescriptor );
         }
 
+        compositionResolver.addComponentDescriptor( componentDescriptor );
+
         componentDescriptors.put( componentDescriptor.getComponentKey(), componentDescriptor );
     }
 
