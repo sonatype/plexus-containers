@@ -154,12 +154,6 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-graph</groupId>
-      <artifactId>commons-graph</artifactId>
-      <version>0.8.1</version>
-    </dependency>
-
-    <dependency>
       <groupId>plexus</groupId>
       <artifactId>plexus-utils</artifactId>
       <version>1.0-beta-1</version>
