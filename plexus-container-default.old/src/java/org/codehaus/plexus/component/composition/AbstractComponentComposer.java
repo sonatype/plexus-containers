@@ -18,17 +18,6 @@ import java.util.Set;
 public abstract class AbstractComponentComposer
     implements ComponentComposer
 {
-    // parameterize the container and repository, i don't want to directly
-    // couple their use. i just need to find descriptors and lookup
-    // components.
-
-    // instantiate component
-    // compose
-    // configure
-    // the container and repository need to be in the lifecycle entities.
-
-    // Maybe the repository should track the relationships between components ...
-
     public void assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    PlexusContainer container,
