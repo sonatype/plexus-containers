@@ -673,24 +673,23 @@ public class DefaultPlexusContainer
             {
                 throw new PlexusConfigurationException( "Missing 'role' element from load-on-start." );
             }
+
             if ( roleHint == null )
             {
                 getLogger().info( "Loading on start [role]: " + "[" + role + "]" );
-            }
-            else
-            {
-                getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
-            }
-            if ( roleHint == null )
-            {
+
                 lookup( role );
             }
             else if ( roleHint.equals("*") )
             {
+                getLogger().info( "Loading on start all components with [role]: " + "[" + role + "]" );
+
                 lookupList( role );
             }
             else
             {
+                getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
+
                 lookup( role, roleHint );
             }
         }
