@@ -39,7 +39,7 @@ public class DefaultPlexusContainerTest
     {
         basedir = System.getProperty( "basedir" );
         classLoader = getClass().getClassLoader();
-        configurationStream = DefaultPlexusContainerTest.class.getResourceAsStream( "configuration.xml" );
+        configurationStream = DefaultPlexusContainerTest.class.getResourceAsStream( "DefaultPlexusContainerTest.xml" );
 
         // Make sure our testing necessities are alive.
         assertNotNull( configurationStream );
