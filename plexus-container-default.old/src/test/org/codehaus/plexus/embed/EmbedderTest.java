@@ -1,6 +1,7 @@
 package org.codehaus.plexus.embed;
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.PlexusContainer;
 
 /**
  * @author  Ben Walding
@@ -18,6 +19,21 @@ public class EmbedderTest extends TestCase
     {
         Embedder embedder = new Embedder();
 
+        // We should not be able to get the container before the embedder
+        // is started. It should throw an illegal state exception.
+
+        PlexusContainer container = null;
+
+        try
+        {
+            container = embedder.getContainer();
+        }
+        catch ( IllegalStateException e )
+        {
+            assertNull( container );
+        }
+
+
         //This really only works because the EmbedderTest is in the same package as the Embedder
         embedder.setConfiguration( "EmbedderTest.xml" );
 
@@ -27,7 +43,9 @@ public class EmbedderTest extends TestCase
 
         assertTrue( embedder.hasService( MockComponent.ROLE ) );
 
-        assertNotNull( embedder.getContainer() );
+        container = embedder.getContainer();
+
+        assertNotNull( container );
 
         MockComponent component = (MockComponent) embedder.lookup( MockComponent.ROLE );
 
