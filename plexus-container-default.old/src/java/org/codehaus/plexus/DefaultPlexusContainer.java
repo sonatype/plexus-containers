@@ -613,6 +613,11 @@ public class DefaultPlexusContainer
     {
         return coreRealm;
     }
+
+    public void setCoreRealm( ClassRealm coreRealm )
+    {
+        this.coreRealm = coreRealm;
+    }
     
     private void initializeClassWorlds()
         throws Exception
@@ -622,22 +627,25 @@ public class DefaultPlexusContainer
             classWorld = new ClassWorld();
         }
 
-        try
+        if ( coreRealm == null )
         {
-            coreRealm = classWorld.getRealm( "core" );
-        }
-        catch ( NoSuchRealmException e )
-        {
-            if ( classLoader != null && coreRealm != null )
+            try
             {
-                coreRealm = classWorld.newRealm( "core", classLoader );
+                coreRealm = classWorld.getRealm( "core" );
             }
-            else
+            catch ( NoSuchRealmException e )
             {
-                coreRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+                if ( classLoader != null && coreRealm != null )
+                {
+                    coreRealm = classWorld.newRealm( "core", classLoader );
+                }
+                else
+                {
+                    coreRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+                }
             }
         }
-
+        
         setClassLoader( coreRealm.getClassLoader() );
 
         Thread.currentThread().setContextClassLoader( classLoader );
