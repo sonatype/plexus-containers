@@ -76,13 +76,13 @@ public class ComponentDescriptor
     {
         StringBuffer key = new StringBuffer();
 
-        key.append(" role: '" + role + "'" );            
+        key.append("role: '" + role + "'" );
 
         key.append( ", implementation: '" + implementation  + "'" );
 
         if ( roleHint != null )
         {
-            key.append( ", roleHint: '" + roleHint  + "'" );
+            key.append( ", role hint: '" + roleHint  + "'" );
         }
 
         if ( alias != null )
@@ -90,9 +90,7 @@ public class ComponentDescriptor
             key.append( ", alias: '" + alias  + "'" );
         }
 
-        String retValue = key.toString();
-
-        return retValue;
+        return key.toString();
     }
 
     public String getAlias()
