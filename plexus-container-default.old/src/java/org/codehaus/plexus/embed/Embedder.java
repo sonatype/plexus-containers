@@ -9,13 +9,13 @@ import org.codehaus.plexus.util.PropertyUtils;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
 public class Embedder
 {
-    private String configuration;
 
     private URL configurationURL;
     
@@ -55,12 +55,12 @@ public class Embedder
         return getContainer().lookup( role, id );
     }
 
-    public boolean hasService( String role )
+    public boolean hasComponent( String role )
     {
         return getContainer().hasComponent( role );
     }
 
-    public boolean hasService( String role, String id )
+    public boolean hasComponent( String role, String id )
     {
         return getContainer().hasComponent( role, id );
     }
@@ -81,15 +81,6 @@ public class Embedder
         container.setClassWorld( classWorld );
     }
 
-    public synchronized void setConfiguration( String configuration )
-    {
-        if ( embedderStarted || embedderStopped )
-        {
-            throw new IllegalStateException( "Embedder has already been started" );
-        }
-
-        this.configuration = configuration;
-    }
 
     public synchronized void setConfiguration( URL configuration )
     {
