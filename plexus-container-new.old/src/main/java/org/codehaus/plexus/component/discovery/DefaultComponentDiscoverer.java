@@ -56,6 +56,8 @@ public class DefaultComponentDiscoverer
                     os.write( buffer, 0, read );
                 }
 
+                is.close();
+
                 String configuration = os.toString();
 
                 PlexusConfiguration[] componentConfigurations =
