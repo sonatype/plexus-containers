@@ -118,6 +118,11 @@ public class DefaultPlexusContainer
         return componentRepository.lookupAll( role );
     }
 
+    public void releaseAll( Map components )
+    {
+        componentRepository.releaseAll( components );
+    }
+
     public Object lookup( String role, String id )
         throws ComponentLookupException
     {

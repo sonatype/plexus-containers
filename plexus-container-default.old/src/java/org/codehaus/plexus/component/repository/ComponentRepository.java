@@ -30,6 +30,8 @@ public interface ComponentRepository
     Map lookupAll( String role )
         throws ComponentLookupException;
 
+    void releaseAll( Map components );
+
     Object lookup( String role, String id )
         throws ComponentLookupException;
 

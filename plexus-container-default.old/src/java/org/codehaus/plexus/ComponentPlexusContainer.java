@@ -85,7 +85,22 @@ public final class ComponentPlexusContainer
     public Map lookupAll( String role )
         throws ComponentLookupException
     {
-        return null;
+        if ( myPlexus.hasService( role ) )
+        {
+            return myPlexus.lookupAll( role );
+        }
+
+        if ( parentPlexus != null )
+        {
+            return parentPlexus.lookupAll( role );
+        }
+
+        return myPlexus.lookupAll( role );
+    }
+
+    public void releaseAll( Map components )
+    {
+        // Not exactly sure how to do this here.
     }
 
     public Object lookup( String role, String id )

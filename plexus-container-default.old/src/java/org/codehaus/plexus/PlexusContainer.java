@@ -23,6 +23,8 @@ public interface PlexusContainer
     Map lookupAll( String role )
         throws ComponentLookupException;
 
+    void releaseAll( Map components );
+
     boolean hasService( String componentKey );
 
     boolean hasService( String role, String id );

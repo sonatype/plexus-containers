@@ -525,6 +525,12 @@ public class DefaultPlexusContainerTest
         ServiceC component = (ServiceC) components.get( "first-instance" );
 
         assertNotNull( component );
+
+        component = (ServiceC) components.get( "second-instance" );
+
+        assertNotNull( component );
+
+        container.releaseAll( components );
     }
 
     class SingletonComponentTestThread

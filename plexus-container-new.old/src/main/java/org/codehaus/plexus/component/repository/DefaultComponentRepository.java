@@ -474,6 +474,16 @@ public class DefaultComponentRepository
         return components;
     }
 
+    public synchronized void releaseAll( Map components )
+    {
+        for ( Iterator i = components.values().iterator(); i.hasNext(); )
+        {
+            Object component = i.next();
+
+            release( component );
+        }
+    }
+
     public synchronized Object lookup( String role, String id )
         throws ComponentLookupException
     {
