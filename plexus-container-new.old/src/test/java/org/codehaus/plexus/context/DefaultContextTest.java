@@ -146,6 +146,18 @@ public class DefaultContextTest
 
         // Test removal
         context.put( "name", null );
+
+        // There is no data and no parent context.
+        try
+        {
+            context.get( "name" );
+        }
+        catch( ContextException e )
+        {
+            // do nothing
+        }
+
+
     }
 
     public void testAddContext()
