@@ -14,7 +14,7 @@ import org.codehaus.plexus.context.DefaultContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.LoggerManagerFactory;
-import org.codehaus.plexus.util.ContextMapAdapter;
+import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.classworlds.ClassWorld;
