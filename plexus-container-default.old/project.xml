@@ -38,9 +38,9 @@
   <mailingLists>
     <mailingList>
       <name>Plexus Developer List</name>
-      <subscribe>http://lists.codehaus.org/mailman/listinfo/plexus-dev</subscribe>
-      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/plexus-dev</unsubscribe>
-      <archive>http://lists.codehaus.org/pipermail/plexus-dev/</archive>
+      <subscribe>dev-subscribe@plexus.codehaus.org</subscribe>
+      <unsubscribe>dev-unsubscribe@plexus.codehaus.org</unsubscribe>
+      <archive>http://archive.plexus.codehaus.org/dev/</archive>
     </mailingList>
   </mailingLists>
 
@@ -94,7 +94,7 @@
     <developer>
       <name>Ben Walding</name>
       <id>bwalding</id>
-      <email>bwalding@codehaus.org</email>
+      <email>ben@walding.com</email>
       <organization>Walding Consulting Services</organization>
       <roles>
         <role>Developer</role>
@@ -157,7 +157,7 @@
 
   <build>
 
-    <nagEmailAddress>plexus-dev@plexus.codehaus.org</nagEmailAddress>
+    <nagEmailAddress>dev@plexus.codehaus.org</nagEmailAddress>
     <sourceDirectory>src/java</sourceDirectory>
     <aspectSourceDirectory>src/aspect</aspectSourceDirectory>
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
