@@ -49,30 +49,9 @@ public class DefaultResourceManager
         return this.plexusClassLoader;
     }
 
-    /** Add a jar resource.
-     *
-     *  @param jar The jar.
-     *
-     *  @throws Exception If an error occurs while adding the resource.
-     */
-    public void addJarResource( String jar )
-        throws Exception
-    {
-        addJarResource( new File( jar ) );
-    }
-
-    /** Add a jar resource.
-     *
-     *  @param jar The jar.
-     *
-     *  @throws Exception If an error occurs while adding the resource.
-     */
-    public void addJarResource( File jar )
-        throws Exception
-    {
-        getPlexusClassLoader().addURL( jar.toURL() );
-        getLogger().info( "added jar resource: " + jar.getPath() );
-    }
+    // ----------------------------------------------------------------------
+    // Implementation
+    // ----------------------------------------------------------------------
 
     /**
      * Get the available URLs from the underlying classloader.
@@ -118,6 +97,32 @@ public class DefaultResourceManager
                 throw new ConfigurationException( "error configuring resource: " + resourceConfigs[i].getValue(), e );
             }
         }
+    }
+
+    /** Add a jar resource.
+     *
+     *  @param jar The jar.
+     *
+     *  @throws Exception If an error occurs while adding the resource.
+     */
+    public void addJarResource( String jar )
+        throws Exception
+    {
+        addJarResource( new File( jar ) );
+    }
+
+    /** Add a jar resource.
+     *
+     *  @param jar The jar.
+     *
+     *  @throws Exception If an error occurs while adding the resource.
+     */
+    public void addJarResource( File jar )
+        throws Exception
+    {
+        getPlexusClassLoader().addURL( jar.toURL() );
+
+        getLogger().info( "added jar resource: " + jar.getPath() );
     }
 
     /**
