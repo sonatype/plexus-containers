@@ -2,6 +2,8 @@ package org.codehaus.plexus.test;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.test.map.ActivityManager;
+import org.codehaus.plexus.test.map.Activity;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -94,5 +96,31 @@ public class PlexusContainerTest
         assertNotNull( componentD );
 
         assertEquals( "jason", componentD.getName() );
+    }
+
+    public void testComponentCompositionWhereTargetFieldIsAMap()
+        throws Exception
+    {
+        ActivityManager am = (ActivityManager) container.lookup( ActivityManager.ROLE );
+
+        Activity one = am.getActivity( "one" );
+
+        assertNotNull( one );
+
+        assertFalse( one.getState() );
+
+        am.execute( "one" );
+
+        assertTrue( one.getState() );
+
+        Activity two = am.getActivity( "two" );
+
+        assertNotNull( two );
+
+        assertFalse( two.getState() );
+
+        am.execute( "two" );
+
+        assertTrue( two.getState() );
     }
 }

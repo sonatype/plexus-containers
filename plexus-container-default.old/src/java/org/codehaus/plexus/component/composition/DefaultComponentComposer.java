@@ -46,7 +46,7 @@ public class DefaultComponentComposer
                 field.setAccessible( true );
             }
 
-            // We have a field to which we should assing component(s).
+            // We have a field to which we should assigning component(s).
             // Cardinality is determined by field.getType() method
             // It can be array, map, collection or "ordinary" field
             assignRequirmentToField( field, container, role, component );
