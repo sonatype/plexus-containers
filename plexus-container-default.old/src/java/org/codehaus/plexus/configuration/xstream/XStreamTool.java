@@ -10,11 +10,11 @@ import com.thoughtworks.xstream.objecttree.reflection.JavaReflectionObjectFactor
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.Property;
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.component.repository.ComponentSet;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentDependency;
+import org.codehaus.plexus.PlexusTools;
 
 import java.io.Reader;
 import java.util.HashMap;
@@ -70,9 +70,7 @@ public class XStreamTool
     public Object build( Reader reader, Class clazz )
         throws Exception
     {
-        XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
-
-        return build( builder.parse( reader ), clazz );
+        return build( PlexusTools.buildConfiguration( reader ), clazz );
     }
 
     public Object build( PlexusConfiguration configuration, Class clazz )

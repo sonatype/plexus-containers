@@ -3,7 +3,7 @@ package org.codehaus.plexus.configuration.xstream;
 import junit.framework.TestCase;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.PlexusTools;
 
 import java.io.StringReader;
 import java.util.List;
@@ -53,9 +53,7 @@ public class XStreamToolTest
 
         XStreamTool builder = new XStreamTool();
 
-        XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
-
-        PlexusConfiguration c = cb.parse( new StringReader( configuration ) );
+        PlexusConfiguration c = PlexusTools.buildConfiguration( new StringReader( configuration ) );
 
         Message message = (Message) builder.build( c, Message.class );
 

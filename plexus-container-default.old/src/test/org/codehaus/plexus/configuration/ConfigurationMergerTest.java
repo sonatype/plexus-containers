@@ -1,10 +1,11 @@
 package org.codehaus.plexus.configuration;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import org.codehaus.plexus.PlexusTools;
 
 /**
  *
@@ -16,8 +17,6 @@ import java.io.InputStreamReader;
 public class ConfigurationMergerTest
     extends TestCase
 {
-    private XmlPullConfigurationBuilder configurationBuilder;
-
     private PlexusConfiguration user;
 
     private PlexusConfiguration system;
@@ -30,19 +29,17 @@ public class ConfigurationMergerTest
     public void setUp()
         throws Exception
     {
-        configurationBuilder = new XmlPullConfigurationBuilder();
-
         InputStream userStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "org/codehaus/plexus/configuration/avalon.xml" );
 
         assertNotNull( userStream );
 
-        user = configurationBuilder.parse( new InputStreamReader( userStream ) );
+        user = PlexusTools.buildConfiguration( new InputStreamReader( userStream ) );
 
         InputStream systemStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
 
         assertNotNull( systemStream );
 
-        system = configurationBuilder.parse( new InputStreamReader( systemStream ) );
+        system = PlexusTools.buildConfiguration( new InputStreamReader( systemStream ) );
     }
 
     public void testSimpleConfigurationCascading()

@@ -1,9 +1,10 @@
 package org.codehaus.plexus.configuration;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
 import java.io.StringReader;
+
+import org.codehaus.plexus.PlexusTools;
 
 /**
  *
@@ -15,13 +16,10 @@ import java.io.StringReader;
 public class ConfigurationTestHelper
     extends TestCase
 {
-    /** Configuration builder. */
-    private static XmlPullConfigurationBuilder configurationBuilder = new XmlPullConfigurationBuilder();
-
     public static PlexusConfiguration getTestConfiguration()
         throws Exception
     {
-        return configurationBuilder.parse( new StringReader( ConfigurationTestHelper.getXmlConfiguration() ) );
+        return PlexusTools.buildConfiguration( new StringReader( ConfigurationTestHelper.getXmlConfiguration() ) );
     }
 
     public static String getXmlConfiguration()

@@ -1,7 +1,7 @@
 package org.codehaus.plexus.component.configurator;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.io.StringReader;
@@ -41,9 +41,7 @@ public class DefaultComponentConfiguratorTest
             "  </configuration>" +
             "</component>";
 
-        XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
-
-        PlexusConfiguration configuration = builder.parse( new StringReader( xml ) );
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( new StringReader( xml ) );
 
         ConfigurableComponent component = new ConfigurableComponent();
 
@@ -85,9 +83,7 @@ public class DefaultComponentConfiguratorTest
             "  <address>bollywood</address>" +
             "</component>";
 
-        XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
-
-        PlexusConfiguration configuration = builder.parse( new StringReader( xml ) );
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( new StringReader( xml ) );
 
         DefaultComponent component = new DefaultComponent();
 
