@@ -1,8 +1,7 @@
 package org.codehaus.plexus;
 
+import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.DuplicateRealmException;
-import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.component.composition.ComponentComposer;
 import org.codehaus.plexus.component.composition.DefaultComponentComposer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
@@ -28,7 +27,6 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.logging.LoggerManagerFactory;
 import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
@@ -64,6 +62,8 @@ public class DefaultPlexusContainer
 
     private ClassWorld classWorld;
 
+    private ClassRealm classRealm;
+
     private ClassLoader classLoader;
 
     private XmlPullConfigurationBuilder builder;
@@ -87,6 +87,8 @@ public class DefaultPlexusContainer
     public DefaultPlexusContainer()
     {
         builder = new XmlPullConfigurationBuilder();
+
+        context = new DefaultContext();
     }
 
     // ----------------------------------------------------------------------
@@ -320,7 +322,7 @@ public class DefaultPlexusContainer
     public void initialize()
         throws Exception
     {
-        initializeClassLoader();
+        initializeClassWorlds();
 
         initializeConfiguration();
 
@@ -379,17 +381,7 @@ public class DefaultPlexusContainer
 
     public void addContextValue( Object key, Object value )
     {
-        getContext().put( key, value );
-    }
-
-    public void setClassLoader( ClassLoader classLoader )
-    {
-        this.classLoader = classLoader;
-    }
-
-    public void setClassWorld( ClassWorld classWorld )
-    {
-        this.classWorld = classWorld;
+        context.put( key, value );
     }
 
     /** @see PlexusContainer#setConfigurationResource(Reader) */
@@ -400,33 +392,9 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------
-    // Post-initialization - can only be called post initialization
-    // ----------------------------------------------------------------------
-
-    public ClassLoader getClassLoader()
-    {
-        if ( classLoader == null )
-        {
-            try
-            {
-                classLoader = getClassWorld().getRealm( "core" ).getClassLoader();
-            }
-            catch ( NoSuchRealmException e )
-            {
-                throw new IllegalStateException( "There must be a core ClassWorlds realm." );
-            }
-        }
-
-        return classLoader;
-    }
-
-    // ----------------------------------------------------------------------
     // Implementation
     // ----------------------------------------------------------------------
 
-    /**
-     *  Load specifies roles during server startup.
-     */
     protected void loadComponentsOnStart()
         throws Exception
     {
@@ -459,27 +427,45 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------
-    // Initialization Implementation
+    // ClassWorlds, ClassRealms and ClassLoaders
     // ----------------------------------------------------------------------
 
-    private void initializeClassLoader()
+    // 1. Embedder may set a ClassLoader
+    // 2. Classworlds launcher hands us a Classworld
+
+    public void setClassLoader( ClassLoader classLoader )
+    {
+        this.classLoader = classLoader;
+    }
+
+    public ClassLoader getClassLoader()
+    {
+        return classLoader;
+    }
+
+    private void initializeClassWorlds()
         throws Exception
     {
-        if ( getClassWorld() != null )
+        if ( classWorld == null )
         {
-            try
-            {
-                classLoader = getClassWorld().getRealm( "core" ).getClassLoader();
-            }
-            catch ( NoSuchRealmException e )
-            {
-            }
+            classWorld = new ClassWorld();
+        }
+
+        if ( classLoader != null )
+        {
+            classRealm = classWorld.newRealm( "core", classLoader );
         }
         else
         {
-            classLoader = Thread.currentThread().getContextClassLoader();
+            classRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
         }
+
+        classLoader = classRealm.getClassLoader();
     }
+
+    // ----------------------------------------------------------------------
+    // Context
+    // ----------------------------------------------------------------------
 
     private void initializeContext()
     {
@@ -518,7 +504,7 @@ public class DefaultPlexusContainer
     private Reader getInterpolationConfigurationReader( Reader reader )
     {
         InterpolationFilterReader interpolationFilterReader =
-            new InterpolationFilterReader( reader, new ContextMapAdapter( getContext() ) );
+            new InterpolationFilterReader( reader, new ContextMapAdapter( context ) );
 
         return interpolationFilterReader;
     }
@@ -541,8 +527,8 @@ public class DefaultPlexusContainer
             File configurationsDirectory = new File( s );
 
             if ( configurationsDirectory.exists()
-                 &&
-                 configurationsDirectory.isDirectory() )
+                &&
+                configurationsDirectory.isDirectory() )
             {
                 List componentConfigurationFiles = FileUtils.getFiles( configurationsDirectory, "**/*.conf", "**/*.xml" );
 
@@ -562,7 +548,15 @@ public class DefaultPlexusContainer
     private void initializeLoggerManager()
         throws Exception
     {
-        loggerManager = LoggerManagerFactory.create( configuration.getChild( "logging" ), getClassLoader() );
+        String implementation = configuration.getChild( "logging" ).getChild( "implementation" ).getValue( null );
+
+        loggerManager = (LoggerManager) classLoader.loadClass( implementation ).newInstance();
+
+        loggerManager.configure( configuration );
+
+        loggerManager.initialize();
+
+        loggerManager.start();
 
         enableLogging( loggerManager.getRootLogger() );
     }
@@ -588,39 +582,6 @@ public class DefaultPlexusContainer
 
             getLogger().info( "Setting system property: [ " + name + ", " + value + " ]" );
         }
-    }
-
-    // ----------------------------------------------------------------------
-    // Internal Accessors
-    // ----------------------------------------------------------------------
-
-    private DefaultContext getContext()
-    {
-        if ( context == null )
-        {
-            context = new DefaultContext();
-        }
-
-        return context;
-    }
-
-    private ClassWorld getClassWorld()
-    {
-        if ( classWorld == null )
-        {
-            classWorld = new ClassWorld();
-
-            try
-            {
-                classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
-            }
-            catch ( DuplicateRealmException e )
-            {
-            }
-
-            Thread.currentThread().setContextClassLoader( getClassLoader() );
-        }
-        return classWorld;
     }
 
     // ----------------------------------------------------------------------
@@ -774,7 +735,7 @@ public class DefaultPlexusContainer
     public void addJarResource( File jar )
         throws Exception
     {
-        classWorld.getRealm( "core" ).addConstituent( jar.toURL() );
+        classRealm.addConstituent( jar.toURL() );
     }
 
     public void addJarRepository( File repository )
