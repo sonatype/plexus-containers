@@ -99,4 +99,7 @@ public interface PlexusContainer
     Logger getLogger();
 
     ClassLoader getClassLoader();
+
+    Object createComponentInstance( ComponentDescriptor componentDescriptor )
+        throws Exception;
 }

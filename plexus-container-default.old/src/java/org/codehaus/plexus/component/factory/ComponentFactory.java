@@ -11,6 +11,8 @@ public interface ComponentFactory
     /** Component role. */
     static String ROLE = ComponentFactory.class.getName();
 
+    String getId();
+
     Object newInstance( String name, ClassLoader classLoader )
         throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 }

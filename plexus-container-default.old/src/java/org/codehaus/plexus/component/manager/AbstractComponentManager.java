@@ -93,7 +93,7 @@ public abstract class AbstractComponentManager
     protected Object createComponentInstance()
         throws Exception
     {
-        Object component = container.getClassLoader().loadClass( componentDescriptor.getImplementation() ).newInstance();
+        Object component = container.createComponentInstance( componentDescriptor );
 
         startComponentLifecycle( component );
 

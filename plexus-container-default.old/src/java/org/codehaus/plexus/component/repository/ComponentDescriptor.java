@@ -35,6 +35,8 @@ public class ComponentDescriptor
 
     private Set requirements;
 
+    private String componentFactory;
+
     // ----------------------------------------------------------------------
     //  Instance methods
     // ----------------------------------------------------------------------
@@ -141,5 +143,15 @@ public class ComponentDescriptor
             requirements = new HashSet();
         }
         return requirements;
+    }
+
+    public String getComponentFactory()
+    {
+        return componentFactory;
+    }
+
+    public void setComponentFactory( String componentFactory )
+    {
+        this.componentFactory = componentFactory;
     }
 }

@@ -11,6 +11,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
+import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
@@ -804,5 +805,24 @@ public class DefaultPlexusContainer
     public Logger getLogger()
     {
         return loggerManager.getRootLogger();
+    }
+
+    public Object createComponentInstance( ComponentDescriptor componentDescriptor )
+        throws Exception
+    {
+        String componentFactoryId = componentDescriptor.getComponentFactory();
+
+        ComponentFactory componentFactory = null;
+
+        if ( componentFactoryId != null )
+        {
+            componentFactory = componentFactoryManager.findComponentFactory( componentFactoryId );
+        }
+        else
+        {
+            componentFactory = componentFactoryManager.getDefaultComponentFactory();
+        }
+
+        return componentFactory.newInstance( componentDescriptor.getImplementation(), getClassLoader() );
     }
 }
