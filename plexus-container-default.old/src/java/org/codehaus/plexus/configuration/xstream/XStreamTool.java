@@ -45,10 +45,10 @@ public class XStreamTool
 
     public Object build( Reader reader, Class clazz )
         throws Exception
-    {
+    {                 x
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
 
-        return build( (PlexusConfiguration) builder.parse( reader ), clazz );
+        return build( builder.parse( reader ), clazz );
     }
 
     public Object build( PlexusConfiguration configuration, Class clazz )
