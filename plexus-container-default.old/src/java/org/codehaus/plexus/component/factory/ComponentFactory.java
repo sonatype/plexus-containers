@@ -1,6 +1,7 @@
 package org.codehaus.plexus.component.factory;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.classworlds.ClassRealm;
 
 /** A <code>ServiceFactory</code> is responsible for instantiating a component.
  *
@@ -16,6 +17,6 @@ public interface ComponentFactory
 
     String getId();
 
-    Object newInstance( ComponentDescriptor componentDescriptor, ClassLoader classLoader )
+    Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm )
         throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 }

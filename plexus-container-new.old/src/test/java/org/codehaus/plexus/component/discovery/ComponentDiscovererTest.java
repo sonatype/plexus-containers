@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.classworlds.ClassWorld;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -22,7 +23,11 @@ public class ComponentDiscovererTest
 
         componentDiscoverer.setManager( new DefaultComponentDiscovererManager() );
 
-        List componentSetDescriptors = componentDiscoverer.findComponents( Thread.currentThread().getContextClassLoader() );
+        ClassWorld classWorld = new ClassWorld();
+
+        classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+
+        List componentSetDescriptors = componentDiscoverer.findComponents( classWorld.getRealm( "core" ) );
 
         assertEquals( 1, componentSetDescriptors.size() );
 

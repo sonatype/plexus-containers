@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component.discovery;
 
+import org.codehaus.classworlds.ClassRealm;
+
 import java.util.List;
 
 /**
@@ -12,5 +14,5 @@ public interface ComponentDiscoverer
 
     void setManager( ComponentDiscovererManager manager );
 
-    List findComponents( ClassLoader classLoader );
+    List findComponents( ClassRealm classRealm );
 }

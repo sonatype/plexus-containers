@@ -71,7 +71,7 @@ public class DefaultPlexusContainer
 
     private ClassRealm coreRealm;
 
-    private ClassLoader classLoader;
+    //private ClassLoader classLoader;
 
     // Core components
 
@@ -474,7 +474,7 @@ public class DefaultPlexusContainer
         {
             ComponentDiscoverer componentDiscoverer = (ComponentDiscoverer) i.next();
 
-            List componentSetDescriptors = componentDiscoverer.findComponents( getClassLoader() );
+            List componentSetDescriptors = componentDiscoverer.findComponents( coreRealm );
 
             for ( Iterator j = componentSetDescriptors.iterator(); j.hasNext(); )
             {
@@ -597,6 +597,7 @@ public class DefaultPlexusContainer
     // 1. Embedder may set a ClassLoader
     // 2. Classworlds launcher hands us a Classworld
 
+    /*
     public void setClassLoader( ClassLoader classLoader )
     {
         this.classLoader = classLoader;
@@ -604,10 +605,12 @@ public class DefaultPlexusContainer
         addContextValue( "common.classloader", classLoader );
     }
 
+    /*
     public ClassLoader getClassLoader()
     {
         return classLoader;
     }
+    */
 
     public void setClassWorld( ClassWorld classWorld )
     {
@@ -628,7 +631,7 @@ public class DefaultPlexusContainer
     {
         this.coreRealm = coreRealm;
     }
-    
+
     private void initializeClassWorlds()
         throws Exception
     {
@@ -645,20 +648,22 @@ public class DefaultPlexusContainer
             }
             catch ( NoSuchRealmException e )
             {
-                if ( classLoader != null && coreRealm != null )
-                {
-                    coreRealm = classWorld.newRealm( "core", classLoader );
-                }
-                else
-                {
+                //System.out.println( "classLoader = " + classLoader );
+
+                //if ( classLoader != null && coreRealm != null )
+                //{
+                //    coreRealm = classWorld.newRealm( "core", classLoader );
+                //}
+                //else
+                //{
                     coreRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
-                }
+                //}
             }
         }
-        
-        setClassLoader( coreRealm.getClassLoader() );
 
-        Thread.currentThread().setContextClassLoader( classLoader );
+        //setClassLoader( coreRealm.getClassLoader() );
+
+        //Thread.currentThread().setContextClassLoader( classLoader );
     }
 
     // ----------------------------------------------------------------------
@@ -686,13 +691,13 @@ public class DefaultPlexusContainer
     {
         // System userConfiguration
 
-        InputStream is = getClassLoader().getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
+        InputStream is = coreRealm.getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
 
         if ( is == null )
         {
             throw new IllegalStateException( "The internal default plexus.conf is missing. " +
                                              "This is highly irregular, your plexus JAR is " +
-                                             "most likely corrupt. The class loader being used is: " + getClassLoader() );
+                                             "most likely corrupt." );
         }
 
         PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( new InputStreamReader( is ) );
@@ -703,7 +708,7 @@ public class DefaultPlexusContainer
 
         String PLEXUS_XML = "META-INF/plexus/plexus.xml";
 
-        InputStream plexusXml = getClassLoader().getResourceAsStream( PLEXUS_XML );
+        InputStream plexusXml = coreRealm.getResourceAsStream( PLEXUS_XML );
 
         // ----------------------------------------------------------------------
         //
@@ -954,7 +959,7 @@ public class DefaultPlexusContainer
             componentFactory = componentFactoryManager.getDefaultComponentFactory();
         }
 
-        return componentFactory.newInstance( componentDescriptor, getClassLoader() );
+        return componentFactory.newInstance( componentDescriptor, coreRealm );
     }
 
     public void composeComponent( Object component, ComponentDescriptor componentDescriptor )

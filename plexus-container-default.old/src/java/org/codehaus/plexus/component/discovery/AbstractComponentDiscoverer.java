@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.classworlds.ClassRealm;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -38,18 +39,13 @@ public abstract class AbstractComponentDiscoverer
         this.manager = manager;
     }
 
-    public List findComponents( ClassLoader classLoader )
+    public List findComponents( ClassRealm classRealm )
     {
-        if ( classLoader == null )
-        {
-            classLoader = Thread.currentThread().getContextClassLoader();
-        }
-
         List componentSetDescriptors = new ArrayList();
 
         try
         {
-            for ( Enumeration e = classLoader.getResources( getComponentDescriptorLocation() ); e.hasMoreElements(); )
+            for ( Enumeration e = classRealm.getResources( getComponentDescriptorLocation() ); e.hasMoreElements(); )
             {
                 URL url = (URL) e.nextElement();
 

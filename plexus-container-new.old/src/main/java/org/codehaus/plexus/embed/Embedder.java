@@ -1,11 +1,10 @@
 package org.codehaus.plexus.embed;
 
+import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.PropertyUtils;
-import org.codehaus.classworlds.ClassWorld;
-
 
 import java.io.File;
 import java.io.InputStreamReader;
@@ -72,10 +71,10 @@ public class Embedder
         getContainer().release( service );
     }
 
-    public synchronized void setClassLoader( ClassLoader classLoader )
-    {
-        container.setClassLoader( classLoader );
-    }
+    //public synchronized void setClassLoader( ClassLoader classLoader )
+    //{
+    //    container.setClassLoader( classLoader );
+    //}
 
     public synchronized void setClassWorld( ClassWorld classWorld )
     {

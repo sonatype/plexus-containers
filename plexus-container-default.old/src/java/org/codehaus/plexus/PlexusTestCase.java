@@ -1,12 +1,16 @@
 package org.codehaus.plexus;
 
+import junit.framework.TestCase;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.ClassRealm;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import junit.framework.TestCase;
-
-import org.codehaus.plexus.context.Context;
+import java.net.URLClassLoader;
+import java.net.URL;
+import java.lang.reflect.Method;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -61,10 +65,12 @@ public class PlexusTestCase
 
         container = new DefaultPlexusContainer();
 
+        //System.out.println( "Thread.currentThread().getContextClassLoader() = " + Thread.currentThread().getContextClassLoader() );
+
         container.addContextValue( "basedir", basedir );
 
         customizeContext();
-        
+
         boolean hasPlexusHome = getContext().contains( "plexus.home" );
 
         if ( !hasPlexusHome )
@@ -78,7 +84,7 @@ public class PlexusTestCase
 
             getContext().put( "plexus.home", f.getAbsolutePath() );
         }
-        
+
         if ( configuration != null )
         {
             container.setConfigurationResource( new InputStreamReader( configuration ) );
@@ -193,7 +199,9 @@ public class PlexusTestCase
     public String getBasedir()
     {
         if ( basedir == null )
+        {
             throw new RuntimeException( "basedir isn't set." );
+        }
 
         return basedir;
     }

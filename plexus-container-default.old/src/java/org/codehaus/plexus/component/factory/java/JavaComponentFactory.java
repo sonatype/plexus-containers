@@ -2,6 +2,7 @@ package org.codehaus.plexus.component.factory.java;
 
 import org.codehaus.plexus.component.factory.AbstractComponentFactory;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.classworlds.ClassRealm;
 
 /**
  * Component Factory for components written in Java Language which have default no parameter constructor
@@ -18,7 +19,7 @@ public class JavaComponentFactory
      * 
      * @todo which exception shold be thrown if '!implementationMatch'? 
      */
-    public Object newInstance( ComponentDescriptor componentDescriptor, ClassLoader classLoader )
+    public Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm )
         throws ClassNotFoundException, InstantiationException, IllegalAccessException
     {
         //String role = componentDescriptor.getRole();
@@ -29,7 +30,7 @@ public class JavaComponentFactory
 
         //Class roleClass = classLoader.loadClass( role );
 
-        Class implementationClass = classLoader.loadClass( implementation );
+        Class implementationClass = classRealm.loadClass( implementation );
 
         //boolean implementationMatch = roleClass.isAssignableFrom( implementationClass );        
 
