@@ -1,6 +1,5 @@
 package org.codehaus.plexus.component.repository;
 
-
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.manager.ComponentManager;
@@ -24,7 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @todo remove explicit avalon dependencies from here.
  * @todo remove lifecycle handling from the repository.
  * @todo remove instance manager handling from the repository.
  * @todo remove plexus container reference.
@@ -61,14 +59,12 @@ public class DefaultComponentRepository
      * which can handle concurrent reads and writes. Will be about
      * the same number of reads as writes
      */
-    private Map compManagersByCompClass;
+    private Map componentManagersByCompClass;
 
     private PlexusContainer plexusContainer;
 
-    /** Parent containers context */
     private Context context;
 
-    /** Logger manager. */
     private LoggerManager loggerManager;
 
     private LifecycleHandlerManager lifecycleHandlerManager = null;
@@ -77,14 +73,13 @@ public class DefaultComponentRepository
 
     private Map componentsByRole;
 
-    /** Constructor. */
     public DefaultComponentRepository()
     {
         componentDescriptors = new HashMap();
 
         componentManagers = new HashMap();
 
-        compManagersByCompClass = new HashMap();
+        componentManagersByCompClass = new HashMap();
 
         componentsByRole = new HashMap();
     }
@@ -379,7 +374,7 @@ public class DefaultComponentRepository
 
             // We do this so we know what to do when releasing. Only have to do it once
             //per component class
-            compManagersByCompClass.put( component.getClass().getName(), componentManager );
+            componentManagersByCompClass.put( component.getClass().getName(), componentManager );
         }
         else
         {
@@ -474,7 +469,7 @@ public class DefaultComponentRepository
 
     protected ComponentManager findComponentManager( Object component )
     {
-        return (ComponentManager) compManagersByCompClass.get( component.getClass().getName() );
+        return (ComponentManager) componentManagersByCompClass.get( component.getClass().getName() );
     }
 
     public synchronized void dispose()
