@@ -62,10 +62,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Vector;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 
 /*
@@ -706,7 +706,7 @@ public class FileUtils
      * @param source An existing <code>File</code> to copy.
      * @param destinationDirectory A directory to copy <code>source</code> into.
      *
-     * @throws FileNotFoundException if <code>source</code> isn't a normal file.
+     * @throws java.io.FileNotFoundException if <code>source</code> isn't a normal file.
      * @throws IllegalArgumentException if <code>destinationDirectory</code> isn't a directory.
      * @throws IOException if <code>source</code> does not exist, the file in
      * <code>destinationDirectory</code> cannot be written to, or an IO error occurs during copying.
@@ -727,7 +727,7 @@ public class FileUtils
      * @param source An existing <code>File</code> to copy.
      * @param destinationDirectory A directory to copy <code>source</code> into.
      *
-     * @throws FileNotFoundException if <code>source</code> isn't a normal file.
+     * @throws java.io.FileNotFoundException if <code>source</code> isn't a normal file.
      * @throws IllegalArgumentException if <code>destinationDirectory</code> isn't a directory.
      * @throws IOException if <code>source</code> does not exist, the file in
      * <code>destinationDirectory</code> cannot be written to, or an IO error occurs during copying.
@@ -756,7 +756,7 @@ public class FileUtils
      * @throws IOException if <code>source</code> does not exist, <code>destination</code> cannot be
      * written to, or an IO error occurs during copying.
      *
-     * @throws FileNotFoundException if <code>destination</code> is a directory
+     * @throws java.io.FileNotFoundException if <code>destination</code> is a directory
      * (use {@link #copyFileToDirectory}).
      */
     public static void copyFile( final File source, final File destination )
@@ -1337,4 +1337,21 @@ public class FileUtils
         return list;
     }
 
+   public static void copyDirectory( File sourceDirectory, File destinationDirectory )
+        throws Exception
+    {
+        if ( ! sourceDirectory.exists() )
+        {
+            return;
+        }
+
+        List files = getFiles( sourceDirectory, "**", null );
+
+        for ( Iterator i = files.iterator(); i.hasNext(); )
+        {
+            File file = (File) i.next();
+
+            copyFileToDirectory( file, destinationDirectory );
+        }
+    }
 }
