@@ -716,6 +716,19 @@ public class DefaultPlexusContainer
         // but I think it's better to discover a configuration in a standard
         // place.
 
+        configuration = systemConfiguration;
+
+        if ( plexusXml != null )
+        {
+            // User userConfiguration
+
+            PlexusConfiguration plexusConfiguration =
+                PlexusTools.buildConfiguration( getInterpolationConfigurationReader( new InputStreamReader( plexusXml) ) );
+
+            configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
+
+            processConfigurationsDirectory();
+        }
         if ( configurationReader != null )
         {
             // User userConfiguration
@@ -725,26 +738,9 @@ public class DefaultPlexusContainer
 
             // Merger of systemConfiguration and user userConfiguration
 
-            configuration = PlexusConfigurationMerger.merge( userConfiguration, systemConfiguration );
+            configuration = PlexusConfigurationMerger.merge( userConfiguration, configuration );
 
             processConfigurationsDirectory();
-        }
-        else if ( plexusXml != null )
-        {
-            // User userConfiguration
-
-            PlexusConfiguration userConfiguration =
-                PlexusTools.buildConfiguration( getInterpolationConfigurationReader( new InputStreamReader( plexusXml) ) );
-
-            // Merger of systemConfiguration and user userConfiguration
-
-            configuration = PlexusConfigurationMerger.merge( userConfiguration, systemConfiguration );
-
-            processConfigurationsDirectory();
-        }
-        else
-        {
-            configuration = systemConfiguration;
         }
     }
 
