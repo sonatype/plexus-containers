@@ -42,7 +42,7 @@ public class ComponentDescriptor
 
     private String componentComposer;
 
-
+    private String description;
 
     // ----------------------------------------------------------------------
     //  Instance methods
@@ -197,4 +197,13 @@ public class ComponentDescriptor
         this.componentComposer = componentComposer;
     }
 
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription( String description )
+    {
+        this.description = description;
+    }
 }
