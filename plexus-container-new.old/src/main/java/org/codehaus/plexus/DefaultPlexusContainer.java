@@ -12,6 +12,7 @@ import org.codehaus.plexus.configuration.ConfigurationMerger;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
@@ -20,6 +21,8 @@ import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.LoggerManagerFactory;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
+import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 
 import java.io.File;
 import java.io.FileReader;
@@ -461,8 +464,11 @@ public class DefaultPlexusContainer
         // and barrier between all behaviour in plexus then the subsystems like classworlds
         // can't undermine the barrier. This behaviour is also dependent on composite
         // and primitive components a la SOFA.
+
         setResourceManager( rm );
+
         setClassLoader( rm.getPlexusClassLoader() );
+
         Thread.currentThread().setContextClassLoader( getClassLoader() );
     }
 
@@ -592,6 +598,30 @@ public class DefaultPlexusContainer
     private ClassWorld getClassWorld()
     {
         return classWorld;
+    }
+
+    // ----------------------------------------------------------------------
+    // Component Managers
+    // ----------------------------------------------------------------------
+
+    // ----------------------------------------------------------------------
+    // Lifecycle Handlers
+    // ----------------------------------------------------------------------
+
+    private LifecycleHandlerManager lifecycleHandlerManager;
+
+    private void initializeLifecycleHandlerManager()
+        throws Exception
+    {
+        XStreamTool builder = new XStreamTool();
+
+        builder.alias( "lifecycle-handler-manager", DefaultLifecycleHandlerManager.class );
+
+        Configuration c = getConfiguration().getChild( "lifecycle-handler-manager" );
+
+        lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( (PlexusConfiguration) c, DefaultLifecycleHandlerManager.class );
+
+        lifecycleHandlerManager.initialize( loggerManager, context, componentRepository );
     }
 }
 
