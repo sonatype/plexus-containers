@@ -6,6 +6,8 @@ import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.alias.ElementMapper;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.objecttree.reflection.JavaReflectionObjectFactory;
+import com.thoughtworks.xstream.xml.dom.DomXMLReaderDriver;
+
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.Property;
@@ -33,7 +35,8 @@ public class XStreamTool
 
         xstream = new XStream( new JavaReflectionObjectFactory(),
                                classMapper,
-                               elementMapper );
+                               elementMapper,
+                               new DomXMLReaderDriver() );
 
         xstream.alias( "property", Property.class );
 
