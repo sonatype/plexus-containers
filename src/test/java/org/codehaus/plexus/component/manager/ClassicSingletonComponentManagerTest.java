@@ -27,9 +27,9 @@ package org.codehaus.plexus.component.manager;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusTestCase;
 
-class ComponentLookupThread extends Thread
+class ComponentLookupThread
+    extends Thread
 {
-
     final PlexusContainer container;
 
     private SlowComponent component;
@@ -44,11 +44,11 @@ class ComponentLookupThread extends Thread
         try
         {
             SlowComponent tmpComponent = (SlowComponent) container.lookup( SlowComponent.ROLE );
+
             synchronized ( this )
             {
                 this.component = tmpComponent;
             }
-            System.out.println( "Acquired: " + component );
         }
         catch ( Exception e )
         {
@@ -67,12 +67,13 @@ class ComponentLookupThread extends Thread
 
 /**
  * @author Ben Walding
+ * @version $Id$
  */
-
-public class ClassicSingletonComponentManagerTest extends PlexusTestCase
+public class ClassicSingletonComponentManagerTest
+    extends PlexusTestCase
 {
-
-    public void testThreads1() throws Exception
+    public void testThreads1()
+        throws Exception
     {
         test( 1 );
     }
@@ -80,25 +81,27 @@ public class ClassicSingletonComponentManagerTest extends PlexusTestCase
     /**
      * Tests that multiple concurrent threads don't acquire different components.
      */
-    public void testThreads10() throws Exception
+    public void testThreads10()
+        throws Exception
     {
         test( 10 );
     }
 
-    public void test( int count ) throws Exception
+    public void test( int count )
+        throws Exception
     {
         ComponentLookupThread components[] = new ComponentLookupThread[ count ];
         //Start them
         for ( int i = 0; i < count; i++ )
         {
-            components[i] = new ComponentLookupThread( getContainer() );
-            components[i].start();
+            components[ i ] = new ComponentLookupThread( getContainer() );
+            components[ i ].start();
         }
 
         //Wait for them to finish
         for ( int i = 0; i < count; i++ )
         {
-            while ( components[i].getComponent() == null )
+            while ( components[ i ].getComponent() == null )
             {
                 Thread.sleep( 100 );
             }
@@ -106,10 +109,11 @@ public class ClassicSingletonComponentManagerTest extends PlexusTestCase
 
         //Get master component
         SlowComponent masterComponent = (SlowComponent) lookup( SlowComponent.ROLE );
+
         //Verify them
         for ( int i = 0; i < count; i++ )
         {
-            assertSame( "components[" + i + "].getComponent()", masterComponent, components[i].getComponent() );
+            assertSame( "components[" + i + "].getComponent()", masterComponent, components[ i ].getComponent() );
         }
     }
 }
