@@ -111,4 +111,14 @@ public interface Configuration
     float getAttributeAsFloat( String name, float defaultValue );
 
     boolean getAttributeAsBoolean( String name, boolean defaultValue );
+
+    // Additional stuff for hierarchy
+
+    PlexusConfiguration getParent();
+
+    void setParent( PlexusConfiguration configuration );
+
+    int getChildCount();
+
+    PlexusConfiguration getChild( int i );
 }

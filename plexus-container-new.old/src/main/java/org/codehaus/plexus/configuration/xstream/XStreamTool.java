@@ -69,6 +69,18 @@ public class XStreamTool
         return object;
     }
 
+    public Object build( PlexusConfiguration configuration, Object root )
+        throws Exception
+    {
+        ConfigurationReader reader = new ConfigurationReader( configuration );
+
+        xstream.alias( "basePackage", root.getClass() );
+
+        Object object = xstream.fromXML( reader, root );
+
+        return object;
+    }
+
     public DefaultConfiguration write( Object o )
         throws Exception
     {

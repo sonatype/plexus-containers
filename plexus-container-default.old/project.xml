@@ -174,7 +174,7 @@
 
     <unitTest>
       <includes>
-        <include>**/*XStreamTooTest.java</include>
+        <include>**/*Test.java</include>
       </includes>
       <excludes>
         <exclude>**/*HierarchyTest.java</exclude>
