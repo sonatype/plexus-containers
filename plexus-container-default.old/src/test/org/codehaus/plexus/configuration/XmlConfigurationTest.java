@@ -63,16 +63,6 @@ public final class XmlConfigurationTest
 {
     private XmlPlexusConfiguration configuration;
 
-    public XmlConfigurationTest()
-    {
-        this( "DefaultConfiguration Test Case" );
-    }
-
-    public XmlConfigurationTest( String name )
-    {
-        super( name );
-    }
-
     public void setUp()
     {
         configuration = new XmlPlexusConfiguration( "a" );
@@ -110,8 +100,4 @@ public final class XmlConfigurationTest
         assertEquals( defaultStr, configuration.getAttribute( "newKey", defaultStr ) );
     }
 }
-
-
-
-
 
