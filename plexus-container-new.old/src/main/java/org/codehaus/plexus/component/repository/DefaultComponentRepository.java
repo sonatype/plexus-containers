@@ -45,20 +45,12 @@ public class DefaultComponentRepository
     //  Instance Members
     // ----------------------------------------------------------------------
 
-    /** Configuration */
     private Configuration configuration;
 
-    /** Map of component descriptors keyed by role. */
-    private Map componentDescriptors;
+    private Map componentDescriptorsKeyedByRole;
 
-    /** Map of component managers by component key. Needs to be
-     * threadSafe with lots of reads, small number of writes.*/
     private Map componentManagers;
 
-    /** Map of ComponentManagers keyed by component class. Use a Map
-     * which can handle concurrent reads and writes. Will be about
-     * the same number of reads as writes
-     */
     private Map componentManagersByComponentClass;
 
     private PlexusContainer plexusContainer;
@@ -75,7 +67,7 @@ public class DefaultComponentRepository
 
     public DefaultComponentRepository()
     {
-        componentDescriptors = new HashMap();
+        componentDescriptorsKeyedByRole = new HashMap();
 
         componentManagers = new HashMap();
 
@@ -115,17 +107,17 @@ public class DefaultComponentRepository
 
     public synchronized boolean hasService( String role )
     {
-        return getComponentDescriptors().containsKey( role );
+        return getComponentDescriptorsKeyedByRole().containsKey( role );
     }
 
     public synchronized boolean hasService( String role, String id )
     {
-        return getComponentDescriptors().containsKey( role + id );
+        return getComponentDescriptorsKeyedByRole().containsKey( role + id );
     }
 
-    Map getComponentDescriptors()
+    Map getComponentDescriptorsKeyedByRole()
     {
-        return componentDescriptors;
+        return componentDescriptorsKeyedByRole;
     }
 
     Map getComponentManagers()
@@ -298,7 +290,7 @@ public class DefaultComponentRepository
             map.put( roleHint, componentDescriptor );
         }
 
-        getComponentDescriptors().put( componentDescriptor.getComponentKey(), componentDescriptor );
+        getComponentDescriptorsKeyedByRole().put( componentDescriptor.getComponentKey(), componentDescriptor );
     }
 
     protected void validateComponentDescriptor( ComponentDescriptor componentDescriptor )
@@ -342,7 +334,7 @@ public class DefaultComponentRepository
             // We need to create an manager of this componentManager.
             getLogger().debug( "Creating new ComponentDescriptor for role: " + key );
 
-            ComponentDescriptor descriptor = (ComponentDescriptor) getComponentDescriptors().get( key );
+            ComponentDescriptor descriptor = (ComponentDescriptor) getComponentDescriptorsKeyedByRole().get( key );
 
             if ( descriptor == null )
             {

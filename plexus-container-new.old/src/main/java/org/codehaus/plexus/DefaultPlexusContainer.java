@@ -170,12 +170,19 @@ public class DefaultPlexusContainer
         throws Exception
     {
         initializeClassLoader();
+
         initializeDefaultConfiguration();
+
         initializeConfiguration();
+
         initializeLoggerManager();
+
         initializeComponentRepository();
+
         initializeResourceManager();
+
         initializeContext();
+
         initializeSystemProperties();
     }
 
