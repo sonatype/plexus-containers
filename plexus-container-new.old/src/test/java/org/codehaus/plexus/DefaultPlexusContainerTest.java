@@ -1,15 +1,13 @@
 package org.codehaus.plexus;
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.service.repository.factory.ComponentFactory;
+import org.codehaus.plexus.util.AbstractTestThread;
+import org.codehaus.plexus.util.TestThreadManager;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
-import java.util.LinkedList;
-
-import org.codehaus.plexus.service.repository.factory.ComponentFactory;
-import org.codehaus.plexus.util.AbstractTestThread;
-import org.codehaus.plexus.util.TestThreadManager;
 
 /**
  *  @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
