@@ -58,7 +58,7 @@ public class PlexusContainerTest
         container = null;
     }
 
-    public void testComponentConfiguration()
+    public void testAutomatedComponentConfigurationUsingXStreamPoweredComponentConfigurator()
         throws Exception
     {
         Component component = (Component) container.lookup( Component.ROLE );
