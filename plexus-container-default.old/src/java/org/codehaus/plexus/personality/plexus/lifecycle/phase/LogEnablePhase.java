@@ -11,7 +11,7 @@ public class LogEnablePhase
     public void execute( Object object, ComponentManager manager )
         throws Exception
     {
-        Logger logger = (Logger) manager.getLifecycleHandler().getEntities().get("logger");;
+        Logger logger = (Logger) manager.getLifecycleHandler().getEntities().get("logger");
 
         if ( object instanceof LogEnabled )
         {
