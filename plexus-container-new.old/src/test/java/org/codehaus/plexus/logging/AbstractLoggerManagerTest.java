@@ -41,20 +41,24 @@ public abstract class AbstractLoggerManagerTest
         throws Exception
     {
         LoggerManager manager;
-        Logger b, c1, c2;
-        Logger root;
+        Logger b, c1_1, c1_2, c2;
 
         manager = getManager( Logger.LEVEL_FATAL );
         assertEquals(0, manager.getActiveLoggerCount());
 
         b = manager.getLoggerForComponent( "b" );
+        assertNotNull( b );
         assertEquals(1, manager.getActiveLoggerCount());
 
-        c1 = manager.getLoggerForComponent( "c", "1" );
-        c1 = manager.getLoggerForComponent( "c", "1" );
+        c1_1 = manager.getLoggerForComponent( "c", "1" );
+        c1_2 = manager.getLoggerForComponent( "c", "1" );
+        assertNotNull( c1_1 );
+        assertNotNull( c1_2 );
+        assertSame( c1_1, c1_2 );
         assertEquals(2, manager.getActiveLoggerCount());
 
         c2 = manager.getLoggerForComponent( "c", "2" );
+        assertNotNull( c2 );
         assertEquals(3, manager.getActiveLoggerCount());
 
         manager.returnComponentLogger( "c", "1" );
