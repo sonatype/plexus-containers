@@ -8,6 +8,11 @@ import java.io.Reader;
 
 public interface PlexusContainer
 {
+    /**
+     * Interface's role.
+     */
+    String ROLE = PlexusContainer.class.getName();
+
     Object lookup( String componentKey )
         throws ComponentLookupException;
 
