@@ -3,6 +3,8 @@ package org.codehaus.plexus.embed;
 import junit.framework.TestCase;
 import org.codehaus.plexus.PlexusContainer;
 
+import java.net.URL;
+
 /**
  * @author  Ben Walding
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -161,4 +163,43 @@ public class EmbedderTest extends TestCase
 
         embed.stop();
     }
+
+    public void testEmbedderWithNonExistentConfiguration()
+        throws Exception
+    {
+        Embedder embed = new Embedder();
+
+        embed.setConfiguration( "dummy.xml" );
+
+        try
+        {
+            embed.start();
+
+            fail();
+        }
+        catch ( Exception e )
+        {
+            // do nothing
+        }
+    }
+
+    public void testEmbedderWithNonExistentURLConfiguration()
+        throws Exception
+    {
+        Embedder embed = new Embedder();
+
+        embed.setConfiguration( new URL( "file:///dummy.xml" ) );
+
+        try
+        {
+            embed.start();
+
+            fail();
+        }
+        catch ( Exception e )
+        {
+            // do nothing
+        }
+    }
+
 }
