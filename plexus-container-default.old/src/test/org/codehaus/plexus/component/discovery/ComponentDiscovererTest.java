@@ -26,9 +26,9 @@ public class ComponentDiscovererTest
 
         ComponentDescriptor cd = (ComponentDescriptor) components.get( 0 );
 
-        assertEquals( "org.codehaus.plexus.discovery.DiscoveredComponent", cd.getRole() );
+        assertEquals( "org.codehaus.plexus.component.discovery.DiscoveredComponent", cd.getRole() );
 
-        assertEquals( "org.codehaus.plexus.discovery.DefaultDiscoveredComponent", cd.getImplementation() );
+        assertEquals( "org.codehaus.plexus.component.discovery.DefaultDiscoveredComponent", cd.getImplementation() );
     }
 
     public void testMavenPluginDiscoverer()
@@ -42,7 +42,7 @@ public class ComponentDiscovererTest
 
         assertEquals( "org.apache.maven.plugin.Plugin", pluginDescriptor.getRole() );
 
-        assertEquals( "org.codehaus.plexus.discovery.MockMavenPlugin", pluginDescriptor.getImplementation() );
+        assertEquals( "org.codehaus.plexus.component.discovery.MockMavenPlugin", pluginDescriptor.getImplementation() );
 
         assertEquals( 1, pluginDescriptor.getGoals().size() );
 
