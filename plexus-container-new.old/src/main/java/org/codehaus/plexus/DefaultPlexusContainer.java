@@ -541,9 +541,6 @@ public class DefaultPlexusContainer
     // Implementation
     // ----------------------------------------------------------------------
 
-
-    
-
     protected void loadComponentsOnStart()
         throws Exception
     {
