@@ -13,42 +13,53 @@ package org.codehaus.plexus.component.manager;
 public class KeepAliveSingletonComponentManager
     extends AbstractComponentManager
 {
+    private Object lock;
+
     private Object singleton;
 
     public void release( Object component )
         throws Exception
     {
-        if ( singleton == component )
+        synchronized( lock )
         {
-            decrementConnectionCount();
-        }
-        else
-        {
-            getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component );
+            if ( singleton == component )
+            {
+                decrementConnectionCount();
+            }
+            else
+            {
+                getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component );
+            }
         }
     }
 
     public void dispose()
         throws Exception
     {
-        //wait for all the clients to return all the components
-        //Do we do this in a seperate thread? or block the current thread??
-        //TODO
-        if ( singleton != null )
+        synchronized( lock )
         {
-            endComponentLifecycle( singleton );
+            //wait for all the clients to return all the components
+            //Do we do this in a seperate thread? or block the current thread??
+            //TODO
+            if ( singleton != null )
+            {
+                endComponentLifecycle( singleton );
+            }
         }
     }
 
     public Object getComponent() throws Exception
     {
-        if ( singleton == null )
+        synchronized( lock )
         {
-            singleton = createComponentInstance();
+            if ( singleton == null )
+            {
+                singleton = createComponentInstance();
+            }
+    
+            incrementConnectionCount();
+    
+            return singleton;
         }
-
-        incrementConnectionCount();
-
-        return singleton;
     }
 }
