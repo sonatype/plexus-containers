@@ -7,7 +7,6 @@
  */
 package org.codehaus.plexus.logging;
 
-
 /**
  *
  * @author <a href="mailto:peter at realityforge.org">Peter Donald</a>
@@ -31,19 +30,6 @@ class MockLogger
     public Logger getChildLogger( final String name )
     {
         return new MockLogger( getName() + "." + name );
-    }
-
-    public void trace( String message )
-    {
-    }
-
-    public void trace( String message, Throwable throwable )
-    {
-    }
-
-    public boolean isTraceEnabled()
-    {
-        return false;
     }
 
     public void debug( String message )
