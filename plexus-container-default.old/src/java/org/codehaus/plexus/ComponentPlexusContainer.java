@@ -19,7 +19,7 @@ import org.apache.avalon.framework.context.Contextualizable;
 
 import org.codehaus.classworlds.ClassWorld;
 
-import org.codehaus.plexus.component.repository.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 
 /**
@@ -32,28 +32,8 @@ import org.codehaus.plexus.configuration.ConfigurationResourceException;
  */
 public final class ComponentPlexusContainer
     implements PlexusContainer, Contextualizable, Configurable,
-               Initializable, Startable
+    Initializable, Startable
 {
-    /**
-     * <code>Configuration</code> element name: Plexus configuration resource.
-     */
-    public static final String PLEXUS_CONFIG = "plexus-config";
-
-    /**
-     * <code>Configuration</code> element name: Plexus context setting.
-     */
-    public static final String CONTEXT_VALUE = "context-value";
-
-    /**
-     * <code>Configuration</code> element name: Plexus context setting name.
-     */
-    public static final String CONTEXT_VALUE_NAME = "name";
-
-    /**
-     * <code>Configuration</code> element name: Plexus context setting value.
-     */
-    public static final String CONTEXT_VALUE_VALUE = "value";
-
     /**
      * Parent <code>PlexusContainer</code>. That is, the
      * <code>PlexusContainer</code> that this component is in.
@@ -61,45 +41,45 @@ public final class ComponentPlexusContainer
     private PlexusContainer parentPlexus;
 
     /** Our own <code>PlexusContainer</code>. */
-    private DefaultPlexusContainer myPlexus = new DefaultPlexusContainer();
+    private DefaultPlexusContainer plexusEmbedder = new DefaultPlexusContainer();
 
     private String configurationName;
 
     public Object lookup( String role )
         throws ComponentLookupException
     {
-        if (myPlexus.hasService( role ))
+        if ( plexusEmbedder.hasService( role ) )
         {
-            return myPlexus.lookup( role );
+            return plexusEmbedder.lookup( role );
         }
-        if (parentPlexus != null)
+        if ( parentPlexus != null )
         {
             return parentPlexus.lookup( role );
         }
-        return myPlexus.lookup( role );
+        return plexusEmbedder.lookup( role );
     }
 
     public Object lookup( String role, String id )
         throws ComponentLookupException
     {
-        if (myPlexus.hasService( role, id ))
+        if ( plexusEmbedder.hasService( role, id ) )
         {
-            return myPlexus.lookup( role, id );
+            return plexusEmbedder.lookup( role, id );
         }
-        if (parentPlexus != null)
+        if ( parentPlexus != null )
         {
             return parentPlexus.lookup( role, id );
         }
-        return myPlexus.lookup( role, id );
+        return plexusEmbedder.lookup( role, id );
     }
 
     public boolean hasService( String role )
     {
-        if (myPlexus.hasService( role ))
+        if ( plexusEmbedder.hasService( role ) )
         {
             return true;
         }
-        if (parentPlexus != null)
+        if ( parentPlexus != null )
         {
             return parentPlexus.hasService( role );
         }
@@ -108,11 +88,11 @@ public final class ComponentPlexusContainer
 
     public boolean hasService( String role, String id )
     {
-        if (myPlexus.hasService( role, id ))
+        if ( plexusEmbedder.hasService( role, id ) )
         {
             return true;
         }
-        if (parentPlexus != null)
+        if ( parentPlexus != null )
         {
             return parentPlexus.hasService( role, id );
         }
@@ -121,8 +101,8 @@ public final class ComponentPlexusContainer
 
     public void release( Object service )
     {
-        myPlexus.release( service );
-        if (parentPlexus != null)
+        plexusEmbedder.release( service );
+        if ( parentPlexus != null )
         {
             parentPlexus.release( service );
         }
@@ -130,8 +110,8 @@ public final class ComponentPlexusContainer
 
     public void suspend( Object component )
     {
-        myPlexus.suspend( component );
-        if (parentPlexus != null)
+        plexusEmbedder.suspend( component );
+        if ( parentPlexus != null )
         {
             parentPlexus.suspend( component );
         }
@@ -139,8 +119,8 @@ public final class ComponentPlexusContainer
 
     public void resume( Object component )
     {
-        myPlexus.resume( component );
-        if (parentPlexus != null)
+        plexusEmbedder.resume( component );
+        if ( parentPlexus != null )
         {
             parentPlexus.resume( component );
         }
@@ -148,7 +128,7 @@ public final class ComponentPlexusContainer
 
     public void addContextValue( Object key, Object value )
     {
-        myPlexus.addContextValue( key, value );
+        plexusEmbedder.addContextValue( key, value );
     }
 
     public void setClassWorld( ClassWorld classWorld )
@@ -169,7 +149,7 @@ public final class ComponentPlexusContainer
 
     public ClassLoader getClassLoader()
     {
-        return myPlexus.getClassLoader();
+        return plexusEmbedder.getClassLoader();
     }
 
     public void contextualize( Context context )
@@ -181,20 +161,7 @@ public final class ComponentPlexusContainer
     public void configure( Configuration configuration )
         throws ConfigurationException
     {
-        configurationName = configuration.getChild( PLEXUS_CONFIG ).getValue();
-
-        Configuration[] contextValues = configuration.getChildren( CONTEXT_VALUE );
-
-        for ( int i = 0; i < contextValues.length; i++ )
-        {
-            Configuration c = contextValues[i];
-
-            String name = c.getChild( CONTEXT_VALUE_NAME ).getValue();
-
-            String value = c.getChild( CONTEXT_VALUE_VALUE ).getValue();
-
-            addContextValue( name, value );
-        }
+        configurationName = configuration.getChild( "configuration-name" ).getValue();
     }
 
     public void initialize()
@@ -206,23 +173,23 @@ public final class ComponentPlexusContainer
 
         Reader r = new InputStreamReader( stream );
 
-        myPlexus.setConfigurationResource( r );
+        plexusEmbedder.setConfigurationResource( r );
 
-        myPlexus.initialize();
+        plexusEmbedder.initialize();
 
-        myPlexus.addContextValue( PlexusConstants.PLEXUS_KEY, this );
+        plexusEmbedder.addContextValue( PlexusConstants.PLEXUS_KEY, this );
     }
 
     public void start()
         throws Exception
     {
-        myPlexus.start();
+        plexusEmbedder.start();
     }
 
     public void stop()
         throws Exception
     {
-        myPlexus.dispose();
+        plexusEmbedder.dispose();
     }
 
     public void dispose()
