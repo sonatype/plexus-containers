@@ -176,4 +176,17 @@ public class XmlPullConfigurationBuilderTest
         assertEquals( false, c.getChild( "boolean-0" ).getAttributeAsBoolean( "value" ) );
     }
 
+    public void testReaderClosure()
+        throws Exception
+    {
+        String s = "<conf><name>jason</name></conf>";
+        XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
+        CloseCheckStringReader reader = new CloseCheckStringReader( s );
+
+        assertFalse( "reader closed before parsing", reader.isClosed() );
+
+        Configuration c = cb.parse( reader );
+
+        assertTrue( "reader not closed after parsing", reader.isClosed() );
+    }
 }

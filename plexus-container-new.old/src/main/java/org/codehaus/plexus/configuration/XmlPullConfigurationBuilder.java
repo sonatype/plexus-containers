@@ -28,6 +28,14 @@ public class XmlPullConfigurationBuilder
     private final BitSet preserveSpace = new BitSet();
     private Configuration configuration;
 
+    /**
+     * Parse input from a character stream, building configuration items
+     * from it. Close the stream when finished.
+     *
+     * @param reader Character stream to parse. Will be closed when parse
+     * returns.
+     * @return Configuration items.
+     */
     public Configuration parse( Reader reader )
         throws Exception
     {
@@ -145,6 +153,8 @@ public class XmlPullConfigurationBuilder
 
             eventType = parser.next();
         }
+
+        reader.close();
 
         return configuration;
     }
