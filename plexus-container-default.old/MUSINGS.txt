@@ -1,0 +1,121 @@
+Just some random thoughts I had while reviewing the plexus code.  Some
+are very detailed and specific, while others are more general.  -pete
+
++ PlexusContainer.setConfigurationResource(Reader) is in the
+  interface, but DefaultPlexusContainer.setConfigurationResource just
+  calls DefaultPlexusContainer.setConfigurationReader(Reader).
+  Perhaps it should be renamed ot setConfigurationReader instead in
+  PlexusContainer?
+
++ Also, DefaultPlexusContainer has *public*
+  set/getDefaultConfiguration(), but PlexusContainer does not.  Is
+  this intentional?
+
+- Everything that takes the two Configurations should be simplified
+  such that a Configuration can be nested in one Configuration.
+
+- Whats the deal with ResourceManager not having an interface defined
+  and the use of DefaultResourceManager everywhere?  If there is no
+  interface, might as well ditch it.  Also, based on the current
+  implementation, it is impossible to swap out the ResourceManager
+  because it will fail the cast in the ResourceManagerFactory.create. 
+
+= The *Factories typically pass a configuration to the instances they
+  are creating.  However, they typically pass the entire
+  configuration, instead of just the <block> that is relevant to that
+  component.  It would be better to be consistent and most likely send
+  on the relevant block to the component.
+
+- DefaultPlexusContainer.initializeResourceManager overwrites the
+  previous version of classLoader.  Confusing.  You have a note about
+  it but I'm still not sure what you are talking about.
+
+- LifecycleHandlerFactor.create doesn't do anything with the suspend
+  and resume blocks of plexus.conf at the moment.
+
+- Not sure why PlexusContainer even exists ... why not just have a
+  ComponentRepository? 
+
+- Singleton instantiation pattern seems poorly named.  I think
+  ThreadSafe would be better.  This singleton name lead to confusion
+  on irc with one of our users.  I think ThreadSafe is less confusing
+  with the design pattern called Singleton.
+
+  Also, as it stands there is a severe implementation problem with
+  it.  If one client is using the "singleton" and another is as
+  well, if the first client release()s the "singleton", it screws the
+  second client that was using the "singleton" because the singleton
+  would have been disposed().
+
+- Comments in ComponentDescriptor refer that unidentified component as
+  having an 'id' of '*'.  This doesn't appear to be the case.
+  Instead, it appears they are null instead.
+
+- NOTE to myself: why does lifecyclehandler need the
+  ComponentRepository?  On that note, why does the LifecycleHandler
+  call it a Service Repository instead of a Component Repository?
+
+- A component's Key should _not_ be the simple concatenation of Role
+  and Hint (or Id) because this might clash with another valid Role.
+  Perhaps it would be better to use a '/' as a separator, although
+  that doesn't resolve the issue completely either because role names
+  can be anything.
+
+- InstanceManager.setImplementation() should probably be renamed as
+  its ambiguous if this refers to the implementation of the instance
+  manager itself OR the implementation of the component to be
+  instantiated.  Thus, perhaps, setComponentImplementation or
+  setInstanceImplementation.
+
+- per-lookup is creating an extra instance.  Track it down.
+
+- AbstractInstanceManager has a configure() method that is not used
+  (it looks like the implementation is supposed to be set here);
+  however, there is also a setter for the implementation, which is
+  used by the ComponentManager.  Thus, either Component manager should
+  be calling the InstanceManager's configure() before calling
+  InstanceManager's initialize(), OR, the InstanceManager interface
+  should be modified to not include configure().
+
+- DefaultComponentRepository.start/endComponentLifecycle should
+  probably be moved out of this class as your note states.  I'd say
+  the InstanceManager seems like the ideal location for this.  
+
+- Thoughts about how the instantiation strategies are defined in the
+  plexus conf file:  I'm not sure if this is a great idea as it leads
+  the user to believe that these are _real_ components when in fact
+  they aren't. ??
+
+- More than one lifecycle handler should be possible.  Each lifecycle
+  could have an id that a component would reference to indicate the
+  lifecycle handler that should be used.  I see after reading all of
+  the code that this is the intention.
+
+- Does the ComponentManager really need a ref back to the
+  ComponentRepository?  Likewise, does the InstanceManager really need
+  a link back to the ComponentManager?  Right now, yes, because the
+  instance manager calls ComponentRepository.startComponentLifecycle()
+  which probably should not be there in the first place.  This would
+  cut down on some of the interdependencies between components.
+
+- What about the connection count in ComponentHousing?  Is this not
+  needed anymore?  Its not used but its still in the code.
+
+- Logging .. yikes!  LogEnabledPhase just pulls out the global logger
+  and passes that to enableLogger?  How will we specifiy different
+  loggers for each component?  Perhaps instead of stuffing the a
+  Logger in the lifecycle handler entity map, we stuff the LogManager
+  instead?  That way we can then lookup specify loggers for the
+  component role.
+
+- Poolable doesn't work right either.  It never returns the object to
+  the pool so once you've used the default 6, then you are screwed,
+  even if you have released the components.  Even before that could
+  possibly work, when you release() one of the pooled items, the
+  ComponentRepository ditches the ComponentManager which means a the
+  next time the component is looked up, it gets a new manager and
+  instance manager, thus a new pool!  Also, If more than the limit on
+  the pool is used, you get NPEs.
+
+- InstanceManagers should also take a configure(), otherwise you can't
+  configure things like the pool.

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project
+  name="Plexus"
+  href="http://plexus.werken.com/">
+
+  <title>Plexus</title>
+  <logo href="/images/plexus-logo.gif">Plexus</logo>
+  <organizationLogo href="/images/jakarta-logo.gif">Jakarta</organizationLogo>
+  <body>
+    <links>
+       <item name="Plexus Home"                   href="http://plexus.werken.com"/>
+    </links>
+    <menu name="Plexus">
+      <item name="Main"          				href="/index.html"/>
+      <item name="Roadmap"          			href="/roadmap.html"/>
+      <item name="Components"                   href="/components/index.html"/>
+      <item name="Getting started"              href="/getting-started.html"/>
+      <item name="Powered By"                   href="/powered.html"/>
+      <item name="Status"                       href="/status.html"/>
+    </menu>
+  </body>
+</project>
+

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <properties>
+    <title>References</title>
+    <author email="jason@maven.org">Jason van Zyl</author>
+  </properties>
+
+  <body>
+
+    <section name="References">
+      <p>
+        <a href="http://www.it.edu/people/kav/bialek_dynUpdSyst.pdf">
+        The Architecture of a Dynamically Updatable, Component-based System
+        </a>
+      </p>
+    </section>
+
+  </body>
+</document>

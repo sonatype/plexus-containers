@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+
+<project>
+  <pomVersion>3</pomVersion>
+  <groupId>plexus</groupId>
+  <artifactId>plexus</artifactId>
+  <id>plexus</id>
+  <name>plexus</name>
+  <currentVersion>0.7</currentVersion>
+  <organization>
+    <name>Codehaus</name>
+    <url>http://www.codehaus.org/</url>
+    <logo>/images/codehaus-small.gif</logo>
+  </organization>
+  <inceptionYear>2001</inceptionYear>
+  <package>org.codehaus.plexus</package>
+  <logo>/images/plexus-logo.gif</logo>
+  
+  <!-- Gump integration -->
+  <gumpRepositoryId>jakarta</gumpRepositoryId>
+
+  <description>
+  </description>
+  
+  <shortDescription></shortDescription>
+
+  <url>http://plexus.codehaus.com</url>
+  <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10080</issueTrackingUrl>
+ 
+  <siteAddress>plexus.codehaus.org</siteAddress>
+  <siteDirectory>/www/plexus.codehaus.org</siteDirectory>
+  
+  <repository>
+    <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvs:plexus-container</connection>
+    <url>http://cvs.codehaus.org/viewcvs.cgi/plexus-container/?root=codehaus</url>
+  </repository>
+
+  <versions/>
+  <branches/>
+
+  <mailingLists>
+    <mailingList>
+      <name>Plexus Developer List</name>
+      <subscribe>http://lists.codehaus.org/mailman/listinfo/plexus-dev</subscribe>
+      <unsubscribe>http://lists.codehaus.org/mailman/listinfo/plexus-dev</unsubscribe>
+      <archive>http://lists.codehaus.org/pipermail/plexus-dev/</archive>
+    </mailingList>
+  </mailingLists>
+
+  <developers>
+    <developer>
+      <name>Jason van Zyl</name>
+      <id>jvanzyl</id>
+      <email>jason@zenplex.com</email>
+      <organization>Zenplex</organization>
+      <roles>
+        <role>Architect</role>
+        <role>Release Manager</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Pete Kazmier</name>
+      <id>kaz</id>
+      <email></email>
+      <organization></organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>James Taylor</name>
+      <id>jtaylor</id>
+      <email>james@jamestaylor.org</email>
+      <organization></organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Dan Diephouse</name>
+      <id>dandiep</id>
+      <email>dan@envoisolutions.com</email>
+      <organization>Envoi solutions</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Kasper Nielsen</name>
+      <id>kasper</id>
+      <email>apache@kav.dk</email>
+      <organization></organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  
+  <dependencies>
+    
+    <!--
+     |
+     | Avalon Dependencies. 
+     |
+     -->
+    
+    <dependency>
+      <groupId>avalon</groupId>
+      <artifactId>avalon-framework-api</artifactId>
+      <version>4.1.4</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3</artifactId>
+      <version>1.1.2a</version>
+    </dependency>
+
+
+    <!-- 
+     |
+     | Plexus Dependencies.
+     |
+     -->
+
+    <!-- AspectJ -->
+    <dependency>
+      <groupId>aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.0.6</version>
+    </dependency>
+
+    <!-- PlexusTestCase -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+    
+    <!-- Launcher -->
+    <dependency>
+      <groupId>classworlds</groupId>
+      <artifactId>classworlds</artifactId>
+      <version>1.0-beta-5</version>
+    </dependency>
+
+    <!-- Log4JLoggerManager -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.6</version>
+    </dependency>   
+
+    <!-- Servlet. This needs to be taken out as a core requirement -->
+    <dependency>
+      <groupId>servletapi</groupId>
+      <artifactId>servletapi</artifactId>
+      <version>2.3</version>
+    </dependency>   
+    
+
+  </dependencies>
+
+  <build>
+
+    <nagEmailAddress>plexus-dev@plexus.codehaus.org</nagEmailAddress>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <aspectSourceDirectory>${basedir}/src/aspect</aspectSourceDirectory>
+    <unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory>
+
+    <!-- Unit test classes -->
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+      
+      <resources>
+        <resource>
+          <directory>${basedir}/src/test</directory>
+          <includes>
+            <include>**/*.xml</include>
+            <include>**/*.properties</include>
+            <include>**/*.conf</include>
+          </includes>
+        </resource>
+      </resources>
+    </unitTest>
+    
+    <resources>
+      <resource>
+        <directory>${basedir}/src/conf</directory>
+        <targetPath>org/codehaus/plexus</targetPath>
+        <includes>
+          <include>**/*.conf</include>
+        </includes>
+      </resource>
+    </resources>
+
+  </build>
+</project>
+

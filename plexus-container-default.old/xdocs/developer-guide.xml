@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <title>Developer Guide</title>
+    <author email="jason@zenplex.com">Jason van Zyl</author>
+  </properties>
+
+  <body>
+    <section name="Developer Guide">
+      <p>
+        <ol>
+          <li><a href="#About this Guide">About this Guide</a></li>
+          <li><a href="#Introduction">Introduction</a></li>
+          <li>
+            <a href="#Building Plexus">Building Plexus</a>
+            <br/>
+            <ol>
+              <li><a href="#Using Proxies">Using Proxies</a></li>
+              <li><a href="#Overriding Stated Dependencies">Overriding Stated Dependencies</a></li>
+            </ol>
+          </li>
+        </ol>
+      </p>
+    </section>
+    
+    <section name="About this Guide">
+      <p>    
+        The Plexus Developer Guide is intended to help developers get acquainted with Plexus
+        by providing thorough descriptions and examples. If you have any
+        suggestions or comments please feel free to post them to the
+        <a href="mailto:turbine-plexus-developer@jakarta.apache.org">Plexus Developers' list</a>.
+      </p>
+      <p>
+        Thanks for choosing Plexus!
+      </p>
+    </section>
+
+    <section name="Introduction">
+      <p>
+      </p>
+      
+    </section>
+
+    <section name="Building">
+      <p>
+        Plexus is easy to build because it uses Maven.
+      </p>
+    </section>
+
+    <section name="Creating Applications with Plexus">
+      <p>
+      </p>
+    </section>
+
+    <section name="Configuring Plexus">
+      <p>
+      </p>
+    </section>
+
+    <section name="Creating Components/Services with Plexus">
+      <p>
+      </p>
+    </section>
+
+    <section name="Testing Components/Services with Plexus">
+      <p>
+      </p>
+    </section>
+
+    <!--
+    <section name="">
+      <p>
+      </p>
+    </section>
+    -->
+    
+ </body>
+</document>

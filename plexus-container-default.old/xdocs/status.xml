@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<document>
+
+  <properties>
+    <title>News and Status</title>
+    <author email="apache@kav.dk">Kasper Nielsen</author>
+  </properties>
+
+  <body>
+
+    <section name="News and Status">
+      <p>
+        This document contains the latest news and status regarding the
+        Plexus project.  It is here you'll find announcements related to
+        Plexus.
+      </p>
+
+      <subsection name="Current Status">
+        <p>
+           Our current status is that you probably shouldn't expect anything to work.
+           A lot of work is being put into plexus and we hope to something working soon.
+        </p>
+      </subsection>
+   
+    </section>
+
+  </body>
+</document>

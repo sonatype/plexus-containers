@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <title>User Guide</title>
+    <author email="jason@zenplex.com">Jason van Zyl</author>
+  </properties>
+
+  <body>
+    <section name="User Guide">
+      <p>
+        <ol>
+          <li><a href="#About this Guide">About this Guide</a></li>
+          <li><a href="#Introduction">Introduction</a></li>
+          <li><a href="#Component Integration">Component Integration</a></li>
+        </ol>
+      </p>
+    </section>
+    
+    <section name="About this Guide">
+      <p>    
+        The Plexus User Guide is intended to help developers get acquainted with Plexus
+        by providing thorough descriptions and examples. If you have any
+        suggestions or comments please feel free to post them to the
+        <a href="mailto:turbine-plexus-user@jakarta.apache.org">Plexus users' list</a>.
+      </p>
+      <p>
+        Thanks for choosing Plexus!
+      </p>
+    </section>
+
+    <section name="Introduction">
+      <p>
+      </p>
+      
+    </section>
+
+    <section name="Component Integration">
+      <p>
+        Creating an application with Plexus is primarily an exercise in 
+        component integration. You may create specialized components for your
+        particular application but to a large extent you will assemble a
+        set of existing components, with possible modifications, to create
+        your application.
+      </p>
+    </section>
+
+    <!--
+    <section name="">
+      <p>
+      </p>
+    </section>
+    -->
+    
+ </body>
+</document>

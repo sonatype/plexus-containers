@@ -1,0 +1,28 @@
+<project 
+  default="java:jar" 
+  xmlns:j="jelly:core" 
+  xmlns:ant="jelly:ant"
+  xmlns:maven="jelly:maven"
+  xmlns:texen="texen"
+  xmlns:deploy="deploy">
+
+  <preGoal name="site:generate">
+    <attainGoal name="clover"/>
+  </preGoal>
+
+  <!-- ===================================================================== -->
+  <!-- B U I L D  C O M P O N E N T S                                        -->
+  <!-- ===================================================================== -->
+
+  <goal name="build-components">
+
+    <maven:maven
+      basedir="${basedir}/component-builds"
+      descriptor="${basedir}/component-builds/project.xml"
+      goals="build"
+      ignoreFailures="false"
+    />
+
+  </goal>
+
+</project>

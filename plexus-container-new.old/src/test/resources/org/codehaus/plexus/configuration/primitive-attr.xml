@@ -1,0 +1,25 @@
+<test>
+
+  <!--
+  <integer-floor></integer-floor>
+  <integer-ceiling></integer-ceiling>
+  <long-floor></long-floor>
+  <long-ceiling></long-ceiling>
+  <float-floor></float-floor>
+  <float-ceiling></float-ceiling>
+  -->
+
+  <integer value="0"/>
+  <long value="0"/>
+  <float value="0"/>
+
+  <boolean-true value="true"/>
+  <boolean-yes value="yes"/>
+  <boolean-on value="on"/>
+  <boolean-1 value="1"/>
+  <boolean-false value="false"/>
+  <boolean-no value="no"/>
+  <boolean-off value="off"/>
+  <boolean-0 value="0"/>
+
+</test>
