@@ -128,9 +128,9 @@ public class XmlPlexusConfiguration
         if ( child == null )
         {
             child = new Xpp3Dom( name );
-        }
 
-        dom.addChild( child );
+            dom.addChild( child );
+        }
 
         return new XmlPlexusConfiguration( child );
     }
