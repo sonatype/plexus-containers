@@ -25,8 +25,6 @@ import org.codehaus.plexus.embed.Embedder;
  */
 public class PlexusServletContextListener implements ServletContextListener
 {
-    private static final String PLEXUSCONFIG = "/WEB-INF/plexus.xml";
-
     private Embedder embedder = null;
 
     /**
@@ -35,11 +33,13 @@ public class PlexusServletContextListener implements ServletContextListener
     public void contextInitialized(ServletContextEvent sce)
     {
         ServletContext context = sce.getServletContext();
+        String configFileName;
 
+        configFileName = context.getInitParameter( ServletContextUtils.PLEXUS_CONFIG_PARAM );
         context.log("Initializing Plexus container...");
         try
         {
-            embedder = ServletContextUtils.createContainer(context, PLEXUSCONFIG);
+            embedder = ServletContextUtils.createContainer(context, configFileName);
         }
         catch (ServletException e)
         {

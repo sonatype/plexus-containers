@@ -38,7 +38,7 @@ public class PlexusLoaderServlet extends HttpServlet
         super.init();
 
         log( "Initializing Plexus..." );
-        String configFileName = getInitParameter( "plexus-config" );
+        String configFileName = getInitParameter( ServletContextUtils.PLEXUS_CONFIG_PARAM );
 
 //        System.getProperties().setProperty( "plexus.home", applicationRoot + "/WEB-INF" );
 

@@ -19,10 +19,27 @@ import org.codehaus.plexus.lifecycle.avalon.AvalonServiceManager;
  * @version $Revision$
  */
 final class ServletContextUtils {
+    static final String PLEXUS_CONFIG_PARAM = "plexus-config";
+
+    private static final String DEFAULT_PLEXUS_CONFIG = "/WEB-INF/plexus.xml";
+
     // prevent instantiation
     private ServletContextUtils() {
     }
 
+    /**
+     * Create a Plexus container using the {@link Embedder}. This method
+     * should be called from an environment where a
+     * <code>ServletContext</code> is available. It will create and initialize
+     * the Plexus container and place references to the container and the
+     * Avalon service manager into the context.
+     *
+     * @param context The servlet context to place the container in.
+     * @param plexusConf Name of the Plexus configuration file to load, or
+     * <code>null</code> to fall back to the default behaviour.
+     * @return a Plexus container that has been initialized and started.
+     * @throws ServletException If the Plexus container could not be started.
+     */
     static Embedder createContainer(ServletContext context, String plexusConf)
         throws ServletException
     {
@@ -30,10 +47,16 @@ final class ServletContextUtils {
         File f;
         PlexusContainer plexus;
         ServiceManager serviceManager;
-    
+
         embedder = new Embedder();
         f = new File( context.getRealPath( "/WEB-INF" ) );
         embedder.addContextValue( "plexus.home", f.getAbsolutePath() );
+        if (plexusConf == null) {
+            plexusConf = context.getInitParameter( PLEXUS_CONFIG_PARAM );
+        }
+        if (plexusConf == null) {
+            plexusConf = DEFAULT_PLEXUS_CONFIG;
+        }
         f = new File( context.getRealPath( plexusConf ) );
         embedder.setConfiguration( f.getAbsolutePath() );
         try
