@@ -7,10 +7,6 @@ import java.util.Map;
 
 public interface LifecycleHandler
 {
-    public static String LOGGER = "logger";
-
-    public static String CONTEXT = "context";
-
     void addEntity( String key, Object entity );
 
     Map getEntities();
