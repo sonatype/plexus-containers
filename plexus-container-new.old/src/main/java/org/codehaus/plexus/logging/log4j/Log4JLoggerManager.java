@@ -247,7 +247,7 @@ public class Log4JLoggerManager
         }
         else
         {
-            appenderProperties.setProperty( base, "org.codehaus.log4j.FileAppender" );
+            appenderProperties.setProperty( base, "org.apache.log4j.FileAppender" );
         }
 
         appenderProperties.setProperty( base + ".file", file );
