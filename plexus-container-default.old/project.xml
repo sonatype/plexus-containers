@@ -103,6 +103,14 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <name>Mark Wilkinson</name>
+      <id>mhw</id>
+      <email>mhw@kremvax.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
   
   <dependencies>
