@@ -482,16 +482,6 @@ public class FileUtils
         }
     }
 
-/* *** AVALON CODE *** */
-
-    /**
-     * Private constructor to prevent instantiation.
-     *
-     */
-    private FileUtils()
-    {
-    }
-
     /**
      * Compare the contents of two files to determine if they are equal or not.
      *
