@@ -77,10 +77,6 @@ are very detailed and specific, while others are more general.  -pete
   InstanceManager's initialize(), OR, the InstanceManager interface
   should be modified to not include configure().
 
-- DefaultComponentRepository.start/endComponentLifecycle should
-  probably be moved out of this class as your note states.  I'd say
-  the InstanceManager seems like the ideal location for this.  
-
 - Thoughts about how the instantiation strategies are defined in the
   plexus conf file:  I'm not sure if this is a great idea as it leads
   the user to believe that these are _real_ components when in fact
