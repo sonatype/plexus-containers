@@ -23,6 +23,7 @@ import java.util.Map;
 /**
  * @todo remove explicit avalon dependencies from here.
  * @todo remove lifecycle handling from the repository.
+ * @todo remove instance manager handling from the repository.
  * @todo remove plexus container reference.
  */
 public class DefaultComponentRepository
