@@ -4,6 +4,10 @@ import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.classloader.DefaultResourceManager;
 import org.codehaus.plexus.classloader.ResourceManagerFactory;
+import org.codehaus.plexus.component.composition.ComponentComposer;
+import org.codehaus.plexus.component.composition.DefaultComponentComposer;
+import org.codehaus.plexus.component.configurator.ComponentConfigurator;
+import org.codehaus.plexus.component.configurator.DefaultComponentConfigurator;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
@@ -11,10 +15,6 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.component.configurator.ComponentConfigurator;
-import org.codehaus.plexus.component.configurator.DefaultComponentConfigurator;
-import org.codehaus.plexus.component.composition.ComponentComposer;
-import org.codehaus.plexus.component.composition.DefaultComponentComposer;
 import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.ConfigurationMerger;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
@@ -29,9 +29,9 @@ import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.LoggerManagerFactory;
+import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.InterpolationFilterReader;
-import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
 
 import java.io.File;
 import java.io.FileReader;
@@ -42,14 +42,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-/** The main Plexus container component.
- *
- *  @author <a href="mailto:jason@zenplex.com">Jason van Zyl</a>
- *  @author <a href="mailto:bob@eng.werken.com">bob mcwhirter</a>
- *
- *  @version $Id$
- *
- *  @todo Make ClassWorlds optional so we can make the runtime tiny.
+/**
+ * @todo clarify configuration handling vis-a-vis user vs default values
+ * @todo use classworlds whole hog, plexus' concern is applications.
  */
 public class DefaultPlexusContainer
     extends AbstractLogEnabled
