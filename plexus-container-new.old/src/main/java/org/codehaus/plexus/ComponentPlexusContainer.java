@@ -5,6 +5,7 @@
 package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
@@ -31,6 +32,17 @@ public final class ComponentPlexusContainer
     //, Contextualizable, Configurable,
     // Initializable, Startable
 {
+
+    public Map getComponentDescriptorMap( String s )
+    {
+        return null;
+    }
+
+    public ComponentDescriptor getComponentDescriptor( String s )
+    {
+        return null;
+    }
+
     /**
      * <code>Configuration</code> element name: Plexus configuration resource.
      */

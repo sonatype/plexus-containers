@@ -1,6 +1,7 @@
 package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 
 import java.io.Reader;
@@ -26,6 +27,14 @@ public interface PlexusContainer
 
     List lookupList( String role )
         throws ComponentLookupException;
+
+    // ----------------------------------------------------------------------
+    // Component Descriptor Lookup
+    // ----------------------------------------------------------------------
+
+    Map getComponentDescriptorMap( String role );
+
+    ComponentDescriptor getComponentDescriptor( String role );
 
     // ----------------------------------------------------------------------
     // Component release

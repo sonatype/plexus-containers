@@ -29,9 +29,11 @@ public class CompositionPhase
 
         PlexusContainer container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
 
+        /*
         ComponentRepository componentRepository =
             (ComponentRepository) manager.getLifecycleHandler().getEntities().get( LifecycleHandler.COMPONENT_REPOSITORY );
+            */
 
-        componentComposer.assembleComponent( object, manager.getComponentDescriptor(), container, componentRepository );
+        componentComposer.assembleComponent( object, manager.getComponentDescriptor(), container );
     }
 }

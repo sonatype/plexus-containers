@@ -2,7 +2,6 @@ package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 
 import java.lang.reflect.Array;
@@ -19,20 +18,9 @@ import java.util.Set;
 public class DefaultComponentComposer
     implements ComponentComposer
 {
-    /**
-     * Assign a requirement to a component object by setting the appropriate field in
-     * the component object. We find a match by looking at the requirement object's class
-     * and match it up with the field of the same type in the component.
-     *
-     * @param component           Target requirement to which the requirement will be assigned.
-     * @param componentDescriptor Component's metadata with set of component requirequirements
-     * @param container
-     * @param componentRepository
-     */
     public void assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
-                                   PlexusContainer container,
-                                   ComponentRepository componentRepository )
+                                   PlexusContainer container )
         throws CompositionException
     {
         if ( componentDescriptor.getRequirements().size() == 0 )
@@ -61,23 +49,33 @@ public class DefaultComponentComposer
             // We have a field to which we should assing component(s).
             // Cardinality is determined by field.getType() method
             // It can be array, map, collection or "ordinary" field
-            assignRequirmentToField( field, container, role, componentRepository, component );
+            assignRequirmentToField( field, container, role, component );
         }
     }
 
-    /**
-     * Assing comonent requiremnt (component, map, list, array) to given field
-     * @param field
-     * @param container
-     * @param role
-     * @param componentRepository
-     * @param component
-     * @throws CompositionException
-     */
+    protected void assembleComponents( final Map components,
+                                       final Map componentDescriptorMap,
+                                       final PlexusContainer container )
+        throws CompositionException
+    {
+
+        final Set roleHints = componentDescriptorMap.keySet();
+
+        for ( final Iterator iterator = roleHints.iterator(); iterator.hasNext(); )
+        {
+            final String roleHint = (String) iterator.next();
+
+            final ComponentDescriptor componentDescriptor = (ComponentDescriptor) componentDescriptorMap.get( roleHint );
+
+            final Object component = components.get( roleHint );
+
+            assembleComponent( component, componentDescriptor, container );
+        }
+    }
+
     private void assignRequirmentToField( final Field field,
                                           PlexusContainer container,
                                           final String role,
-                                          ComponentRepository componentRepository,
                                           Object component )
         throws CompositionException
     {
@@ -89,7 +87,7 @@ public class DefaultComponentComposer
 
                 final Object[] array = (Object[]) Array.newInstance( field.getType(), dependencies.size() );
 
-                assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
+                assembleComponents( dependencies, container.getComponentDescriptorMap( role ), container );
 
                 field.set( component, dependencies.entrySet().toArray( array ) );
             }
@@ -97,7 +95,7 @@ public class DefaultComponentComposer
             {
                 Map dependencies = container.lookupMap( role );
 
-                assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
+                assembleComponents( dependencies, container.getComponentDescriptorMap( role ), container );
 
                 field.set( component, dependencies );
             }
@@ -105,7 +103,7 @@ public class DefaultComponentComposer
             {
                 Map dependencies = container.lookupMap( role );
 
-                assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
+                assembleComponents( dependencies, container.getComponentDescriptorMap( role ), container );
 
                 field.set( component, container.lookupList( role ) );
             }
@@ -113,7 +111,7 @@ public class DefaultComponentComposer
             {
                 Map dependencies = container.lookupMap( role );
 
-                assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
+                assembleComponents( dependencies, container.getComponentDescriptorMap( role ), container );
 
                 field.set( component, dependencies.entrySet() );
             }
@@ -122,7 +120,7 @@ public class DefaultComponentComposer
                 Object dependency = container.lookup( role );
 
                 // simple recursion
-                assembleComponent( dependency, componentRepository.getComponentDescriptor( role ), container, componentRepository );
+                assembleComponent( dependency, container.getComponentDescriptor( role ), container );
 
                 field.set( component, dependency );
             }
@@ -133,14 +131,6 @@ public class DefaultComponentComposer
         }
     }
 
-    /**
-     * Finds component field to which given requirment should be assigned
-     * @param component
-     * @param componentDescriptor
-     * @param requirement
-     * @return
-     * @throws CompositionException
-     */
     protected Field findMatchingField( Object component,
                                        ComponentDescriptor componentDescriptor,
                                        final ComponentRequirement requirement )
@@ -160,8 +150,6 @@ public class DefaultComponentComposer
 
             try
             {
-                System.out.println( "Class:" + fieldClass );
-
                 fieldClass = Class.forName( requirement.getRole() );
             }
             catch ( ClassNotFoundException e )
@@ -186,8 +174,6 @@ public class DefaultComponentComposer
                 }
                 throw new CompositionException( msg.toString() );
             }
-
-            System.out.println( "Get component by class:" + fieldClass );
 
             field = getFieldByType( component, fieldClass, componentDescriptor );
         }
@@ -265,15 +251,6 @@ public class DefaultComponentComposer
         return field;
     }
 
-    /**
-     * Try to find assignable field.
-     * Field's type  can either directly match given type or be an array of given type
-     * @param component
-     * @param type
-     * @param componentDescriptor
-     * @return
-     * @throws CompositionException
-     */
     protected Field getFieldByType( final Object component,
                                     final Class type,
                                     final ComponentDescriptor componentDescriptor )
@@ -287,57 +264,27 @@ public class DefaultComponentComposer
 
             msg.append( type );
 
-            msg.append( "' exists in component of role: '" );
-
-            //!!!
-            // Can't construct this message if the component descriptor is null.
-
-            msg.append( componentDescriptor.getRole() );
-
-            msg.append( "'" );
-
-            if ( componentDescriptor.getRoleHint() != null )
+            if ( componentDescriptor != null )
             {
-                msg.append( " and role-hint: '" );
+                msg.append( "' exists in component of role: '" );
 
-                msg.append( componentDescriptor.getRoleHint() );
+                msg.append( componentDescriptor.getRole() );
 
                 msg.append( "'" );
+
+                if ( componentDescriptor.getRoleHint() != null )
+                {
+                    msg.append( " and role-hint: '" );
+
+                    msg.append( componentDescriptor.getRoleHint() );
+
+                    msg.append( "'" );
+                }
             }
 
             throw new CompositionException( msg.toString() );
         }
 
         return field;
-    }
-
-    /**
-     * Assign a requirement to a component object by setting the appropriate field in
-     * the component object.
-     *
-     * @param components             Target requirement to which the requirement will be assigned.
-     * @param componentDescriptorMap Component's metadata with set of component requirequirements
-     * @param container
-     * @param componentRepository
-     */
-    protected void assembleComponents( final Map components,
-                                       final Map componentDescriptorMap,
-                                       final PlexusContainer container,
-                                       final ComponentRepository componentRepository )
-        throws CompositionException
-    {
-
-        final Set roleHints = componentDescriptorMap.keySet();
-
-        for ( final Iterator iterator = roleHints.iterator(); iterator.hasNext(); )
-        {
-            final String roleHint = (String) iterator.next();
-
-            final ComponentDescriptor componentDescriptor = (ComponentDescriptor) componentDescriptorMap.get( roleHint );
-
-            final Object component = components.get( roleHint );
-
-            assembleComponent( component, componentDescriptor, container, componentRepository );
-        }
     }
 }

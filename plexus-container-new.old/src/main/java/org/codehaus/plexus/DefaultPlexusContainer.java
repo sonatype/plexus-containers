@@ -95,6 +95,10 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     // ----------------------------------------------------------------------
+    // Component Lookup
+    // ----------------------------------------------------------------------
+
+    // ----------------------------------------------------------------------
     // Try to lookup the component manager for the requested component.
     //
     // component manager exists:
@@ -225,6 +229,24 @@ public class DefaultPlexusContainer
     {
         return lookup( role + id );
     }
+
+    // ----------------------------------------------------------------------
+    // Component Descriptor Lookup
+    // ----------------------------------------------------------------------
+
+    public Map getComponentDescriptorMap( String role )
+    {
+        return componentRepository.getComponentDescriptorMap( role );
+    }
+
+    public ComponentDescriptor getComponentDescriptor( String role )
+    {
+        return componentRepository.getComponentDescriptor( role );
+    }
+
+    // ----------------------------------------------------------------------
+    // Component Release
+    // ----------------------------------------------------------------------
 
     public void releaseAll( Map components )
     {
