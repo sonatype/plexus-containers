@@ -97,6 +97,3 @@ are very detailed and specific, while others are more general.  -pete
   instance manager calls ComponentRepository.startComponentLifecycle()
   which probably should not be there in the first place.  This would
   cut down on some of the interdependencies between components.
-
-- What about the connection count in ComponentHousing?  Is this not
-  needed anymore?  Its not used but its still in the code.
