@@ -54,6 +54,8 @@ import junit.framework.TestCase;
 
 import org.apache.avalon.framework.configuration.Configuration;
 
+import java.io.StringReader;
+
 /**
  * Test the basic public methods of DefaultConfiguration.
  *
@@ -82,6 +84,14 @@ public final class DefaultConfigurationTest
     public void tearDowm()
     {
         configuration = null;
+    }
+
+    public void testWithHelper()
+        throws Exception
+    {
+        Configuration c = ConfigurationTestHelper.getTestConfiguration();
+
+        ConfigurationTestHelper.testConfiguration( c );
     }
 
     public void testDynamicConfigurationCreation()

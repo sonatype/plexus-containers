@@ -58,6 +58,16 @@ public class CascadingConfigurationTest
         parent = configurationBuilder.parse( new StringReader( parentXml ) );
     }
 
+    public void testWithHelper()
+        throws Exception
+    {
+        Configuration c = ConfigurationTestHelper.getTestConfiguration();
+
+        CascadingConfiguration cc = new CascadingConfiguration( c, null );
+
+        ConfigurationTestHelper.testConfiguration( cc );
+    }
+
     public void testSimpleConfigurationCascading()
         throws Exception
     {
