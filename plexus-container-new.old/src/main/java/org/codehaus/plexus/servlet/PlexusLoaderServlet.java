@@ -75,7 +75,7 @@ public class PlexusLoaderServlet extends HttpServlet
         // Put the ServiceBroker in the context
         this.getServletContext().setAttribute( PlexusServlet.SERVICE_MANAGER_KEY,
                                                new AvalonServiceManager( container.getComponentRepository() ) );
-        log( "Plexus Initializied." );
+        log( "Plexus Initialized." );
     }
 
     /**
