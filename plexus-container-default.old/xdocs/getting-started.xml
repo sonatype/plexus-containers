@@ -1,41 +1,76 @@
 <?xml version="1.0"?>
+
 <document>
 
   <properties>
-    <title>Getting Started with Plexus</title>
+    <title>Plexus</title>
+    <author email="jason@zenplex.com">Jason van Zyl</author>
   </properties>
 
   <body>
-    <section name="Getting Started with Plexus">
+
+  <section name="Getting Started">
+    <p>
+      This small guide will get you up and running with Plexus as fast as
+      possible. It is assumed that:
+    </p>
+    
+    <ul>
+      <li>You have a JDK installed on your machine.</li>
+      <li>You have <a href="http://maven.apache.org">Maven</a> installed on your machine.</li>
+    </ul>
+    
+    <subsection name="Checking out the Plexus sources">
+      
       <p>
-			You probably want to get summit up'n running and to give you a head start you can look at the email from Dan Diephouse to the Plexus Dev mailing list. 
-			
-		<source><![CDATA[
-Here, I had this from my early experimentations:
-
-http://dan.envoisolutions.com/summit-demo.tar.gz
-
-The servlet needs access to the ServiceManager, so we stick it in the context.  
-If you something like Tomcat then this needs to be done before the servlet loads - 
-hence PlexusLoaderServlet.  
-
-However, in embedded situations, the servlet container is embedded into your app 
-and you stick the ServiceManager into the ServletContext with the application that 
-loads the servlet container component.
-
-Also, for some reason you seem to need to specify the target at the moment.  
-I just threw this together, maybe the default file needs to be changed to Index.vm 
-instead of Default.vm in the configuration I don't know.  
-
-So access the servlet like so:
-http://localhost/summit-demo/servlet/turbine/target/Index.vm
-
-- Dan 
-        ]]></source>
-        
-
-
+        Execute the following commands to check out the sources for the Plexus
+        container, the Plexus components and the Plexus Maven plug-in:
       </p>
-    </section>
- </body>
+    
+    
+      <source><![CDATA[
+      
+       cvs -d :pserver:anonymous@cvs.codehaus.org:/scm/cvs login
+       
+       <enter>
+       
+       cvs -z3 -d :pserver:anonymous@cvs.codehaus.org:/scm/cvs co plexus
+      
+      ]]></source>
+    
+      <p>
+        Now all you need to do is run the getting-start script for your given
+        platform. This will execute the standard 'getting-started' that Maven projects tend 
+        to provide in order to get new users up and running quickly. Unfortunately we must use 
+        native scripts at the moment due to some quirks with Maven's reactor. After you have 
+        executed this script you will have everything you need on your machine to start your 
+        first Plexus application.
+      </p>
+    
+    </subsection>
+    
+    <subsection name="Using the Plexus Maven plug-in">
+      
+      <p>
+        The Plexus Maven plug-in will help you to develop your Plexus
+        application by doing the following:
+      </p>
+      
+      <ul>
+        <li>Providing goals to help generate Plexus components.</li>
+        <li>Providing goals to help generate Plexus component tests.</li>
+        <li>Providing goals to help assemble a Plexus application runtime.</li>
+      </ul>
+
+      <p>
+        In order to use the Plexus Maven plug-in you must install so that it
+        is registered with Maven. You can either build the plug-in your self
+        from sources or you may just download the plug-in from <a href="">here</a>.
+      </p>
+
+    </subsection>
+    
+  </section>
+
+</body>
 </document>
