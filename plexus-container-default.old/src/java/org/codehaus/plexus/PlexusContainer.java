@@ -32,9 +32,11 @@ public interface PlexusContainer
     // Component Descriptor Lookup
     // ----------------------------------------------------------------------
 
+    ComponentDescriptor getComponentDescriptor( String role );
+
     Map getComponentDescriptorMap( String role );
 
-    ComponentDescriptor getComponentDescriptor( String role );
+    List getComponentDescriptorList( String role );
 
     // ----------------------------------------------------------------------
     // Component release
