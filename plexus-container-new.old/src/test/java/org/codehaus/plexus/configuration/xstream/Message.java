@@ -187,9 +187,13 @@ public class Message
         this.innerClass = innerClass;
     }
 
-    static class InnerClass
+    public static class InnerClass
     {
         private String id;
+
+        public InnerClass()
+        {
+        }
 
         public String getId()
         {
