@@ -16,10 +16,9 @@ import java.util.Set;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  */
-public class DefaultComponentComposer implements ComponentComposer
+public class DefaultComponentComposer
+    implements ComponentComposer
 {
-
-
     /**
      * Assign a requirement to a component object by setting the appropriate field in
      * the component object. We find a match by looking at the requirement object's class
@@ -36,8 +35,6 @@ public class DefaultComponentComposer implements ComponentComposer
                                    ComponentRepository componentRepository )
             throws CompositionException
     {
-
-
         if ( componentDescriptor.getRequirements().size() == 0 )
         {
             return; //nothing to do
@@ -54,7 +51,6 @@ public class DefaultComponentComposer implements ComponentComposer
 
             final String role = requirement.getRole();
 
-
             final Field field = findMatchingField( component, componentDescriptor, requirement );
 
             if ( !field.isAccessible() )
@@ -70,7 +66,6 @@ public class DefaultComponentComposer implements ComponentComposer
         }
     }
 
-
     /**
      * Assing comonent requiremnt (component, map, list, array) to given field
      * @param field
@@ -80,7 +75,11 @@ public class DefaultComponentComposer implements ComponentComposer
      * @param component
      * @throws CompositionException
      */
-    private void assignRequirmentToField( final Field field, PlexusContainer container, final String role, ComponentRepository componentRepository, Object component )
+    private void assignRequirmentToField( final Field field,
+                                          PlexusContainer container,
+                                          final String role,
+                                          ComponentRepository componentRepository,
+                                          Object component )
             throws CompositionException
     {
         try
@@ -88,27 +87,35 @@ public class DefaultComponentComposer implements ComponentComposer
             if ( field.getType().isArray() )
             {
                 Map dependencies = container.lookupMap( role );
+
                 final Object[] array = ( Object[] ) Array.newInstance( field.getType(), dependencies.size() );
+
                 assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
+
                 field.set( component, dependencies.entrySet().toArray( array ) );
             }
-            if ( Map.class.isAssignableFrom( field.getType() ) )
+            else if ( Map.class.isAssignableFrom( field.getType() ) )
             {
                 Map dependencies = container.lookupMap( role );
-                assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
-                field.set( component, dependencies );
 
+                assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
+
+                field.set( component, dependencies );
             }
             else if ( List.class.isAssignableFrom( field.getType() ) )
             {
                 Map dependencies = container.lookupMap( role );
+
                 assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
+
                 field.set( component, container.lookupList( role ) );
             }
             else if ( Set.class.isAssignableFrom( field.getType() ) )
             {
                 Map dependencies = container.lookupMap( role );
+
                 assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
+
                 field.set( component, dependencies.entrySet() );
             }
             else //"ordinary" field
@@ -117,6 +124,7 @@ public class DefaultComponentComposer implements ComponentComposer
 
                 // simple recursion
                 assembleComponent( dependency, componentRepository.getComponentDescriptor( role ), container, componentRepository );
+
                 field.set( component, dependency );
             }
         }
@@ -134,13 +142,15 @@ public class DefaultComponentComposer implements ComponentComposer
      * @return
      * @throws CompositionException
      */
-    protected Field findMatchingField( Object component, ComponentDescriptor componentDescriptor, final ComponentRequirement requirement )
+    protected Field findMatchingField( Object component,
+                                       ComponentDescriptor componentDescriptor,
+                                       final ComponentRequirement requirement )
             throws CompositionException
     {
         final String fieldName = requirement.getFieldName();
 
-
         Field field = null;
+
         if ( fieldName != null )
         {
             field = getFieldByName( component, fieldName, componentDescriptor );
@@ -148,36 +158,50 @@ public class DefaultComponentComposer implements ComponentComposer
         else
         {
             Class fieldClass = null;
+
             try
             {
                 System.out.println( "Class:" + fieldClass );
+
                 fieldClass = Class.forName( requirement.getRole() );
             }
             catch ( ClassNotFoundException e )
             {
                 StringBuffer msg = new StringBuffer( "Component Composition failed. Requirment class: '" );
+
                 msg.append( requirement.getRole() );
+
                 msg.append( "' not found. Component role: '" );
+
                 msg.append( componentDescriptor.getRole() );
+
                 msg.append( "'" );
+
                 if ( componentDescriptor.getRoleHint() != null )
                 {
                     msg.append( ", role-hint: '" );
+
                     msg.append( componentDescriptor.getRoleHint() );
+
                     msg.append( "'" );
                 }
                 throw new CompositionException( msg.toString() );
             }
+
             System.out.println( "Get component by class:" + fieldClass );
+
             field = getFieldByType( component, fieldClass, componentDescriptor );
         }
         return field;
     }
 
-
-    protected Field getFieldByName( final Object component, final String fieldName, final ComponentDescriptor componentDescriptor ) throws CompositionException
+    protected Field getFieldByName( final Object component,
+                                    final String fieldName,
+                                    final ComponentDescriptor componentDescriptor )
+        throws CompositionException
     {
         Field field = null;
+
         try
         {
             field = component.getClass().getDeclaredField( fieldName );
@@ -185,21 +209,29 @@ public class DefaultComponentComposer implements ComponentComposer
         catch ( NoSuchFieldException e )
         {
             StringBuffer msg = new StringBuffer( "Component Composition failed. No field of name: '" );
+
             msg.append( fieldName );
+
             msg.append( "' exists in component of role: '" );
+
             msg.append( componentDescriptor.getRole() );
+
             msg.append( "'" );
+
             if ( componentDescriptor.getRoleHint() != null )
             {
                 msg.append( " and role-hint: '" );
+
                 msg.append( componentDescriptor.getRoleHint() );
+
                 msg.append( "'" );
             }
             throw new CompositionException( msg.toString() );
         }
-// we want to use private fields.
 
+        // we want to use private fields.
         field.setAccessible( true );
+
         return field;
     }
 
@@ -213,38 +245,55 @@ public class DefaultComponentComposer implements ComponentComposer
      * @return
      * @throws CompositionException
      */
-    protected Field getFieldByType( final Object component, final Class type, final ComponentDescriptor componentDescriptor ) throws CompositionException
+    protected Field getFieldByType( final Object component,
+                                    final Class type,
+                                    final ComponentDescriptor componentDescriptor )
+        throws CompositionException
     {
         Field field = null;
+
         Class arrayType = Array.newInstance( type, 0 ).getClass();
+
         Field[] fields = component.getClass().getDeclaredFields();
+
         for ( int i = 0; i < fields.length; i++ )
         {
             Class fieldType = fields[i].getType();
+
             if ( fieldType.isAssignableFrom( type ) || fieldType.isAssignableFrom( arrayType ) )
             {
                 field = fields[i];
+
                 break;
             }
         }
+
         if ( field == null )
         {
             StringBuffer msg = new StringBuffer( "Component Composition failed. No field of type: '" );
+
             msg.append( type );
+
             msg.append( "' exists in component of role: '" );
+
             msg.append( componentDescriptor.getRole() );
+
             msg.append( "'" );
+
             if ( componentDescriptor.getRoleHint() != null )
             {
                 msg.append( " and role-hint: '" );
+
                 msg.append( componentDescriptor.getRoleHint() );
+
                 msg.append( "'" );
             }
+
             throw new CompositionException( msg.toString() );
         }
+
         return field;
     }
-
 
     /**
      * Assign a requirement to a component object by setting the appropriate field in
@@ -263,15 +312,16 @@ public class DefaultComponentComposer implements ComponentComposer
     {
 
         final Set roleHints = componentDescriptorMap.keySet();
+
         for ( final Iterator iterator = roleHints.iterator(); iterator.hasNext(); )
         {
             final String roleHint = ( String ) iterator.next();
+
             final ComponentDescriptor componentDescriptor =  ( ComponentDescriptor ) componentDescriptorMap.get( roleHint );
+
             final Object component = components.get( roleHint );
+
             assembleComponent(  component, componentDescriptor, container, componentRepository );
         }
-
     }
-
-
 }
