@@ -328,6 +328,8 @@ public class DefaultPlexusContainer
                 {
                     File conf = new File( configurationsDirectory, confs[i] );
 
+                    System.out.println( "additional conf file = " + conf );
+
                     Configuration c = builder.parse( getInterpolationConfigurationReader( new FileReader( conf ) ) );
 
                     componentsConfiguration.addAllChildren( c.getChild( "components" ) );

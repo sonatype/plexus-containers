@@ -30,17 +30,17 @@
     
       <source><![CDATA[
       
-       cvs -d :pserver:anonymous@cvs.codehaus.org:/scm/cvs login
+       cvs -d :pserver:anonymous@cvs.codehaus.org:/scm/cvspublic login
        
        <enter>
        
-       cvs -z3 -d :pserver:anonymous@cvs.codehaus.org:/scm/cvs co plexus
+       cvs -z3 -d :pserver:anonymous@cvs.codehaus.org:/scm/cvspublic co plexus
       
       ]]></source>
     
       <p>
         Now all you need to do is run the getting-started script for your given
-        platform. This will execute the standard 'getting-started' that Maven projects tend 
+        platform. This will execute the standard 'getting-started' that Maven projects tend
         to provide in order to get new users up and running quickly. Unfortunately we must use 
         native scripts at the moment due to some quirks with Maven's reactor. After you have 
         executed this script you will have everything you need on your machine to start your 
