@@ -31,6 +31,7 @@ import org.codehaus.plexus.component.configurator.converters.basic.ByteConverter
 import org.codehaus.plexus.component.configurator.converters.basic.CharConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.DateConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.DoubleConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.FileConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.FloatConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.IntConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.LongConverter;
@@ -121,6 +122,8 @@ public class DefaultConverterLookup implements ConverterLookup
         registerConverter( new StringConverter() );
 
         registerConverter( new DateConverter() );
+
+        registerConverter( new FileConverter() );
 
         //registerConverter( new BigIntegerConverter() );
     }
