@@ -807,7 +807,7 @@ public class DefaultPlexusContainer
 
     public Logger getLogger()
     {
-        return loggerManager.getLoggerForComponent( PlexusContainer.class.getName() );
+        return super.getLogger();
     }
 
     public Object createComponentInstance( ComponentDescriptor componentDescriptor )
