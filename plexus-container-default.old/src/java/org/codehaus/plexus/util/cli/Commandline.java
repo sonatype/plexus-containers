@@ -56,8 +56,8 @@ package org.codehaus.plexus.util.cli;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.StringTokenizer;
 import java.util.Enumeration;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
@@ -608,29 +608,11 @@ public class Commandline implements Cloneable
     /**
      * Sets execution directory.
      */
-    public void setWorkingDirectory( String path ) throws Exception
+    public void setWorkingDirectory( String path )
     {
         if ( path != null )
         {
-            File dir = new File( path );
-            if ( !dir.exists() )
-            {
-                throw new Exception(
-                    "Working directory \"" + path + "\" does not exist!" );
-            }
-            else if ( !dir.isDirectory() )
-            {
-                throw new Exception(
-                    "Path \"" + path + "\" does not specify a directory." );
-            }
-            else
-            {
-                workingDir = dir;
-            }
-        }
-        else
-        {
-            workingDir = null;
+            workingDir = new File( path );
         }
     }
 
@@ -642,7 +624,8 @@ public class Commandline implements Cloneable
     /**
      * Executes the command.
      */
-    public Process execute() throws IOException
+    public Process execute()
+        throws IOException
     {
         Process process = null;
 
@@ -653,6 +636,17 @@ public class Commandline implements Cloneable
         }
         else
         {
+            if ( !workingDir.exists() )
+            {
+                throw new IOException(
+                    "Working directory \"" + workingDir.getPath() + "\" does not exist!" );
+            }
+            else if ( !workingDir.isDirectory() )
+            {
+                throw new IOException(
+                    "Path \"" + workingDir.getPath() + "\" does not specify a directory." );
+            }
+
             System.err.println(
                 "Executing \""
                 + this
