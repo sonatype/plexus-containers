@@ -102,17 +102,33 @@ public class CollectionConverter extends AbstractConfigurationConverter
 
             String configEntry = c.getName();
 
-            String basePackage = baseType.getPackage().getName();
-
             String name = StringUtils.capitalizeFirstLetter( fromXML( configEntry ) );
-
-            String classname = basePackage + "." + name;
 
             Class childType = getClassForImplementationHint( null, c, classLoader );
 
             if ( childType == null )
             {
-                childType = loadClass( classname, classLoader );
+                // Some classloaders don't create Package objects for classes
+                // so we have to resort to slicing up the class name
+
+                String baseTypeName = baseType.getName();
+
+                int lastDot = baseTypeName.lastIndexOf( '.' );
+
+                String className;
+
+                if ( lastDot == -1 )
+                {
+                    className = name;
+                }
+                else
+                {
+                    String basePackage = baseTypeName.substring(0, lastDot );
+
+                    className = basePackage + "." + name;
+                }
+
+                childType = loadClass( className, classLoader );
             }
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
