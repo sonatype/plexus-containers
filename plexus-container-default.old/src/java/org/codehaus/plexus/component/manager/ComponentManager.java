@@ -31,7 +31,7 @@ public interface ComponentManager
 
     void setClassLoader( ClassLoader classLoader );
 
-    void setComponentImplementation( String implementation );
+    void setImplementation( String implementation );
 
     int getConnections();
 

@@ -66,7 +66,7 @@ public abstract class AbstractComponentManager
         return implementation;
     }
 
-    public void setComponentImplementation( String implementation )
+    public void setImplementation( String implementation )
     {
         this.implementation = implementation;
     }
