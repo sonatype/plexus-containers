@@ -1,20 +1,42 @@
 package org.codehaus.plexus.logging.log4j;
 
-import junit.framework.TestCase;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.logging.AbstractLoggerManagerTest;
+import org.codehaus.plexus.logging.LoggerManager;
 
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Properties;
 
 public class Log4JLoggerManagerTest
-    extends TestCase
+    extends AbstractLoggerManagerTest
 {
-    public Log4JLoggerManagerTest( String name )
+    protected Configuration createConfiguration(String threshold)
+        throws Exception
     {
-        super( name );
+        XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
+
+        Configuration c = builder.parse( new InputStreamReader( Log4JLoggerManagerTest.class.getResourceAsStream( "plexus.conf" ) ) );
+
+        if ( threshold.equals( "disabled" ) )
+        {
+            threshold = "off";
+        }
+
+        Configuration priorityNode = c.getChild( "logging" )
+                                      .getChild( "logger" )
+                                      .getChild( "priority" );
+        
+        ((DefaultConfiguration) priorityNode).setValue( threshold );
+
+        return c.getChild( "logging" );
+    }
+
+    protected LoggerManager createLoggerManager() {
+        return new Log4JLoggerManager();
     }
 
     public void testLog4JLoggerManagerWithRootLoggerProperties()
