@@ -26,6 +26,8 @@ package org.codehaus.plexus.embed;
 
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Properties;
@@ -40,7 +42,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 public class Embedder implements PlexusEmbedder
 {
 
-    private URL configurationURL;
+    private Reader configurationReader;
 
     /** Context properties */
     private Properties properties;
@@ -105,14 +107,22 @@ public class Embedder implements PlexusEmbedder
     }
 
 
-    public synchronized void setConfiguration( URL configuration )
-    {
+    public synchronized void setConfiguration( URL configuration ) throws IOException {
         if ( embedderStarted || embedderStopped )
         {
             throw new IllegalStateException( "Embedder has already been started" );
         }
 
-        this.configurationURL = configuration;
+        this.configurationReader = new InputStreamReader(configuration.openStream());
+    }
+
+    public synchronized void setConfiguration( Reader configuration ) throws IOException {
+        if ( embedderStarted || embedderStopped )
+        {
+            throw new IllegalStateException( "Embedder has already been started" );
+        }
+
+        this.configurationReader = configuration;
     }
 
     public synchronized void addContextValue( Object key, Object value )
@@ -171,9 +181,9 @@ public class Embedder implements PlexusEmbedder
             throw new IllegalStateException( "Embedder cannot be restarted" );
         }
 
-        if ( configurationURL != null )
+        if ( configurationReader != null )
         {
-            container.setConfigurationResource( new InputStreamReader( configurationURL.openStream() ) );
+            container.setConfigurationResource( configurationReader );
         }
 
         if ( properties != null)
