@@ -13,13 +13,4 @@ public interface LoggerManager
     Logger getRootLogger();
 
     Logger getLogger( String name );
-
-    void initialize()
-        throws Exception;
-
-    void start()
-        throws Exception;
-
-    void stop()
-        throws Exception;
 }
