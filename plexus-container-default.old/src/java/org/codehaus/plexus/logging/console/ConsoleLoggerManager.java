@@ -6,8 +6,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 
 /**
- * Sample configuration.
- *
+ * Sample configuration:
  * <pre>
  * <logging>
  *   <implementation>org.codehaus.plexus.logging.ConsoleLoggerManager</implementation>
@@ -28,27 +27,18 @@ public class ConsoleLoggerManager
 
     public ConsoleLoggerManager()
     {
-        consoleLogger = new ConsoleLogger( getThreshold( threshold ) );
+        initialize();
     }
 
     public void initialize()
-        throws Exception
     {
         consoleLogger = new ConsoleLogger( getThreshold( threshold ) );
-    }
-
-    public void start()
-        throws Exception
-    {
-    }
-
-    public void stop()
-    {
     }
 
     public void setThreshold( String threshold )
     {
         this.threshold = threshold;
+        consoleLogger.setLogLevel( getThreshold( threshold ) );
     }
 
     public String getThreshold()
