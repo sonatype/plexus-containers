@@ -25,6 +25,7 @@ package org.codehaus.plexus.configuration.xml;
  */
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 public class XmlPlexusConfiguration
     implements PlexusConfiguration
