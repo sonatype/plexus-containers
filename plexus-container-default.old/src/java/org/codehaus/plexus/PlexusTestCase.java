@@ -16,17 +16,20 @@ import org.codehaus.plexus.context.Context;
 public class PlexusTestCase
     extends TestCase
 {
-    protected DefaultPlexusContainer container;
+    protected PlexusContainer container;
 
     /**
      * @deprecated Use getBasedir(); instead of accessing this variable directly.
      */
-    public String basedir;
+    protected String basedir;
 
     public PlexusTestCase()
     {
     }
 
+    /**
+     * @deprecated Use the no arg contstructor.
+     */
     public PlexusTestCase( String testName )
     {
         super( testName );
@@ -62,7 +65,8 @@ public class PlexusTestCase
             basedir = new File( "" ).getAbsolutePath();
         }
 
-        container = new DefaultPlexusContainer();
+//        container = new DefaultPlexusContainer();
+        container = getContainerInstance();
 
         //System.out.println( "Thread.currentThread().getContextClassLoader() = " + Thread.currentThread().getContextClassLoader() );
 
@@ -94,6 +98,11 @@ public class PlexusTestCase
         container.start();
     }
 
+    protected PlexusContainer getContainerInstance()
+    {
+        return new DefaultPlexusContainer();
+    }
+
     private Context getContext()
     {
         return container.getContext();
@@ -122,7 +131,7 @@ public class PlexusTestCase
         container = null;
     }
 
-    protected DefaultPlexusContainer getContainer()
+    protected PlexusContainer getContainer()
     {
         return container;
     }

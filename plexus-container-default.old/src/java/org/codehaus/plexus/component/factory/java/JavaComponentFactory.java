@@ -1,14 +1,11 @@
 package org.codehaus.plexus.component.factory.java;
 
+import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.classworlds.NoSuchRealmException;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.factory.AbstractComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentDependency;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.classworlds.NoSuchRealmException;
-
-import java.util.Iterator;
 
 /**
  * Component Factory for components written in Java Language which have default no parameter constructor

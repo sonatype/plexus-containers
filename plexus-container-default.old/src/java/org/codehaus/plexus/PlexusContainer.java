@@ -1,9 +1,10 @@
 package org.codehaus.plexus;
 
-//import org.apache.maven.artifact.Artifact;
-//import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-//import org.apache.maven.artifact.repository.ArtifactRepository;
-//import org.apache.maven.artifact.resolver.ArtifactResolver;
+import java.io.File;
+import java.io.Reader;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -11,12 +12,6 @@ import org.codehaus.plexus.component.repository.exception.ComponentRepositoryExc
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
-
-import java.io.File;
-import java.io.Reader;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public interface PlexusContainer
 {

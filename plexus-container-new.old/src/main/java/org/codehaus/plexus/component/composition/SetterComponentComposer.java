@@ -27,9 +27,9 @@ public class SetterComponentComposer extends AbstractComponentComposer
 {
     public List assembleComponent( final Object component,
                                    final ComponentDescriptor descriptor,
-                                   final PlexusContainer container ) throws CompositionException, UndefinedComponentComposerException
+                                   final PlexusContainer container )
+        throws CompositionException, UndefinedComponentComposerException
     {
-
         final Set requirements = descriptor.getRequirements();
 
         BeanInfo beanInfo = null;
@@ -106,7 +106,7 @@ public class SetterComponentComposer extends AbstractComponentComposer
             }
             else if ( List.class.isAssignableFrom( propertyType ) )
             {
-                final Map dependencies = container.lookupMap( role );
+//                final Map dependencies = container.lookupMap( role );
 
                 retValue = container.getComponentDescriptorList( role );
 

@@ -43,7 +43,7 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
 
         final ComponentComposer componentComposer = getComponentComposer( componentComposerId );
 
-        final List descriptors = componentComposer.assembleComponent( component, componentDescriptor, container );
+        componentComposer.assembleComponent( component, componentDescriptor, container );
 
         // @todo: michal: we need to build the graph of component dependencies
         // and detect cycles.  Not sure exactly when and how it should happen
