@@ -15,6 +15,8 @@ import org.codehaus.plexus.service.repository.ComponentRepository;
  */
 aspect ComponentLeakAspect
 {
+    private int lookups;
+    private int releases;
     private List components = new LinkedList();
 
     /**
@@ -48,6 +50,8 @@ aspect ComponentLeakAspect
      */
     Object around(): lookup()
     {
+        lookups++;
+        
         Object result = proceed();
         components.add(result);
         return result;
@@ -59,6 +63,8 @@ aspect ComponentLeakAspect
      */
     after(Object o): release(o)
     {
+        releases++;
+        
         components.remove(o);
     }
 
@@ -75,6 +81,8 @@ aspect ComponentLeakAspect
      */
     before(): repositoryDisposal()
     {
+        System.err.println("lookups/releases: " + lookups + "/" + releases );
+        
         System.err.println(">> Non-Released Component Count: " + components.size());
         for (Iterator i = components.iterator(); i.hasNext(); )
         {
