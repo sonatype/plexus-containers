@@ -16,6 +16,19 @@ import java.util.List;
 public class CompositionResolverTest
     extends TestCase
 {
+    // ------------------------------------------------------------------------
+    //
+    //     +-------+           +-------+
+    //     |  c1   | --------> |  c2   |
+    //     +-------+           +-------+
+    //         |
+    //         |
+    //         V
+    //     +-------+
+    //     |  c3   |
+    //     +-------+
+    //
+    // ------------------------------------------------------------------------
     public void testSimpleComponentResolution()
         throws Exception
     {
