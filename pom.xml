@@ -1,23 +1,14 @@
-<?xml version="1.0"?>
-
-<project>
-  <modelVersion>4.0.0</modelVersion>
+<model>
   <parent>
-    <groupId>plexus</groupId>
     <artifactId>plexus-containers</artifactId>
+    <groupId>plexus</groupId>
     <version>1.0-alpha-2-SNAPSHOT</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
-  <version>1.0-alpha-2-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <name>New Default Plexus Container</name>
-  <build>
-    <unitTest>
-      <excludes>
-        <exclude>**/BasicComponentConfiguratorTest.java</exclude>
-        <exclude>**/*Abstract*.java</exclude>
-        <exclude>**/JavaComponentFactoryTest.java</exclude>
-      </excludes>
-    </unitTest>
-  </build>
-</project>
+  <version>1.0-alpha-2-SNAPSHOT</version>
+  <build />
+</model>
