@@ -57,7 +57,8 @@ public class DefaultComponentDiscoverer
 
                 String configuration = os.toString();
 
-                PlexusConfiguration[] componentConfigurations = PlexusTools.buildConfiguration( configuration ).getChildren( "component" );
+                PlexusConfiguration[] componentConfigurations =
+                    PlexusTools.buildConfiguration( configuration ).getChild( "components" ).getChildren( "component" );
 
                 for ( int i = 0; i < componentConfigurations.length; i++ )
                 {
