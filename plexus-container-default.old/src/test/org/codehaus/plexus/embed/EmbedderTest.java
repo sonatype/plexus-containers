@@ -24,11 +24,11 @@ public class EmbedderTest
         embed.addContextValue( "foo", "bar" );
 
         Properties contextProperties = new Properties();
-        
+
         contextProperties.setProperty( "property1", "value1" );
-        
+
         contextProperties.setProperty( "property2", "value2" );
-        
+
         embed.start();
 
         try
@@ -41,10 +41,12 @@ public class EmbedderTest
         {
             // do nothing
         }
-        
+
         Object o = embed.lookup( MockComponent.ROLE );
 
         assertEquals( "I AM MOCKCOMPONENT", o.toString() );
+
+        assertNotNull( getClass().getResource( "/test.txt" ) );
 
         embed.stop();
     }

@@ -743,6 +743,16 @@ public class DefaultPlexusContainer
                 {
                     addJarRepository( new File( resourceConfigs[i].getValue() ) );
                 }
+                else if ( resourceConfigs[i].getName().equals( "directory" ) )
+                {
+                    File directory = new File( resourceConfigs[i].getValue() );
+
+                    if ( directory.exists() && directory.isDirectory() )
+                    {
+                        System.out.println( "adding directory = " + directory );
+                        classRealm.addConstituent( directory.toURL() );
+                    }
+                }
             }
             catch ( Exception e )
             {

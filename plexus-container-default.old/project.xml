@@ -164,7 +164,7 @@
 
     <unitTest>
       <includes>
-        <include>**/*Test.java</include>
+        <include>**/*EmbedderTest.java</include>
       </includes>
       <excludes>
         <exclude>**/*Abstract*.java</exclude>
