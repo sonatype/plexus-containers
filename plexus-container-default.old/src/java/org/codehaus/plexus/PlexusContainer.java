@@ -9,6 +9,7 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
 
 import java.io.Reader;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -108,8 +109,6 @@ public interface PlexusContainer
 
     Logger getLogger();
 
-    //ClassLoader getClassLoader();
-
     Object createComponentInstance( ComponentDescriptor componentDescriptor )
         throws Exception;
 
@@ -123,4 +122,14 @@ public interface PlexusContainer
     void registerComponentDiscoveryListener( ComponentDiscoveryListener listener );
 
     void removeComponentDiscoveryListener( ComponentDiscoveryListener listener );
+
+    void discoverComponents()
+        throws Exception;
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    void addJarRepository( File repository )
+        throws Exception;
 }

@@ -50,8 +50,8 @@ import org.codehaus.plexus.util.InterpolationFilterReader;
  * @todo clarify configuration handling vis-a-vis user vs default values
  * @todo use classworlds whole hog, plexus' concern is applications.
  * @todo allow setting of a live configuraton so applications that embed plexus
- *       can use whatever configuration mechanism they like. They just have to
- *       adapt it into something plexus can understand.
+ * can use whatever configuration mechanism they like. They just have to
+ * adapt it into something plexus can understand.
  */
 public class DefaultPlexusContainer
     extends AbstractLogEnabled
@@ -70,10 +70,6 @@ public class DefaultPlexusContainer
     private ClassWorld classWorld;
 
     private ClassRealm coreRealm;
-
-    //private ClassLoader classLoader;
-
-    // Core components
 
     private ComponentRepository componentRepository;
 
@@ -446,12 +442,12 @@ public class DefaultPlexusContainer
     // before the components.xml are discovered in JARs and processed.
 
     /**
-     * TODO: Enhance the ComponentRepository so that it can take entire 
-     *       ComponentSetDescriptors instead of just ComponentDescriptors.
-     * 
-     * @throws Exception
+     * TODO: Enhance the ComponentRepository so that it can take entire
+     * ComponentSetDescriptors instead of just ComponentDescriptors.
+     *
+     * @throws Exception 
      */
-    private void discoverComponents()
+    public void discoverComponents()
         throws Exception
     {
         List listeners = componentDiscovererManager.getListenerDescriptors();
@@ -547,7 +543,9 @@ public class DefaultPlexusContainer
         context.put( key, value );
     }
 
-    /** @see PlexusContainer#setConfigurationResource(Reader) */
+    /**
+     * @see PlexusContainer#setConfigurationResource(Reader)
+     */
     public void setConfigurationResource( Reader configuration )
         throws PlexusConfigurationResourceException
     {
@@ -597,21 +595,6 @@ public class DefaultPlexusContainer
     // 1. Embedder may set a ClassLoader
     // 2. Classworlds launcher hands us a Classworld
 
-    /*
-    public void setClassLoader( ClassLoader classLoader )
-    {
-        this.classLoader = classLoader;
-        
-        addContextValue( "common.classloader", classLoader );
-    }
-
-    /*
-    public ClassLoader getClassLoader()
-    {
-        return classLoader;
-    }
-    */
-
     public void setClassWorld( ClassWorld classWorld )
     {
         this.classWorld = classWorld;
@@ -648,16 +631,7 @@ public class DefaultPlexusContainer
             }
             catch ( NoSuchRealmException e )
             {
-                //System.out.println( "classLoader = " + classLoader );
-
-                //if ( classLoader != null && coreRealm != null )
-                //{
-                //    coreRealm = classWorld.newRealm( "core", classLoader );
-                //}
-                //else
-                //{
-                    coreRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
-                //}
+                coreRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
             }
         }
 
@@ -728,7 +702,7 @@ public class DefaultPlexusContainer
             // User userConfiguration
 
             PlexusConfiguration plexusConfiguration =
-                PlexusTools.buildConfiguration( getInterpolationConfigurationReader( new InputStreamReader( plexusXml) ) );
+                PlexusTools.buildConfiguration( getInterpolationConfigurationReader( new InputStreamReader( plexusXml ) ) );
 
             configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
 
@@ -854,7 +828,7 @@ public class DefaultPlexusContainer
 
         c = configuration.getChild( "component-composer-manager" );
 
-        componentComposerManager = ( ComponentComposerManager ) builder.build( c );
+        componentComposerManager = (ComponentComposerManager) builder.build( c );
 
     }
 
@@ -913,7 +887,6 @@ public class DefaultPlexusContainer
     public void addJarResource( File jar )
         throws Exception
     {
-        System.out.println( jar.toURL() );
         coreRealm.addConstituent( jar.toURL() );
     }
 
