@@ -1,7 +1,8 @@
-package org.codehaus.plexus.component.repository.io;
+package org.codehaus.plexus.configuration.xml;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
+import org.codehaus.plexus.configuration.xml.Xpp3Dom;
 
 import java.io.Reader;
 import java.util.ArrayList;

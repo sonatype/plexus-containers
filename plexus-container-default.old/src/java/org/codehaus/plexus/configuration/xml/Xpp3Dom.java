@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.repository.io;
+package org.codehaus.plexus.configuration.xml;
 
 import java.util.HashMap;
 import java.util.ArrayList;

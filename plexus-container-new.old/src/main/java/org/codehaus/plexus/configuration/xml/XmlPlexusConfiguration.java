@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 Your Corporation. All Rights Reserved.
  */
-package org.codehaus.plexus.component.repository.io;
+package org.codehaus.plexus.configuration.xml;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
