@@ -192,7 +192,7 @@ public final class CachedMap implements Map {
     }
     private Object getCacheMissed(Object key, int index) {
         if (_backingFastMap != null) { 
-            Entry entry = _backingFastMap.getEntry(key);
+            Map.Entry entry = _backingFastMap.getEntry(key);
             if (entry != null) {
                 _keys[index] = entry.getKey();
                 Object value = entry.getValue();

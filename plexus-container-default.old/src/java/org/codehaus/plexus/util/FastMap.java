@@ -221,7 +221,7 @@ public class FastMap implements Map, Cloneable, Serializable {
      * @param key the key whose associated entry is to be returned.
      * @return the entry for the specified key or <code>null</code> if none.
      */
-    public Entry getEntry(Object key) {
+    public Map.Entry getEntry(Object key) {
         EntryImpl entry = _entries[keyHash(key) & _mask];
         while (entry != null) {
             if (key.equals(entry._key)) {
@@ -270,7 +270,7 @@ public class FastMap implements Map, Cloneable, Serializable {
      */
     public void putAll(Map map) {
         for (Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
-            Entry e = (Entry) i.next();
+            Map.Entry e = (Map.Entry) i.next();
             addEntry(e.getKey(), e.getValue());
         }
     }
@@ -542,17 +542,17 @@ public class FastMap implements Map, Cloneable, Serializable {
             return _size;
         }
         public boolean contains(Object obj) { // Optimization.
-            if (obj instanceof Entry) {
-                Entry entry = (Entry) obj;
-                Entry mapEntry = getEntry(entry.getKey());
+            if (obj instanceof Map.Entry) {
+                Map.Entry entry = (Map.Entry) obj;
+                Map.Entry mapEntry = getEntry(entry.getKey());
                 return entry.equals(mapEntry);
             } else {
                 return false;
             } 
         }
         public boolean remove(Object obj) { // Optimization.
-            if (obj instanceof Entry) {
-                Entry entry = (Entry)obj;
+            if (obj instanceof Map.Entry) {
+                Map.Entry entry = (Map.Entry)obj;
                 EntryImpl mapEntry = (EntryImpl) getEntry(entry.getKey());
                 if      ((mapEntry != null) && 
                         (entry.getValue()).equals(mapEntry._value)) {
@@ -819,7 +819,7 @@ public class FastMap implements Map, Cloneable, Serializable {
     /**
      * This class represents a {@link FastMap} entry.
      */
-    private static final class EntryImpl implements Entry {
+    private static final class EntryImpl implements Map.Entry {
 
         /**
          * Holds the entry key (null when in pool).
@@ -896,8 +896,8 @@ public class FastMap implements Map, Cloneable, Serializable {
          *         <code>false<code> otherwise.
          */
         public boolean equals(Object that) {
-            if (that instanceof Entry) {
-                Entry entry = (Entry) that;
+            if (that instanceof Map.Entry) {
+                Map.Entry entry = (Map.Entry) that;
                 return (_key.equals(entry.getKey())) &&
                     ((_value != null) ? 
                         _value.equals(entry.getValue()) : 
