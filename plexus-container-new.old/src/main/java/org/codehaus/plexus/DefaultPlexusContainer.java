@@ -638,7 +638,7 @@ public class DefaultPlexusContainer
         {
             try
             {
-                coreRealm = classWorld.getRealm( "core" );
+                coreRealm = classWorld.getRealm( "plexus.core" );
             }
             catch ( NoSuchRealmException e )
             {
@@ -647,7 +647,7 @@ public class DefaultPlexusContainer
                  * we want to use the classes already in the
                  * ClassLoader for our realm.
                  */
-                plexusRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+                plexusRealm = classWorld.newRealm( "plexus.core", Thread.currentThread().getContextClassLoader() );
             }
         }
 
