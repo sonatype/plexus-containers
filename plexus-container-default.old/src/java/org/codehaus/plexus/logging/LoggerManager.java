@@ -13,6 +13,8 @@ public interface LoggerManager
      * Sets the threshold for all new loggers. It will NOT affect the existing loggers.
      *
      * This is usually only set once while the logger manager is configured.
+     * 
+     * @param threshold The new threshold.
      */
     void setThreshold( int threshold );
 

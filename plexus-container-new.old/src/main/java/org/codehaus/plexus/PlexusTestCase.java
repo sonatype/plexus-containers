@@ -67,9 +67,7 @@ public class PlexusTestCase
             }
 
             getContext().put( "plexus.home", f.getAbsolutePath() );
-
         }
-        
         
         if ( configuration != null )
         {
