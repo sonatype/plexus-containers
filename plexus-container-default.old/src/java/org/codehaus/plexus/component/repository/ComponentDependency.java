@@ -82,4 +82,13 @@ public class ComponentDependency
     {
         this.version = version;
     }
+
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( "groupId:artifactId:version:type = " + groupId + ":" + artifactId + ":" + version + ":" + type );
+
+        return sb.toString();
+    }
 }

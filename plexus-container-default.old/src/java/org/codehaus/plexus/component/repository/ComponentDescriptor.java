@@ -3,6 +3,7 @@ package org.codehaus.plexus.component.repository;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -42,6 +43,21 @@ public class ComponentDescriptor
     private String componentComposer;
 
     private String description;
+
+    // ----------------------------------------------------------------------
+    // These two fields allow for the specification of an isolated class realm
+    // and dependencies that might be specified in a component configuration
+    // setup by a user i.e. this is here to allow isolation for components
+    // that are not picked up by the discovery mechanism.
+    // ----------------------------------------------------------------------
+
+    private boolean isolatedRealm;
+
+    private List dependencies;
+
+    // ----------------------------------------------------------------------
+
+    private ComponentSetDescriptor componentSetDescriptor;
 
     // ----------------------------------------------------------------------
     //  Instance methods
@@ -218,4 +234,29 @@ public class ComponentDescriptor
     {
         this.instantiationStrategy = instantiationStrategy;
     }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    public boolean isIsolatedRealm()
+    {
+        return isolatedRealm;
+    }
+
+    public void setComponentSetDescriptor( ComponentSetDescriptor componentSetDescriptor )
+    {
+        this.componentSetDescriptor = componentSetDescriptor;
+    }
+
+    public void setIsolatedRealm( boolean isolatedRealm )
+    {
+        this.isolatedRealm = isolatedRealm;
+    }
+
+    public List getDependencies()
+    {
+        return dependencies;
+    }
+
 }

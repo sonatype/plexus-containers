@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class ComponentSetDescriptor
 {
-    /** */
     private List components;
 
-    /** */
     private List dependencies;
+
+    private boolean isolatedRealm;
 
     /**
      * Returns a list of {@link ComponentDescriptor}'s.
@@ -57,5 +57,10 @@ public class ComponentSetDescriptor
     public void setDependencies( List dependencies )
     {
         this.dependencies = dependencies;
+    }
+
+    public boolean isIsolatedRealm()
+    {
+        return isolatedRealm;
     }
 }
