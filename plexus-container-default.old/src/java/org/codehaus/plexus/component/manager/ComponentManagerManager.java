@@ -1,8 +1,8 @@
 package org.codehaus.plexus.component.manager;
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.Map;
 
@@ -17,8 +17,7 @@ public interface ComponentManagerManager
 {
     String ROLE = ComponentManagerManager.class.getName();
 
-    void initializeLifecycleHandlerManager( PlexusConfiguration c )
-        throws Exception;
+    void setLifecycleHandlerManager( LifecycleHandlerManager lifecycleHandlerManager );
 
     // ----------------------------------------------------------------------
     // Component manager handling

@@ -17,7 +17,7 @@ public class CollectionConverter
 {
     public CollectionConverter( ClassMapper classMapper )
     {
-        super( classMapper );
+        super( classMapper,"implementation" );
     }
 
     public boolean canConvert( Class type )

@@ -2,9 +2,6 @@ package org.codehaus.plexus.component.manager;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
-import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
@@ -33,6 +30,11 @@ public class DefaultComponentManagerManager
     private LifecycleHandlerManager lifecycleHandlerManager;
 
     private Map componentManagersByComponentHashCode = new HashMap();
+
+    public void setLifecycleHandlerManager( LifecycleHandlerManager lifecycleHandlerManager )
+    {
+        this.lifecycleHandlerManager = lifecycleHandlerManager;
+    }
 
     private ComponentManager copyComponentManager( String id )
         throws UndefinedComponentManagerException
@@ -90,18 +92,6 @@ public class DefaultComponentManagerManager
     // ----------------------------------------------------------------------
     // Lifecycle handler manager handling
     // ----------------------------------------------------------------------
-
-    public void initializeLifecycleHandlerManager( PlexusConfiguration configuration )
-        throws Exception
-    {
-        PlexusXStream builder = new PlexusXStream();
-
-        builder.alias( "lifecycle-handler-manager", DefaultLifecycleHandlerManager.class );
-
-        lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( configuration, DefaultLifecycleHandlerManager.class );
-
-        lifecycleHandlerManager.initialize();
-    }
 
     private LifecycleHandler findLifecycleHandler( ComponentDescriptor descriptor )
         throws UndefinedLifecycleHandlerException

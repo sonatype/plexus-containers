@@ -13,7 +13,7 @@ import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
  * @todo determine whether xstream will look in super classes for fields to set.
  */
 public class DefaultComponentConfigurator
-    implements ComponentConfigurator
+    extends AbstractComponentConfigurator
 {
     private PlexusXStream xstreamTool;
 
@@ -25,9 +25,11 @@ public class DefaultComponentConfigurator
     public void configureComponent( Object component, PlexusConfiguration configuration )
         throws ComponentConfigurationException
     {
+        PlexusConfiguration decoratedConfiguration = decorateConfiguration( configuration );
+
         try
         {
-            xstreamTool.build( configuration, component );
+            xstreamTool.build( decoratedConfiguration, component );
         }
         catch ( Exception e )
         {

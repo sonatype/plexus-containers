@@ -5,10 +5,8 @@ import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
-import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
@@ -20,6 +18,7 @@ import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
+import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -55,8 +54,6 @@ public class DefaultPlexusContainer
 
     private DefaultContext context;
 
-    private ComponentRepository componentRepository;
-
     private PlexusConfiguration configuration;
 
     private Reader configurationReader;
@@ -67,7 +64,13 @@ public class DefaultPlexusContainer
 
     private ClassLoader classLoader;
 
+    // Core components
+
+    private ComponentRepository componentRepository;
+
     private ComponentManagerManager componentManagerManager;
+
+    private LifecycleHandlerManager lifecycleHandlerManager;
 
     // ----------------------------------------------------------------------
     //  Constructors
@@ -393,9 +396,7 @@ public class DefaultPlexusContainer
 
         initializeResources();
 
-        initializeComponentRepository();
-
-        initializeComponentManagerManager();
+        initializeCoreComponents();
 
         // Should be safe now to lookup any component aside from the cmm and lhm
 
@@ -649,22 +650,38 @@ public class DefaultPlexusContainer
         enableLogging( loggerManager.getRootLogger() );
     }
 
-    private void initializeComponentRepository()
+    private void initializeCoreComponents()
         throws Exception
     {
-        PlexusXStream builder = new PlexusXStream();
+        // Component repository
 
-        builder.alias( "component-repository", DefaultComponentRepository.class );
+        PlexusXStream builder = new PlexusXStream();
 
         PlexusConfiguration c = configuration.getChild( "component-repository" );
 
-        componentRepository = (ComponentRepository) builder.build( c, DefaultComponentRepository.class );
+        componentRepository = (ComponentRepository) builder.build( c );
 
         componentRepository.configure( configuration );
 
         componentRepository.setClassRealm( classRealm );
 
         componentRepository.initialize();
+
+        // Lifecycle handler manager
+
+        c = configuration.getChild( "lifecycle-handler-manager" );
+
+        lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( c );
+
+        lifecycleHandlerManager.initialize();
+
+        // Component manager manager
+
+        c = configuration.getChild( "component-manager-manager" );
+
+        componentManagerManager = (ComponentManagerManager) builder.build( c );
+
+        componentManagerManager.setLifecycleHandlerManager( lifecycleHandlerManager );
     }
 
     private void initializeSystemProperties()
@@ -682,24 +699,6 @@ public class DefaultPlexusContainer
 
             getLogger().info( "Setting system property: [ " + name + ", " + value + " ]" );
         }
-    }
-
-    // ----------------------------------------------------------------------
-    // Component Managers
-    // ----------------------------------------------------------------------
-
-    private void initializeComponentManagerManager()
-        throws Exception
-    {
-        PlexusXStream builder = new PlexusXStream();
-
-        builder.alias( "component-manager-manager", DefaultComponentManagerManager.class );
-
-        PlexusConfiguration c = configuration.getChild( "component-manager-manager" );
-
-        componentManagerManager = (ComponentManagerManager) builder.build( c, DefaultComponentManagerManager.class );
-
-        componentManagerManager.initializeLifecycleHandlerManager( configuration.getChild( "lifecycle-handler-manager" ) );
     }
 
     // ----------------------------------------------------------------------

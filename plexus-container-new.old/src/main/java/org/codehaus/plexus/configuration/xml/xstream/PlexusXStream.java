@@ -9,13 +9,10 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentSet;
-import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.alias.HyphenatedClassMapper;
 import org.codehaus.plexus.configuration.xml.xstream.alias.HyphenatedNameMapper;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.xstream.converters.CollectionConverter;
 import org.codehaus.plexus.configuration.xml.xstream.converters.PlexusConfigurationConverter;
 import org.codehaus.plexus.configuration.xml.xstream.converters.PropertiesConverter;
 
@@ -31,7 +28,7 @@ public class PlexusXStream
 {
     public PlexusXStream()
     {
-        super( new JavaReflectionObjectFactory(), new HyphenatedClassMapper( new HyphenatedNameMapper() ), new Xpp3DomXMLReaderDriver() );
+        super( new JavaReflectionObjectFactory(), new HyphenatedClassMapper( new HyphenatedNameMapper() ), new Xpp3DomXMLReaderDriver(), "implementation" );
 
         alias( "configuration", PlexusConfiguration.class, XmlPlexusConfiguration.class );
 
@@ -43,7 +40,7 @@ public class PlexusXStream
 
         alias( "dependency", ComponentDependency.class );
 
-        registerConverter( new CollectionConverter( classMapper ) );
+        //registerConverter( new CollectionConverter( classMapper ) );
 
         registerConverter( new PlexusConfigurationConverter() );
 
@@ -54,6 +51,16 @@ public class PlexusXStream
         throws Exception
     {
         return build( PlexusTools.buildConfiguration( reader ), clazz );
+    }
+
+    public Object build( PlexusConfiguration configuration )
+        throws Exception
+    {
+        Xpp3DomXMLReader reader = new Xpp3DomXMLReader( ( (XmlPlexusConfiguration) configuration ).getXpp3Dom() );
+
+        Object object = fromXML( reader );
+
+        return object;
     }
 
     public Object build( PlexusConfiguration configuration, Class clazz )

@@ -12,11 +12,7 @@
     <property name="foo" value="bar"/>
   </system-properties>
 
-  <component-repository>
-    <implementation>org.codehaus.plexus.component.repository.DefaultComponentRepository</implementation>
-  </component-repository>
-
-  <lifecycle-handler-manager>
+  <lifecycle-handler-manager implementation="org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager">
     <default-lifecycle-handler-id>arbitrary</default-lifecycle-handler-id>
     <lifecycle-handlers>
       <lifecycle-handler implementation="org.codehaus.plexus.SimpleLifecycleHandler">
