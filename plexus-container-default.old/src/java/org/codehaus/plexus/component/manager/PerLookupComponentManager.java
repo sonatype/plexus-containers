@@ -40,9 +40,6 @@ public class PerLookupComponentManager
      */
     public void release( Object component )
     {
-        if ( component != null )
-        {
-            endComponentLifecycle( component );
-        }
+        endComponentLifecycle( component );
     }
 }
