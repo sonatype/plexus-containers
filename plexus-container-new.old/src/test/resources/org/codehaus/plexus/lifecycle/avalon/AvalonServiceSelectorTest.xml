@@ -17,8 +17,8 @@
      |
      -->
     <component>
-      <id>only-instance</id>
       <role>org.codehaus.plexus.ServiceA</role>
+      <role-hint>only-instance</role-hint>
       <implementation>org.codehaus.plexus.DefaultServiceA</implementation>
       <configuration>
         <host>localhost</host>
@@ -33,7 +33,7 @@
      -->
     <component>
       <role>org.codehaus.plexus.ServiceC</role>
-      <id>only-instance</id>
+      <role-hint>only-instance</role-hint>
       <implementation>org.codehaus.plexus.DefaultServiceC</implementation>
       <configuration>
         <host>localhost</host>

@@ -36,9 +36,7 @@ public class AvalonComponentRepository
     {
         super.addComponentDescriptor( descriptor );
 
-        if ( descriptor.getId() != null
-            ||
-            descriptor.getRoleHint() != null )
+        if ( descriptor.getRoleHint() != null )
         {
             if ( !hasService( descriptor.getRole() + "Selector" ) )
             {

@@ -77,7 +77,7 @@
      -->
     <component>
       <role>org.codehaus.plexus.ServiceC</role>
-      <id>only-instance</id>
+      <role-hint>only-instance</role-hint>
       <implementation>org.codehaus.plexus.DefaultServiceC</implementation>
       <configuration>
         <host>localhost</host>

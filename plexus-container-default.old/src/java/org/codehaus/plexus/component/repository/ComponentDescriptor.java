@@ -17,9 +17,6 @@ public class ComponentDescriptor
     /** Role hint. */
     private String roleHint;
 
-    /** Component id, unique within a role, for identified component manager. */
-    private String id;
-
     /** Name of the component class. */
     private String implementation;
 
@@ -51,47 +48,12 @@ public class ComponentDescriptor
 
     public String getComponentKey()
     {
-        if ( getId() != null )
-        {
-            return getRole() + getId();
-        }
-        else if ( getRoleHint() != null )
+        if ( getRoleHint() != null )
         {
             return getRole() + getRoleHint();
         }
 
         return getRole();
-    }
-
-    /** Set the id.
-     *
-     *  <p>
-     *  The id must be unique within a role if this component
-     *  is an identified component.  If it is a factory-produced
-     *  or other unindentified component, an id of '*' is already
-     *  the default.
-     *  </p>
-     *
-     *  @param id The component's id.
-     */
-    public void setId( String id )
-    {
-        this.id = id;
-    }
-
-    /** Retrieve the id.
-     *
-     *  <p>
-     *  This id will be unique within a role if this component
-     *  is an identified component.  If it is a factory-produced
-     *  or other unindentified component, the id is '*".
-     *  </p>
-     *
-     *  @return The id.
-     */
-    public String getId()
-    {
-        return this.id;
     }
 
     /** Set the role name of the component.

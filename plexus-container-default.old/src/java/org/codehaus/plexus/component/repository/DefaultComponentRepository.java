@@ -6,6 +6,8 @@ import org.apache.avalon.framework.context.Context;
 import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.service.ServiceManager;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.manager.ComponentManager;
+import org.codehaus.plexus.component.manager.ComponentManagerFactory;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerFactory;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerHousing;
@@ -13,8 +15,6 @@ import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.lifecycle.avalon.AvalonServiceManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.component.manager.ComponentManager;
-import org.codehaus.plexus.component.manager.ComponentManagerFactory;
 import org.codehaus.plexus.util.ThreadSafeMap;
 import org.codehaus.plexus.util.Tracer;
 
@@ -35,9 +35,6 @@ public class DefaultComponentRepository
 
     /** Component tag. */
     private static String COMPONENT = "component";
-
-    /** Id tag. */
-    private static String ID = "id";
 
     /** Role tag. */
     private static String ROLE = "role";
@@ -550,8 +547,6 @@ public class DefaultComponentRepository
 
         componentDescriptor.setImplementation( configuration.getChild( IMPLEMENTATION ).getValue() );
 
-        componentDescriptor.setId( configuration.getChild( ID ).getValue( null ) );
-
         componentDescriptor.setInstantiationStrategy( configuration.getChild( INSTANTIATION_STRATEGY ).getValue( null ) );
 
         componentDescriptor.setLifecycleHandler( configuration.getChild( LIFECYCLE_HANDLER ).getValue( null ) );
@@ -580,8 +575,6 @@ public class DefaultComponentRepository
             StringBuffer buff = new StringBuffer();
             buff.append( "Adding ComponentDescriptor. role=" );
             buff.append( descriptor.getRole() );
-            buff.append( ", id=" );
-            buff.append( descriptor.getId() );
             buff.append( ",role-hint=" );
             buff.append( descriptor.getRoleHint() );
             buff.append( ",strategy=" );

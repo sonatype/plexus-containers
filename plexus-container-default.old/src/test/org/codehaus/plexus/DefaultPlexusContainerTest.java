@@ -104,8 +104,7 @@ public class DefaultPlexusContainerTest
 
         // Retrieve an manager of component a.
 
-
-        Object o = container.getComponentRepository().lookup( ServiceA.ROLE );
+        container.getComponentRepository().lookup( ServiceA.ROLE );
 
         DefaultServiceA serviceA = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
 
