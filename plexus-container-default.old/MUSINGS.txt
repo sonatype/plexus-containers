@@ -17,12 +17,6 @@ are very detailed and specific, while others are more general.  -pete
   implementation, it is impossible to swap out the ResourceManager
   because it will fail the cast in the ResourceManagerFactory.create. 
 
-= The *Factories typically pass a configuration to the instances they
-  are creating.  However, they typically pass the entire
-  configuration, instead of just the <block> that is relevant to that
-  component.  It would be better to be consistent and most likely send
-  on the relevant block to the component.
-
 - DefaultPlexusContainer.initializeResourceManager overwrites the
   previous version of classLoader.  Confusing.  You have a note about
   it but I'm still not sure what you are talking about.
