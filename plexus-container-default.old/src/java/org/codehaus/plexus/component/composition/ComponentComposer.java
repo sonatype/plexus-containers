@@ -9,6 +9,5 @@ package org.codehaus.plexus.component.composition;
  */
 public interface ComponentComposer
 {
-    /** Role for this component. */
     static String ROLE = ComponentComposer.class.getName();
 }
