@@ -24,8 +24,6 @@ public class DefaultLifecycleHandler
     public DefaultLifecycleHandler()
     {
         super();
-
-        System.out.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
     }
 
     public void initialize()
