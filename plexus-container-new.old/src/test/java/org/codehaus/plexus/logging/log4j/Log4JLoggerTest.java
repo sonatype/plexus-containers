@@ -22,7 +22,7 @@ public class Log4JLoggerTest
         {
             new Log4JLogger( null );
         }
-        catch( NullPointerException npe )
+        catch ( NullPointerException npe )
         {
             assertEquals( "npe.getMessage()", "logger", npe.getMessage() );
         }
@@ -31,25 +31,56 @@ public class Log4JLoggerTest
     public void testLog4JLoggerGetChildLogger()
         throws Exception
     {
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, Level.DEBUG );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, Level.DEBUG );
 
         assertNotSame( "logger.getChildLogger == logger",
                        logger,
                        logger.getChildLogger( "whatever" ) );
     }
 
+    public void testLog4JLoggerFatalEnabled()
+        throws Exception
+    {
+        Level level = Level.FATAL;
+        Level type = Level.FATAL;
+        String message = "Meep!";
+        Throwable throwable = null;
+        boolean output = true;
+
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
+        logger.fatalError( message );
+        checkLogger( target, output, message, throwable, type );
+    }
+
+    public void testLog4JLoggerFatalWithExceptionEnabled()
+        throws Exception
+    {
+        Level level = Level.FATAL;
+        Level type = Level.FATAL;
+        String message = "Meep!";
+        Throwable throwable = new Throwable();
+        boolean output = true;
+
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
+        logger.fatalError( message, throwable );
+        checkLogger( target, output, message, throwable, type );
+    }
+
+
     public void testLog4JLoggerDebugEnabled()
         throws Exception
     {
-        final Level level = Level.DEBUG;
-        final Level type = Level.DEBUG;
-        final String message = "Meep!";
-        final Throwable throwable = null;
-        final boolean output = true;
+        Level level = Level.DEBUG;
+        Level type = Level.DEBUG;
+        String message = "Meep!";
+        Throwable throwable = null;
+        boolean output = true;
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.debug( message );
         checkLogger( target, output, message, throwable, type );
     }
@@ -57,11 +88,11 @@ public class Log4JLoggerTest
     public void testLog4JLoggerDebugDisabled()
         throws Exception
     {
-        final Level level = Level.ERROR;
-        final String message = "Meep!";
+        Level level = Level.ERROR;
+        String message = "Meep!";
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.debug( message );
         checkLogger( target, false, null, null, null );
     }
@@ -69,14 +100,14 @@ public class Log4JLoggerTest
     public void testLog4JLoggerDebugWithExceptionEnabled()
         throws Exception
     {
-        final Level level = Level.DEBUG;
-        final Level type = Level.DEBUG;
-        final String message = "Meep!";
-        final Throwable throwable = new Throwable();
-        final boolean output = true;
+        Level level = Level.DEBUG;
+        Level type = Level.DEBUG;
+        String message = "Meep!";
+        Throwable throwable = new Throwable();
+        boolean output = true;
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.debug( message, throwable );
         checkLogger( target, output, message, throwable, type );
     }
@@ -84,12 +115,12 @@ public class Log4JLoggerTest
     public void testLog4JLoggerDebugWithExceptionDisabled()
         throws Exception
     {
-        final Level level = Level.ERROR;
-        final String message = "Meep!";
-        final Throwable throwable = new Throwable();
+        Level level = Level.ERROR;
+        String message = "Meep!";
+        Throwable throwable = new Throwable();
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.debug( message, throwable );
         checkLogger( target, false, null, null, null );
     }
@@ -97,14 +128,14 @@ public class Log4JLoggerTest
     public void testLog4JLoggerInfoEnabled()
         throws Exception
     {
-        final Level level = Level.DEBUG;
-        final Level type = Level.INFO;
-        final String message = "Meep!";
-        final Throwable throwable = null;
-        final boolean output = true;
+        Level level = Level.DEBUG;
+        Level type = Level.INFO;
+        String message = "Meep!";
+        Throwable throwable = null;
+        boolean output = true;
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.info( message );
         checkLogger( target, output, message, throwable, type );
     }
@@ -112,11 +143,11 @@ public class Log4JLoggerTest
     public void testLog4JLoggerInfoDisabled()
         throws Exception
     {
-        final Level level = Level.ERROR;
-        final String message = "Meep!";
+        Level level = Level.ERROR;
+        String message = "Meep!";
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.info( message );
         checkLogger( target, false, null, null, null );
     }
@@ -124,14 +155,14 @@ public class Log4JLoggerTest
     public void testLog4JLoggerInfoWithExceptionEnabled()
         throws Exception
     {
-        final Level level = Level.DEBUG;
-        final Level type = Level.INFO;
-        final String message = "Meep!";
-        final Throwable throwable = new Throwable();
-        final boolean output = true;
+        Level level = Level.DEBUG;
+        Level type = Level.INFO;
+        String message = "Meep!";
+        Throwable throwable = new Throwable();
+        boolean output = true;
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.info( message, throwable );
         checkLogger( target, output, message, throwable, type );
     }
@@ -139,12 +170,12 @@ public class Log4JLoggerTest
     public void testLog4JLoggerInfoWithExceptionDisabled()
         throws Exception
     {
-        final Level level = Level.ERROR;
-        final String message = "Meep!";
-        final Throwable throwable = new Throwable();
+        Level level = Level.ERROR;
+        String message = "Meep!";
+        Throwable throwable = new Throwable();
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.info( message, throwable );
         checkLogger( target, false, null, null, null );
     }
@@ -152,14 +183,14 @@ public class Log4JLoggerTest
     public void testLog4JLoggerWarnEnabled()
         throws Exception
     {
-        final Level level = Level.DEBUG;
-        final Level type = Level.WARN;
-        final String message = "Meep!";
-        final Throwable throwable = null;
-        final boolean output = true;
+        Level level = Level.DEBUG;
+        Level type = Level.WARN;
+        String message = "Meep!";
+        Throwable throwable = null;
+        boolean output = true;
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.warn( message );
         checkLogger( target, output, message, throwable, type );
     }
@@ -167,11 +198,11 @@ public class Log4JLoggerTest
     public void testLog4JLoggerWarnDisabled()
         throws Exception
     {
-        final Level level = Level.ERROR;
-        final String message = "Meep!";
+        Level level = Level.ERROR;
+        String message = "Meep!";
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.warn( message );
         checkLogger( target, false, null, null, null );
     }
@@ -179,14 +210,14 @@ public class Log4JLoggerTest
     public void testLog4JLoggerWarnWithExceptionEnabled()
         throws Exception
     {
-        final Level level = Level.DEBUG;
-        final Level type = Level.WARN;
-        final String message = "Meep!";
-        final Throwable throwable = new Throwable();
-        final boolean output = true;
+        Level level = Level.DEBUG;
+        Level type = Level.WARN;
+        String message = "Meep!";
+        Throwable throwable = new Throwable();
+        boolean output = true;
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.warn( message, throwable );
         checkLogger( target, output, message, throwable, type );
     }
@@ -194,12 +225,12 @@ public class Log4JLoggerTest
     public void testLog4JLoggerWarnWithExceptionDisabled()
         throws Exception
     {
-        final Level level = Level.ERROR;
-        final String message = "Meep!";
-        final Throwable throwable = new Throwable();
+        Level level = Level.ERROR;
+        String message = "Meep!";
+        Throwable throwable = new Throwable();
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.warn( message, throwable );
         checkLogger( target, false, null, null, null );
     }
@@ -207,14 +238,14 @@ public class Log4JLoggerTest
     public void testLog4JLoggerErrorEnabled()
         throws Exception
     {
-        final Level level = Level.DEBUG;
-        final Level type = Level.ERROR;
-        final String message = "Meep!";
-        final Throwable throwable = null;
-        final boolean output = true;
+        Level level = Level.DEBUG;
+        Level type = Level.ERROR;
+        String message = "Meep!";
+        Throwable throwable = null;
+        boolean output = true;
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.error( message );
         checkLogger( target, output, message, throwable, type );
     }
@@ -222,14 +253,14 @@ public class Log4JLoggerTest
     public void testLog4JLoggerErrorWithExceptionEnabled()
         throws Exception
     {
-        final Level level = Level.DEBUG;
-        final Level type = Level.ERROR;
-        final String message = "Meep!";
-        final Throwable throwable = new Throwable();
-        final boolean output = true;
+        Level level = Level.DEBUG;
+        Level type = Level.ERROR;
+        String message = "Meep!";
+        Throwable throwable = new Throwable();
+        boolean output = true;
 
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, level );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, level );
         logger.error( message, throwable );
         checkLogger( target, output, message, throwable, type );
     }
@@ -237,34 +268,34 @@ public class Log4JLoggerTest
     public void testConsoleLevelComparisonWithDebugEnabled()
         throws Exception
     {
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, Level.DEBUG );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, Level.DEBUG );
 
-        //assertEquals( "logger.isTraceEnabled()", true, logger.isTraceEnabled() );
         assertEquals( "logger.isDebugEnabled()", true, logger.isDebugEnabled() );
         assertEquals( "logger.isInfoEnabled()", true, logger.isInfoEnabled() );
         assertEquals( "logger.isWarnEnabled()", true, logger.isWarnEnabled() );
         assertEquals( "logger.isErrorEnabled()", true, logger.isErrorEnabled() );
+        assertEquals( "logger.isTraceEnabled()", true, logger.isFatalErrorEnabled() );
     }
 
     public void testConsoleLevelComparisonWithInfoEnabled()
         throws Exception
     {
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, Level.INFO );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, Level.INFO );
 
-        //assertEquals( "logger.isTraceEnabled()", false, logger.isTraceEnabled() );
         assertEquals( "logger.isDebugEnabled()", false, logger.isDebugEnabled() );
         assertEquals( "logger.isInfoEnabled()", true, logger.isInfoEnabled() );
         assertEquals( "logger.isWarnEnabled()", true, logger.isWarnEnabled() );
         assertEquals( "logger.isErrorEnabled()", true, logger.isErrorEnabled() );
+        assertEquals( "logger.isTraceEnabled()", true, logger.isFatalErrorEnabled() );
     }
 
     public void testConsoleLevelComparisonWithWarnEnabled()
         throws Exception
     {
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, Level.WARN );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, Level.WARN );
 
         //assertEquals( "logger.isTraceEnabled()", false, logger.isTraceEnabled() );
         assertEquals( "logger.isDebugEnabled()", false, logger.isDebugEnabled() );
@@ -276,8 +307,8 @@ public class Log4JLoggerTest
     public void testConsoleLevelComparisonWithErrorEnabled()
         throws Exception
     {
-        final MockAppender target = new MockAppender();
-        final Log4JLogger logger = createLogger( target, Level.ERROR );
+        MockAppender target = new MockAppender();
+        Log4JLogger logger = createLogger( target, Level.ERROR );
 
         //assertEquals( "logger.isTraceEnabled()", false, logger.isTraceEnabled() );
         assertEquals( "logger.isDebugEnabled()", false, logger.isDebugEnabled() );
@@ -286,21 +317,21 @@ public class Log4JLoggerTest
         assertEquals( "logger.isErrorEnabled()", true, logger.isErrorEnabled() );
     }
 
-    private Log4JLogger createLogger( final Appender target,
-                                      final Level priority )
+    private Log4JLogger createLogger( Appender target,
+                                      Level priority )
     {
-        final Logger log4jLogger = Logger.getLogger( "test" );
+        Logger log4jLogger = Logger.getLogger( "test" );
         log4jLogger.removeAllAppenders();
         log4jLogger.addAppender( target );
         log4jLogger.setLevel( priority );
         return new Log4JLogger( log4jLogger );
     }
 
-    private void checkLogger( final MockAppender target,
-                              final boolean output,
-                              final String message,
-                              final Throwable throwable,
-                              final Level priority )
+    private void checkLogger( MockAppender target,
+                              boolean output,
+                              String message,
+                              Throwable throwable,
+                              Level priority )
     {
         assertEquals( "logger.m_message == message", message, target.m_message );
         assertEquals( "logger.m_output == output", output, target.m_output );

@@ -2,11 +2,11 @@ package org.codehaus.plexus.logging.log4j;
 
 import junit.framework.TestCase;
 import org.apache.avalon.framework.configuration.Configuration;
-import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
-import org.codehaus.plexus.logging.LoggerManagerFactory;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
 
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Properties;
 
 public class Log4JLoggerManagerTest
@@ -17,7 +17,7 @@ public class Log4JLoggerManagerTest
         super( name );
     }
 
-    public void testLoggerManager()
+    public void testLog4JLoggerManagerWithRootLoggerProperties()
         throws Exception
     {
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
@@ -45,5 +45,32 @@ public class Log4JLoggerManagerTest
         assertEquals( "%-4r [%t] %-5p %c %x - %m%n", p.getProperty( "log4j.appender.default.layout.conversionPattern" ) );
 
         assertEquals( "INFO", p.getProperty( "log4j.appender.default.threshold" ) );
+    }
+
+    public void testLog4JLoggerManagerWithNoRootLoggerProperties()
+        throws Exception
+    {
+        XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
+
+        Log4JLoggerManager loggerManager = new Log4JLoggerManager();
+
+        Configuration c = builder.parse( new StringReader( "<logging></logging>" ) );
+
+        loggerManager.configure( c );
+
+        loggerManager.initialize();
+
+        Properties p = loggerManager.getLog4JProperties();
+
+        assertEquals( "INFO,console", p.getProperty( "log4j.rootLogger" ) );
+
+        assertEquals( "org.apache.log4j.ConsoleAppender", p.getProperty( "log4j.appender.console" ) );
+
+        assertEquals( "org.apache.log4j.PatternLayout", p.getProperty( "log4j.appender.console.layout" ) );
+
+        assertEquals( "%-4r [%t] %-5p %c %x - %m%n", p.getProperty( "log4j.appender.console.layout.ConversionPattern" ) );
+
+        // This is coming back with a trailing string for some reason
+        assertEquals( "INFO", p.getProperty( "log4j.appender.console.threshold" ) );
     }
 }
