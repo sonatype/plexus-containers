@@ -8,6 +8,11 @@ import junit.framework.TestCase;
 
 import org.codehaus.plexus.context.Context;
 
+/**
+ * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @version $Id$
+ */
 public class PlexusTestCase
     extends TestCase
 {
@@ -27,7 +32,6 @@ public class PlexusTestCase
     protected void setUp()
         throws Exception
     {
-
         InputStream configuration = null;
 
         try
@@ -185,5 +189,13 @@ public class PlexusTestCase
     public String getTestFile( String basedir, String path )
     {
         return new File( basedir, path ).getAbsolutePath();
+    }
+
+    public String getBasedir()
+    {
+        if ( basedir == null )
+            throw new RuntimeException( "basedir isn't set." );
+
+        return basedir;
     }
 }
