@@ -1,10 +1,8 @@
 package org.codehaus.plexus.component.discovery;
 
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class DefaultComponentDiscovererManager
     implements ComponentDiscovererManager
@@ -12,6 +10,8 @@ public class DefaultComponentDiscovererManager
     private List componentDiscoverers;
 
     private List componentDiscoveryListeners;
+
+    private List listeners;
 
     public List getComponentDiscoverers()
     {
@@ -47,6 +47,11 @@ public class DefaultComponentDiscovererManager
                 listener.componentDiscovered( event );
             }
         }
+    }
+
+    public List getListenerDescriptors()
+    {
+        return listeners;
     }
 
     // ----------------------------------------------------------------------
