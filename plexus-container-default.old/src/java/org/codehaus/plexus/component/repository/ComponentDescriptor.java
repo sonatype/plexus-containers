@@ -5,6 +5,8 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 /** Component instantiation description.
  *
@@ -35,7 +37,8 @@ public class ComponentDescriptor
 
     private Set requirements;
 
-    private Set dependencies;
+    // Should probably be a set as should maven's deps ...
+    private List dependencies;
 
     // ----------------------------------------------------------------------
     //  Instance methods
@@ -145,11 +148,16 @@ public class ComponentDescriptor
         return requirements;
     }
 
-    public Set getDependencies()
+    public void setDependencies( List dependencies )
+    {
+        this.dependencies = dependencies;
+    }
+
+    public List getDependencies()
     {
         if ( dependencies == null )
         {
-            dependencies = new HashSet();
+            dependencies = new ArrayList();
         }
         return dependencies;
     }
