@@ -54,9 +54,6 @@ public class ConfigurationMergerTest
         assertEquals( "org.codehaus.plexus.personality.avalon.AvalonComponentRepository",
                       cc.getChild( "component-repository" ).getChild( "implementation" ).getValue() );
 
-        assertEquals( "org.codehaus.plexus.classloader.DefaultResourceManager",
-                      cc.getChild( "resource-manager" ).getChild( "implementation" ).getValue() );
-
         assertEquals( "logging-implementation", cc.getChild( "logging" ).getChild( "implementation" ).getValue() );
 
         PlexusConfiguration lhm = cc.getChild( "lifecycle-handler-manager" );

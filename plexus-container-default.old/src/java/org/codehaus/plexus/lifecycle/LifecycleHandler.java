@@ -11,8 +11,6 @@ public interface LifecycleHandler
 
     public static String CONTEXT = "context";
 
-    public static String COMPONENT_REPOSITORY = "component.repository";
-
     public static String PLEXUS_CONTAINER = "plexus.container";
 
     void addEntity( String key, Object entity );

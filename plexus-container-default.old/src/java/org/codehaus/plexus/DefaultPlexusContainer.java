@@ -3,24 +3,20 @@ package org.codehaus.plexus;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
-import org.codehaus.plexus.component.composition.ComponentComposer;
-import org.codehaus.plexus.component.composition.DefaultComponentComposer;
-import org.codehaus.plexus.component.configurator.ComponentConfigurator;
-import org.codehaus.plexus.component.configurator.DefaultComponentConfigurator;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
-import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.component.manager.InstanceManager;
+import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
@@ -28,7 +24,6 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 
@@ -71,10 +66,6 @@ public class DefaultPlexusContainer
     private ClassRealm classRealm;
 
     private ClassLoader classLoader;
-
-    private ComponentConfigurator componentConfigurator;
-
-    private ComponentComposer componentComposer;
 
     private ComponentManagerManager componentManagerManager;
 
@@ -420,15 +411,13 @@ public class DefaultPlexusContainer
 
         initializeConfiguration();
 
-        initializeLoggerManager();
-
         initializeResources();
 
         initializeComponentRepository();
 
-        initializeComponentConfigurator();
+        // Should be safe now to lookup any component aside from the cmm and lhm
 
-        initializeComponentComposer();
+        initializeLoggerManager();
 
         initializeLifecycleHandlerManager();
 
@@ -716,26 +705,6 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------
-    // Component Configurator
-    // ----------------------------------------------------------------------
-
-    private void initializeComponentConfigurator()
-        throws Exception
-    {
-        componentConfigurator = new DefaultComponentConfigurator();
-    }
-
-    // ----------------------------------------------------------------------
-    // Component Configurator
-    // ----------------------------------------------------------------------
-
-    private void initializeComponentComposer()
-        throws Exception
-    {
-        componentComposer = new DefaultComponentComposer();
-    }
-
-    // ----------------------------------------------------------------------
     // Component Managers
     // ----------------------------------------------------------------------
 
@@ -749,6 +718,8 @@ public class DefaultPlexusContainer
         PlexusConfiguration c = configuration.getChild( "component-manager-manager" );
 
         componentManagerManager = (ComponentManagerManager) builder.build( c, DefaultComponentManagerManager.class );
+
+        //componentManagerManager = (ComponentManagerManager) lookup( ComponentManagerManager.ROLE );
     }
 
     public ComponentManager instantiateComponentManager( ComponentDescriptor descriptor )
@@ -780,7 +751,8 @@ public class DefaultPlexusContainer
             componentManager = componentManagerManager.getComponentManager( instantiationId );
         }
 
-        componentManager.setup( loggerManager.getLogger( "component-manager" ),
+        componentManager.setup( this,
+                                loggerManager.getLogger( "component-manager" ),
                                 getClassLoader(),
                                 lifecycleHandler,
                                 descriptor );
@@ -839,17 +811,14 @@ public class DefaultPlexusContainer
 
         lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( c, DefaultLifecycleHandlerManager.class );
 
+        // obtainable in phase via the container which is accessible from the component manager
         lifecycleHandlerManager.addEntity( LifecycleHandler.LOGGER, loggerManager.getRootLogger() );
 
+        // obtainable in phase via the container which is accessible from the component manager
         lifecycleHandlerManager.addEntity( LifecycleHandler.CONTEXT, context );
 
-        lifecycleHandlerManager.addEntity( LifecycleHandler.COMPONENT_REPOSITORY, componentRepository );
-
+        // obtainable in phase via the container which is accessible from the component manager
         lifecycleHandlerManager.addEntity( LifecycleHandler.PLEXUS_CONTAINER, this );
-
-        lifecycleHandlerManager.addEntity( PlexusLifecycleHandler.COMPONENT_CONFIGURATOR, componentConfigurator );
-
-        lifecycleHandlerManager.addEntity( "componentComposer", componentComposer );
 
         lifecycleHandlerManager.initialize();
     }
@@ -883,7 +852,7 @@ public class DefaultPlexusContainer
             }
             catch ( Exception e )
             {
-                getLogger().error( "error configuring resource: " + resourceConfigs[i].getValue(), e );
+                System.err.println( "error configuring resource: " + resourceConfigs[i].getValue() );
             }
         }
     }

@@ -2,6 +2,7 @@ package org.codehaus.plexus.lifecycle;
 
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.phase.Phase;
+import org.codehaus.plexus.PlexusContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

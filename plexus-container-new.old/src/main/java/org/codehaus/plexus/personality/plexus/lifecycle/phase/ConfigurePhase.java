@@ -1,9 +1,8 @@
 package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 
-import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
+import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
-import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
 
 public class ConfigurePhase
     extends AbstractPhase
@@ -12,7 +11,7 @@ public class ConfigurePhase
         throws Exception
     {
         ComponentConfigurator componentConfigurator =
-            (ComponentConfigurator) manager.getLifecycleHandler().getEntities().get( PlexusLifecycleHandler.COMPONENT_CONFIGURATOR );
+            (ComponentConfigurator) manager.getContainer().lookup( ComponentConfigurator.ROLE );
 
         if ( manager.getComponentDescriptor().hasConfiguration() )
         {

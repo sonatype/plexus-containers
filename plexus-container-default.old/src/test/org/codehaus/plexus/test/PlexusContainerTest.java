@@ -2,6 +2,7 @@ package org.codehaus.plexus.test;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.test.map.ActivityManager;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.list.Pipeline;
@@ -145,5 +146,11 @@ public class PlexusContainerTest
         assertTrue( ( (Valve) valves.get( 0 ) ).getState() );
 
         assertTrue( ( (Valve) valves.get( 1 ) ).getState() );
+    }
+
+    public void testLookupOfInternallyDefinedComponentConfigurator()
+        throws Exception
+    {
+        ComponentConfigurator cc = (ComponentConfigurator) container.lookup( ComponentConfigurator.ROLE );
     }
 }

@@ -9,6 +9,8 @@ package org.codehaus.plexus.component.manager;
  */
 public interface ComponentManagerManager
 {
+    String ROLE = ComponentManagerManager.class.getName();
+
     ComponentManager getComponentManager( String id )
         throws UndefinedComponentManagerException;
 

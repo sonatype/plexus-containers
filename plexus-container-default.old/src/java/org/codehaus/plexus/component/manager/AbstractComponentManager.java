@@ -4,10 +4,13 @@ package org.codehaus.plexus.component.manager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.PlexusContainer;
 
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
 {
+    private PlexusContainer container;
+
     private ComponentDescriptor componentDescriptor;
 
     private ClassLoader classLoader;
@@ -86,12 +89,14 @@ public abstract class AbstractComponentManager
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    public void setup( Logger logger,
+    public void setup( PlexusContainer container,
+                       Logger logger,
                        ClassLoader classLoader,
                        LifecycleHandler lifecycleHandler,
                        ComponentDescriptor componentDescriptor )
         throws Exception
     {
+        this.container = container;
         this.logger = logger;
         this.classLoader = classLoader;
         this.lifecycleHandler = lifecycleHandler;
@@ -159,5 +164,10 @@ public abstract class AbstractComponentManager
         {
             getLogger().error( "Cannot end component lifecycle with role: " + getComponentDescriptor().getRole(), e );
         }
+    }
+
+    public PlexusContainer getContainer()
+    {
+        return container;
     }
 }

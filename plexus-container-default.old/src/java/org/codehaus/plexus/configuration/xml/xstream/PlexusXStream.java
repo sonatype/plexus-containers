@@ -9,6 +9,7 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentSet;
+import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.configuration.xml.xstream.alias.HyphenatedClassMapper;

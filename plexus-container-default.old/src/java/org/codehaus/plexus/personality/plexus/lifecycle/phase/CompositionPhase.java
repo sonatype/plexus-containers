@@ -1,12 +1,7 @@
 package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 
-import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.composition.ComponentComposer;
 import org.codehaus.plexus.component.manager.ComponentManager;
-import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 
 /**
@@ -22,18 +17,8 @@ public class CompositionPhase
     {
         // We only need to assemble a component if it specifies requirements.
 
-        ComponentComposer componentComposer =
-            (ComponentComposer) manager.getLifecycleHandler().getEntities().get( "componentComposer" );
+        ComponentComposer componentComposer = (ComponentComposer) manager.getContainer().lookup( ComponentComposer.ROLE );
 
-        Context context = (Context) manager.getLifecycleHandler().getEntities().get( LifecycleHandler.CONTEXT );
-
-        PlexusContainer container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
-
-        /*
-        ComponentRepository componentRepository =
-            (ComponentRepository) manager.getLifecycleHandler().getEntities().get( LifecycleHandler.COMPONENT_REPOSITORY );
-            */
-
-        componentComposer.assembleComponent( object, manager.getComponentDescriptor(), container );
+        componentComposer.assembleComponent( object, manager.getComponentDescriptor(), manager.getContainer() );
     }
 }
