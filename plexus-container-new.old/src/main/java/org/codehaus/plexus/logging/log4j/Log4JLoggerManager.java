@@ -170,7 +170,7 @@ public class Log4JLoggerManager
 
         p.setProperty( "log4j.rootLogger", "INFO,console" );
         p.setProperty( "log4j.appender.console", "org.apache.log4j.ConsoleAppender" );
-        p.setProperty( "log4j.appender.console.threshold", " INFO" );
+        p.setProperty( "log4j.appender.console.threshold", "INFO" );
         p.setProperty( "log4j.appender.console.layout", "org.apache.log4j.PatternLayout" );
         p.setProperty( "log4j.appender.console.layout.ConversionPattern", "%-4r [%t] %-5p %c %x - %m%n" );
 
