@@ -1100,7 +1100,6 @@ public class DefaultPlexusContainer
         configurator.configureComponent( this, componentDescriptor, configuration );
     }
 
-
     private void initializeSystemProperties()
         throws PlexusConfigurationException
     {
@@ -1196,7 +1195,7 @@ public class DefaultPlexusContainer
         }
         else
         {
-            getLogger().warn( "The specified JAR repository doesn't exist or is not a directory." );
+            getLogger().warn( "The specified JAR repository doesn't exist or is not a directory: '" + repository.getAbsolutePath() + "'." );
         }
     }
 
