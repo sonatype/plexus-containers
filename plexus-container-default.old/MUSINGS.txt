@@ -56,14 +56,6 @@ are very detailed and specific, while others are more general.  -pete
   instantiated.  Thus, perhaps, setComponentImplementation or
   setInstanceImplementation.
 
-- AbstractInstanceManager has a configure() method that is not used
-  (it looks like the implementation is supposed to be set here);
-  however, there is also a setter for the implementation, which is
-  used by the ComponentManager.  Thus, either Component manager should
-  be calling the InstanceManager's configure() before calling
-  InstanceManager's initialize(), OR, the InstanceManager interface
-  should be modified to not include configure().
-
 - Thoughts about how the instantiation strategies are defined in the
   plexus conf file:  I'm not sure if this is a great idea as it leads
   the user to believe that these are _real_ components when in fact
