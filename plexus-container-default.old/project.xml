@@ -6,7 +6,7 @@
   <artifactId>plexus</artifactId>
   <id>plexus</id>
   <name>plexus</name>
-  <currentVersion>0.9</currentVersion>
+  <currentVersion>0.10</currentVersion>
   <organization>
     <name>Codehaus</name>
     <url>http://www.codehaus.org/</url>
@@ -153,13 +153,11 @@
       <version>1.2.6</version>
     </dependency>   
 
-    <!-- Servlet. This needs to be taken out as a core requirement -->
     <dependency>
-      <groupId>servletapi</groupId>
-      <artifactId>servletapi</artifactId>
-      <version>2.3</version>
-    </dependency>   
-    
+      <groupId>commons-graph</groupId>
+      <artifactId>commons-graph</artifactId>
+      <version>0.8.2</version>
+    </dependency>
 
   </dependencies>
 
