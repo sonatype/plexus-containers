@@ -6,7 +6,8 @@ package org.codehaus.plexus.component.manager;
 
 /**
  * An instance manager that does not track the objects that have been created.
- * Instead it ensures that it is always used with a single type of 
+ * Instead it ensures that it is always used with a single component
+ * implementation class.
  *
  * @author <a href="mailto:mhw@kremvax.net">Mark Wilkinson</a>
  * @version $Revision$
@@ -23,7 +24,7 @@ public final class NonTrackingInstanceManager
         if ( myComponentManager == null )
         {
             myComponentManager = componentManager;
-            
+
             myComponentManagerId = componentManager.getId();
         }
         else if ( !myComponentManagerId.equals( componentManager.getId() ) )
