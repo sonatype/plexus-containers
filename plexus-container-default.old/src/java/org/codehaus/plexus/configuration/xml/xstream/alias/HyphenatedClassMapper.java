@@ -28,8 +28,15 @@ public class HyphenatedClassMapper
         {
             basePackage = type.getName();
 
-            basePackage = basePackage.substring( 0, basePackage.lastIndexOf( "." ) );
-
+            if (  basePackage.lastIndexOf( "." ) != -1 )
+            {
+            	basePackage = basePackage.substring( 0, basePackage.lastIndexOf( "." ) );
+            }
+            else
+            {
+                basePackage = "";   
+            }
+            
             return;
         }
 
@@ -70,11 +77,11 @@ public class HyphenatedClassMapper
         {
             if ( isArray )
             {
-                return Class.forName( "[L" + elementName + ";" );
+                return Thread.currentThread().getContextClassLoader().loadClass( "[L" + elementName + ";" );
             }
             else
             {
-                return Class.forName( elementName );
+                return Thread.currentThread().getContextClassLoader().loadClass( elementName );
             }
         }
         catch ( ClassNotFoundException e )
