@@ -6,6 +6,7 @@ import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.ComponentDependency;
@@ -47,7 +48,7 @@ public class DefaultArtifactEnabledContainer
                               Set remoteRepositories,
                               ArtifactRepository localRepository,
                               ArtifactMetadataSource sourceReader,
-                              String[] artifactExcludes )
+                              ArtifactFilter filter )
         throws Exception
     {
         boolean dependencyComponentsDiscovered = false;
@@ -117,29 +118,33 @@ public class DefaultArtifactEnabledContainer
                 {
                     ComponentDependency cd = (ComponentDependency) j.next();
 
-                    artifactsToResolve.add( createArtifact( cd ) );
+                    // ----------------------------------------------------------------------
+                    // Don't even attempt to transtively resolve artifacts we are excluding.
+                    // ----------------------------------------------------------------------
+
+                    if ( filter.include( cd.getArtifactId() ) )
+                    {
+                        artifactsToResolve.add( createArtifact( cd ) );
+                    }
                 }
 
+                // ----------------------------------------------------------------------
+                // I need to pass the exclusion parameters into the artifact resolution
+                // phase to prevent duplication entries.
+                // ----------------------------------------------------------------------
+
                 ArtifactResolutionResult result =
-                    artifactResolver.resolveTransitively( artifactsToResolve, remoteRepositories, localRepository, sourceReader );
+                    artifactResolver.resolveTransitively( artifactsToResolve,
+                                                          remoteRepositories,
+                                                          localRepository,
+                                                          sourceReader,
+                                                          filter );
 
                 for ( Iterator k = result.getArtifacts().values().iterator(); k.hasNext(); )
                 {
                     Artifact a = (Artifact) k.next();
 
-                    boolean include = true;
-
-                    for ( int b = 0; b < artifactExcludes.length; b++ )
-                    {
-                        if ( a.getArtifactId().equals( artifactExcludes[b] ) )
-                        {
-                            include = false;
-
-                            break;
-                        }
-                    }
-
-                    if ( include )
+                    if ( filter.include( a.getArtifactId() ) )
                     {
                         componentRealm.addConstituent( a.getFile().toURL() );
                     }
@@ -183,5 +188,18 @@ public class DefaultArtifactEnabledContainer
 
             componentRealm.addConstituent( component.getFile().toURL() );
         }
+    }
+
+    protected boolean includeArtifact( String artifactId, String[] artifactExcludes )
+    {
+        for ( int b = 0; b < artifactExcludes.length; b++ )
+        {
+            if ( artifactId.equals( artifactExcludes[b] ) )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
