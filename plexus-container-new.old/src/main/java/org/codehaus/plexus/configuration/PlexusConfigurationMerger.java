@@ -117,7 +117,18 @@ public class PlexusConfigurationMerger
         // Component discoverer manager
         // ----------------------------------------------------------------------
 
-        mergedConfiguration.addChild( system.getChild( "component-discoverer-manager" ) );
+        PlexusConfiguration componentDiscovererManager =  user.getChild( "component-discoverer-manager" );
+
+        if ( componentDiscovererManager.getChildCount() != 0 )
+        {
+            mergedConfiguration.addChild( componentDiscovererManager );
+
+            copyComponentDiscoverers( system.getChild( "component-discoverer-manager" ), componentDiscovererManager );
+        }
+        else
+        {
+            mergedConfiguration.addChild( system.getChild( "component-discoverer-manager" ) );
+        }
 
         // ----------------------------------------------------------------------
         // Lifecycle handler managers
@@ -152,6 +163,18 @@ public class PlexusConfigurationMerger
         copyComponents( user.getChild( "components" ), components );
 
         return mergedConfiguration;
+    }
+
+    private static void copyComponentDiscoverers( PlexusConfiguration source, PlexusConfiguration destination )
+    {
+        PlexusConfiguration handlers[] = source.getChild( "component-discoverers" ).getChildren( "component-discoverer" );
+
+        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-discoverers" );
+
+        for ( int i = 0; i < handlers.length; i++ )
+        {
+            dest.addChild( handlers[i] );
+        }
     }
 
     private static void copyLifecycles( PlexusConfiguration source, PlexusConfiguration destination )
