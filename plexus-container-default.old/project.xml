@@ -31,7 +31,7 @@
   <siteDirectory>/www/plexus.codehaus.org</siteDirectory>
   
   <repository>
-    <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvs:plexus</connection>
+    <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvspublic:plexus/plexus-container</connection>
     <url>http://cvs.codehaus.org/viewcvs.cgi/plexus/?root=codehaus</url>
   </repository>
 
