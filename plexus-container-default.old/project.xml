@@ -108,6 +108,14 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <name>Michal Maczka</name>
+      <id>michal</id>
+      <email>mmaczka@interia.pl</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <dependencies>

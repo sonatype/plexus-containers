@@ -4,6 +4,7 @@ import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
+import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
 import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
@@ -49,7 +50,7 @@ public class DefaultComponentRepository
 
         componentDescriptorMaps = new HashMap();
 
-        compositionResolver = new CompositionResolver();
+        compositionResolver = new DefaultCompositionResolver();
     }
 
     // ----------------------------------------------------------------------

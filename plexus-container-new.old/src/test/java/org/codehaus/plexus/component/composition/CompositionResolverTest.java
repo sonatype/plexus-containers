@@ -51,7 +51,7 @@ public class CompositionResolverTest
             "  <role>c3</role>" +
             "</component>";
 
-        CompositionResolver compositionResolver = new CompositionResolver();
+        CompositionResolver compositionResolver = new DefaultCompositionResolver();
 
         ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
 
@@ -130,7 +130,7 @@ public class CompositionResolverTest
             "</component>";
 
 
-        CompositionResolver compositionResolver = new CompositionResolver();
+        CompositionResolver compositionResolver = new DefaultCompositionResolver();
 
         ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
 

@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -13,9 +14,17 @@ import java.util.List;
  *
  * @version $Id$
  */
-public class CompositionResolverTest
+public abstract class AbstractCompositionResolverTest
     extends TestCase
 {
+    
+    /**
+     * 
+     * @return
+     */
+    protected abstract CompositionResolver getCompositionResolver();
+    
+    
     // ------------------------------------------------------------------------
     //
     //     +-------+           +-------+
@@ -51,7 +60,7 @@ public class CompositionResolverTest
             "  <role>c3</role>" +
             "</component>";
 
-        CompositionResolver compositionResolver = new DefaultCompositionResolver();
+        CompositionResolver compositionResolver = getCompositionResolver();
 
         ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
 
@@ -66,14 +75,16 @@ public class CompositionResolverTest
         compositionResolver.addComponentDescriptor( c3 );
 
         List dependencies = compositionResolver.getComponentDependencies( c1.getComponentKey() );
-
+        
+        assertEquals( 2, dependencies.size() );
+               
         assertTrue( dependencies.contains( c2.getRole() ) );
 
         assertTrue( dependencies.contains( c3.getRole() ) );
 
         assertEquals( 2, dependencies.size() );
     }
-
+    
     // ------------------------------------------------------------------------
     //
     //     +-------+           +-------+
@@ -130,7 +141,7 @@ public class CompositionResolverTest
             "</component>";
 
 
-        CompositionResolver compositionResolver = new DefaultCompositionResolver();
+        DefaultCompositionResolver compositionResolver = new DefaultCompositionResolver();
 
         ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
 
