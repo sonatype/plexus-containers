@@ -21,7 +21,7 @@ public class PlexusConfigurationMerger
     // -----------------------------------+-----------------------------------------------------------------
     // component-repository               | user wins
     // -----------------------------------+-----------------------------------------------------------------
-    // resources                          | user
+    // resources                          | user wins, but system resources show through
     // -----------------------------------+-----------------------------------------------------------------
     // component-manager-manager          | user ignore
     // -----------------------------------+-----------------------------------------------------------------
@@ -183,7 +183,6 @@ public class PlexusConfigurationMerger
             mergedConfiguration.addChild( system.getChild( "component-composer-manager" ) );
         }
 
-
         // ----------------------------------------------------------------------
         // Components
         // ----------------------------------------------------------------------
@@ -237,7 +236,6 @@ public class PlexusConfigurationMerger
             dest.addChild( handlers[i] );
         }
     }
-
 
     private static void copyComponentComposers( PlexusConfiguration source, PlexusConfiguration destination )
     {
