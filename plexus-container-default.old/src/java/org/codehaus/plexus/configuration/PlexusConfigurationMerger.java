@@ -75,6 +75,9 @@ public class PlexusConfigurationMerger
             mergedConfiguration.addChild( system.getChild( "component-repository" ) );
         }
 
+        // TODO: merge with default plexus.conf
+        mergedConfiguration.addChild( user.getChild( "resources" ) );
+
         mergedConfiguration.addChild( system.getChild( "resource-manager" ) );
 
         mergedConfiguration.addChild( system.getChild( "component-manager-manager" ) );
