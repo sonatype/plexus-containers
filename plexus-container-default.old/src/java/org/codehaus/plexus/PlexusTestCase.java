@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.codehaus.plexus.context.Context;
-
 public class PlexusTestCase
     extends TestCase
 {
