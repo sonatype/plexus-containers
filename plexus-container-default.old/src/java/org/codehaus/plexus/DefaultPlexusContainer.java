@@ -68,7 +68,7 @@ public class DefaultPlexusContainer
 
     private ClassWorld classWorld;
 
-    private ClassRealm classRealm;
+    private ClassRealm coreRealm;
 
     private ClassLoader classLoader;
 
@@ -612,9 +612,9 @@ public class DefaultPlexusContainer
         return classWorld;
     }
 
-    public ClassRealm getClassRealm()
+    public ClassRealm getCoreRealm()
     {
-        return classRealm;
+        return coreRealm;
     }
     
     private void initializeClassWorlds()
@@ -627,21 +627,21 @@ public class DefaultPlexusContainer
 
         try
         {
-            classRealm = classWorld.getRealm( "core" );
+            coreRealm = classWorld.getRealm( "core" );
         }
         catch ( NoSuchRealmException e )
         {
-            if ( classLoader != null && classRealm != null )
+            if ( classLoader != null && coreRealm != null )
             {
-                classRealm = classWorld.newRealm( "core", classLoader );
+                coreRealm = classWorld.newRealm( "core", classLoader );
             }
             else
             {
-                classRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+                coreRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
             }
         }
 
-        setClassLoader( classRealm.getClassLoader() );
+        setClassLoader( coreRealm.getClassLoader() );
 
         Thread.currentThread().setContextClassLoader( classLoader );
     }
@@ -658,6 +658,8 @@ public class DefaultPlexusContainer
     private void initializeContext()
     {
         addContextValue( PlexusConstants.PLEXUS_KEY, this );
+
+        addContextValue( PlexusConstants.PLEXUS_CORE_REALM, coreRealm );
     }
 
     // ----------------------------------------------------------------------
@@ -766,7 +768,7 @@ public class DefaultPlexusContainer
 
         componentRepository.configure( configuration );
 
-        componentRepository.setClassRealm( classRealm );
+        componentRepository.setClassRealm( coreRealm );
 
         componentRepository.initialize();
 
@@ -849,7 +851,7 @@ public class DefaultPlexusContainer
 
                     if ( directory.exists() && directory.isDirectory() )
                     {
-                        classRealm.addConstituent( directory.toURL() );
+                        coreRealm.addConstituent( directory.toURL() );
                     }
                 }
             }
@@ -863,7 +865,7 @@ public class DefaultPlexusContainer
     public void addJarResource( File jar )
         throws Exception
     {
-        classRealm.addConstituent( jar.toURL() );
+        coreRealm.addConstituent( jar.toURL() );
     }
 
     public void addJarRepository( File repository )
