@@ -15,14 +15,19 @@ import java.io.StringReader;
 public class CascadingConfigurationTest
     extends TestCase
 {
-    private XmlPullConfigurationBuilder cb;
+    /** Configuration builder. */
+    private XmlPullConfigurationBuilder configurationBuilder;
 
+    /** Base xml string for base configuration. */
     private String baseXml;
 
+    /** Parent xml string for parent configuration. */
     private String parentXml;
 
+    /**  Base configuration. */
     private Configuration base;
 
+    /** Parent Configuration. */
     private Configuration parent;
 
     public CascadingConfigurationTest( String s )
@@ -33,7 +38,7 @@ public class CascadingConfigurationTest
     public void setUp()
         throws Exception
     {
-        cb = new XmlPullConfigurationBuilder();
+        configurationBuilder = new XmlPullConfigurationBuilder();
 
         baseXml = "<conf>" +
                     "<type default='foo'>jason</type>" +
@@ -48,9 +53,9 @@ public class CascadingConfigurationTest
                       "<foo a1='1' a2='2' number='0'>bar</foo>" +
                     "</conf>";
 
-        base = cb.parse( new StringReader( baseXml ) );
+        base = configurationBuilder.parse( new StringReader( baseXml ) );
 
-        parent = cb.parse( new StringReader( parentXml ) );
+        parent = configurationBuilder.parse( new StringReader( parentXml ) );
     }
 
     public void testSimpleConfigurationCascading()
