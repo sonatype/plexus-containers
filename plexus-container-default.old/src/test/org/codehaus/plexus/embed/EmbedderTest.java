@@ -15,7 +15,7 @@ public class EmbedderTest
     public void testConfigurationByURL()
         throws Exception
     {
-        Embedder embed = new Embedder();
+        PlexusEmbedder embed = new Embedder();
 
         embed.setConfiguration( getClass().getResource( "EmbedderTest.xml" ) );
 

@@ -6,7 +6,7 @@
   <artifactId>plexus</artifactId>
   <id>plexus</id>
   <name>Plexus Container</name>
-  <currentVersion>0.17-SNAPSHOT</currentVersion>
+  <currentVersion>0.18-SNAPSHOT</currentVersion>
   <organization>
     <name>Codehaus</name>
     <url>http://www.codehaus.org/</url>
@@ -116,9 +116,29 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <name>John Casey</name>
+      <id>jdcasey</id>
+      <email>jdcasey@codehaus.org</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <dependencies>
+
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-container-api</artifactId>
+      <version>0.18-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>0.18-SNAPSHOT</version>
+    </dependency>
 
     <dependency>
       <groupId>xstream</groupId>

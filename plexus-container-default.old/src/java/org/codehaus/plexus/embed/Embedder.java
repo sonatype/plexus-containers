@@ -13,7 +13,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.PropertyUtils;
 
-public class Embedder
+public class Embedder implements PlexusEmbedder
 {
 
     private URL configurationURL;

@@ -9,10 +9,22 @@
   </parent>
   <groupId>plexus</groupId>
   <artifactId>plexus</artifactId>
-  <version>0.17-SNAPSHOT</version>
+  <version>0.18-SNAPSHOT</version>
   <name>Plexus Container</name>
 
   <dependencies>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-container-api</artifactId>
+      <version>0.18-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>0.18-SNAPSHOT</version>
+    </dependency>
+
     <dependency>
       <groupId>xstream</groupId>
       <artifactId>xstream</artifactId>
