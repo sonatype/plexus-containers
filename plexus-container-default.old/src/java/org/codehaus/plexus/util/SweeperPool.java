@@ -65,6 +65,7 @@ public class SweeperPool
         this.triggerSize = saneConvert( triggerSize );
         pooledObjects = new ArrayList( intialCapacity );
 
+		//only run a sweeper if sweep interval is positive
         if ( sweepInterval > 0 )
         {
             sweeper = new Sweeper( this, sweepInterval );
@@ -245,37 +246,39 @@ public class SweeperPool
          */
         public void run()
         {
-            debug( "started" );
+            debug("started");
 
-            synchronized ( this )
+            if (sweepInterval > 0)
             {
-                while ( service )
+                synchronized (this)
                 {
-                    if ( sweepInterval > 0 )
+                    while (service)
                     {
                         try
                         {
-                            wait( sweepInterval * 1000 );
+                        	//wait specified number of seconds
+                        	//before running next sweep
+                            wait(sweepInterval * 1000);
                         }
-                        catch ( InterruptedException e )
+                        catch (InterruptedException e)
                         {
                         }
-
                         runSweep();
                     }
                 }
             }
 
-            debug( "stopped" );
+            debug("stopped");
         }
 
         public void start()
         {
             if ( !service )
             {
+				service = true;
                 Thread t = new Thread( this );
                 t.start();
-                service = true;
+                
             }
         }
 
