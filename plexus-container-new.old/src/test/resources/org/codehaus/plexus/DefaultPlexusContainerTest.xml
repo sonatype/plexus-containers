@@ -23,24 +23,27 @@
     <implementation>org.codehaus.plexus.component.repository.DefaultComponentRepository</implementation>
   </component-repository>
 
-  <lifecycle-handlers>
-    <lifecycle-handler implementation="org.codehaus.plexus.SimpleLifecycleHandler">
-      <id>arbitrary</id>
-      <name>Arbitrary Lifecycle Handler</name>
-      <begin-segment>
-        <phase implementation="org.codehaus.plexus.lifecycle.phase.EenyPhase"/>
-        <phase implementation="org.codehaus.plexus.lifecycle.phase.MeenyPhase"/>
-        <phase implementation="org.codehaus.plexus.lifecycle.phase.MinyPhase"/>
-        <phase implementation="org.codehaus.plexus.lifecycle.phase.MoPhase"/>
-      </begin-segment>
-      <suspend-segment>
-      </suspend-segment>
-      <resume-segment>
-      </resume-segment>
-      <end-segment>
-      </end-segment>
-    </lifecycle-handler>
-  </lifecycle-handlers>
+  <lifecycle-handler-manager>
+    <default-lifecycle-handler-id>arbitrary</default-lifecycle-handler-id>
+    <lifecycle-handlers>
+      <lifecycle-handler implementation="org.codehaus.plexus.SimpleLifecycleHandler">
+        <id>arbitrary</id>
+        <name>Arbitrary Lifecycle Handler</name>
+        <begin-segment>
+          <phase implementation="org.codehaus.plexus.lifecycle.phase.EenyPhase"/>
+          <phase implementation="org.codehaus.plexus.lifecycle.phase.MeenyPhase"/>
+          <phase implementation="org.codehaus.plexus.lifecycle.phase.MinyPhase"/>
+          <phase implementation="org.codehaus.plexus.lifecycle.phase.MoPhase"/>
+        </begin-segment>
+        <suspend-segment>
+        </suspend-segment>
+        <resume-segment>
+        </resume-segment>
+        <end-segment>
+        </end-segment>
+      </lifecycle-handler>
+    </lifecycle-handlers>
+  </lifecycle-handler-manager>
 
   <components>
 

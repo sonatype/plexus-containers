@@ -1,282 +1,102 @@
-/* ====================================================================
- * JContainer Software License, version 1.1
- *
- * Copyright (c) 2003, JContainer Group. All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. Neither the name of the JContainer Group nor the name "Loom" nor
- *    the names of its contributors may be used to endorse or promote
- *    products derived from this software without specific prior
- *    written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
- * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * ====================================================================
- *
- * JContainer Loom includes code from the Apache Software Foundation
- *
- * ====================================================================
- * The Apache Software License, Version 1.1
- *
- * Copyright (c) 1997-2003 The Apache Software Foundation. All rights
- * reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
- *    "This product includes software developed by the
- *    Apache Software Foundation (http://www.apache.org/)."
- *    Alternately, this acknowledgment may appear in the software
- *    itself, if and wherever such third-party acknowledgments
- *    normally appear.
- *
- * 4. The names "Jakarta", "Avalon", and "Apache Software Foundation"
- *    must not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
- *    permission, please contact apache@apache.org.
- *
- * 5. Products derived from this software may not be called "Apache",
- *    nor may "Apache" appear in their name, without prior written
- *    permission of the Apache Software Foundation.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
 package org.codehaus.plexus.configuration;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
-/**
- * The ConfigurationMerger will take a Configuration object and layer it over another.
- *
- * It will use special attributes on the layer's children to control how children
- * of the layer and base are combined. In order for a child of the layer to be merged with a
- * child of the base, the following must hold true:
- * <ol>
- *   <li>The child in the <b>layer</b> Configuration has an attribute named
- *       <code>phoenix-configuration:merge</code> and its value is equal to a boolean
- *       <code>TRUE</code>
- *   </li>
- *   <li>There must be a single child in both the layer and base with the same getName() <b>OR</b>
- *       there exists an attribute named <code>phoenix-configuration:key-attribute</code>
- *       that names an attribute that exists on both the layer and base that can be used to match
- *       multiple children of the same getName()
- *   </li>
- * </ol>
- *
- * @author <a href="mailto:proyal@apache.org">Peter Royal</a>
- */
 public class PlexusConfigurationMerger
 {
-    /**
-     * Merge two configurations.
-     *
-     * @param layer Configuration to <i>layer</i> over the base
-     * @param base Configuration <i>layer</i> will be merged with
-     *
-     * @return Result of merge
-     *
-     * @exception PlexusConfigurationException if unable to merge
-     */
-    public static PlexusConfiguration merge( PlexusConfiguration layer, PlexusConfiguration base )
-        throws PlexusConfigurationException
+    // -----------------------------------+-----------------------------------------------------------------
+    //  E L E M E N T                     |
+    // -----------------------------------+-----------------------------------------------------------------
+    // load-on-start                      | user
+    // -----------------------------------+-----------------------------------------------------------------
+    // system-properties                  | user
+    // -----------------------------------+-----------------------------------------------------------------
+    // configurations-directory           | user
+    // -----------------------------------+-----------------------------------------------------------------
+    // logging                            | user wins
+    // -----------------------------------+-----------------------------------------------------------------
+    // component-repository               | user wins
+    // -----------------------------------+-----------------------------------------------------------------
+    // resource-manager                   | user ignore
+    // -----------------------------------+-----------------------------------------------------------------
+    // component-manager-manager          | user ignore
+    // -----------------------------------+-----------------------------------------------------------------
+    // lifecycle-handler-manager          | user wins
+    // -----------------------------------+-----------------------------------------------------------------
+    // components                         | user
+    // -----------------------------------+-----------------------------------------------------------------
+
+    public static PlexusConfiguration merge( PlexusConfiguration user, PlexusConfiguration system )
     {
-        DefaultPlexusConfiguration merged = new DefaultPlexusConfiguration( base.getName() );
+        DefaultPlexusConfiguration mergedConfiguration = new DefaultPlexusConfiguration( "plexus" );
 
-        copyAttributes( base, merged );
+        PlexusConfiguration loadOnStart = user.getChild( "load-on-start" );
 
-        copyAttributes( layer, merged );
-
-        mergeChildren( layer, base, merged );
-
-        String value = getValue( layer, base );
-
-        if ( null != value )
+        if ( loadOnStart.getChildCount() != 0 )
         {
-            merged.setValue( value );
+            mergedConfiguration.addChild( loadOnStart );
         }
 
-        return merged;
-    }
+        PlexusConfiguration systemProperties = user.getChild( "system-properties" );
 
-    private static void mergeChildren( PlexusConfiguration layer,
-                                       PlexusConfiguration base,
-                                       DefaultPlexusConfiguration merged )
-        throws PlexusConfigurationException
-    {
-        PlexusConfiguration[] layerChildren = layer.getChildren();
-
-        PlexusConfiguration[] baseChildren = base.getChildren();
-
-        Set baseUsed = new HashSet();
-
-        for ( int i = 0; i < layerChildren.length; i++ )
+        if ( systemProperties.getChildCount() != 0 )
         {
-            PlexusConfiguration mergeWith = getMergePartner( layerChildren[i], layer, base );
+            mergedConfiguration.addChild( systemProperties );
+        }
 
-            if ( null == mergeWith )
-            {
-                merged.addChild( layerChildren[i] );
-            }
-            else
-            {
-                merged.addChild( merge( layerChildren[i], mergeWith ) );
+        PlexusConfiguration[] configurationsDirectories = user.getChildren( "configurations-directory" );
 
-                baseUsed.add( mergeWith );
+        if ( configurationsDirectories.length != 0 )
+        {
+            for ( int i = 0; i < configurationsDirectories.length; i++ )
+            {
+                mergedConfiguration.addChild( configurationsDirectories[i] );
             }
         }
 
-        for ( int i = 0; i < baseChildren.length; i++ )
+        PlexusConfiguration logging = user.getChild( "logging" );
+
+        if ( logging.getChildCount() != 0 )
         {
-            if ( !baseUsed.contains( baseChildren[i] ) )
-            {
-                merged.addChild( baseChildren[i] );
-            }
+            mergedConfiguration.addChild( logging );
         }
-    }
-
-    private static PlexusConfiguration getMergePartner( PlexusConfiguration toMerge,
-                                                  PlexusConfiguration layer,
-                                                  PlexusConfiguration base )
-    {
-        PlexusConfiguration[] layerKids = match( layer,
-                                           toMerge.getName(),
-                                           null,
-                                           null );
-
-        PlexusConfiguration[] baseKids = match( base,
-                                          toMerge.getName(),
-                                          null,
-                                          null );
-
-        if ( baseKids.length == 1 && layerKids.length == 1 )
+        else
         {
-            return baseKids[0];
+            mergedConfiguration.addChild( system.getChild( "logging" ) );
         }
 
-        return null;
-    }
+        PlexusConfiguration componentRepository = user.getChild( "component-repository" );
 
-    private static String getValue( PlexusConfiguration layer, PlexusConfiguration base )
-    {
-        try
+        if ( componentRepository.getChildCount() != 0 )
         {
-            return layer.getValue();
+            mergedConfiguration.addChild( componentRepository );
         }
-        catch ( PlexusConfigurationException e )
+        else
         {
-            return base.getValue( null );
-        }
-    }
-
-    private static void copyAttributes( PlexusConfiguration source,
-                                        DefaultPlexusConfiguration dest )
-        throws PlexusConfigurationException
-    {
-        String[] names = source.getAttributeNames();
-
-        for ( int i = 0; i < names.length; i++ )
-        {
-            dest.setAttribute( names[i], source.getAttribute( names[i] ) );
-        }
-    }
-
-    /**
-     * Return all occurance of a configuration child containing the supplied attribute name.
-     * @param config the configuration
-     * @param element the name of child elements to select from the configuration
-     * @param attribute the attribute name to filter (null will match any attribute name)
-     * @return an array of configuration instances matching the query
-     */
-    public static PlexusConfiguration[] match( PlexusConfiguration config,
-                                         String element,
-                                         String attribute )
-    {
-        return match( config, element, attribute, null );
-    }
-
-    /**
-     * Return occurance of a configuration child containing the supplied attribute name and value.
-     * @param config the configuration
-     * @param element the name of child elements to select from the configuration
-     * @param attribute the attribute name to filter (null will match any attribute name )
-     * @param value the attribute value to match (null will match any attribute value)
-     * @return an array of configuration instances matching the query
-     */
-    public static PlexusConfiguration[] match( PlexusConfiguration config,
-                                         String element,
-                                         String attribute,
-                                         String value )
-    {
-        ArrayList list = new ArrayList();
-        PlexusConfiguration[] children = config.getChildren( element );
-
-        for ( int i = 0; i < children.length; i++ )
-        {
-            if ( null == attribute )
-            {
-                list.add( children[i] );
-            }
-            else
-            {
-                String v = children[i].getAttribute( attribute, null );
-
-                if ( v != null )
-                {
-                    if ( ( value == null ) || v.equals( value ) )
-                    {
-                        // it's a match
-                        list.add( children[i] );
-                    }
-                }
-            }
+            mergedConfiguration.addChild( system.getChild( "component-repository" ) );
         }
 
-        return (PlexusConfiguration[]) list.toArray( new PlexusConfiguration[list.size()] );
+        mergedConfiguration.addChild( system.getChild( "resource-manager" ) );
+
+        mergedConfiguration.addChild( system.getChild( "component-manager-manager" ) );
+
+        PlexusConfiguration lifecycleHandlerManager = user.getChild( "lifecycle-handler-manager" );
+
+        if ( lifecycleHandlerManager.getChildCount() != 0 )
+        {
+            mergedConfiguration.addChild( lifecycleHandlerManager );
+        }
+        else
+        {
+            mergedConfiguration.addChild( system.getChild( "lifecycle-handler-manager" ) );
+        }
+
+        PlexusConfiguration components = user.getChild( "components" );
+
+        if ( components.getChildCount() != 0 )
+        {
+            mergedConfiguration.addChild( components );
+        }
+
+        return mergedConfiguration;
     }
 }

@@ -3,7 +3,8 @@ package org.codehaus.plexus.configuration;
 import junit.framework.TestCase;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
-import java.io.StringReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  *
@@ -15,20 +16,11 @@ import java.io.StringReader;
 public class ConfigurationMergerTest
     extends TestCase
 {
-    /** Configuration builder. */
     private XmlPullConfigurationBuilder configurationBuilder;
 
-    /** Base xml string for base configuration. */
-    private String baseXml;
+    private PlexusConfiguration user;
 
-    /** Parent xml string for layer configuration. */
-    private String layerXml;
-
-    /**  Base configuration. */
-    private PlexusConfiguration base;
-
-    /** Parent Configuration. */
-    private PlexusConfiguration layer;
+    private PlexusConfiguration system;
 
     public ConfigurationMergerTest( String s )
     {
@@ -40,66 +32,64 @@ public class ConfigurationMergerTest
     {
         configurationBuilder = new XmlPullConfigurationBuilder();
 
-        baseXml =
-            "<conf>" +
-            "  <type default='bar'>jason</type>" +
-            "  <name>jason</name>" +
-            "  <number>0</number>" +
-            "  <boolean>true</boolean>" +
-            "  <logging>" +
-            "    <implementation>base</implementation>" +
-            "  </logging>" +
-            "</conf>";
+        InputStream userStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "org/codehaus/plexus/configuration/avalon.xml" );
 
-        layerXml =
-            "<conf>" +
-            "  <type default='foo'>jason</type>" +
-            "  <occupation>procrastinator</occupation>" +
-            "  <foo a1='1' a2='2' number='0'>bar</foo>" +
-            "  <logging>" +
-            "    <implementation>layer</implementation>" +
-            "  </logging>" +
-            "</conf>";
+        assertNotNull( userStream );
 
-        base = configurationBuilder.parse( new StringReader( baseXml ) );
+        user = configurationBuilder.parse( new InputStreamReader( userStream ) );
 
-        layer = configurationBuilder.parse( new StringReader( layerXml ) );
-    }
+        InputStream systemStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
 
-    public void testWithHelper()
-        throws Exception
-    {
-        PlexusConfiguration c = ConfigurationTestHelper.getTestConfiguration();
+        assertNotNull( systemStream );
 
-        PlexusConfiguration cc = PlexusConfigurationMerger.merge( new DefaultPlexusConfiguration( "" ), c );
-
-        ConfigurationTestHelper.testConfiguration( cc );
+        system = configurationBuilder.parse( new InputStreamReader( systemStream ) );
     }
 
     public void testSimpleConfigurationCascading()
         throws Exception
     {
-        PlexusConfiguration cc = PlexusConfigurationMerger.merge( layer, base );
+        PlexusConfiguration cc = PlexusConfigurationMerger.merge( user, system );
 
-        // Take a value from the base.
-        assertEquals( "jason", cc.getChild( "name" ).getValue() );
+        assertEquals( "user-conf-dir", cc.getChildren( "configurations-directory" )[0].getValue() );
 
-        // Take a value from the layer.
-        assertEquals( "procrastinator", cc.getChild( "occupation" ).getValue() );
+        assertEquals( "org.codehaus.plexus.personality.avalon.AvalonComponentRepository",
+                      cc.getChild( "component-repository" ).getChild( "implementation" ).getValue() );
 
-        // We want the 'default' attribute from the layer, which effectively overrides
-        // the 'default' attribute in the base configuration.
-        assertEquals( "foo", cc.getChild( "type" ).getAttribute( "default" ) );
+        assertEquals( "org.codehaus.plexus.classloader.DefaultResourceManager",
+                      cc.getChild( "resource-manager" ).getChild( "implementation" ).getValue() );
 
-        assertEquals( "layer", cc.getChild( "logging" ).getChild( "implementation" ).getValue() );
+        assertEquals( "logging-implementation", cc.getChild( "logging" ).getChild( "implementation" ).getValue() );
 
-        assertNotNull( cc.getChild( "foo" ).getAttributeNames() );
+        PlexusConfiguration lhm = cc.getChild( "lifecycle-handler-manager" );
 
-        assertEquals( 3, cc.getChild( "foo" ).getAttributeNames().length );
+        assertEquals( "avalon", lhm.getChild( "default-lifecycle-handler-id" ).getValue() );
 
-        // Create a new configuration.
-        PlexusConfiguration c = cc.getChild( "new", true );
+        PlexusConfiguration lh = lhm.getChild( "lifecycle-handlers" ).getChildren( "lifecycle-handler" )[0];
 
-        assertNotNull( c );
+        assertEquals( "avalon", lh.getChild( "id" ).getValue() );
+
+        PlexusConfiguration[] bs = lh.getChild( "begin-segment" ).getChildren( "phase" );
+
+        assertEquals( "org.codehaus.plexus.personality.avalon.lifecycle.phase.LogEnablePhase", bs[0].getAttribute( "implementation" ) );
+
+        assertEquals( "org.codehaus.plexus.personality.avalon.lifecycle.phase.ContextualizePhase", bs[1].getAttribute( "implementation" ) );
+
+        assertEquals( "org.codehaus.plexus.personality.avalon.lifecycle.phase.ServicePhase", bs[2].getAttribute( "implementation" ) );
+
+        assertEquals( "org.codehaus.plexus.personality.avalon.lifecycle.phase.ComposePhase", bs[3].getAttribute( "implementation" ) );
+
+        assertEquals( "org.codehaus.plexus.personality.avalon.lifecycle.phase.ConfigurePhase", bs[4].getAttribute( "implementation" ) );
+
+        assertEquals( "org.codehaus.plexus.personality.avalon.lifecycle.phase.InitializePhase", bs[5].getAttribute( "implementation" ) );
+
+        assertEquals( "org.codehaus.plexus.personality.avalon.lifecycle.phase.StartPhase", bs[6].getAttribute( "implementation" ) );
+
+        PlexusConfiguration componentMM = cc.getChild( "component-manager-manager" );
+
+        assertEquals( "singleton", componentMM.getChild( "default-component-manager-id" ).getValue() );
+
+        PlexusConfiguration[] components = cc.getChild( "components" ).getChildren( "component" );
+
+        assertEquals( "org.codehaus.plexus.ServiceA", components[0].getChild( "role" ).getValue() );
     }
 }

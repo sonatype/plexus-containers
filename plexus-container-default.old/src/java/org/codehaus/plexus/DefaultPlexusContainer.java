@@ -18,8 +18,8 @@ import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.context.ContextMapAdapter;
@@ -329,12 +329,14 @@ public class DefaultPlexusContainer
 
         initializeConfiguration();
 
+        mergedConfiguration = getMergedConfiguration();
+
         configurationReader = null;
 
         initializeLoggerManager();
 
         initializeResourceManager();
-        
+
         initializeComponentRepository();
 
         initializeComponentConfigurator();
@@ -420,11 +422,11 @@ public class DefaultPlexusContainer
         {
             try
             {
-                classLoader = getClassWorld().getRealm("core").getClassLoader();
+                classLoader = getClassWorld().getRealm( "core" ).getClassLoader();
             }
-            catch (NoSuchRealmException e)
+            catch ( NoSuchRealmException e )
             {
-                throw new IllegalStateException("There must be a core ClassWorlds realm.");
+                throw new IllegalStateException( "There must be a core ClassWorlds realm." );
             }
         }
 
@@ -578,33 +580,13 @@ public class DefaultPlexusContainer
     private PlexusConfiguration getMergedConfiguration()
         throws Exception
     {
-        if ( mergedConfiguration == null )
-        {
-            mergedConfiguration = PlexusConfigurationMerger.merge( getConfiguration(), getDefaultConfiguration() );
-
-            // A little tweak for the lifecycle handlers
-
-            PlexusConfiguration[] lifecycleHandlers = getConfiguration().getChild( "lifecycle-handlers" ).getChildren( "lifecycle-handler" );
-
-            if ( lifecycleHandlers != null )
-            {
-                DefaultPlexusConfiguration defaultLifecycleHandlers =
-                    (DefaultPlexusConfiguration) mergedConfiguration.getChild( "lifecycle-handler-manager" ).getChild( "lifecycle-handlers" );
-
-                for ( int i = 0; i < lifecycleHandlers.length; i++ )
-                {
-                    defaultLifecycleHandlers.addChild( lifecycleHandlers[i] );
-                }
-            }
-        }
-
-        return mergedConfiguration;
+        return PlexusConfigurationMerger.merge( getConfiguration(), getDefaultConfiguration() );
     }
 
     private void initializeLoggerManager()
         throws Exception
     {
-        LoggerManager loggerManager = LoggerManagerFactory.create( getMergedConfiguration().getChild( LOGGING_TAG ), getClassLoader() );
+        LoggerManager loggerManager = LoggerManagerFactory.create( mergedConfiguration.getChild( LOGGING_TAG ), getClassLoader() );
 
         enableLogging( loggerManager.getRootLogger() );
 
@@ -614,7 +596,7 @@ public class DefaultPlexusContainer
     private void initializeComponentRepository()
         throws Exception
     {
-        ComponentRepository componentRepository = ComponentRepositoryFactory.create( getMergedConfiguration(),
+        ComponentRepository componentRepository = ComponentRepositoryFactory.create( mergedConfiguration,
                                                                                      getClassLoader() );
         setComponentRepository( componentRepository );
     }
@@ -623,9 +605,9 @@ public class DefaultPlexusContainer
         throws Exception
     {
         DefaultResourceManager rm =
-            ResourceManagerFactory.create( getMergedConfiguration(),
+            ResourceManagerFactory.create( mergedConfiguration,
                                            getLoggerManager(),
-                                           getClassWorld().getRealm("core") );
+                                           getClassWorld().getRealm( "core" ) );
 
         // This needs to be completely clarified. If the container becomes the boundary
         // and barrier between all behaviour in plexus then the subsystems like classworlds
@@ -725,12 +707,14 @@ public class DefaultPlexusContainer
         if ( classWorld == null )
         {
             classWorld = new ClassWorld();
-            
+
             try
             {
                 classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
             }
-            catch (DuplicateRealmException e) {}
+            catch ( DuplicateRealmException e )
+            {
+            }
 
             Thread.currentThread().setContextClassLoader( getClassLoader() );
         }
