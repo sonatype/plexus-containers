@@ -9,7 +9,6 @@ import org.apache.avalon.framework.context.Context;
  * @version $Id$
  */
 public class MockComponent
-    implements Contextualizable
 {
     public static final String ROLE = MockComponent.class.getName();
 

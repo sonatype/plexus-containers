@@ -105,6 +105,11 @@ public abstract class AbstractLifecycleHandler
     public void start( Object component, ComponentManager manager )
         throws Exception
     {
+        if ( segmentIsEmpty( getBeginSegment() ) )
+        {
+            return;
+        }
+
         for ( Iterator i = getBeginSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
@@ -115,6 +120,11 @@ public abstract class AbstractLifecycleHandler
     public void suspend( Object component, ComponentManager manager )
         throws Exception
     {
+        if ( segmentIsEmpty( getSuspendSegment() ) )
+        {
+            return;
+        }
+
         for ( Iterator i = getSuspendSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
@@ -125,6 +135,11 @@ public abstract class AbstractLifecycleHandler
     public void resume( Object component, ComponentManager manager )
         throws Exception
     {
+        if ( segmentIsEmpty( getResumeSegment() ) )
+        {
+            return;
+        }
+
         for ( Iterator i = getResumeSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
@@ -142,10 +157,25 @@ public abstract class AbstractLifecycleHandler
     public void end( Object component, ComponentManager manager )
         throws Exception
     {
+        if ( segmentIsEmpty( getEndSegment() ) )
+        {
+            return;
+        }
+
         for ( Iterator i = getEndSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
             phase.execute( component, manager );
         }
+    }
+
+    private boolean segmentIsEmpty( List segment )
+    {
+        if ( segment == null || segment.size() == 0 )
+        {
+            return true;
+        }
+
+        return false;
     }
 }

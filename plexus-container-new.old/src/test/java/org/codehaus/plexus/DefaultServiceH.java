@@ -16,7 +16,7 @@ import org.codehaus.plexus.lifecycle.phase.Eeny;
  */
 public class DefaultServiceH
     extends AbstractLogEnabled
-    implements ServiceG, Eeny, Meeny, Miny, Mo
+    implements ServiceH, Eeny, Meeny, Miny, Mo
 {
     boolean eeny;
     boolean meeny;

@@ -5,8 +5,8 @@
   <groupId>plexus</groupId>
   <artifactId>plexus</artifactId>
   <id>plexus</id>
-  <name>Plexus</name>
-  <currentVersion>0.11</currentVersion>
+  <name>plexus</name>
+  <currentVersion>0.12</currentVersion>
   <organization>
     <name>Codehaus</name>
     <url>http://www.codehaus.org/</url>
@@ -183,7 +183,8 @@
         <include>**/*Test.java</include>
       </includes>
       <excludes>
-        <exclude>org/codehaus/plexus/logging/AbstractLoggerManagerTest.java</exclude>
+        <exclude>**/*HierarchyTest.java</exclude>
+        <exclude>**/*Abstract*.java</exclude>
       </excludes>
 
       <resources>

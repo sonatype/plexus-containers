@@ -67,21 +67,11 @@ public class DefaultPlexusContainer
     /** The configuration resource. */
     private Reader configurationReader;
 
-    /**
-     *  Typically Plexus will use a ClassWorld for all its class loading and
-     *  resource requirements, but it remains to be seen if this will be possible
-     *  in environments like j2me. We need to be able to initialize the Plexus
-     *  resource manager with either a class world or a standard class loader.
-     */
     private ClassWorld classWorld;
 
     /** Class loader used for this container if a class world is not available. */
     private ClassLoader classLoader;
 
-    /**
-     *  Resource manager for this container. It is available via the context using
-     *  plexus:resource-manager key.
-     */
     private DefaultResourceManager resourceManager;
 
     /** Default Configuration Builder. */
@@ -89,6 +79,8 @@ public class DefaultPlexusContainer
 
     /** XML element used to start the logging configuration block. */
     public static final String LOGGING_TAG = "logging";
+
+    private boolean componentRepositoryInitialized;
 
     // ----------------------------------------------------------------------
     //  Constructors
@@ -303,7 +295,9 @@ public class DefaultPlexusContainer
     private void initializeContext()
     {
         addContextValue( PlexusConstants.PLEXUS_KEY, this );
+
         addContextValue( PlexusConstants.RESOURCE_MANAGER_KEY, resourceManager );
+
         addContextValue( PlexusConstants.COMMON_CLASSLOADER, getClassLoader() );
     }
 
@@ -366,12 +360,15 @@ public class DefaultPlexusContainer
             File configurationsDirectory = new File( s );
 
             if ( configurationsDirectory.exists()
-                &&
-                configurationsDirectory.isDirectory() )
+                 &&
+                 configurationsDirectory.isDirectory() )
             {
                 DirectoryScanner scanner = new DirectoryScanner();
+
                 scanner.setBasedir( configurationsDirectory );
+
                 scanner.setIncludes( new String[]{"**/*.conf", "**/*.xml"} );
+
                 scanner.scan();
 
                 String[] confs = scanner.getIncludedFiles();
@@ -447,6 +444,8 @@ public class DefaultPlexusContainer
                                                getContext() );
 
         setComponentRepository( componentRepository );
+
+        componentRepositoryInitialized = true;
     }
 
     /**
@@ -488,7 +487,9 @@ public class DefaultPlexusContainer
         for ( int i = 0; i < systemProperties.length; ++i )
         {
             String name = systemProperties[i].getAttribute( "name" );
+
             String value = systemProperties[i].getAttribute( "value" );
+
             System.getProperties().setProperty( name, value );
 
             getLogger().info( "Setting system property: [ " + name + ", " + value + " ]" );
