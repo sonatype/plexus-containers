@@ -796,7 +796,7 @@ public class FileUtils
         final FileInputStream input = new FileInputStream( source );
         final FileOutputStream output = new FileOutputStream( destination );
         IOUtil.copy( input, output );
-        
+
         input.close();
         output.close();
 
@@ -845,7 +845,7 @@ public class FileUtils
         final InputStream input = source.openStream();
         final FileOutputStream output = new FileOutputStream( destination );
         IOUtil.copy( input, output );
-        
+
         input.close();
         output.close();
     }
@@ -1291,9 +1291,15 @@ public class FileUtils
 
         scanner.setBasedir( directory );
 
-        scanner.setIncludes( StringUtils.split( includes, "," ) );
+        if ( includes != null )
+        {
+            scanner.setIncludes( StringUtils.split( includes, "," ) );
+        }
 
-        scanner.setExcludes( StringUtils.split( excludes, "," ) );
+        if ( excludes != null )
+        {
+            scanner.setExcludes( StringUtils.split( excludes, "," ) );
+        }
 
         scanner.scan();
 
