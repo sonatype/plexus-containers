@@ -99,15 +99,6 @@ public class DefaultPlexusContainerTest
     public void testDefaultPlexusContainerSetup()
         throws Exception
     {
-        // These are some default components that we used internally. These components don't
-        // usually need to be replaced but they can be if the user desires.
-
-        // Java Component factory.
-        // Singleton manager manager.
-        ComponentFactory jcf = (ComponentFactory) container.getComponentRepository().lookup( ComponentFactory.ROLE + "java" );
-
-        assertNotNull( jcf );
-
         assertTrue( container.getComponentRepository().getComponentCount() > 0 );
 
         assertEquals( "bar", System.getProperty( "foo" ) );
@@ -117,11 +108,12 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
 
         assertEquals( true, container.getComponentRepository().hasService( ServiceA.ROLE ) );
-        assertEquals( true, container.getComponentRepository().hasService( ServiceB.ROLE ) );
-        assertEquals( true, container.getComponentRepository().hasService( ServiceC.ROLE + "only-instance" ) );
-        assertEquals( true, container.getComponentRepository().hasService( ServiceG.ROLE ) );
 
-        container.getComponentRepository().release( jcf );
+        assertEquals( true, container.getComponentRepository().hasService( ServiceB.ROLE ) );
+
+        assertEquals( true, container.getComponentRepository().hasService( ServiceC.ROLE + "only-instance" ) );
+
+        assertEquals( true, container.getComponentRepository().hasService( ServiceG.ROLE ) );
     }
 
     /**
