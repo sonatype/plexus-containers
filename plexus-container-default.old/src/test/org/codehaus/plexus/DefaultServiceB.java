@@ -15,11 +15,11 @@ public class DefaultServiceB
     extends AbstractLogEnabled
     implements ServiceB, Contextualizable, Initializable, Startable
 {
-    boolean enableLogging;
-    boolean contextualize;
-    boolean initialize;
-    boolean start;
-    boolean stop;
+    public boolean enableLogging;
+    public boolean contextualize;
+    public boolean initialize;
+    public boolean start;
+    public boolean stop;
 
     public void enableLogging( Logger logger )
     {

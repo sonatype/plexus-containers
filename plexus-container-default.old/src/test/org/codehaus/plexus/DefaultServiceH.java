@@ -18,10 +18,10 @@ public class DefaultServiceH
     extends AbstractLogEnabled
     implements ServiceH, Eeny, Meeny, Miny, Mo
 {
-    boolean eeny;
-    boolean meeny;
-    boolean miny;
-    boolean mo;
+    public boolean eeny;
+    public boolean meeny;
+    public boolean miny;
+    public boolean mo;
 
     // ----------------------------------------------------------------------
     // Lifecycle Management

@@ -5,8 +5,8 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 public class DefaultServiceC
     implements ServiceC, Startable
 {
-    boolean started = false;
-    boolean stopped = false;
+    public boolean started = false;
+    public boolean stopped = false;
 
     public void start()
     {
