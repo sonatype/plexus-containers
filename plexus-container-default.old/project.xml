@@ -6,7 +6,7 @@
   <artifactId>plexus</artifactId>
   <id>plexus</id>
   <name>plexus</name>
-  <currentVersion>1.0-alpha-1-SNAPSHOT</currentVersion>
+  <currentVersion>0.17</currentVersion>
   <organization>
     <name>Codehaus</name>
     <url>http://www.codehaus.org/</url>
