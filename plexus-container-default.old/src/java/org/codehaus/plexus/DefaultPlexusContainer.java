@@ -1,11 +1,25 @@
 package org.codehaus.plexus;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
@@ -28,9 +42,8 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
@@ -41,19 +54,6 @@ import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @todo clarify configuration handling vis-a-vis user vs default values
@@ -618,6 +618,10 @@ public class DefaultPlexusContainer
         }
     }
 
+    // ----------------------------------------------------------------------
+    // Misc Configuration
+    // ----------------------------------------------------------------------
+
     public String getName()
     {
         return name;
@@ -647,6 +651,10 @@ public class DefaultPlexusContainer
     {
         this.coreRealm = coreRealm;
     }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
 
     private void initializeClassWorlds()
         throws Exception
@@ -843,6 +851,7 @@ public class DefaultPlexusContainer
 
             processConfigurationsDirectory();
         }
+
         if ( configurationReader != null )
         {
             // User userConfiguration
@@ -878,7 +887,7 @@ public class DefaultPlexusContainer
 
         if ( s != null )
         {
-            XmlPlexusConfiguration componentsConfiguration = (XmlPlexusConfiguration) configuration.getChild( "components" );
+            PlexusConfiguration componentsConfiguration = configuration.getChild( "components" );
 
             File configurationsDirectory = new File( s );
 
@@ -895,7 +904,7 @@ public class DefaultPlexusContainer
                     PlexusConfiguration componentConfiguration =
                         PlexusTools.buildConfiguration( getInterpolationConfigurationReader( new FileReader( componentConfigurationFile ) ) );
 
-                    componentsConfiguration.addAllChildren( componentConfiguration.getChild( "components" ) );
+                    componentsConfiguration.addChild( componentConfiguration.getChild( "components" ) );
                 }
             }
         }
@@ -968,7 +977,7 @@ public class DefaultPlexusContainer
     }
 
     private void initializeSystemProperties()
-        throws Exception
+        throws PlexusConfigurationException
     {
         PlexusConfiguration[] systemProperties = configuration.getChild( "system-properties" ).getChildren( "property" );
 
@@ -977,6 +986,16 @@ public class DefaultPlexusContainer
             String name = systemProperties[i].getAttribute( "name" );
 
             String value = systemProperties[i].getAttribute( "value" );
+
+            if ( name == null )
+            {
+                throw new PlexusConfigurationException( "Missing 'name' attribute in 'property' tag. " );
+            }
+
+            if ( value == null )
+            {
+                throw new PlexusConfigurationException( "Missing 'value' attribute in 'property' tag. " );
+            }
 
             System.getProperties().setProperty( name, value );
 
@@ -998,11 +1017,13 @@ public class DefaultPlexusContainer
         {
             try
             {
-                if ( resourceConfigs[i].getName().equals( "jar-repository" ) )
+                String name = resourceConfigs[i].getName();
+
+                if ( name.equals( "jar-repository" ) )
                 {
                     addJarRepository( new File( resourceConfigs[i].getValue() ) );
                 }
-                else if ( resourceConfigs[i].getName().equals( "directory" ) )
+                else if ( name.equals( "directory" ) )
                 {
                     File directory = new File( resourceConfigs[i].getValue() );
 
@@ -1010,6 +1031,10 @@ public class DefaultPlexusContainer
                     {
                         plexusRealm.addConstituent( directory.toURL() );
                     }
+                }
+                else
+                {
+                    getLogger().warn( "Unknown resource type: " + name );
                 }
             }
             catch ( Exception e )
