@@ -24,15 +24,15 @@
   
   <shortDescription></shortDescription>
 
-  <url>http://plexus.codehaus.com</url>
+  <url>http://plexus.codehaus.org</url>
   <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10080</issueTrackingUrl>
  
   <siteAddress>plexus.codehaus.org</siteAddress>
   <siteDirectory>/www/plexus.codehaus.org</siteDirectory>
   
   <repository>
-    <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvs:plexus-container</connection>
-    <url>http://cvs.codehaus.org/viewcvs.cgi/plexus-container/?root=codehaus</url>
+    <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvs:plexus</connection>
+    <url>http://cvs.codehaus.org/viewcvs.cgi/plexus/?root=codehaus</url>
   </repository>
 
   <versions/>
