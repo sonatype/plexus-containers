@@ -238,23 +238,23 @@ public class DefaultPlexusContainer
     }
 
 
-    public Object lookup( String role, String id )
+    public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
-        return lookup( role + id );
+        return lookup( role + roleHint );
     }
 
     // ----------------------------------------------------------------------
     // Component Descriptor Lookup
     // ----------------------------------------------------------------------
 
-    public ComponentDescriptor getComponentDescriptor( String role )
+    public ComponentDescriptor getComponentDescriptor( String componentKey )
     {
-        ComponentDescriptor result = componentRepository.getComponentDescriptor( role );
+        ComponentDescriptor result = componentRepository.getComponentDescriptor( componentKey );
 
         if ( result == null && parentContainer != null )
         {
-            result = parentContainer.getComponentDescriptor( role );
+            result = parentContainer.getComponentDescriptor( componentKey );
         }
 
         return result;
@@ -366,9 +366,9 @@ public class DefaultPlexusContainer
         return componentRepository.hasComponent( componentKey );
     }
 
-    public boolean hasComponent( String role, String id )
+    public boolean hasComponent( String role, String roleHint )
     {
-        return componentRepository.hasComponent( role, id );
+        return componentRepository.hasComponent( role, roleHint );
     }
 
     public void suspend( Object component )
@@ -494,28 +494,33 @@ public class DefaultPlexusContainer
     // Implementation
     // ----------------------------------------------------------------------
 
+
+    
+
     protected void loadComponentsOnStart()
         throws Exception
     {
-        PlexusConfiguration[] loadOnStartServices = configuration.getChild( "load-on-start" ).getChildren( "service" );
+        PlexusConfiguration[] loadOnStartComponents = configuration.getChild( "load-on-start" ).getChildren( "component" );
 
-        for ( int i = 0; i < loadOnStartServices.length; i++ )
+        getLogger().info( "Found " + loadOnStartComponents.length + " components to load on start" );
+
+        for ( int i = 0; i < loadOnStartComponents.length; i++ )
         {
-            String role = loadOnStartServices[i].getAttribute( "role" );
+            String role = loadOnStartComponents[i].getChild( "role" ).getValue();
 
-            String id = loadOnStartServices[i].getAttribute( "id", "" );
+            String roleHint = loadOnStartComponents[i].getChild( "role-hint" ).getValue();
 
-            getLogger().info( "Loading on start [role,id]: " + "[" + role + "," + id + "]" );
+            getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
 
             try
             {
-                if ( id.length() == 0 )
+                if ( roleHint == null )
                 {
                     lookup( role );
                 }
                 else
                 {
-                    lookup( role, id );
+                    lookup( role, roleHint );
                 }
             }
             catch ( ComponentLookupException e )

@@ -22,7 +22,7 @@ public interface PlexusContainer
     Object lookup( String componentKey )
         throws ComponentLookupException;
 
-    Object lookup( String role, String id )
+    Object lookup( String role, String roleHint )
         throws ComponentLookupException;
 
     Map lookupMap( String role )
@@ -35,7 +35,7 @@ public interface PlexusContainer
     // Component Descriptor Lookup
     // ----------------------------------------------------------------------
 
-    ComponentDescriptor getComponentDescriptor( String role );
+    ComponentDescriptor getComponentDescriptor( String componentKey );
 
     Map getComponentDescriptorMap( String role );
 
@@ -57,7 +57,7 @@ public interface PlexusContainer
 
     boolean hasComponent( String componentKey );
 
-    boolean hasComponent( String role, String id );
+    boolean hasComponent( String role, String roleHint );
 
     // ----------------------------------------------------------------------
     // Component replacement
