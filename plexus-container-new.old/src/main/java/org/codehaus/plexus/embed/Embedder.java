@@ -3,13 +3,20 @@ package org.codehaus.plexus.embed;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.PropertyUtils;
 
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * <tt>Embedder</tt> enables a client to embed Plexus into their
@@ -38,6 +45,9 @@ public class Embedder
     private String configuration;
 
     private volatile URL configurationURL;
+    
+    /** Context properties */
+    private Properties properties;
 
     private final DefaultPlexusContainer container;
 
@@ -122,6 +132,28 @@ public class Embedder
         container.addContextValue( key, value );
     }
 
+    
+    public void setProperties( Properties properties )
+    {
+         this.properties = properties;
+    }
+    
+    public void setProperties( File file ) 
+    {
+        properties = PropertyUtils.loadProperties( file );        
+    }
+    
+    protected void initializeContext()
+    {
+        Set keys = properties.keySet();
+        for ( Iterator iter = keys.iterator(); iter.hasNext(); )
+        {
+            String key = ( String ) iter.next();
+            String value = properties.getProperty( key );           
+            container.addContextValue( key, value );
+        }        
+    }
+    
     public synchronized void start()
         throws Exception
     {
@@ -139,6 +171,11 @@ public class Embedder
         {
             container.setConfigurationResource( new InputStreamReader( configurationURL.openStream() ) );
         }
+        
+        if ( properties != null)
+        {
+            initializeContext();
+        }    
 
         container.initialize();
 

@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.PlexusContainer;
 
 import java.net.URL;
+import java.util.Properties;
 
 /**
  * @author  Ben Walding
@@ -22,6 +23,12 @@ public class EmbedderTest
 
         embed.addContextValue( "foo", "bar" );
 
+        Properties contextProperties = new Properties();
+        
+        contextProperties.setProperty( "property1", "value1" );
+        
+        contextProperties.setProperty( "property2", "value2" );
+        
         embed.start();
 
         try
@@ -34,8 +41,7 @@ public class EmbedderTest
         {
             // do nothing
         }
-
-
+        
         Object o = embed.lookup( MockComponent.ROLE );
 
         assertEquals( "I AM MOCKCOMPONENT", o.toString() );
