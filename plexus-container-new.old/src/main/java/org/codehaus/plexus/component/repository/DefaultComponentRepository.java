@@ -19,7 +19,6 @@ import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -64,9 +63,6 @@ public class DefaultComponentRepository
      */
     private Map compManagersByCompClass;
 
-    /** Map of component housings keyed by the component object. */
-    //private Map componentHousings;
-
     private PlexusContainer plexusContainer;
 
     /** Parent containers context */
@@ -74,13 +70,6 @@ public class DefaultComponentRepository
 
     /** Logger manager. */
     private LoggerManager loggerManager;
-
-    /**
-     * Object to lock when creating a new component manager during
-     * component lookup. Separate from enclosing class as we have no control
-     * on what locks calling code places.
-     */
-    private Object lookupLock = new Object();
 
     private LifecycleHandlerManager lifecycleHandlerManager = null;
 
@@ -93,11 +82,11 @@ public class DefaultComponentRepository
     {
         componentDescriptors = new HashMap();
 
-        componentManagers = Collections.synchronizedMap( new HashMap() );
+        componentManagers = new HashMap();
 
-        compManagersByCompClass = Collections.synchronizedMap( new HashMap() );
+        compManagersByCompClass = new HashMap();
 
-        componentsByRole = Collections.synchronizedMap( new HashMap() );
+        componentsByRole = new HashMap();
     }
 
     // ----------------------------------------------------------------------
@@ -163,19 +152,11 @@ public class DefaultComponentRepository
         this.context = context;
     }
 
-    /** Configure the component repository.
-     *
-     * @param configuration
-     */
     public void configure( Configuration configuration )
     {
         this.configuration = configuration;
     }
 
-    /** Initialize the component repository.
-     *
-     * @throws Exception
-     */
     public void initialize()
         throws Exception
     {
@@ -186,9 +167,6 @@ public class DefaultComponentRepository
         initializeComponentDescriptors();
     }
 
-    /**
-     * Adds all the lifecycle handlers and initializes them. Sets up the default lifecycle handler
-     */
     private void initializeLifecycleHandlerManager()
         throws Exception
     {
@@ -203,12 +181,6 @@ public class DefaultComponentRepository
         lifecycleHandlerManager.initialize( loggerManager, context, this );
     }
 
-    /**
-     * Grab all the InstanceManager configurations and make them available
-     * during lookup
-     *
-     * @throws Exception
-     */
     private void initializeComponentManagerManager()
         throws Exception
     {
@@ -221,16 +193,6 @@ public class DefaultComponentRepository
         componentManagerManager = (ComponentManagerManager) builder.build( (PlexusConfiguration) c, DefaultComponentManagerManager.class );
     }
 
-    /**
-     * Create a new ComponentManager with the correct InstanceManager for the
-     * component specified by the given descriptor. The ComponentManager
-     * will select the correct LifecycleHandler based on the descriptor
-     *
-     * @return The new component manager.
-     *
-     * @throws Exception If an error occurs while attempting to locate
-     *         the class or instantiate the component object.
-     */
     public ComponentManager instantiateComponentManager( ComponentDescriptor descriptor )
         throws Exception
     {
@@ -358,7 +320,7 @@ public class DefaultComponentRepository
     // Service lookup methods
     // ----------------------------------------------------------------------
 
-    public synchronized Object lookup( String key )
+    public Object lookup( String key )
         throws ComponentLookupException
     {
         // Attempt to lookup the componentManager by key.
@@ -366,69 +328,58 @@ public class DefaultComponentRepository
 
         Object component = null;
 
-        //have todo some synchronization stuff here as two different threads may
-        //try to create seperate instances of the same component managers. Need
-        //to block one until the other has created it.Seeing this happens once
-        //per component it shouldn't be a drag on performance
         if ( componentManager == null )
         {
-            //lock, and check for component manager again within
-            //synch block, as another thread may have just created one
-            synchronized ( lookupLock )
+            componentManager = getComponentManager( key );
+
+            if ( componentManager != null )
             {
-                componentManager = getComponentManager( key );
-
-                if ( componentManager != null )
-                {
-                    try
-                    {
-                        return componentManager.getComponent();
-                    }
-                    catch ( Exception e )
-                    {
-                        throw new ComponentLookupException( "Error retrieving component from ComponentManager: " + key );
-                    }
-                }
-
-                // We need to create an manager of this componentManager.
-                getLogger().debug( "Creating new ComponentDescriptor for role: " + key );
-
-                ComponentDescriptor descriptor = (ComponentDescriptor) getComponentDescriptors().get( key );
-
-                if ( descriptor == null )
-                {
-                    getLogger().error( "Non existant component: " + key );
-
-                    throw new ComponentLookupException( "Non existant component: " + key );
-                }
-
                 try
                 {
-                    componentManager = instantiateComponentManager( descriptor );
+                    return componentManager.getComponent();
                 }
                 catch ( Exception e )
                 {
-                    getLogger().error( "Could not create component: " + key, e );
-
-                    throw new ComponentLookupException( "Could not create component for key " + key + "!", e );
+                    throw new ComponentLookupException( "Error retrieving component from ComponentManager: " + key );
                 }
-                try
-                {
-                    component = componentManager.getComponent();
-                }
-                catch ( Exception e )
-                {
-                    getLogger().error( "Could not create component: " + key, e );
-
-                    throw new ComponentLookupException( "Could not create component for key " + key + "!", e );
-                }
-
-                // We do this so we know what to do when releasing. Only have to do it once
-                //per component class
-                compManagersByCompClass.put( component.getClass().getName(), componentManager );
-
-                lookupLock.notifyAll();
             }
+
+            // We need to create an manager of this componentManager.
+            getLogger().debug( "Creating new ComponentDescriptor for role: " + key );
+
+            ComponentDescriptor descriptor = (ComponentDescriptor) getComponentDescriptors().get( key );
+
+            if ( descriptor == null )
+            {
+                getLogger().error( "Non existant component: " + key );
+
+                throw new ComponentLookupException( "Non existant component: " + key );
+            }
+
+            try
+            {
+                componentManager = instantiateComponentManager( descriptor );
+            }
+            catch ( Exception e )
+            {
+                getLogger().error( "Could not create component: " + key, e );
+
+                throw new ComponentLookupException( "Could not create component for key " + key + "!", e );
+            }
+            try
+            {
+                component = componentManager.getComponent();
+            }
+            catch ( Exception e )
+            {
+                getLogger().error( "Could not create component: " + key, e );
+
+                throw new ComponentLookupException( "Could not create component for key " + key + "!", e );
+            }
+
+            // We do this so we know what to do when releasing. Only have to do it once
+            //per component class
+            compManagersByCompClass.put( component.getClass().getName(), componentManager );
         }
         else
         {
@@ -509,11 +460,6 @@ public class DefaultComponentRepository
         componentManager.resume( component );
     }
 
-    /**
-     * Release the specified component.
-     *
-     * @see org.apache.avalon.framework.service.ServiceManager#release(java.lang.Object)
-     */
     public synchronized void release( Object component )
     {
         if ( component == null )
@@ -531,9 +477,6 @@ public class DefaultComponentRepository
         return (ComponentManager) compManagersByCompClass.get( component.getClass().getName() );
     }
 
-    /**
-     * @see org.apache.avalon.framework.activity.Disposable#dispose()
-     */
     public synchronized void dispose()
     {
         getLogger().info( "Disposing ComponentRepository..." );
