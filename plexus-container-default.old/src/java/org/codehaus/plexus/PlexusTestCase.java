@@ -1,16 +1,10 @@
 package org.codehaus.plexus;
 
-import junit.framework.TestCase;
-import org.codehaus.plexus.context.Context;
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.ClassRealm;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URLClassLoader;
-import java.net.URL;
-import java.lang.reflect.Method;
+import junit.framework.TestCase;
+import org.codehaus.plexus.context.Context;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
