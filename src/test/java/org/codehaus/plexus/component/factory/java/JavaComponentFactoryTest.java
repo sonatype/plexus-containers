@@ -37,6 +37,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import junit.framework.TestCase;
 
 import java.util.AbstractMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -84,7 +85,7 @@ public class JavaComponentFactoryTest
         factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
     }
 
-    public void testInstanciationOfAAbstractComponent()
+    public void testThatTheContainerThrowsAnExceptionWhenAnAttemptIsMadeToInstantiateAnAbstractClass()
         throws Exception
     {
         JavaComponentFactory factory = new JavaComponentFactory();
@@ -103,11 +104,39 @@ public class JavaComponentFactoryTest
         {
             factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
 
-            fail( "Expected ComponentInstantiationException when instanciating a abstract class." );
+            fail( "Expected ComponentInstantiationException when instaniating a abstract class." );
         }
         catch( ComponentInstantiationException ex )
         {
             // expected
         }
     }
+
+    public void testThatTheContainerThrowsAnExceptionWhenAnAttemptIsMadeToInstantiateAnInterface()
+        throws Exception
+    {
+        JavaComponentFactory factory = new JavaComponentFactory();
+
+        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
+
+        componentDescriptor.setRole( Component.class.getName() );
+
+        componentDescriptor.setImplementation( Map.class.getName() );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+
+        try
+        {
+            factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
+
+            fail( "Expected ComponentInstantiationException when instantiating an interface." );
+        }
+        catch( ComponentInstantiationException ex )
+        {
+            // expected
+        }
+    }
+
 }
