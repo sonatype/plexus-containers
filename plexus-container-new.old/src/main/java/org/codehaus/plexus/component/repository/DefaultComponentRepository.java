@@ -445,7 +445,7 @@ public class DefaultComponentRepository
      * @throws Exception If an error occurs while attempting to locate
      *         the class or instantiate the component object.
      */
-    ComponentManager instantiateComponentManager( ComponentDescriptor descriptor )
+    public ComponentManager instantiateComponentManager( ComponentDescriptor descriptor )
         throws Exception
     {
         ComponentDescriptor componentManagerDescriptor;

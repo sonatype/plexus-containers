@@ -1,0 +1,23 @@
+<plexus>
+
+  <components>
+  
+    <!--
+     |
+     | A Service
+     |
+     | This service implements all the Avalon lifecycle methods.
+     |
+     -->
+    <component>
+      <role>org.codehaus.plexus.ServiceA</role>
+      <implementation>org.codehaus.plexus.lifecycle.phase.AllPhaseService</implementation>
+      <configuration>
+        <host>localhost</host>
+        <port>10000</port>
+      </configuration>
+    </component>
+  
+  </components>
+
+</plexus>
