@@ -5,11 +5,11 @@
   <parent>
     <groupId>plexus</groupId>
     <artifactId>plexus-containers</artifactId>
-    <version>1.0-alpha-1</version>
+    <version>1.0-alpha-2-SNAPSHOT</version>
   </parent>
   <groupId>plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
-  <version>1.0-alpha-1</version>
+  <version>1.0-alpha-2-SNAPSHOT</version>
   <name>New Default Plexus Container</name>
   <build>
     <unitTest>
