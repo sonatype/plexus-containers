@@ -90,10 +90,3 @@ are very detailed and specific, while others are more general.  -pete
   could have an id that a component would reference to indicate the
   lifecycle handler that should be used.  I see after reading all of
   the code that this is the intention.
-
-- Does the ComponentManager really need a ref back to the
-  ComponentRepository?  Likewise, does the InstanceManager really need
-  a link back to the ComponentManager?  Right now, yes, because the
-  instance manager calls ComponentRepository.startComponentLifecycle()
-  which probably should not be there in the first place.  This would
-  cut down on some of the interdependencies between components.
