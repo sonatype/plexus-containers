@@ -17,17 +17,30 @@ public class DyanamicComponentKungFuTest
      * Component additions during container operation.
      *
      * 1. Add a component at runtime
+     *    -> Additions could be made by specifying an URL which will be compatible with Wagon
+     *       and specifically Maven's way of using Wagon.
+     *
      * 2. Configure the dynamically added component
+     *    -> We need to be able to deal with different flavours of components but we can focus
+     *       on Plexus components to start with. But some components may have meta information
+     *       and some may not like pico components. But one of the first flavours I want to
+     *       support is phoenix components because I specifically need the FTP server.
+     *
      * 3. Let the component perform its role
+     *
      * 4. Suspend the component
      *    a) Define the criteria for which we can suspend a component
      *       -> When there are no client connections?
      *       -> Even when there are no connections and a client tries to obtain a connection what do we do?
      *       -> If we are in desperate need to suspend the component, say for urgent security requirement, and
      *          clients simply won't bugger off what do we do?
+     *
      * 5. Reconfigure the component
+     *
      * 6. Resume the component
+     *
      * 7. Let the component perform its role
+     *
      * 8. Release the component
      */
     public void testAdditionOfComponentDuringContainerOperation()
