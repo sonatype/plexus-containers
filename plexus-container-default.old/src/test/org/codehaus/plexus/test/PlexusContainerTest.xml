@@ -19,6 +19,11 @@
   </system-properties>
 
   <component-discoverer-manager implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager">
+    <listeners>
+      <listener>
+        <role>org.codehaus.plexus.test.discovery.PluginManager</role>
+      </listener>
+    </listeners>
     <component-discoverers>
       <component-discoverer implementation="org.codehaus.plexus.test.discovery.MavenPluginDiscoverer"/>
     </component-discoverers>
@@ -45,7 +50,14 @@
     </lifecycle-handlers>
   </lifecycle-handler-manager>
 
+
+
   <components>
+
+    <component>
+      <role>org.codehaus.plexus.test.discovery.PluginManager</role>
+      <implementation>org.codehaus.plexus.test.discovery.MockMavenPluginManager</implementation>
+    </component>
 
     <!-- start: Component from original DefaultPlexusContainerTest -->
 

@@ -8,9 +8,11 @@ import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
+import org.codehaus.plexus.component.discovery.DiscoveryListenerDescriptor;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
@@ -146,18 +148,7 @@ public class DefaultPlexusContainer
                 throw new ComponentLookupException( message );
             }
 
-            try
-            {
-                componentManager = componentManagerManager.createComponentManager( descriptor, this );
-            }
-            catch ( Exception e )
-            {
-                String message = "Cannot create component manager for " + componentKey + ", so we cannot provide a component instance. ";
-
-                getLogger().error( message, e );
-
-                throw new ComponentLookupException( message, e );
-            }
+            componentManager = createComponentManager( descriptor );
         }
 
         try
@@ -176,6 +167,27 @@ public class DefaultPlexusContainer
         }
 
         return component;
+    }
+
+    private ComponentManager createComponentManager( ComponentDescriptor descriptor )
+        throws ComponentLookupException
+    {
+        ComponentManager componentManager;
+
+        try
+        {
+            componentManager = componentManagerManager.createComponentManager( descriptor, this );
+        }
+        catch ( Exception e )
+        {
+            String message = "Cannot create component manager for " + descriptor.getComponentKey() + ", so we cannot provide a component instance.";
+
+            getLogger().error( message, e );
+
+            throw new ComponentLookupException( message, e );
+        }
+
+        return componentManager;
     }
 
     public Map lookupMap( String role )
@@ -311,6 +323,12 @@ public class DefaultPlexusContainer
         return result;
     }
 
+    public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
+        throws ComponentRepositoryException
+    {
+        componentRepository.addComponentDescriptor( componentDescriptor );
+    }
+
     // ----------------------------------------------------------------------
     // Component Release
     // ----------------------------------------------------------------------
@@ -410,8 +428,6 @@ public class DefaultPlexusContainer
 
         initializeCoreComponents();
 
-        // Should be safe now to lookup any component aside from the cmm and lhm
-
         initializeLoggerManager();
 
         initializeContext();
@@ -432,14 +448,33 @@ public class DefaultPlexusContainer
             {
                 ComponentDescriptor componentDescriptor = (ComponentDescriptor) j.next();
 
-                componentRepository.addComponentDescriptor( componentDescriptor );
+                addComponentDescriptor( componentDescriptor );
             }
         }
     }
 
+    // We need to be aware of dependencies between discovered components when the listed component
+    // as the discovery listener itself depends on components that need to be discovered.
+
     public void start()
         throws Exception
     {
+        List listeners = componentDiscovererManager.getListenerDescriptors();
+
+        if ( listeners != null )
+        {
+            for ( Iterator i = listeners.iterator(); i.hasNext(); )
+            {
+                DiscoveryListenerDescriptor listenerDescriptor = (DiscoveryListenerDescriptor) i.next();
+
+                String role = listenerDescriptor.getRole();
+
+                ComponentDiscoveryListener l = (ComponentDiscoveryListener) lookup( role );
+
+                componentDiscovererManager.registerComponentDiscoveryListener( l );
+            }
+        }
+
         discoverComponents();
 
         loadComponentsOnStart();
@@ -705,6 +740,8 @@ public class DefaultPlexusContainer
         // Component repository
 
         PlexusXStream builder = new PlexusXStream();
+
+        builder.alias( "listener", DiscoveryListenerDescriptor.class );
 
         PlexusConfiguration c = configuration.getChild( "component-repository" );
 

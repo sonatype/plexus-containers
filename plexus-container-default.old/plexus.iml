@@ -1,61 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4" relativePaths="false">
-  <component name="LvcsConfiguration">
-    <option name="LOCAL_VCS_ENABLED" value="true" />
-    <option name="LOCAL_VCS_PURGING_PERIOD" value="259200000" />
-    <option name="MARK_EXTERNAL_CHANGES_AS_UP_TO_DATE" value="true" />
-  </component>
   <component name="ModuleRootManager" />
   <component name="NewModuleRootManager">
-    <output url="file://$MODULE_DIR$/target/classes" />
-    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src/conf" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="java version &quot;1.4.2_02&quot;" />
+    <orderEntry type="jdk" jdkName="java version &quot;1.4.2&quot;" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
-      <library name="xstream">
+      <library>
         <CLASSES>
-          <root url="jar://C:/apps/repository/xstream/jars/xstream-1.0-SNAPSHOT.jar!/" />
+          <root url="jar:///home/jvanzyl/maven-repo-local/xpp3/jars/xpp3-1.1.2a.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="xpp3">
+      <library>
         <CLASSES>
-          <root url="jar://C:/apps/repository/xpp3/jars/xpp3-1.1.3.3.jar!/" />
+          <root url="jar:///home/jvanzyl/maven-repo-local/junit/jars/junit-3.8.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="junit">
+      <library>
         <CLASSES>
-          <root url="jar://C:/apps/repository/junit/jars/junit-3.8.1.jar!/" />
+          <root url="jar:///home/jvanzyl/maven-repo-local/asm/jars/asm-1.3.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="classworlds">
+      <library>
         <CLASSES>
-          <root url="jar://C:/apps/repository/classworlds/jars/classworlds-1.1-SNAPSHOT.jar!/" />
+          <root url="jar:///home/jvanzyl/maven-repo-local/classworlds/jars/classworlds-1.1-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="asm">
+      <library>
         <CLASSES>
-          <root url="jar://C:/apps/repository/asm/jars/asm-1.3.4.jar!/" />
+          <root url="jar:///home/jvanzyl/maven-repo-local/xstream/jars/xstream-1.0-SNAPSHOT.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

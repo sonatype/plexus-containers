@@ -141,10 +141,13 @@ public class Embedder
     protected synchronized void initializeContext()
     {
         Set keys = properties.keySet();
+
         for ( Iterator iter = keys.iterator(); iter.hasNext(); )
         {
             String key = ( String ) iter.next();
-            String value = properties.getProperty( key );           
+
+            String value = properties.getProperty( key );
+
             container.addContextValue( key, value );
         }        
     }

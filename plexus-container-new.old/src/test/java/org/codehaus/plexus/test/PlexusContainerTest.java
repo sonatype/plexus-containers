@@ -3,17 +3,16 @@ package org.codehaus.plexus.test;
 import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.util.AbstractTestThread;
-import org.codehaus.plexus.util.TestThreadManager;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
-import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
-import org.codehaus.plexus.component.discovery.ComponentDiscoveryEvent;
-import org.codehaus.plexus.test.map.ActivityManager;
-import org.codehaus.plexus.test.map.Activity;
+import org.codehaus.plexus.test.discovery.MavenPlugin;
+import org.codehaus.plexus.test.discovery.PluginManager;
 import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
-import org.codehaus.plexus.test.discovery.MavenPlugin;
+import org.codehaus.plexus.test.map.Activity;
+import org.codehaus.plexus.test.map.ActivityManager;
+import org.codehaus.plexus.util.AbstractTestThread;
+import org.codehaus.plexus.util.TestThreadManager;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,8 +29,6 @@ public class PlexusContainerTest
     private ClassLoader classLoader;
 
     private DefaultPlexusContainer container;
-
-    private MockMavenComponentDiscoveryListener componentDiscoveryListener;
 
     public PlexusContainerTest( String name )
     {
@@ -60,10 +57,6 @@ public class PlexusContainerTest
         container.setConfigurationResource( new InputStreamReader( configurationStream ) );
 
         container.initialize();
-
-        componentDiscoveryListener = new MockMavenComponentDiscoveryListener();
-
-        container.registerComponentDiscoveryListener( componentDiscoveryListener );
 
         container.start();
     }
@@ -483,20 +476,8 @@ public class PlexusContainerTest
 
         assertNotNull( mavenPlugin );
 
-        assertTrue( componentDiscoveryListener.discoveryEventRegistered );
-    }
+        PluginManager pluginManager = (PluginManager) container.lookup( PluginManager.ROLE );
 
-    class MockMavenComponentDiscoveryListener
-        implements ComponentDiscoveryListener
-    {
-        boolean discoveryEventRegistered = false;
-
-        public void componentDiscovered( ComponentDiscoveryEvent event )
-        {
-            if ( event.getComponentType().equals( "maven-plugin" ) )
-            {
-                discoveryEventRegistered = true;
-            }
-        }
+        assertTrue( pluginManager.getDiscoveryEventRegistered() );
     }
 }

@@ -1,6 +1,7 @@
 package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
@@ -40,6 +41,9 @@ public interface PlexusContainer
     Map getComponentDescriptorMap( String role );
 
     List getComponentDescriptorList( String role );
+
+    void addComponentDescriptor( ComponentDescriptor componentDescriptor )
+        throws ComponentRepositoryException;
 
     // ----------------------------------------------------------------------
     // Component release
