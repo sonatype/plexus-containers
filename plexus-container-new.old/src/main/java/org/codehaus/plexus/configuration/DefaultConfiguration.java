@@ -133,24 +133,6 @@ public class DefaultConfiguration
     /**
      * Returns the value of the configuration element as a <code>String</code>.
      *
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return a <code>String</code> value
-     */
-    public String getValue( String defaultValue )
-    {
-        if ( null != value )
-        {
-            return value;
-        }
-        else
-        {
-            return defaultValue;
-        }
-    }
-
-    /**
-     * Returns the value of the configuration element as a <code>String</code>.
-     *
      * @return a <code>String</code> value
      * @throws org.apache.avalon.framework.configuration.ConfigurationException If the value is not present.
      */
