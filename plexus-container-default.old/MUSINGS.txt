@@ -108,14 +108,5 @@ are very detailed and specific, while others are more general.  -pete
   instead?  That way we can then lookup specify loggers for the
   component role.
 
-- Poolable doesn't work right either.  It never returns the object to
-  the pool so once you've used the default 6, then you are screwed,
-  even if you have released the components.  Even before that could
-  possibly work, when you release() one of the pooled items, the
-  ComponentRepository ditches the ComponentManager which means a the
-  next time the component is looked up, it gets a new manager and
-  instance manager, thus a new pool!  Also, If more than the limit on
-  the pool is used, you get NPEs.
-
 - InstanceManagers should also take a configure(), otherwise you can't
   configure things like the pool.
