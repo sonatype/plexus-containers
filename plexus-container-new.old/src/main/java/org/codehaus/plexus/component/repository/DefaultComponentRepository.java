@@ -91,7 +91,7 @@ public class DefaultComponentRepository
     public void initializeComponentDescriptors()
         throws Exception
     {
-        initializeComponentDescriptorsFromComponents();
+        initializeComponentDescriptorsFromComponentsThatHaveBeenDiscovered();
 
         initializeComponentDescriptorsFromUserConfiguration();
     }
@@ -107,7 +107,7 @@ public class DefaultComponentRepository
         }
     }
 
-    private void initializeComponentDescriptorsFromComponents()
+    private void initializeComponentDescriptorsFromComponentsThatHaveBeenDiscovered()
         throws Exception
     {
         // This will consist of using the classworlds realm and searching for all
