@@ -192,20 +192,14 @@ public class PlexusTestCase
     // Helper methods for sub classes
     // ----------------------------------------------------------------------
 
-    /**
-     * @deprecated Use String getTestPath() instead.
-     */
-    public String getTestFile( String path )
+    public File getTestFile( String path )
     {
-        return new File( basedir, path ).getAbsolutePath();
+        return new File( basedir, path );
     }
 
-    /**
-     * @deprecated Use String getTestPath() instead.
-     */
-    public String getTestFile( String basedir, String path )
+    public File getTestFile( String basedir, String path )
     {
-        return new File( basedir, path ).getAbsolutePath();
+        return new File( basedir, path );
     }
 
     public String getTestPath( String path )
