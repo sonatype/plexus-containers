@@ -42,6 +42,16 @@ public class DyanamicComponentKungFuTest
      * with one another via a connector. In order for components to be replaced
      * dynamically the components cannot be directly coupled to one another.
      *
+     * How to decide if a component is a suitable replacement given the versions
+     * of the specifications of the component and any required components if the
+     * component is a composite component.
+     *
+     * Definitely need to simulate the connection (a MockConnection) during
+     * runtime to make sure that in the event something goes wrong the container
+     * can just refuse to allow the component substitution. This shouldn't be trial
+     * and error but until much field testing has occurred I'm sure there will be
+     * instances where miscalculations happen simply due to lack of experience and
+     * usage with dynamic component replacement.
      */
     public void testComponentReplacementDuringContainerOperation()
         throws Exception
