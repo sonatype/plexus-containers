@@ -1,1 +1,17 @@
-<project default="jar:jar"/>
+<project 
+  default="jar:jar"
+  xmlns:plexus="plexus">
+  
+  <preGoal name="test:test">
+    <attainGoal name="pcd"/>
+  </preGoal>
+
+  <goal name="pcd">
+    <plexus:generate-component-descriptors
+      srcDir="${pom.build.unitTestSourceDirectory}"
+      destDir="target/pcds"/>
+  </goal>
+
+</project>
+
+

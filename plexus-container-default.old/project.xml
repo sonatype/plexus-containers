@@ -199,11 +199,14 @@
 
     <resources>
       <resource>
-        <directory>${basedir}/src/conf</directory>
+        <directory>src/conf</directory>
         <targetPath>org/codehaus/plexus</targetPath>
         <includes>
           <include>**/*.conf</include>
         </includes>
+      </resource>
+      <resource>
+        <directory>src/templates</directory>
       </resource>
     </resources>
 
