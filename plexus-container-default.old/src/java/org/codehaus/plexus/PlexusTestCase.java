@@ -79,9 +79,6 @@ public class PlexusTestCase
         container.start();
     }
 
-    /**
-     * @return
-     */
     private Context getContext()
     {
         return container.getContext();

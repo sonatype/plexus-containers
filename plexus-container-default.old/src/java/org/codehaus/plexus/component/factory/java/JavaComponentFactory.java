@@ -33,21 +33,22 @@ public class JavaComponentFactory
         Class roleClass = classLoader.loadClass( role );
         
         Class implementationClass = classLoader.loadClass( implementation );
-        
-        boolean implementationMatch = roleClass.isAssignableFrom( implementationClass );
-        
-        
+
+        boolean implementationMatch = roleClass.isAssignableFrom( implementationClass );        
+
+        /*
         if ( !implementationMatch )
         {
             StringBuffer msg = new StringBuffer( "Instance of component " + componentDescriptor.getHumanReadableKey() );
-            
+
             msg.append( " cannot be created. Role class: '" + role + "' " );
-            
+
             msg.append( " is neither a superclass nor a superinterface of implementation class: ' " + implementation +"'" );
-            
+
             throw new InstantiationException( msg.toString() );
         }
-        
+        */
+
         Object instance = implementationClass.newInstance();
 
         return instance;
