@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
+/**
+ * @todo We need to process component descriptors from a specified configuration file in addition
+ * to component descriptors that are stored in the JAR along with the component.
+ */
 public class DefaultComponentRepository
     extends AbstractLogEnabled
     implements ComponentRepository
