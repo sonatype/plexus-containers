@@ -23,10 +23,10 @@ public class PipelineBuilderTest
         String configuration =
             "<pipeline>" +
             "  <valves>" +
-            "    <valve implementation='org.codehaus.plexus.configuration.xstream.pipeline.FirstValve'>" +
+            "    <valve implementation='org.codehaus.plexus.configuration.xml.xstream.pipeline.FirstValve'>" +
             "      <name>MyLittlePony</name>" +
             "    </valve>" +
-            "    <valve implementation='org.codehaus.plexus.configuration.xstream.pipeline.SecondValve'>" +
+            "    <valve implementation='org.codehaus.plexus.configuration.xml.xstream.pipeline.SecondValve'>" +
             "      <name>MyBiggerPony</name>" +
             "    </valve>" +
             "  </valves>" +
