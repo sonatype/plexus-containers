@@ -29,21 +29,32 @@ public class CollectionConverter extends AbstractCollectionConverter
     {
         String implementation = xmlReader.attribute( "implementation" );
 
+        ObjectTree itemWriter = null;
+
+        Class type = null;
+
         if ( implementation != null )
         {
             try
             {
-                return Class.forName( implementation ).newInstance();
+                type = Class.forName( implementation );
+
+                Object o = type.newInstance();
+
+                itemWriter = objectGraph.newStack( o );
             }
             catch ( Exception e )
             {
                 throw new ConversionException( "Cannot instantiate specified implementation: " + implementation );
             }
         }
+        else
+        {
+            type = classMapper.lookupType( xmlReader.name() );
 
-        Class type = classMapper.lookupType( xmlReader.name() );
+            itemWriter = objectGraph.newStack( type );
+        }
 
-        ObjectTree itemWriter = objectGraph.newStack( type );
 
         Converter converter = converterLookup.lookupConverterForType( type );
 
