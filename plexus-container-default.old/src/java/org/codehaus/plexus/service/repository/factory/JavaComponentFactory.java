@@ -1,6 +1,5 @@
 package org.codehaus.plexus.service.repository.factory;
 
-
 public class JavaComponentFactory
     implements ComponentFactory
 {
