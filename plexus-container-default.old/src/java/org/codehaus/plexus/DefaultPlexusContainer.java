@@ -19,6 +19,7 @@ import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
+import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
@@ -573,12 +574,21 @@ public class DefaultPlexusContainer
     // Context
     // ----------------------------------------------------------------------
 
+    public Context getContext()
+    {
+        return context;
+    }
+
     private void initializeContext()
     {
         addContextValue( PlexusConstants.PLEXUS_KEY, this );
 
         addContextValue( PlexusConstants.COMMON_CLASSLOADER, getClassLoader() );
     }
+
+    // ----------------------------------------------------------------------
+    // Configuration
+    // ----------------------------------------------------------------------
 
     private void initializeConfiguration()
         throws Exception

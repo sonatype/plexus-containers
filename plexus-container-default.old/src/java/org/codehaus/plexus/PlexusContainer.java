@@ -3,6 +3,7 @@ package org.codehaus.plexus;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.context.Context;
 
 import java.io.Reader;
 import java.util.List;
@@ -76,6 +77,12 @@ public interface PlexusContainer
 
     void dispose()
         throws Exception;
+
+    // ----------------------------------------------------------------------
+    // Context
+    // ----------------------------------------------------------------------
+
+    Context getContext();
 
     // ----------------------------------------------------------------------
     // Container setup
