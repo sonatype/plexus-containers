@@ -2,19 +2,19 @@ package org.codehaus.plexus.configuration;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.List;
 
 public class DefaultConfiguration
     implements Configuration
 {
     private String name;
 
-    private HashMap attributes;
+    private Map attributes;
 
-    private ArrayList children;
+    private List children;
 
     private String value;
-
-    private boolean readOnly;
 
     private Configuration parent;
 
@@ -129,15 +129,11 @@ public class DefaultConfiguration
 
     public void setValue( String value )
     {
-        checkWriteable();
-
         this.value = value;
     }
 
     public void setAttribute( String name, String value )
     {
-        checkWriteable();
-
         if ( null == attributes )
         {
             attributes = new HashMap();
@@ -147,8 +143,6 @@ public class DefaultConfiguration
 
     public void addChild( Configuration configuration )
     {
-        checkWriteable();
-
         if ( null == children )
         {
             children = new ArrayList();
@@ -161,8 +155,6 @@ public class DefaultConfiguration
 
     public void addAll( Configuration other )
     {
-        checkWriteable();
-
         setValue( other.getValue( null ) );
         addAllAttributes( other );
         addAllChildren( other );
@@ -170,8 +162,6 @@ public class DefaultConfiguration
 
     public void addAllAttributes( Configuration other )
     {
-        checkWriteable();
-
         String[] attributes = other.getAttributeNames();
         for ( int i = 0; i < attributes.length; i++ )
         {
@@ -183,8 +173,6 @@ public class DefaultConfiguration
 
     public void addAllChildren( Configuration other )
     {
-        checkWriteable();
-
         Configuration[] children = other.getChildren();
         for ( int i = 0; i < children.length; i++ )
         {
@@ -194,8 +182,6 @@ public class DefaultConfiguration
 
     public void removeChild( Configuration configuration )
     {
-        checkWriteable();
-
         if ( null == children )
         {
             return;
@@ -211,21 +197,6 @@ public class DefaultConfiguration
         }
 
         return children.size();
-    }
-
-    public void makeReadOnly()
-    {
-        readOnly = true;
-    }
-
-    protected void checkWriteable()
-        throws IllegalStateException
-    {
-        if ( readOnly )
-        {
-            throw new IllegalStateException
-                ( "Configuration is read only and can not be modified" );
-        }
     }
 
     public String getAttribute( String name, String defaultValue )
