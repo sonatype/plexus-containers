@@ -48,6 +48,10 @@ public class SimpleConfigurationResourceHandler
 
         a.setValue( (String) parameters.get( ConfigurationResourceHandler.SOURCE ) );
 
-        return new PlexusConfiguration[]{ a };
+        XmlPlexusConfiguration b = new XmlPlexusConfiguration( "occupation" );
+
+        b.setValue( (String) parameters.get( "occupation" ) );
+
+        return new PlexusConfiguration[]{ a, b };
     }
 }

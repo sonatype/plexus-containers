@@ -4,6 +4,9 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /*
  * The MIT License
  *
@@ -35,6 +38,17 @@ import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 public class ConfigurationProcessorTest
     extends TestCase
 {
+    private Map variables;
+
+    protected void setUp()
+    {
+        variables = new HashMap();
+
+        variables.put( "basedir", System.getProperty( "basedir" ) );
+
+        variables.put( "occupation", "slacker" );
+    }
+
     public void testConfigurationProcessorWhereThereAreNoDirectivesForExternalConfigurations()
         throws Exception
     {
@@ -66,7 +80,6 @@ public class ConfigurationProcessorTest
 
         source.addChild( c );
 
-
         // ----------------------------------------------------------------------
         // Just a check to make the source is of the form we need before testing
         // ----------------------------------------------------------------------
@@ -79,7 +92,7 @@ public class ConfigurationProcessorTest
 
         // ----------------------------------------------------------------------
 
-        PlexusConfiguration processed = p.process( source );
+        PlexusConfiguration processed = p.process( source, variables );
 
         assertEquals( "a", processed.getChild( "a" ).getValue() );
 
@@ -114,6 +127,8 @@ public class ConfigurationProcessorTest
 
         resource.setAttribute( "source", sourceValue );
 
+        resource.setAttribute( "occupation", "${occupation}" );
+
         source.addChild( resource );
 
         // ----------------------------------------------------------------------
@@ -128,8 +143,15 @@ public class ConfigurationProcessorTest
         // where the value is that of the source attribute.
         // ----------------------------------------------------------------------
 
-        PlexusConfiguration processed = p.process( source );
+        PlexusConfiguration processed = p.process( source, variables );
 
         assertEquals( sourceValue, processed.getChild( "name" ).getValue() );
+
+        // ----------------------------------------------------------------------
+        // Check that the interpolated value came through
+        // ----------------------------------------------------------------------
+
+        assertEquals( "slacker", processed.getChild( "occupation" ).getValue() );
+
     }
 }

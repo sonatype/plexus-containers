@@ -3,6 +3,7 @@ package org.codehaus.plexus.configuration.processor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class ConfigurationProcessor
     //
     // ----------------------------------------------------------------------
 
-    public PlexusConfiguration process( PlexusConfiguration configuration )
+    public PlexusConfiguration process( PlexusConfiguration configuration, Map variables )
         throws ConfigurationResourceNotFoundException, ConfigurationProcessingException
     {
         XmlPlexusConfiguration pc = new XmlPlexusConfiguration( "configuration" );
@@ -78,7 +79,7 @@ public class ConfigurationProcessor
             {
                 ConfigurationResourceHandler handler = (ConfigurationResourceHandler) handlers.get( elementName );
 
-                PlexusConfiguration[] configurations = handler.handleRequest( createHandlerParameters( child ) );
+                PlexusConfiguration[] configurations = handler.handleRequest( createHandlerParameters( child, variables ) );
 
                 for ( int j = 0; j < configurations.length; j++ )
                 {
@@ -98,7 +99,7 @@ public class ConfigurationProcessor
     //
     // ----------------------------------------------------------------------
 
-    protected Map createHandlerParameters( PlexusConfiguration c )
+    protected Map createHandlerParameters( PlexusConfiguration c, Map variables )
     {
         Map parameters = new HashMap();
 
@@ -108,18 +109,12 @@ public class ConfigurationProcessor
         {
             String key = parameterNames[i];
 
-            try
-            {
-                String value = c.getAttribute( parameterNames[i] );
+            String value = StringUtils.interpolate( c.getAttribute( key, null ), variables );
 
-                parameters.put( key, c.getAttribute( null, value ) );
-            }
-            catch ( PlexusConfigurationException e )
-            {
-                // do nothing.
-            }
+            parameters.put( key, value );
         }
 
         return parameters;
     }
+
 }
