@@ -1,16 +1,14 @@
 package org.codehaus.plexus.configuration.xml.xstream.converters;
 
-import com.thoughtworks.xstream.XStream;
-import junit.framework.TestCase;
-
 import java.util.Properties;
+
+import junit.framework.TestCase;
 
 import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
 
 public class PropertiesConverterTest
     extends TestCase
 {
-
     public void testConvertsPropertiesObjectToShortKeyValueElements()
     {
         Properties in = new Properties();

@@ -1,13 +1,11 @@
 package org.codehaus.plexus.embed;
 
-import junit.framework.TestCase;
-import org.codehaus.plexus.PlexusContainer;
-
-import java.net.URL;
 import java.util.Properties;
 
+import junit.framework.TestCase;
+
 /**
- * @author  Ben Walding
+ * @author Ben Walding
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  */

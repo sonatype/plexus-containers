@@ -94,7 +94,7 @@ public class DefaultPlexusContainer
     {
         context = new DefaultContext();
 
-        loggerManager = new ConsoleLoggerManager("debug");
+        loggerManager = new ConsoleLoggerManager( "debug" );
 
         enableLogging( loggerManager.getLoggerForComponent( PlexusContainer.class.getName() ) );
     }

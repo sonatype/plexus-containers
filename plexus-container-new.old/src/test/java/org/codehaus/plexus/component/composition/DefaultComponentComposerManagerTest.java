@@ -1,14 +1,12 @@
 package org.codehaus.plexus.component.composition;
 
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.PlexusContainer;
-
 import java.io.InputStream;
 
+import org.codehaus.plexus.PlexusTestCase;
+
 /**
- *
  * @author <a href="mailto:mma@imtf.ch">Michal Maczka</a>
- * @version $Revision$
+ * @version $Id$
  */
 public class DefaultComponentComposerManagerTest extends PlexusTestCase
 {
@@ -25,7 +23,6 @@ public class DefaultComponentComposerManagerTest extends PlexusTestCase
 
     public void testComposition()
     {
-
         try
         {
             final ComponentA componentA = ( ComponentA ) lookup( ComponentA.ROLE );
@@ -39,17 +36,12 @@ public class DefaultComponentComposerManagerTest extends PlexusTestCase
             final ComponentC componentC = componentB.getComponentC();
 
             assertNotNull( componentB );
-
         }
         catch ( Exception e )
         {
             e.printStackTrace();
 
             fail( e.getMessage() );
-
         }
-
     }
-
-
 }

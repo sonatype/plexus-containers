@@ -1,10 +1,6 @@
 package org.codehaus.plexus.component.composition;
 
-import org.codehaus.plexus.test.DefaultComponentC;
-
 /**
- *
- *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
@@ -12,10 +8,6 @@ import org.codehaus.plexus.test.DefaultComponentC;
 public class DefaultComponentB
     implements ComponentB
 {
-
-
-
-
     private ComponentC componentC;
 
     public ComponentC getComponentC()
@@ -29,5 +21,4 @@ public class DefaultComponentB
 
         this.componentC = componentC;
     }
-
 }

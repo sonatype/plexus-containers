@@ -1,15 +1,12 @@
 package org.codehaus.plexus.component.discovery;
 
-import junit.framework.TestCase;
-
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
- *
- *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
