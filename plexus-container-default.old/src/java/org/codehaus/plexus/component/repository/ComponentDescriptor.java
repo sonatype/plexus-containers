@@ -2,8 +2,6 @@ package org.codehaus.plexus.component.repository;
 
 import org.apache.avalon.framework.configuration.Configuration;
 
-import java.util.Map;
-
 /** Component instantiation description.
  *
  *  @author <a href="mailto:jason@zenplex.com">Jason van Zyl</a>
@@ -13,10 +11,6 @@ import java.util.Map;
  */
 public class ComponentDescriptor
 {
-    // ----------------------------------------------------------------------
-    //  Instance members
-    // ----------------------------------------------------------------------
-
     /** Component role name. */
     private String role;
 
@@ -32,9 +26,6 @@ public class ComponentDescriptor
     /** Configuration for the component. */
     private Configuration configuration;
 
-    /** Parameters for the component. */
-    private Map parameters;
-
     /** Instantiation strategy. */
     private String instantiationStrategy;
 
@@ -45,7 +36,7 @@ public class ComponentDescriptor
     private String componentProfile;
 
     // ----------------------------------------------------------------------
-    //  Constructors
+    // Constructors
     // ----------------------------------------------------------------------
 
     /** Construct.
@@ -183,24 +174,6 @@ public class ComponentDescriptor
     public Configuration getConfiguration()
     {
         return configuration;
-    }
-
-    /** Set the <code>Configuration</code> for the component.
-     *
-     *  @param parameters The configuration.
-     */
-    public void setParameters( Map parameters )
-    {
-        this.parameters = parameters;
-    }
-
-    /** Retrieve the <code>Configuration</code> for the component.
-     *
-     *  @return The configuration.
-     */
-    public Map getParameters()
-    {
-        return parameters;
     }
 
     /**
