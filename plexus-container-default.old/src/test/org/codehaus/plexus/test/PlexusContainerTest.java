@@ -69,4 +69,16 @@ public class PlexusContainerTest
 
         assertEquals( 10000, component.getPort() );
     }
+
+    public void testAutomatedComponentComposition()
+        throws Exception
+    {
+        ComponentA componentA = (ComponentA) container.lookup( ComponentA.ROLE );
+
+        assertNotNull( componentA );
+
+        ComponentB componentB = componentA.getComponentB();
+
+        assertNotNull( componentB );
+    }
 }

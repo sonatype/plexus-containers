@@ -13,6 +13,8 @@ import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.configurator.DefaultComponentConfigurator;
+import org.codehaus.plexus.component.composition.ComponentComposer;
+import org.codehaus.plexus.component.composition.DefaultComponentComposer;
 import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.ConfigurationMerger;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
@@ -29,6 +31,7 @@ import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.LoggerManagerFactory;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
 
 import java.io.File;
 import java.io.FileReader;
@@ -89,6 +92,8 @@ public class DefaultPlexusContainer
     public static final String LOGGING_TAG = "logging";
 
     private ComponentConfigurator componentConfigurator;
+
+    private ComponentComposer componentComposer;
 
     // ----------------------------------------------------------------------
     //  Constructors
@@ -284,6 +289,8 @@ public class DefaultPlexusContainer
         initializeComponentRepository();
 
         initializeComponentConfigurator();
+
+        initializeComponentComposer();
 
         initializeLifecycleHandlerManager();
 
@@ -677,6 +684,16 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------
+    // Component Configurator
+    // ----------------------------------------------------------------------
+
+    private void initializeComponentComposer()
+        throws Exception
+    {
+        componentComposer = new DefaultComponentComposer();
+    }
+
+    // ----------------------------------------------------------------------
     // Component Managers
     // ----------------------------------------------------------------------
 
@@ -772,6 +789,16 @@ public class DefaultPlexusContainer
 
         lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( c, DefaultLifecycleHandlerManager.class );
 
-        lifecycleHandlerManager.initialize( loggerManager, context, componentRepository, componentConfigurator );
+        lifecycleHandlerManager.addEntity( LifecycleHandler.LOGGER, loggerManager.getRootLogger() );
+
+        lifecycleHandlerManager.addEntity( LifecycleHandler.CONTEXT, context );
+
+        lifecycleHandlerManager.addEntity( LifecycleHandler.COMPONENT_REPOSITORY, componentRepository );
+
+        lifecycleHandlerManager.addEntity( PlexusLifecycleHandler.COMPONENT_CONFIGURATOR, componentConfigurator );
+
+        lifecycleHandlerManager.addEntity( "componentComposer", componentComposer );
+
+        lifecycleHandlerManager.initialize();
     }
 }

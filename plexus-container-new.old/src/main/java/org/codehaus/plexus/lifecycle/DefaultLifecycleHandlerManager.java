@@ -1,17 +1,9 @@
 package org.codehaus.plexus.lifecycle;
 
-import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.component.configurator.ComponentConfigurator;
-import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
-
 import java.util.Iterator;
 import java.util.List;
 
 /**
- *
- *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
@@ -23,25 +15,25 @@ public class DefaultLifecycleHandlerManager
 
     private String defaultLifecycleHandlerId = null;
 
-    public void initialize( LoggerManager loggerManager,
-                            Context context,
-                            ComponentRepository componentRepository,
-                            ComponentConfigurator componentConfigurator )
+    public void initialize()
         throws Exception
     {
         for ( Iterator iterator = lifecycleHandlers.iterator(); iterator.hasNext(); )
         {
             LifecycleHandler lifecycleHandler = (LifecycleHandler) iterator.next();
 
-            lifecycleHandler.addEntity( LifecycleHandler.LOGGER, loggerManager.getRootLogger() );
-
-            lifecycleHandler.addEntity( LifecycleHandler.CONTEXT, context );
-
-            lifecycleHandler.addEntity( LifecycleHandler.SERVICE_REPOSITORY, componentRepository );
-
-            lifecycleHandler.addEntity( PlexusLifecycleHandler.COMPONENT_CONFIGURATOR, componentConfigurator );
-
             lifecycleHandler.initialize();
+        }
+    }
+
+    public void addEntity( String key, Object entity )
+        throws Exception
+    {
+        for ( Iterator iterator = lifecycleHandlers.iterator(); iterator.hasNext(); )
+        {
+            LifecycleHandler lifecycleHandler = (LifecycleHandler) iterator.next();
+
+            lifecycleHandler.addEntity( key, entity );
         }
     }
 

@@ -22,7 +22,7 @@ public class CompositionPhase
     {
         // We only need to assemble a component if it specifies requirements.
 
-        if ( manager.getComponentDescriptor().getRequirements() != null )
+        if ( manager.getComponentDescriptor().getRequirements().size() > 0 )
         {
             ComponentComposer componentComposer =
                 (ComponentComposer) manager.getLifecycleHandler().getEntities().get( "componentComposer" );

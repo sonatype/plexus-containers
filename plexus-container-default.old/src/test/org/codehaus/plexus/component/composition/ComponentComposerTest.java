@@ -19,7 +19,7 @@ public class ComponentComposerTest
 
         DefaultComponentA a = new DefaultComponentA();
 
-        composer.assignComponent( new DefaultComponentB(), a );
+        composer.assignComponent( a, new DefaultComponentB() );
 
         DefaultComponentB b = a.getComponentB();
 
@@ -35,11 +35,11 @@ public class ComponentComposerTest
 
         try
         {
-            composer.assignComponent( "foo", a );
+            composer.assignComponent( a, "foo" );
         }
         catch ( CompositionException e )
         {
-            assertEquals( "No field which is compatible in target object.", e.getMessage() );
+            assertEquals( "No field which is compatible in component object.", e.getMessage() );
         }
     }
 
@@ -52,7 +52,7 @@ public class ComponentComposerTest
 
         try
         {
-            composer.assignComponent( new DefaultComponentB(), a );
+            composer.assignComponent( a, new DefaultComponentB() );
         }
         catch ( CompositionException e )
         {

@@ -11,5 +11,6 @@ public interface ComponentComposer
     public void assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    PlexusContainer container,
-                                   ComponentRepository componentRepository );
+                                   ComponentRepository componentRepository )
+        throws Exception;
 }

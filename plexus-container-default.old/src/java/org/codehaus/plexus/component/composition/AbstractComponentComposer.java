@@ -5,6 +5,8 @@ import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.PlexusContainer;
 
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Iterator;
 
 /**
  *
@@ -31,35 +33,39 @@ public abstract class AbstractComponentComposer
                                    ComponentDescriptor componentDescriptor,
                                    PlexusContainer container,
                                    ComponentRepository componentRepository )
+        throws Exception
     {
-        // The graph being used needs to support additions and removals at runtime.
+        List requirements = componentRepository.getComponentDependencies( componentDescriptor );
 
-        // We will probably need access to the container and the repository ... hmmm.
+        for ( Iterator i = requirements.iterator(); i.hasNext(); )
+        {
+            String role = (String) i.next();
 
-        // Need to recusviely walk through the descriptors building up the component.
+            Object requirement = container.lookup( role );
 
-        // How to keep track of components that have already been assembled.
+            assignComponent( component, requirement );
+        }
     }
 
     /**
-     * Assign a component to a target object by setting the appropriate field in
-     * the target object. We find a match by looking at the component object's class
-     * and match it up with the field of the same type in the target.
+     * Assign a requirement to a component object by setting the appropriate field in
+     * the component object. We find a match by looking at the requirement object's class
+     * and match it up with the field of the same type in the component.
      *
-     * @param component Component to assign to the target.
-     * @param target Target component to which the component will be assigned.
+     * @param requirement Component to assign to the component.
+     * @param component Target requirement to which the requirement will be assigned.
      */
-    protected void assignComponent( Object component, Object target )
+    protected void assignComponent( Object component, Object requirement )
         throws CompositionException
     {
-        if ( target == null )
+        if ( component == null )
         {
             throw new CompositionException( "Target object is null." );
         }
 
-        Class componentClass = component.getClass();
+        Class componentClass = requirement.getClass();
 
-        Field[] fields = target.getClass().getDeclaredFields();
+        Field[] fields = component.getClass().getDeclaredFields();
 
         Field field = null;
 
@@ -75,14 +81,14 @@ public abstract class AbstractComponentComposer
 
         if ( field == null )
         {
-            throw new CompositionException( "No field which is compatible in target object." );
+            throw new CompositionException( "No field which is compatible in component object." );
         }
 
         field.setAccessible( true );
 
         try
         {
-            field.set( target, component );
+            field.set( component, requirement );
         }
         catch ( Exception e )
         {

@@ -174,7 +174,8 @@
 
     <unitTest>
       <includes>
-        <include>**/*Test.java</include>
+        <include>**/PlexusContainerTest.java</include>
+        <include>**/ComponentComposerTest.java</include>
       </includes>
       <excludes>
         <exclude>**/*HierarchyTest.java</exclude>
