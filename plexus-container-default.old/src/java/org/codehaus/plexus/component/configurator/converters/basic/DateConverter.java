@@ -1,13 +1,9 @@
 package org.codehaus.plexus.component.configurator.converters.basic;
 
-import com.thoughtworks.xstream.converters.ConversionException;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class DateConverter extends AbstractBasicConverter
 {
@@ -37,8 +33,8 @@ public class DateConverter extends AbstractBasicConverter
                 // no worries, let's try the next format.
             }
         }
-        // no formats left to try
-        throw new ConversionException( "Cannot parse date " + str );
+
+        return null;
     }
 
     public String toString( Object obj )
