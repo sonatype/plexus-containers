@@ -211,42 +211,6 @@ public class DefaultConfiguration
         }
     }
 
-    /**
-     * Return the first <code>Configuration</code> object child of this
-     * associated with the given name.
-     * @param name a <code>String</code> value
-     * @param createNew a <code>boolean</code> value
-     * @return a <code>Configuration</code> value
-     */
-    public Configuration getChild( String name, boolean createNew )
-    {
-        if ( null != children )
-        {
-            int size = children.size();
-            for ( int i = 0; i < size; i++ )
-            {
-                Configuration configuration = (Configuration) children.get( i );
-                if ( name.equals( configuration.getName() ) )
-                {
-                    return configuration;
-                }
-            }
-        }
-
-        if ( createNew )
-        {
-            DefaultConfiguration c = new DefaultConfiguration( name, "-" );
-
-            c.setParent( this );
-
-            return c;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
     public Configuration getChild( int i )
     {
         return (Configuration) children.get( i );
