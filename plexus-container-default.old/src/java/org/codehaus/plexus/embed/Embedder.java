@@ -135,7 +135,10 @@ public class Embedder
             throw new IllegalStateException( "Embedder cannot be restarted" );
         }
 
-        container.setConfigurationResource( new InputStreamReader( findConfigurationInputStream() ) );
+        if ( configurationURL != null )
+        {
+            container.setConfigurationResource( new InputStreamReader( configurationURL.openStream() ) );
+        }
 
         container.initialize();
 
@@ -162,54 +165,5 @@ public class Embedder
         embedderStarted = false;
 
         embedderStopped = true;
-    }
-
-    /**
-     * Tries a variety of methods to find the configuration resource.
-     *
-     * BRW - I see this as fairly pointless as putting your config into the Embedder.class package
-     *       will be annoying. Far better to just force the end user to provide a URL and remove
-     *       all this logic.
-     *
-     * JVZ - What about uberjar applications?
-     * BRW - If it doesn't work in uberjar, then we'll have a good test case and I'll fix classworlds.
-     *
-     * @return the stream containing the configuration
-     * @throws RuntimeException when the configuration can not be found / opened
-     */
-    private InputStream findConfigurationInputStream()
-    {
-        if ( configurationURL != null )
-        {
-            try
-            {
-                return configurationURL.openStream();
-            }
-            catch ( IOException e )
-            {
-                throw new IllegalStateException( "The specified configuration resource cannot be found: " + configurationURL.toString() );
-            }
-        }
-
-        InputStream is = getClass().getResourceAsStream( configuration );
-
-        if ( is == null )
-        {
-            try
-            {
-                is = new FileInputStream( configuration );
-            }
-            catch ( FileNotFoundException e )
-            {
-                // do nothing.
-            }
-        }
-
-        if ( is == null )
-        {
-            throw new IllegalStateException( "The specified configuration resource cannot be found: " + configuration );
-        }
-
-        return is;
     }
 }
