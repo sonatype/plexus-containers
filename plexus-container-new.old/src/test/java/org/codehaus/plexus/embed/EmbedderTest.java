@@ -39,7 +39,51 @@ public class EmbedderTest extends TestCase
 
         embedder.addContextValue( "foo", "bar" );
 
+        try
+        {
+            embedder.stop();
+
+            fail();
+        }
+        catch ( IllegalStateException e )
+        {
+            // do nothing
+        }
+
         embedder.start();
+
+        try
+        {
+            embedder.start();
+
+            fail();
+        }
+        catch ( IllegalStateException e )
+        {
+            // do nothing
+        }
+
+        try
+        {
+            embedder.setConfiguration( "EmbedderTest.xml" );
+
+            fail();
+        }
+        catch ( IllegalStateException e )
+        {
+            // do nothing
+        }
+
+        try
+        {
+            embedder.addContextValue( "key", "value" );
+
+            fail();
+        }
+        catch ( IllegalStateException e )
+        {
+            // do nothing
+        }
 
         assertTrue( embedder.hasService( MockComponent.ROLE ) );
 
@@ -66,6 +110,28 @@ public class EmbedderTest extends TestCase
         embedder.release( componentWithHint );
 
         embedder.stop();
+
+        try
+        {
+            embedder.stop();
+
+            fail();
+        }
+        catch ( IllegalStateException e )
+        {
+            // do nothing
+        }
+
+        try
+        {
+            embedder.start();
+
+            fail();
+        }
+        catch ( IllegalStateException e )
+        {
+            // do nothing
+        }
     }
 
     public void testConfigurationByURL()
@@ -76,6 +142,18 @@ public class EmbedderTest extends TestCase
         embed.setConfiguration( getClass().getResource( "EmbedderTest.xml" ) );
 
         embed.start();
+
+        try
+        {
+            embed.setConfiguration( getClass().getResource( "EmbedderTest.xml" ) );
+
+            fail();
+        }
+        catch ( IllegalStateException e )
+        {
+            // do nothing
+        }
+
 
         Object o = embed.lookup( MockComponent.ROLE );
 
