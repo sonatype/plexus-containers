@@ -14,49 +14,60 @@ package org.codehaus.plexus.component.manager;
 public class ClassicSingletonComponentManager
     extends AbstractComponentManager
 {
+    private Object lock = new Object();
+
     private Object singleton;
 
     public void release( Object component )
         throws Exception
     {
-        if ( singleton == component )
+        synchronized( lock )
         {
-            decrementConnectionCount();
-
-            if ( !connected() )
+            if ( singleton == component )
             {
-                dispose();
+                decrementConnectionCount();
+    
+                if ( !connected() )
+                {
+                    dispose();
+                }
             }
-        }
-        else
-        {
-            getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component );
+            else
+            {
+                getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component );
+            }
         }
     }
 
     public void dispose()
         throws Exception
     {
-        //wait for all the clients to return all the components
-        //Do we do this in a seperate thread? or block the current thread??
-        //TODO
-        if ( singleton != null )
+        synchronized( lock )
         {
-            endComponentLifecycle( singleton );
-
-            singleton = null;
+            //wait for all the clients to return all the components
+            //Do we do this in a seperate thread? or block the current thread??
+            //TODO
+            if ( singleton != null )
+            {
+                endComponentLifecycle( singleton );
+    
+                singleton = null;
+            }
         }
     }
 
     public Object getComponent() throws Exception
     {
-        if ( singleton == null )
+        synchronized( lock )
         {
-            singleton = createComponentInstance();
+            if ( singleton == null )
+            {
+                singleton = createComponentInstance();
+            }
+    
+            incrementConnectionCount();
+    
+            return singleton;
         }
-
-        incrementConnectionCount();
-
-        return singleton;
     }
 }
