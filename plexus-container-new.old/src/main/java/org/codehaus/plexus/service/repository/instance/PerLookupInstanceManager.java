@@ -9,7 +9,8 @@ import org.codehaus.plexus.service.repository.ComponentHousing;
  *
  * @version $Id$
  */
-public class PerLookupInstanceManager extends AbstractMultipleInstanceManager
+public class PerLookupInstanceManager
+    extends AbstractMultipleInstanceManager
 {
     private int connections = 0;
 
