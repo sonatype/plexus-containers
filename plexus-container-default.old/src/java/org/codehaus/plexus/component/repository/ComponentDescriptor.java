@@ -15,6 +15,8 @@ import java.util.Set;
  */
 public class ComponentDescriptor
 {
+    private String alias = null;
+
     private String role = null;
 
     private String roleHint = null;
@@ -47,6 +49,16 @@ public class ComponentDescriptor
         return getRole();
     }
 
+    public String getAlias()
+    {
+        return alias;
+    }
+
+    public void setAlias( String alias )
+    {
+        this.alias = alias;
+    }
+
     public String getRole()
     {
         return role;
@@ -60,6 +72,11 @@ public class ComponentDescriptor
     public String getRoleHint()
     {
         return roleHint;
+    }
+
+    public void setRoleHint( String roleHint )
+    {
+        this.roleHint = roleHint;
     }
 
     public String getImplementation()
@@ -105,6 +122,11 @@ public class ComponentDescriptor
     public String getComponentProfile()
     {
         return componentProfile;
+    }
+
+    public void addRequirement( String requirement )
+    {
+        getRequirements().add( requirement );
     }
 
     public Set getRequirements()
