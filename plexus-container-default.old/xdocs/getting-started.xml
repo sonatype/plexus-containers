@@ -57,15 +57,16 @@
       </p>
       
       <ul>
-        <li>Providing goals to help generate Plexus components.</li>
-        <li>Providing goals to help generate Plexus component tests.</li>
-        <li>Providing goals to help assemble a Plexus application runtime.</li>
+        <li>Provide goals to help generate Plexus components.</li>
+        <li>Provide goals to help generate Plexus component tests.</li>
+        <li>Provide goals to help assemble a Plexus application runtime.</li>
       </ul>
 
       <p>
         In order to use the Plexus Maven plug-in you must install so that it
         is registered with Maven. You can either build the plug-in your self
-        from sources or you may just download the plug-in from <a href="">here</a>.
+        from sources or you may just download the plug-in from
+        <a href="http://dist.codehaus.org/plexus/distributions/">here</a>.
       </p>
 
     </subsection>

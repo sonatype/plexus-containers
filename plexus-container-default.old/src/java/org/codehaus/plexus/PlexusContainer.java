@@ -1,8 +1,8 @@
 package org.codehaus.plexus;
 
-import com.werken.classworlds.ClassWorld;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.classworlds.ClassWorld;
 
 import java.io.Reader;
 

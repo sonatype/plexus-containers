@@ -28,7 +28,7 @@ public class DefaultResourceManager
     private PlexusClassLoader plexusClassLoader;
 
     /** Parent classloader. */
-    private ClassLoader classLoader;
+    //private ClassLoader classLoader;
 
     // ----------------------------------------------------------------------
     //     Constructors
@@ -44,7 +44,7 @@ public class DefaultResourceManager
 
     public void setClassLoader( ClassLoader classLoader )
     {
-        this.classLoader = classLoader;
+        //this.classLoader = classLoader;
         plexusClassLoader = new PlexusClassLoader( classLoader );
     }
 

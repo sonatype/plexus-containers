@@ -20,7 +20,7 @@ public class ComponentManagerFactory
     {
         ComponentManager componentManager = (ComponentManager) getInstance( componentManagerDescriptor.getImplementation(), classLoader );
 
-        componentManager.enableLogging( loggerManager.getLogger( "manager-manager" ) );
+        componentManager.enableLogging( loggerManager.getLogger( "component-manager" ) );
         componentManager.setClassLoader( classLoader );
         componentManager.configure( componentManagerDescriptor.getConfiguration() );
         componentManager.setLifecycleHandler( lifecycleHandler );
@@ -33,5 +33,7 @@ public class ComponentManagerFactory
 		componentManager.initialize();
 		
         return componentManager;
+
+
     }
 }

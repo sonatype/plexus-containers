@@ -6,7 +6,7 @@
   <artifactId>plexus</artifactId>
   <id>plexus</id>
   <name>plexus</name>
-  <currentVersion>0.7</currentVersion>
+  <currentVersion>0.9</currentVersion>
   <organization>
     <name>Codehaus</name>
     <url>http://www.codehaus.org/</url>
@@ -123,13 +123,6 @@
      |
      -->
 
-    <!-- AspectJ -->
-    <dependency>
-      <groupId>aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>1.0.6</version>
-    </dependency>
-
     <!-- PlexusTestCase -->
     <dependency>
       <groupId>junit</groupId>
@@ -141,7 +134,7 @@
     <dependency>
       <groupId>classworlds</groupId>
       <artifactId>classworlds</artifactId>
-      <version>1.0-beta-5</version>
+      <version>1.0-rc3</version>
     </dependency>
 
     <!-- Log4JLoggerManager -->

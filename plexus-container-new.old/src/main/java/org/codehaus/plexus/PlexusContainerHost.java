@@ -1,6 +1,6 @@
 package org.codehaus.plexus;
 
-import com.werken.classworlds.ClassWorld;
+import org.codehaus.classworlds.ClassWorld;
 
 import java.io.File;
 import java.io.FileReader;
