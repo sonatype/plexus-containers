@@ -56,8 +56,6 @@ are very detailed and specific, while others are more general.  -pete
   instantiated.  Thus, perhaps, setComponentImplementation or
   setInstanceImplementation.
 
-- per-lookup is creating an extra instance.  Track it down.
-
 - AbstractInstanceManager has a configure() method that is not used
   (it looks like the implementation is supposed to be set here);
   however, there is also a setter for the implementation, which is
