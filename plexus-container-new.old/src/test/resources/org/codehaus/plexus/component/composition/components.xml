@@ -4,8 +4,8 @@ A simple start at component meta data that we will initially glean from the
 sources and produce using qdox. I don't consider this ideal as I believe this
 information should come from the model but the tool chain doesn't exist.
 
-I also feel much of this information before declared in sources is bad. First
-because I believe sources are the product of the model i.e. another artifact and
+I also feel much of this information being declared in sources is bad. First,
+I feel sources are the product of the model i.e. another artifact and
 second because much of this information is only accessible to developers. Many
 of the other stakeholdes in the project given decent tools would be able to
 influence the process of the generation of this metadata.
