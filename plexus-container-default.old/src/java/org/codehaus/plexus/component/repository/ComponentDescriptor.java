@@ -15,25 +15,25 @@ import java.util.Set;
 public class ComponentDescriptor
 {
     /** Component role name. */
-    private String role;
+    private String role = null;
 
     /** Role hint. */
-    private String roleHint;
+    private String roleHint = null;
 
     /** Name of the component class. */
-    private String implementation;
+    private String implementation = null;
 
     /** Configuration for the component. */
-    private Configuration configuration;
+    private Configuration configuration = null;
 
     /** Instantiation strategy. */
-    private String instantiationStrategy;
+    private String instantiationStrategy = null;
 
     /** Which lifecyclehandler to use. If null, use the containers default one. */
-    private String lifecycleHandler;
+    private String lifecycleHandler = null;
 
     /** Component profile id. */
-    private String componentProfile;
+    private String componentProfile = null;
 
     /** List of required component interfaces. */
     private Set requirements;
@@ -62,15 +62,6 @@ public class ComponentDescriptor
         return getRole();
     }
 
-    /** Set the role name of the component.
-     *
-     *  @param role The role name.
-     */
-    public void setRole( String role )
-    {
-        this.role = role;
-    }
-
     /** Retrieve the role name of the component.
      *
      *  @return THe role name.
@@ -83,20 +74,6 @@ public class ComponentDescriptor
     public String getRoleHint()
     {
         return roleHint;
-    }
-
-    public void setRoleHint( String roleHint )
-    {
-        this.roleHint = roleHint;
-    }
-
-    /** Set the class name of the component.
-     *
-     *  @param implementation The class name of the component.
-     */
-    public void setImplementation( String implementation )
-    {
-        this.implementation = implementation;
     }
 
     /** Retrieve the class name of the component.
@@ -117,24 +94,6 @@ public class ComponentDescriptor
         return instantiationStrategy;
     }
 
-    /**
-     *
-     * @param instantiationStrategy
-     */
-    public void setInstantiationStrategy( String instantiationStrategy )
-    {
-        this.instantiationStrategy = instantiationStrategy;
-    }
-
-    /** Set the <code>Configuration</code> for the component.
-     *
-     *  @param configuration The configuration.
-     */
-    public void setConfiguration( Configuration configuration )
-    {
-        this.configuration = configuration;
-    }
-
     /** Retrieve the <code>Configuration</code> for the component.
      *
      *  @return The configuration.
@@ -152,24 +111,9 @@ public class ComponentDescriptor
         return lifecycleHandler;
     }
 
-    /**
-     * Set the id of the lifecycle handler the component uses
-     *
-     * @param id
-     */
-    public void setLifecycleHandler( String id )
-    {
-        lifecycleHandler = id;
-    }
-
     public String getComponentProfile()
     {
         return componentProfile;
-    }
-
-    public void setComponentProfile( String componentProfile )
-    {
-        this.componentProfile = componentProfile;
     }
 
     public Set getRequirements()
@@ -182,8 +126,30 @@ public class ComponentDescriptor
         return requirements;
     }
 
-    public void addRequirement( String role )
+    // Need these until other tests are fixed not to use setters
+
+    public void setRole( String role )
     {
-        getRequirements().add( role );
+        this.role = role;
+    }
+
+    public void setRoleHint( String roleHint )
+    {
+        this.roleHint = roleHint;
+    }
+
+    public void setConfiguration( Configuration configuration )
+    {
+        this.configuration = configuration;
+    }
+
+    public void setInstantiationStrategy( String instantiationStrategy )
+    {
+        this.instantiationStrategy = instantiationStrategy;
+    }
+
+    public void addRequirement( String requirement )
+    {
+        getRequirements().add( requirement );
     }
 }

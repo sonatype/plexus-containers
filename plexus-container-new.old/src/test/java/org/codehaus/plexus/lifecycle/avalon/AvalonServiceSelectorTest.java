@@ -27,10 +27,13 @@ public class AvalonServiceSelectorTest
         ServiceSelector selector = (ServiceSelector) lookup( ServiceA.ROLE + "Selector" );
         
         assertTrue( selector != null );
+
         assertTrue( selector.isSelectable( "only-instance" ) );
+
         assertTrue( selector instanceof AvalonServiceSelector );
         
         ServiceA serviceA = (ServiceA) selector.select( "only-instance" );
+
         assertTrue( serviceA != null );
 
         selector.release( serviceA );
@@ -44,10 +47,13 @@ public class AvalonServiceSelectorTest
         ServiceSelector selector = (ServiceSelector) lookup( ServiceC.ROLE + "Selector" );
         
         assertTrue( selector != null );
+
         assertTrue( selector.isSelectable( "only-instance" ) );
+
         assertTrue( selector instanceof CustomServiceSelector );
         
         ServiceC serviceC = (ServiceC) selector.select( "only-instance" );
+
         assertTrue( serviceC != null );
 
         selector.release( serviceC );

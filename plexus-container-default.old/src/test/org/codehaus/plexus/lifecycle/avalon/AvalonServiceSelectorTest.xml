@@ -1,13 +1,22 @@
 <plexus>
 
-  <selectors>
-    <selector>
-      <role>org.codehaus.plexus.ServiceC</role>
-      <implementation>org.codehaus.plexus.lifecycle.avalon.CustomServiceSelector</implementation>
-    </selector>
-  </selectors>
-  
   <components>
+
+    <component>
+      <role>org.codehaus.plexus.ServiceASelector</role>
+      <implementation>org.codehaus.plexus.lifecycle.avalon.CustomServiceSelector</implementation>
+      <configuration>
+        <selectable-role>org.codehaus.plexus.ServiceA</selectable-role>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.ServiceCSelector</role>
+      <implementation>org.codehaus.plexus.lifecycle.avalon.CustomServiceSelector</implementation>
+        <configuration>
+          <selectable-role>org.codehaus.plexus.ServiceC</selectable-role>
+        </configuration>
+    </component>
 
     <!--
      |

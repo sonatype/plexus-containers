@@ -5,15 +5,14 @@ import com.thoughtworks.xstream.alias.CannotResolveClassException;
 import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.alias.ElementMapper;
 import com.thoughtworks.xstream.objecttree.reflection.JavaReflectionObjectFactory;
+import org.codehaus.plexus.configuration.DefaultConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.DefaultConfiguration;
 
 /**
  *

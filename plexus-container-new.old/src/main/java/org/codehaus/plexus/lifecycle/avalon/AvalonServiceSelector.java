@@ -67,6 +67,6 @@ public class AvalonServiceSelector
     public void configure( Configuration configuration )
         throws ConfigurationException
     {
-        selectableRole = configuration.getAttribute( SELECTABLE_ROLE_KEY );
+        selectableRole = configuration.getChild( SELECTABLE_ROLE_KEY ).getValue();
     }
 }

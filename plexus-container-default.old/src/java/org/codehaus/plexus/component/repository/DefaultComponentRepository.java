@@ -7,8 +7,8 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
-import org.codehaus.plexus.configuration.xstream.ObjectBuilder;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xstream.ObjectBuilder;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
@@ -78,8 +78,6 @@ public class DefaultComponentRepository
      */
     private Object lookupLock = new Object();
 
-    private ComponentDescriptorBuilder componentDescriptorBuilder;
-
     private LifecycleHandlerManager lifecycleHandlerManager = null;
 
     private ComponentManagerManager componentManagerManager = null;
@@ -92,8 +90,6 @@ public class DefaultComponentRepository
         componentManagers = Collections.synchronizedMap( new HashMap() );
 
         compManagersByCompClass = Collections.synchronizedMap( new HashMap() );
-
-        componentDescriptorBuilder = new ComponentDescriptorBuilder();
     }
 
     // ----------------------------------------------------------------------
@@ -302,8 +298,23 @@ public class DefaultComponentRepository
 
         for ( int i = 0; i < componentConfigurations.length; i++ )
         {
-            addComponentDescriptor( componentDescriptorBuilder.build( componentConfigurations[i] ) );
+            addComponentDescriptor( buildComponentDescriptor( componentConfigurations[i] ) );
         }
+    }
+
+    protected ComponentDescriptor buildComponentDescriptor( Configuration configuration )
+        throws Exception
+    {
+        ObjectBuilder objectBuilder = new ObjectBuilder();
+
+        objectBuilder.alias( "component", ComponentDescriptor.class );
+
+        objectBuilder.alias( "requirement", String.class );
+
+        ComponentDescriptor cd =
+            (ComponentDescriptor) objectBuilder.build(  (PlexusConfiguration) configuration, ComponentDescriptor.class );
+
+        return cd;
     }
 
     // ----------------------------------------------------------------------
