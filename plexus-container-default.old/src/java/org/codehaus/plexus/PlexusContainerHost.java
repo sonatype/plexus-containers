@@ -22,7 +22,7 @@ public class PlexusContainerHost
 
     private boolean isStopped;
 
-    private static Object waitObj;
+    private Object shutdownSignal;
     
     // ----------------------------------------------------------------------
     //  Constructors
@@ -33,27 +33,22 @@ public class PlexusContainerHost
      */
     public PlexusContainerHost()
     {
+        shutdownSignal = new Object();
     }
 
     // ----------------------------------------------------------------------
     //  Implementation
     // ----------------------------------------------------------------------
 
-    public void start( ClassWorld classWorld, String configurationResource )
+    public PlexusContainer start( ClassWorld classWorld, String configurationResource )
         throws Exception
     {
-        container = new DefaultPlexusContainer();
+        container = getPlexusContainer();
+
         container.setClassWorld( classWorld );
         container.setConfigurationResource( new FileReader( configurationResource ) );
 
-        container.addContextValue( "plexus.home",
-                                   System.getProperty( "plexus.home" ) );
-
-        container.addContextValue( "plexus.work",
-                                   System.getProperty( "plexus.home" ) + "/work" );
-
-        container.addContextValue( "plexus.logs",
-                                   System.getProperty( "plexus.home" ) + "/logs" );
+        customizeContainer( container );
 
         // Move this to the logging subsystem. And there might be a logging directory
         // so we need better analsys as the container might be embedded.
@@ -86,10 +81,30 @@ public class PlexusContainerHost
         } ) );
 
         thread.start();
+
+        return container;
+    }
+
+    // ----------------------------------------------------------------------
+    // Methods for customizing the container
+    // ----------------------------------------------------------------------
+
+    protected DefaultPlexusContainer getPlexusContainer()
+    {
+        return new DefaultPlexusContainer();
+    }
+
+    protected void customizeContainer( PlexusContainer container )
+    {
+        container.addContextValue( "plexus.home", System.getProperty( "plexus.home" ) );
+
+        container.addContextValue( "plexus.work", System.getProperty( "plexus.home" ) + "/work" );
+
+        container.addContextValue( "plexus.logs", System.getProperty( "plexus.home" ) + "/logs" );
     }
 
     /**
-     *  Asynchronous hosting component loop.
+     * Asynchronous hosting component loop.
      */
     public void run()
     {
@@ -116,7 +131,7 @@ public class PlexusContainerHost
     }
 
     // ----------------------------------------------------------------------
-    //  Startup
+    //  Container control
     // ----------------------------------------------------------------------
 
     /**
@@ -138,7 +153,7 @@ public class PlexusContainerHost
 
         synchronized ( this )
         {
-            while ( !isStopped )
+            while ( !isStopped() )
             {
                 try
                 {
@@ -149,12 +164,35 @@ public class PlexusContainerHost
                     //ignore
                 }
             }
-            
-            synchronized( waitObj )
+
+            synchronized( shutdownSignal )
             {
-                waitObj.notifyAll();
+                shutdownSignal.notifyAll();
             }
         }
+    }
+
+    public void waitForContainerShutdown()
+    {
+        while ( !isStopped() )
+        {
+            try
+            {
+                synchronized( shutdownSignal )
+                {
+                    shutdownSignal.wait();
+                }
+            }
+            catch ( InterruptedException e )
+            {
+                // ignored
+            }
+        }
+    }
+
+    public boolean isStopped()
+    {
+        return isStopped;
     }
 
     /**
@@ -172,24 +210,11 @@ public class PlexusContainerHost
 
         try
         {
-            waitObj = new Object();
-
             PlexusContainerHost host = new PlexusContainerHost();
+
             host.start( classWorld, args[0] );
-            
-            while ( !host.isStopped() )
-            {
-                try
-                {
-                    synchronized( waitObj )
-                    {
-                        waitObj.wait();
-                    }
-                }
-                catch ( InterruptedException e )
-                {
-                }
-            }
+
+            host.waitForContainerShutdown();
         }
         catch ( Exception e )
         {
@@ -197,13 +222,4 @@ public class PlexusContainerHost
             System.exit( 2 );
         }
     }
-
-    /**
-     * @return
-     */
-    private boolean isStopped()
-    {
-        return isStopped;
-    }
 }
-
