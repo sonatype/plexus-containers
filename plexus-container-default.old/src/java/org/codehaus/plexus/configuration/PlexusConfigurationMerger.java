@@ -20,7 +20,7 @@ public class PlexusConfigurationMerger
     // -----------------------------------+-----------------------------------------------------------------
     // component-manager-manager          | user ignore
     // -----------------------------------+-----------------------------------------------------------------
-    // lifecycle-handler-manager          | user wins
+    // lifecycle-handler-manager          | user wins, but system lifecycles show through
     // -----------------------------------+-----------------------------------------------------------------
     // components                         | user
     // -----------------------------------+-----------------------------------------------------------------
@@ -84,6 +84,8 @@ public class PlexusConfigurationMerger
         if ( lifecycleHandlerManager.getChildCount() != 0 )
         {
             mergedConfiguration.addChild( lifecycleHandlerManager );
+
+            copyLifecycles( system.getChild( "lifecycle-handler-manager" ), lifecycleHandlerManager );
         }
         else
         {
@@ -98,5 +100,17 @@ public class PlexusConfigurationMerger
         }
 
         return mergedConfiguration;
+    }
+
+    private static void copyLifecycles( PlexusConfiguration source, PlexusConfiguration destination )
+    {
+        PlexusConfiguration handlers[] = source.getChild( "lifecycle-handlers" ).getChildren( "lifecycle-handler" );
+
+        DefaultPlexusConfiguration dest = (DefaultPlexusConfiguration) destination.getChild( "lifecycle-handlers" );
+
+        for ( int i = 0; i < handlers.length; i++ )
+        {
+            dest.addChild( handlers[i] );
+        }
     }
 }
