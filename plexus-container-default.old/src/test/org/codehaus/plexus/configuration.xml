@@ -11,6 +11,31 @@
     <implementation>org.codehaus.plexus.service.repository.DefaultComponentRepository</implementation>
   </service-repository>
 
+  <!--
+   |
+   | User defined lifecycle handlers
+   |
+   -->
+  <lifecycle-handlers>
+    <lifecycle-handler>
+      <id>arbitrary</id>
+      <name>Arbitrary Lifecycle Handler</name>
+      <implementation>org.codehaus.plexus.lifecycle.SimpleLifecycleHandler</implementation>
+      <start-segment>
+        <phase implementation="org.codehaus.plexus.lifecycle.phase.LogEnablePhase"/>
+      </start-segment>
+      <suspend-segment>
+        <phase implementation="org.codehaus.plexus.lifecycle.phase.SuspendPhase"/>
+      </suspend-segment>
+      <resume-segment>
+        <phase implementation="org.codehaus.plexus.lifecycle.phase.ResumePhase"/>
+      </resume-segment>
+      <end-segment>
+        <phase implementation="org.codehaus.plexus.lifecycle.phase.DisposePhase"/>
+      </end-segment>
+    </lifecycle-handler>
+  </lifecycle-handlers>
+
   <components>
 
     <!--
