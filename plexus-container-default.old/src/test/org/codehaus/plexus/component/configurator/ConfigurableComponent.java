@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @version $Id$
  */
-public class Component
+public class ConfigurableComponent
 {
     private int intValue;
     private float floatValue;
