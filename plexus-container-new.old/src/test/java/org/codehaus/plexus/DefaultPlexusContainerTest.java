@@ -185,7 +185,7 @@ public class DefaultPlexusContainerTest
     public void testLookupAll()
         throws Exception
     {
-        Map components = container.lookupAll( ServiceC.ROLE );
+        Map components = container.lookupMap( ServiceC.ROLE );
 
         assertNotNull( components );
 

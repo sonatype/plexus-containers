@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
+import java.util.List;
 
 /**
  * Implementation of the <code>PlexusContainer</code> interface that can
@@ -78,23 +79,44 @@ public final class ComponentPlexusContainer
         return myPlexus.lookup( role );
     }
 
-    public Map lookupAll( String role )
+    public Map lookupMap( String role )
         throws ComponentLookupException
     {
         if ( myPlexus.hasComponent( role ) )
         {
-            return myPlexus.lookupAll( role );
+            return myPlexus.lookupMap( role );
         }
 
         if ( parentPlexus != null )
         {
-            return parentPlexus.lookupAll( role );
+            return parentPlexus.lookupMap( role );
         }
 
-        return myPlexus.lookupAll( role );
+        return myPlexus.lookupMap( role );
+    }
+
+    public List lookupList( String role )
+        throws ComponentLookupException
+    {
+        if ( myPlexus.hasComponent( role ) )
+        {
+            return myPlexus.lookupList( role );
+        }
+
+        if ( parentPlexus != null )
+        {
+            return parentPlexus.lookupList( role );
+        }
+
+        return myPlexus.lookupList( role );
     }
 
     public void releaseAll( Map components )
+    {
+        // Not exactly sure how to do this here.
+    }
+
+    public void releaseAll( List components )
     {
         // Not exactly sure how to do this here.
     }

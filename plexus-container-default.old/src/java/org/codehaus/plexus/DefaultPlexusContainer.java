@@ -15,10 +15,10 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
-import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.context.ContextMapAdapter;
@@ -38,8 +38,10 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,40 +52,29 @@ public class DefaultPlexusContainer
     extends AbstractLogEnabled
     implements PlexusContainer
 {
-    // ----------------------------------------------------------------------
-    //  Instance Members
-    // ----------------------------------------------------------------------
-
-    /** Logger Manager used for this container. */
     private LoggerManager loggerManager;
 
-    /** Context used for this container. */
     private DefaultContext context;
 
-    /** Service Repository used for this container. */
     private ComponentRepository componentRepository;
 
-    /** Configuration for this container. */
     private PlexusConfiguration configuration;
 
     private PlexusConfiguration defaultConfiguration;
 
     private PlexusConfiguration mergedConfiguration;
 
-    /** The configuration resource. */
     private Reader configurationReader;
 
     private ClassWorld classWorld;
 
-    /** Class loader used for this container if a class world is not available. */
     private ClassLoader classLoader;
 
     private DefaultResourceManager resourceManager;
 
-    /** Default Configuration Builder. */
     private XmlPullConfigurationBuilder builder;
 
-    /** XML element used to start the logging configuration block. */
+    //!! needs to be removed
     public static final String LOGGING_TAG = "logging";
 
     private ComponentConfigurator componentConfigurator;
@@ -180,7 +171,7 @@ public class DefaultPlexusContainer
         return component;
     }
 
-    public Map lookupAll( String role )
+    public Map lookupMap( String role )
         throws ComponentLookupException
     {
         Map components = new HashMap();
@@ -204,6 +195,31 @@ public class DefaultPlexusContainer
         return components;
     }
 
+    public List lookupList( String role )
+        throws ComponentLookupException
+    {
+        List components = new ArrayList();
+
+        Map componentDescriptors = componentRepository.getComponentDescriptorMap( role );
+
+        if ( componentDescriptors != null )
+        {
+            // Now we have a map of component descriptors keyed by role hint.
+
+            for ( Iterator i = componentDescriptors.keySet().iterator(); i.hasNext(); )
+            {
+                String roleHint = (String) i.next();
+
+                Object component = lookup( role, roleHint );
+
+                components.add( component );
+            }
+        }
+
+        return components;
+    }
+
+
     public Object lookup( String role, String id )
         throws ComponentLookupException
     {
@@ -219,6 +235,17 @@ public class DefaultPlexusContainer
             release( component );
         }
     }
+
+    public void releaseAll( List components )
+    {
+        for ( Iterator i = components.iterator(); i.hasNext(); )
+        {
+            Object component = i.next();
+
+            release( component );
+        }
+    }
+
 
     public boolean hasComponent( String componentKey )
     {
@@ -707,7 +734,7 @@ public class DefaultPlexusContainer
 
         PlexusConfiguration c = mergedConfiguration.getChild( "component-manager-manager" );
 
-        componentManagerManager = (ComponentManagerManager) builder.build( (PlexusConfiguration) c, DefaultComponentManagerManager.class );
+        componentManagerManager = (ComponentManagerManager) builder.build( c, DefaultComponentManagerManager.class );
     }
 
     public ComponentManager instantiateComponentManager( ComponentDescriptor descriptor )
