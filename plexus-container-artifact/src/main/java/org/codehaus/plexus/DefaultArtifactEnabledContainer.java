@@ -1,5 +1,34 @@
 package org.codehaus.plexus;
 
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2004, The Codehaus
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -7,15 +36,11 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author jdcasey
@@ -98,17 +123,22 @@ public class DefaultArtifactEnabledContainer
         // discovering components inside the dependencies. jvz.
         // ----------------------------------------------------------------------
 
+        ClassRealm componentRealm;
+
+        ClassRealm plexusRealm = getContainerRealm();
+
+        String realmId = component.getId();
+
+        componentRealm = plexusRealm.createChildRealm( realmId );
+
         for ( Iterator i = componentDescriptors.iterator(); i.hasNext(); )
         {
             ComponentDescriptor componentDescriptor = (ComponentDescriptor) i.next();
 
             String componentKey = componentDescriptor.getComponentKey();
 
-            ClassRealm componentRealm;
-
-            ClassRealm plexusRealm = getContainerRealm();
-
-            componentRealm = plexusRealm.createChildRealm( componentKey );
+            // Add a alias for the components in the artifact itself
+            addRealmAlias( componentKey, realmId );
 
             if ( componentDescriptor.getComponentSetDescriptor().getDependencies() != null )
             {
@@ -137,7 +167,7 @@ public class DefaultArtifactEnabledContainer
                 // requested the first time, at that point create the realm and use
                 // the DAG to populate the realm correctly. This method below is
                 // leading to jumbled realms and the alias mechanism used is crap and
-                // won't be needed when I delay the creation of the realms using the 
+                // won't be needed when I delay the creation of the realms using the
                 // component metadata which is the way to go. jvz.
                 // ----------------------------------------------------------------------
 
@@ -188,7 +218,7 @@ public class DefaultArtifactEnabledContainer
                 {
                     ComponentDescriptor dcd = (ComponentDescriptor) j.next();
 
-                    addRealmAlias( dcd.getComponentKey(), componentKey );
+                    addRealmAlias( dcd.getComponentKey(), realmId );
                 }
 
                 dependencyComponentsDiscovered = true;
