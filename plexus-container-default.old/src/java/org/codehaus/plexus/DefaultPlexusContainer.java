@@ -2,6 +2,7 @@ package org.codehaus.plexus;
 
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.component.composition.ComponentComposer;
 import org.codehaus.plexus.component.composition.DefaultComponentComposer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
@@ -481,6 +482,11 @@ public class DefaultPlexusContainer
         return classLoader;
     }
 
+    public void setClassWorld( ClassWorld classWorld )
+    {
+        this.classWorld = classWorld;
+    }
+
     private void initializeClassWorlds()
         throws Exception
     {
@@ -489,15 +495,23 @@ public class DefaultPlexusContainer
             classWorld = new ClassWorld();
         }
 
-        if ( classLoader != null )
+        try
         {
-            classRealm = classWorld.newRealm( "core", classLoader );
+            classRealm = classWorld.getRealm( "core" );
         }
-        else
+        catch ( NoSuchRealmException e )
         {
-            classRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+            if ( classLoader != null && 
+                 classRealm != null )
+            {
+                classRealm = classWorld.newRealm( "core", classLoader );
+            }
+            else
+            {
+                classRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+            }
         }
-
+        
         classLoader = classRealm.getClassLoader();
 
         Thread.currentThread().setContextClassLoader( classLoader );
