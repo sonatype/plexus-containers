@@ -805,9 +805,6 @@ public class DefaultPlexusContainer
         // obtainable in phase via the container which is accessible from the component manager
         lifecycleHandlerManager.addEntity( LifecycleHandler.CONTEXT, context );
 
-        // obtainable in phase via the container which is accessible from the component manager
-        lifecycleHandlerManager.addEntity( LifecycleHandler.PLEXUS_CONTAINER, this );
-
         lifecycleHandlerManager.initialize();
     }
 
