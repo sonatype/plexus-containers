@@ -13,17 +13,11 @@ public class KeepAliveSingletonComponentManager
 {
     private Object singleton;
 
-    /**
-     *
-     */
     public KeepAliveSingletonComponentManager()
     {
         super();
     }
 
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#release(java.lang.Object)
-     */
     public void release( Object component )
     {
         //Only accept it if it is the same manager.
@@ -37,9 +31,6 @@ public class KeepAliveSingletonComponentManager
         }
     }
 
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#dispose()
-     */
     public void dispose()
     {
         //wait for all the clients to return all the components
@@ -51,9 +42,6 @@ public class KeepAliveSingletonComponentManager
         }
     }
 
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#getComponent()
-     */
     public Object getComponent() throws Exception
     {
         if ( singleton == null )

@@ -283,11 +283,11 @@ public class DefaultPlexusContainer
 
         initializeComponentRepository();
 
+        initializeComponentConfigurator();
+
         initializeLifecycleHandlerManager();
 
         initializeComponentManagerManager();
-
-        initializeComponentConfigurator();
 
         initializeResourceManager();
 
@@ -770,8 +770,8 @@ public class DefaultPlexusContainer
 
         Configuration c = mergedConfiguration.getChild( "lifecycle-handler-manager" );
 
-        lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( (Configuration) c, DefaultLifecycleHandlerManager.class );
+        lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( c, DefaultLifecycleHandlerManager.class );
 
-        lifecycleHandlerManager.initialize( loggerManager, context, componentRepository );
+        lifecycleHandlerManager.initialize( loggerManager, context, componentRepository, componentConfigurator );
     }
 }

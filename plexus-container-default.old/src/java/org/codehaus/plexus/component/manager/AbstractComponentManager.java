@@ -15,27 +15,17 @@ import org.codehaus.plexus.logging.Logger;
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
 {
-    /** Component Descriptor. */
     private ComponentDescriptor componentDescriptor;
 
-    /** ClassLoader used to load the component */
     private ClassLoader classLoader;
 
-    /** Component implementation */
-    private String implementation;
-
-    /** Lifecycle handler for this component type */
     private LifecycleHandler lifecycleHandler;
 
-    /** Logger. */
     private Logger logger;
 
-    /** Client connections. */
     private int connections;
 
-    private String id = null;
-
-    private String description = null;
+    private String id;
 
     public AbstractComponentManager()
     {
@@ -58,19 +48,14 @@ public abstract class AbstractComponentManager
     // Accessors
     // ----------------------------------------------------------------------
 
-    public String getId()
-    {
-        return id;
-    }
-
     public ComponentDescriptor getComponentDescriptor()
     {
         return componentDescriptor;
     }
 
-    public String getImplementation()
+    public String getId()
     {
-        return implementation;
+        return id;
     }
 
     public LifecycleHandler getLifecycleHandler()
@@ -130,7 +115,6 @@ public abstract class AbstractComponentManager
     public void initialize()
         throws Exception
     {
-        implementation = getComponentDescriptor().getImplementation();
     }
 
     // ----------------------------------------------------------------------
@@ -140,7 +124,7 @@ public abstract class AbstractComponentManager
     protected Object createComponentInstance()
         throws Exception
     {
-        Object component = getClassLoader().loadClass( getImplementation() ).newInstance();
+        Object component = getClassLoader().loadClass( componentDescriptor.getImplementation() ).newInstance();
 
         startComponentLifecycle( component );
 

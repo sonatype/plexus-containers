@@ -10,9 +10,6 @@ package org.codehaus.plexus.component.manager;
 public class PerLookupComponentManager
     extends AbstractComponentManager
 {
-    /**
-     *
-     */
     public PerLookupComponentManager()
     {
         super();
@@ -24,9 +21,6 @@ public class PerLookupComponentManager
         //ended on release
     }
 
-    /* (non-Javadoc)
-     * @see org.codehaus.plexus.component.repository.manager.InstanceManager#getComponent()
-     */
     public Object getComponent()
         throws Exception
     {
@@ -35,9 +29,6 @@ public class PerLookupComponentManager
         return component;
     }
 
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#release(java.lang.Object)
-     */
     public void release( Object component )
     {
         endComponentLifecycle( component );

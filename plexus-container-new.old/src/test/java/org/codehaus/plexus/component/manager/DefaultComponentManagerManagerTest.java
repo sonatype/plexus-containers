@@ -24,11 +24,9 @@ public class DefaultComponentManagerManagerTest
             "  <component-managers>" +
             "    <component-manager implementation='org.codehaus.plexus.component.manager.PerLookupComponentManager'>" +
             "      <id>per-lookup</id>" +
-            "      <description>New component instance per lookup which is disposed upon release</description>" +
             "    </component-manager>" +
             "    <component-manager implementation='org.codehaus.plexus.component.manager.PoolableComponentManager'>" +
             "      <id>poolable</id>" +
-            "      <description>Component is pooled and only disposed when the pool gets too big. Growable pool</description>" +
             "      <initial-capacity>5</initial-capacity>" +
             "      <sweep-interval>5</sweep-interval>" +
             "      <max-capacity>30</max-capacity>" +
@@ -37,13 +35,9 @@ public class DefaultComponentManagerManagerTest
             "    </component-manager>" +
             "    <component-manager implementation='org.codehaus.plexus.component.manager.ClassicSingletonComponentManager'>" +
             "      <id>singleton</id>" +
-            "      <description>The classic singleton manager. Once no more compenents are connected the" +
-            "      instance is disposed</description>" +
             "    </component-manager>" +
             "    <component-manager implementation='org.codehaus.plexus.component.manager.KeepAliveSingletonComponentManager'>" +
             "      <id>singleton-keep-alive</id>" +
-            "      <description>Singleton instance manager which keeps a single instance alive until" +
-            "      the component repository is disposed.</description>" +
             "    </component-manager>" +
             "  </component-managers>" +
             "</component-manager-manager>";

@@ -92,6 +92,11 @@ public class ComponentDescriptor
         this.configuration = configuration;
     }
 
+    public boolean hasConfiguration()
+    {
+        return configuration != null;
+    }
+
     public String getLifecycleHandler()
     {
         return lifecycleHandler;

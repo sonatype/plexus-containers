@@ -38,9 +38,6 @@ public class ClassicSingletonComponentManager
         }
     }
 
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#dispose()
-     */
     public void dispose()
     {
         //wait for all the clients to return all the components
@@ -49,13 +46,11 @@ public class ClassicSingletonComponentManager
         if ( singleton != null )
         {
             endComponentLifecycle( singleton );
+
             singleton = null;
         }
     }
 
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#getComponent()
-     */
     public Object getComponent() throws Exception
     {
         if ( singleton == null )

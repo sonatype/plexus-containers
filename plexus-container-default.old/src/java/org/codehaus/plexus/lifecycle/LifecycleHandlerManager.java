@@ -1,6 +1,7 @@
 package org.codehaus.plexus.lifecycle;
 
 import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.LoggerManager;
 
@@ -14,7 +15,10 @@ import org.codehaus.plexus.logging.LoggerManager;
  */
 public interface LifecycleHandlerManager
 {
-    void initialize( LoggerManager lm, Context context, ComponentRepository cr )
+    void initialize( LoggerManager loggerManager,
+                     Context context,
+                     ComponentRepository componentRepository,
+                     ComponentConfigurator componentConfigurator )
         throws Exception;
 
     LifecycleHandler getDefaultLifecycleHandler()

@@ -19,19 +19,15 @@ public interface ComponentManager
 {
     ComponentManager copy();
 
-    static String ROLE = ComponentManager.class.getName();
-
     String getId();
 
-    void setup( Logger logger, ClassLoader cl, LifecycleHandler h, ComponentDescriptor d )
+    void setup( Logger logger, ClassLoader classLoader, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor )
         throws Exception;
 
     void initialize()
         throws Exception;
 
     int getConnections();
-
-    ComponentDescriptor getComponentDescriptor();
 
     LifecycleHandler getLifecycleHandler();
 
@@ -45,4 +41,6 @@ public interface ComponentManager
 
     Object getComponent()
         throws Exception;
+
+    ComponentDescriptor getComponentDescriptor();
 }

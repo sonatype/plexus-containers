@@ -1,0 +1,18 @@
+<plexus>
+  <logging>
+    <implementation>org.codehaus.plexus.logging.ConsoleLoggerManager</implementation>
+    <logger>
+      <threshold>ERROR</threshold>
+    </logger>
+  </logging>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.test.Component</role>
+      <implementation>org.codehaus.plexus.test.DefaultComponent</implementation>
+      <configuration>
+        <host>localhost</host>
+        <port>10000</port>
+      </configuration>
+    </component>
+  </components>
+</plexus>
