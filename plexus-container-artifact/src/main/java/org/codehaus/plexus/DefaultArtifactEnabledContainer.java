@@ -57,7 +57,7 @@ public class DefaultArtifactEnabledContainer
 
     private Artifact createArtifact( ComponentDependency cd )
     {
-        return new DefaultArtifact( cd.getGroupId(), cd.getArtifactId(), cd.getVersion(), "jar" );
+        return new DefaultArtifact( cd.getGroupId(), cd.getArtifactId(), cd.getVersion(), cd.getType() );
     }
 
     // ----------------------------------------------------------------------
