@@ -6,11 +6,13 @@ package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.configuration.Property;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,41 +29,8 @@ import java.util.Map;
  * @version $Revision$
  */
 public final class ComponentPlexusContainer
-    implements PlexusContainer
-
-    //, Contextualizable, Configurable,
-    // Initializable, Startable
+    implements PlexusContainer, Contextualizable, Initializable, Startable
 {
-
-    public Map getComponentDescriptorMap( String s )
-    {
-        return null;
-    }
-
-    public ComponentDescriptor getComponentDescriptor( String s )
-    {
-        return null;
-    }
-
-    /**
-     * <code>Configuration</code> element name: Plexus configuration resource.
-     */
-    public static final String PLEXUS_CONFIG = "plexus-config";
-
-    /**
-     * <code>Configuration</code> element name: Plexus context setting.
-     */
-    public static final String CONTEXT_VALUE = "context-value";
-
-    /**
-     * <code>Configuration</code> element name: Plexus context setting name.
-     */
-    public static final String CONTEXT_VALUE_NAME = "name";
-
-    /**
-     * <code>Configuration</code> element name: Plexus context setting value.
-     */
-    public static final String CONTEXT_VALUE_VALUE = "value";
 
     /**
      * Parent <code>PlexusContainer</code>. That is, the
@@ -72,7 +41,9 @@ public final class ComponentPlexusContainer
     /** Our own <code>PlexusContainer</code>. */
     private DefaultPlexusContainer myPlexus = new DefaultPlexusContainer();
 
-    private String configurationName;
+    private String plexusConfig;
+
+    private Property[] contextValues;
 
     public Object lookup( String role )
         throws ComponentLookupException
@@ -88,6 +59,22 @@ public final class ComponentPlexusContainer
         }
 
         return myPlexus.lookup( role );
+    }
+
+    public Object lookup( String role, String id )
+        throws ComponentLookupException
+    {
+        if ( myPlexus.hasComponent( role, id ) )
+        {
+            return myPlexus.lookup( role, id );
+        }
+
+        if ( parentPlexus != null )
+        {
+            return parentPlexus.lookup( role, id );
+        }
+
+        return myPlexus.lookup( role, id );
     }
 
     public Map lookupMap( String role )
@@ -122,6 +109,26 @@ public final class ComponentPlexusContainer
         return myPlexus.lookupList( role );
     }
 
+    public Map getComponentDescriptorMap( String s )
+    {
+        return null;
+    }
+
+    public ComponentDescriptor getComponentDescriptor( String s )
+    {
+        return null;
+    }
+
+    public void release( Object service )
+    {
+        myPlexus.release( service );
+
+        if ( parentPlexus != null )
+        {
+            parentPlexus.release( service );
+        }
+    }
+
     public void releaseAll( Map components )
     {
         // Not exactly sure how to do this here.
@@ -130,22 +137,6 @@ public final class ComponentPlexusContainer
     public void releaseAll( List components )
     {
         // Not exactly sure how to do this here.
-    }
-
-    public Object lookup( String role, String id )
-        throws ComponentLookupException
-    {
-        if ( myPlexus.hasComponent( role, id ) )
-        {
-            return myPlexus.lookup( role, id );
-        }
-
-        if ( parentPlexus != null )
-        {
-            return parentPlexus.lookup( role, id );
-        }
-
-        return myPlexus.lookup( role, id );
     }
 
     public boolean hasComponent( String role )
@@ -178,16 +169,6 @@ public final class ComponentPlexusContainer
         return false;
     }
 
-    public void release( Object service )
-    {
-        myPlexus.release( service );
-
-        if ( parentPlexus != null )
-        {
-            parentPlexus.release( service );
-        }
-    }
-
     public void suspend( Object component )
     {
         myPlexus.suspend( component );
@@ -217,34 +198,10 @@ public final class ComponentPlexusContainer
         throw new UnsupportedOperationException( "setConfigurationResource is not supported for ComponentPlexusContainer" );
     }
 
-    public ClassLoader getClassLoader()
-    {
-        return myPlexus.getClassLoader();
-    }
-
     public void contextualize( Context context )
         throws ContextException
     {
         parentPlexus = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
-    }
-
-    public void configure( PlexusConfiguration configuration )
-        throws PlexusConfigurationException
-    {
-        configurationName = configuration.getChild( PLEXUS_CONFIG ).getValue();
-
-        PlexusConfiguration[] contextValues = configuration.getChildren( CONTEXT_VALUE );
-
-        for ( int i = 0; i < contextValues.length; i++ )
-        {
-            PlexusConfiguration c = contextValues[i];
-
-            String name = c.getChild( CONTEXT_VALUE_NAME ).getValue();
-
-            String value = c.getChild( CONTEXT_VALUE_VALUE ).getValue();
-
-            addContextValue( name, value );
-        }
     }
 
     public void initialize()
@@ -252,11 +209,21 @@ public final class ComponentPlexusContainer
     {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-        InputStream stream = loader.getResourceAsStream( configurationName );
+        InputStream stream = loader.getResourceAsStream( plexusConfig );
 
         Reader r = new InputStreamReader( stream );
 
         myPlexus.setConfigurationResource( r );
+
+        if ( contextValues != null )
+        {
+            for ( int i = 0; i < contextValues.length; i++ )
+            {
+                Property p = contextValues[i];
+
+                myPlexus.addContextValue( p.getName(), p.getValue() );
+            }
+        }
 
         myPlexus.initialize();
 
