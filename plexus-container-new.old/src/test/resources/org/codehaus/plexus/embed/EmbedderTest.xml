@@ -1,0 +1,10 @@
+<plexus>
+  <components>
+
+    <component>
+      <role>org.codehaus.plexus.embed.MockComponent</role>
+      <implementation>org.codehaus.plexus.embed.MockComponent</implementation>      
+    </component>
+
+  </components>
+</plexus>
