@@ -183,7 +183,7 @@
 
     <unitTest>
       <includes>
-        <include>**/*HierarchyTest.java</include>
+        <include>**/*Test.java</include>
       </includes>
       <excludes>
         <exclude>org/codehaus/plexus/logging/AbstractLoggerManagerTest.java</exclude>
