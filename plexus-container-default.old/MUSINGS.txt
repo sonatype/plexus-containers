@@ -52,8 +52,3 @@ are very detailed and specific, while others are more general.  -pete
   manager itself OR the implementation of the component to be
   instantiated.  Thus, perhaps, setComponentImplementation or
   setInstanceImplementation.
-
-- Thoughts about how the instantiation strategies are defined in the
-  plexus conf file:  I'm not sure if this is a great idea as it leads
-  the user to believe that these are _real_ components when in fact
-  they aren't. ??
