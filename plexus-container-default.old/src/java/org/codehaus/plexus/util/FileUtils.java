@@ -358,8 +358,7 @@ public class FileUtils
     }
 
     /**
-     * Given a directory and an array of extensions... return an array of
-     * compliant files.
+     * Given a directory and an array of extensions return an array of compliant files.
      *
      * TODO Should an ignore list be passed in?
      * TODO Should a recurse flag be passed in?

@@ -1979,9 +1979,10 @@ public class StringUtils
     }
 
     /**
-     * Compare two strings, and return the index at which the strings begin to differ
+     * Compare two strings, and return the index at which the strings begin to differ.
      * <p>
      * E.g. strdiff("i am a machine", "i am a robot") -> 7
+     * </p>
      *
      * @return the index where s2 and s1 begin to differ; -1 if they are equal
      **/

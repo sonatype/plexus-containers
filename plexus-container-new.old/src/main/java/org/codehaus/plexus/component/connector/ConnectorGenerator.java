@@ -10,24 +10,26 @@ import java.lang.reflect.Method;
 /**
  * Generates component connectors.
  *
- * - two components connected by role
- * - look at the interface
- * - client and provider
- *
- *
- *   Client making a use of the services provided by the
- *   component C1 via the connector Con1.
- *
+ * <ui>
+ *  <li>two components connected by role</li>
+ *  <li>look at the interface</li>
+ *  <li>client and provider</li>
+ * </ul>
+ * <p>
+ * Client making a use of the services provided by the
+ * component C1 via the connector Con1.
+ * </p><p>
+ * <pre>
  *   Client                                 Provider
  *   +-------+                              +-------+
  *   |       |                              |       |
  *   |       | -------> Connector --------> |       |
  *   +-------+                              +-------+
- *
- *   The connector will have the same interface as the Provider and
- *   the client will be given a reference to the connector and not
- *   the Provider directly.
- *
+ * </pre>
+ * </p>
+ * The connector will have the same interface as the Provider and
+ * the client will be given a reference to the connector and not
+ * the Provider directly.
  */
 public class ConnectorGenerator
 {
