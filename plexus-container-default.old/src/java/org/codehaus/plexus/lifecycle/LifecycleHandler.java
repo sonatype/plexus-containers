@@ -20,10 +20,11 @@ public interface LifecycleHandler
     /** */
     public static String SERVICE_REPOSITORY = "component.repository";
 
-    /** Set lifecycle specifics.
+    /**
+     * Set lifecycle specifics.
      *
-     *  <p>The lifecycle of a particular component may vary from implementation
-     *  to implementation.</p>
+     * <p>The lifecycle of a particular component may vary from implementation
+     * to implementation.</p>
      *
      * <p>These entities are made available to the various phases, are are global
      * to the Lifecycel handler (no component specific stuff in here)</p>
@@ -39,7 +40,7 @@ public interface LifecycleHandler
 
     String getId();
 
-    void startLifecycle( Object component, ComponentManager manager )
+    void start( Object component, ComponentManager manager )
         throws Exception;
 
     void suspend( Object component, ComponentManager manager )
@@ -48,7 +49,7 @@ public interface LifecycleHandler
     void resume( Object component, ComponentManager manager )
         throws Exception;
 
-    void endLifecycle( Object component, ComponentManager manager )
+    void end( Object component, ComponentManager manager )
         throws Exception;
 
     void initialize()

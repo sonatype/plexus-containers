@@ -102,7 +102,7 @@ public abstract class AbstractLifecycleHandler
      *  @throws java.lang.Exception If an error occurs while attempting to beginSegment
      *          the component's lifecycle.
      */
-    public void startLifecycle( Object component, ComponentManager manager )
+    public void start( Object component, ComponentManager manager )
         throws Exception
     {
         for ( Iterator i = getBeginSegment().iterator(); i.hasNext(); )
@@ -139,7 +139,7 @@ public abstract class AbstractLifecycleHandler
      *  @throws java.lang.Exception If an error occurs while attempting to endSegment
      *          the component's lifecycle.
      */
-    public void endLifecycle( Object component, ComponentManager manager )
+    public void end( Object component, ComponentManager manager )
         throws Exception
     {
         for ( Iterator i = getEndSegment().iterator(); i.hasNext(); )

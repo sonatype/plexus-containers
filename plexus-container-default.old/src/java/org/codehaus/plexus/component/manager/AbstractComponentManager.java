@@ -168,7 +168,7 @@ public abstract class AbstractComponentManager
     {
         try
         {
-            getLifecycleHandler().startLifecycle( component, this );
+            getLifecycleHandler().start( component, this );
         }
         catch ( Exception e )
         {
@@ -204,7 +204,7 @@ public abstract class AbstractComponentManager
     {
         try
         {
-            getLifecycleHandler().endLifecycle( component, this );
+            getLifecycleHandler().end( component, this );
         }
         catch ( Exception e )
         {

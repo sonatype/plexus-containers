@@ -1,11 +1,8 @@
 package org.codehaus.plexus;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.util.AbstractTestThread;
 import org.codehaus.plexus.util.TestThreadManager;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -71,29 +68,6 @@ public class DefaultPlexusContainerTest
     {
         container.dispose();
         container = null;
-    }
-
-    public void testLifecycleHandlerSetup()
-        throws Exception
-    {
-        LifecycleHandler lh = container.getComponentRepository().getDefaultLifecycleHandler();
-
-        assertNotNull( lh );
-
-        lh = container.getComponentRepository().getLifecycleHandler( "avalon" );
-
-        assertNotNull( lh );
-
-        try
-        {
-            lh = container.getComponentRepository().getLifecycleHandler( "non-existent-id" );
-
-            fail( "UndefinedLifecycleHandlerException should be thrown." );
-        }
-        catch( UndefinedLifecycleHandlerException e )
-        {
-            // do nothing.
-        }
     }
 
     public void testDefaultPlexusContainerSetup()

@@ -87,5 +87,16 @@ public class DefaultLifecycleHandlerManagerTest
         LifecycleHandler defaultLifecycleHandler = lhm.getDefaultLifecycleHandler();
 
         assertNotNull( defaultLifecycleHandler );
+
+        try
+        {
+            lhm.getLifecycleHandler( "non-existent-id" );
+
+            fail( "UndefinedLifecycleHandlerException should be thrown." );
+        }
+        catch( UndefinedLifecycleHandlerException e )
+        {
+            // do nothing.
+        }
     }
 }
