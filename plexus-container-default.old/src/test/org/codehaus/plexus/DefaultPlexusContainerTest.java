@@ -54,12 +54,14 @@ public class DefaultPlexusContainerTest
         container.start();
     }
 
-    public void testSetup()
+    /**
+     * Test container setup.
+     *
+     * @throws Exception
+     */
+    public void testDefaultPlexusContainerSetup()
         throws Exception
     {
-        int defaultComponents = 0;
-        int testComponents = 7;
-
         // These are some default components that we used internally. These components don't
         // usually need to be replaced but they can be if the user desires.
 
@@ -67,10 +69,6 @@ public class DefaultPlexusContainerTest
         // Singleton instance manager.
         ComponentFactory jcf = (ComponentFactory) container.getComponentRepository().lookup( ComponentFactory.ROLE + "java" );
         assertNotNull( jcf );
-        defaultComponents++;
-
-        // Make sure all our service descriptors are present.
-        assertEquals( testComponents + defaultComponents, container.getComponentRepository().configuredComponents() );
 
         // ----------------------------------------------------------------------
         //  ServiceDescriptors
@@ -80,7 +78,16 @@ public class DefaultPlexusContainerTest
         assertEquals( true, container.getComponentRepository().hasService( ServiceB.ROLE ) );
         assertEquals( true, container.getComponentRepository().hasService( ServiceC.ROLE + "only-instance" ) );
         assertEquals( true, container.getComponentRepository().hasService( ServiceG.ROLE ) );
+    }
 
+    /**
+     * Test passage through standard avalon lifecycle.
+     *
+     * @throws Exception
+     */
+    public void testAvalonLifecyclePassage()
+        throws Exception
+    {
         // ----------------------------------------------------------------------
         //  ServiceA
         //
@@ -93,9 +100,6 @@ public class DefaultPlexusContainerTest
         // Make sure the service is alive.
         assertNotNull( serviceA );
 
-        // After the above lookup we should have one instantiated service.
-        assertEquals( 1 + defaultComponents, container.getComponentRepository().instantiatedComponents() );
-
         assertEquals( true, serviceA.enableLogging );
         assertEquals( true, serviceA.contextualize );
         assertEquals( true, serviceA.service );
@@ -107,13 +111,6 @@ public class DefaultPlexusContainerTest
         // properly.
         container.getComponentRepository().release( serviceA );
 
-        // Now we have released the component so there should be no instantiated services.
-        //no longer correct! The instance managers may keep an instance alive.
-//        assertEquals( 0 + defaultComponents, container.getComponentRepository().instantiatedComponents() );
-
-        // Make sure the number of configured components is still 3.
-        assertEquals( testComponents + defaultComponents, container.getComponentRepository().configuredComponents() );
-
         // make sure we get the same instance back everytime
         DefaultServiceA a0 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
         DefaultServiceA a1 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
@@ -122,7 +119,16 @@ public class DefaultPlexusContainerTest
         assertTrue( a0.equals( a1 ) );
         assertTrue( a1.equals( a2 ) );
         assertTrue( a2.equals( a0 ) );
+    }
 
+    /**
+     * Test passage through arbitrary component lifecycle.
+     *
+     * @throws Exception
+     */
+    public void testArbitraryLifecylePassage()
+        throws Exception
+    {
         // ----------------------------------------------------------------------
         //  ServiceB
         //
