@@ -20,31 +20,19 @@ public class PoolableComponentManager
     private int sweepInterval = 5;
     private int triggerSize = 15;
 
-    public PoolableComponentManager()
-    {
-        super();
-    }
-
     public void initialize()
         throws Exception
     {
         super.initialize();
+
         pool = new SweeperPool( maxCapacity, minCapacity, initialCapacity, sweepInterval, triggerSize );
     }
 
-    /**
-     * @see ComponentManager#release(Object)
-     */
-    public boolean release( Object component )
+    public void release( Object component )
     {
         pool.put( component );
-
-        return false;
     }
 
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#dispose()
-     */
     public void dispose()
     {
         //@todo really need to wait for all components to be returned.
@@ -56,9 +44,6 @@ public class PoolableComponentManager
 
     }
 
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#getComponent()
-     */
     public Object getComponent()
         throws Exception
     {
@@ -70,10 +55,5 @@ public class PoolableComponentManager
         }
 
         return component;
-    }
-
-    public InstanceManager createInstanceManager()
-    {
-        return new TrackingInstanceManager();
     }
 }

@@ -8,6 +8,8 @@ public interface LoggerManager
 
     void setThreshold( String threshold );
 
+    String getThreshold();
+
     Logger getRootLogger();
 
     Logger getLogger( String name );

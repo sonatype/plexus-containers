@@ -108,19 +108,17 @@ public class PlexusConfigurationMerger
         // ----------------------------------------------------------------------
         // Components
         // ----------------------------------------------------------------------
+        // We grab the system components first and then add the user defined
+        // components so that user defined components will win. When component
+        // descriptors are processed the last definition wins because the component
+        // descriptors are stored in a Map in the component repository.
+        // ----------------------------------------------------------------------
 
-        PlexusConfiguration components = user.getChild( "components" );
+        PlexusConfiguration components = system.getChild( "components" );
 
-        if ( components.getChildCount() != 0 )
-        {
-            mergedConfiguration.addChild( components );
+        mergedConfiguration.addChild( components );
 
-            copyComponents( system.getChild( "components" ), components );
-        }
-        else
-        {
-            mergedConfiguration.addChild( system.getChild( "components" ) );
-        }
+        copyComponents( user.getChild( "components" ), components );
 
         return mergedConfiguration;
     }

@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component.manager;
 
+
+
 /**
  * This ensures a component is only used as a singleton, and is only shutdown when
  * the container shuts down.
@@ -13,14 +15,8 @@ public class KeepAliveSingletonComponentManager
 {
     private Object singleton;
 
-    public KeepAliveSingletonComponentManager()
+    public void release( Object component )
     {
-        super();
-    }
-
-    public boolean release( Object component )
-    {
-        //Only accept it if it is the same manager.
         if ( singleton == component )
         {
             decrementConnectionCount();
@@ -29,8 +25,6 @@ public class KeepAliveSingletonComponentManager
         {
             getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component );
         }
-
-        return false;
     }
 
     public void dispose()
@@ -54,10 +48,5 @@ public class KeepAliveSingletonComponentManager
         incrementConnectionCount();
 
         return singleton;
-    }
-
-    public InstanceManager createInstanceManager()
-    {
-        return new TrackingInstanceManager();
     }
 }

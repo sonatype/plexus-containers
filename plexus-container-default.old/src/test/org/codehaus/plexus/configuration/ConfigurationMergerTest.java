@@ -86,6 +86,9 @@ public class ConfigurationMergerTest
 
         PlexusConfiguration[] components = cc.getChild( "components" ).getChildren( "component" );
 
-        assertEquals( "org.codehaus.plexus.ServiceA", components[0].getChild( "role" ).getValue() );
+        // There are now three internal components defined which come before the user components
+        // are processed.
+
+        assertEquals( "org.codehaus.plexus.ServiceA", components[3].getChild( "role" ).getValue() );
     }
 }

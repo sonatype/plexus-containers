@@ -1,10 +1,9 @@
 package org.codehaus.plexus.component.manager;
 
 
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.PlexusContainer;
 
 /**
  * Manages a component manager.
@@ -24,7 +23,7 @@ public interface ComponentManager
 
     String getId();
 
-    void setup( PlexusContainer container, Logger logger, ClassLoader classLoader, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor )
+    void setup( PlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor )
         throws Exception;
 
     void initialize()
@@ -36,7 +35,7 @@ public interface ComponentManager
 
     void dispose();
 
-    boolean release( Object component );
+    void release( Object component );
 
     void suspend( Object component );
 
@@ -44,8 +43,6 @@ public interface ComponentManager
 
     Object getComponent()
         throws Exception;
-
-    InstanceManager createInstanceManager();
 
     ComponentDescriptor getComponentDescriptor();
 

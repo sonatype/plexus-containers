@@ -1,21 +1,21 @@
 package org.codehaus.plexus.component.repository;
 
-import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
-import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
-import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.DefaultComponentDiscoverer;
+import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.classworlds.ClassRealm;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @todo We need to process component descriptors from a specified configuration file in addition

@@ -1,10 +1,10 @@
 package org.codehaus.plexus.component.manager;
 
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.PlexusContainer;
 
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
@@ -13,25 +13,23 @@ public abstract class AbstractComponentManager
 
     private ComponentDescriptor componentDescriptor;
 
-    private ClassLoader classLoader;
-
     private LifecycleHandler lifecycleHandler;
-
-    private Logger logger;
 
     private int connections;
 
-    private String id;
-
-    public AbstractComponentManager()
-    {
-    }
+    private String id = null;
 
     public ComponentManager copy()
     {
         try
         {
-            return (ComponentManager) this.clone();
+            ComponentManager componentManager = (ComponentManager) this.clone();
+
+            // This could serve as a location to initialize component managers.
+            // Was thinking here might be a good place to create the instance manager.
+            // The place to customize the prototypical component manager.
+
+            return componentManager;
         }
         catch ( CloneNotSupportedException e )
         {
@@ -53,16 +51,6 @@ public abstract class AbstractComponentManager
     public LifecycleHandler getLifecycleHandler()
     {
         return lifecycleHandler;
-    }
-
-    public ClassLoader getClassLoader()
-    {
-        return classLoader;
-    }
-
-    protected Logger getLogger()
-    {
-        return logger;
     }
 
     protected void incrementConnectionCount()
@@ -89,16 +77,10 @@ public abstract class AbstractComponentManager
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    public void setup( PlexusContainer container,
-                       Logger logger,
-                       ClassLoader classLoader,
-                       LifecycleHandler lifecycleHandler,
-                       ComponentDescriptor componentDescriptor )
+    public void setup( PlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor )
         throws Exception
     {
         this.container = container;
-        this.logger = logger;
-        this.classLoader = classLoader;
         this.lifecycleHandler = lifecycleHandler;
         this.componentDescriptor = componentDescriptor;
     }
@@ -111,7 +93,7 @@ public abstract class AbstractComponentManager
     protected Object createComponentInstance()
         throws Exception
     {
-        Object component = getClassLoader().loadClass( componentDescriptor.getImplementation() ).newInstance();
+        Object component = container.getClassLoader().loadClass( componentDescriptor.getImplementation() ).newInstance();
 
         startComponentLifecycle( component );
 
@@ -126,7 +108,7 @@ public abstract class AbstractComponentManager
         }
         catch ( Exception e )
         {
-            getLogger().error( "Cannot start component lifecycle with role: " + getComponentDescriptor().getRole(), e );
+            container.getLogger().error( "Cannot start component lifecycle with role: " + getComponentDescriptor().getRole(), e );
         }
     }
 
@@ -138,7 +120,7 @@ public abstract class AbstractComponentManager
         }
         catch ( Exception e )
         {
-            getLogger().error( "Cannot suspend component with role: " + getComponentDescriptor().getRole(), e );
+            container.getLogger().error( "Cannot suspend component with role: " + getComponentDescriptor().getRole(), e );
         }
     }
 
@@ -150,7 +132,7 @@ public abstract class AbstractComponentManager
         }
         catch ( Exception e )
         {
-            getLogger().error( "Cannot resume component with role: " + getComponentDescriptor().getRole(), e );
+            container.getLogger().error( "Cannot resume component with role: " + getComponentDescriptor().getRole(), e );
         }
     }
 
@@ -162,12 +144,17 @@ public abstract class AbstractComponentManager
         }
         catch ( Exception e )
         {
-            getLogger().error( "Cannot end component lifecycle with role: " + getComponentDescriptor().getRole(), e );
+            container.getLogger().error( "Cannot end component lifecycle with role: " + getComponentDescriptor().getRole(), e );
         }
     }
 
     public PlexusContainer getContainer()
     {
         return container;
+    }
+
+    public Logger getLogger()
+    {
+        return container.getLogger();
     }
 }

@@ -5,7 +5,6 @@ import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
-import org.codehaus.plexus.component.manager.InstanceManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
@@ -17,13 +16,11 @@ import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
+import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
-import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 import org.codehaus.plexus.util.FileUtils;
@@ -71,12 +68,6 @@ public class DefaultPlexusContainer
 
     private ComponentManagerManager componentManagerManager;
 
-    private Map componentManagers = new HashMap();
-
-    private Map instanceManagers = new HashMap();
-
-    private LifecycleHandlerManager lifecycleHandlerManager;
-
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -85,7 +76,9 @@ public class DefaultPlexusContainer
     {
         context = new DefaultContext();
 
-        enableLogging( new ConsoleLoggerManager().getRootLogger() );
+        loggerManager = new ConsoleLoggerManager();
+
+        enableLogging( loggerManager.getRootLogger() );
     }
 
     // ----------------------------------------------------------------------
@@ -114,7 +107,10 @@ public class DefaultPlexusContainer
     {
         Object component = null;
 
-        ComponentManager componentManager = getComponentManager( componentKey );
+        ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentKey( componentKey );
+
+        // The first time we lookup a component a component manager will not exist so we ask the
+        // component manager manager to create a component manager for us.
 
         if ( componentManager == null )
         {
@@ -136,7 +132,7 @@ public class DefaultPlexusContainer
 
             try
             {
-                componentManager = instantiateComponentManager( descriptor );
+                componentManager = componentManagerManager.createComponentManager( descriptor, this );
             }
             catch ( Exception e )
             {
@@ -151,6 +147,8 @@ public class DefaultPlexusContainer
         try
         {
             component = componentManager.getComponent();
+
+            componentManagerManager.associateComponentWithComponentManager( component, componentManager );
         }
         catch ( Exception e )
         {
@@ -160,19 +158,6 @@ public class DefaultPlexusContainer
 
             throw new ComponentLookupException( message, e );
         }
-
-        String componentClass = component.getClass().getName();
-
-        InstanceManager instanceManager = getInstanceManager( componentClass );
-
-        if ( instanceManager == null )
-        {
-            instanceManager = componentManager.createInstanceManager();
-
-            instanceManagers.put( componentClass, instanceManager );
-        }
-
-        instanceManager.register( component, componentManager );
 
         return component;
     }
@@ -321,14 +306,7 @@ public class DefaultPlexusContainer
             return;
         }
 
-        InstanceManager instanceManager = getInstanceManager( component.getClass().getName() );
-
-        ComponentManager componentManager = null;
-
-        if ( instanceManager != null )
-        {
-            componentManager = instanceManager.findComponentManager( component );
-        }
+        ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentInstance( component );
 
         if ( componentManager == null )
         {
@@ -343,10 +321,7 @@ public class DefaultPlexusContainer
         }
         else
         {
-            if ( componentManager.release( component ) )
-            {
-                instanceManager.release( component );
-            }
+            componentManager.release( component );
         }
     }
 
@@ -387,7 +362,7 @@ public class DefaultPlexusContainer
             return;
         }
 
-        ComponentManager componentManager = findComponentManager( component );
+        ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentInstance( component );
 
         componentManager.suspend( component );
     }
@@ -399,7 +374,7 @@ public class DefaultPlexusContainer
             return;
         }
 
-        ComponentManager componentManager = findComponentManager( component );
+        ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentInstance( component );
 
         componentManager.resume( component );
     }
@@ -420,8 +395,6 @@ public class DefaultPlexusContainer
         initializeComponentRepository();
 
         initializeComponentManagerManager();
-
-        initializeLifecycleHandlerManager();
 
         // Should be safe now to lookup any component aside from the cmm and lhm
 
@@ -447,7 +420,7 @@ public class DefaultPlexusContainer
 
     protected void disposeAllComponents()
     {
-        for ( Iterator iter = getComponentManagers().values().iterator(); iter.hasNext(); )
+        for ( Iterator iter = componentManagerManager.getComponentManagers().values().iterator(); iter.hasNext(); )
         {
             try
             {
@@ -459,7 +432,7 @@ public class DefaultPlexusContainer
             }
         }
 
-        componentManagers.clear();
+        componentManagerManager.getComponentManagers().clear();
     }
 
     // ----------------------------------------------------------------------
@@ -554,8 +527,7 @@ public class DefaultPlexusContainer
         }
         catch ( NoSuchRealmException e )
         {
-            if ( classLoader != null &&
-                classRealm != null )
+            if ( classLoader != null && classRealm != null )
             {
                 classRealm = classWorld.newRealm( "core", classLoader );
             }
@@ -724,95 +696,7 @@ public class DefaultPlexusContainer
 
         componentManagerManager = (ComponentManagerManager) builder.build( c, DefaultComponentManagerManager.class );
 
-        //componentManagerManager = (ComponentManagerManager) lookup( ComponentManagerManager.ROLE );
-    }
-
-    public ComponentManager instantiateComponentManager( ComponentDescriptor descriptor )
-        throws Exception
-    {
-        String lifecycleHandlerId = descriptor.getLifecycleHandler();
-
-        LifecycleHandler lifecycleHandler;
-
-        if ( lifecycleHandlerId == null )
-        {
-            lifecycleHandler = lifecycleHandlerManager.getDefaultLifecycleHandler();
-        }
-        else
-        {
-            lifecycleHandler = lifecycleHandlerManager.getLifecycleHandler( lifecycleHandlerId );
-        }
-
-        String instantiationId = descriptor.getInstantiationStrategy();
-
-        ComponentManager componentManager;
-
-        if ( instantiationId == null )
-        {
-            componentManager = componentManagerManager.getDefaultComponentManager();
-        }
-        else
-        {
-            componentManager = componentManagerManager.getComponentManager( instantiationId );
-        }
-
-        componentManager.setup( this, getLogger().getChildLogger( "component-manager" ), getClassLoader(), lifecycleHandler, descriptor );
-
-        componentManager.initialize();
-
-        //make the ComponentManager available for future requests
-        componentManagers.put( descriptor.getComponentKey(), componentManager );
-
-        return componentManager;
-    }
-
-    Map getComponentManagers()
-    {
-        return componentManagers;
-    }
-
-    ComponentManager getComponentManager( String componentKey )
-    {
-        return (ComponentManager) getComponentManagers().get( componentKey );
-    }
-
-    protected ComponentManager findComponentManager( Object component )
-    {
-        InstanceManager instanceManager = getInstanceManager( component.getClass().getName() );
-
-        if ( instanceManager != null )
-        {
-            return instanceManager.findComponentManager( component );
-        }
-
-        return null;
-    }
-
-    // ----------------------------------------------------------------------
-    // Instance Managers
-    // ----------------------------------------------------------------------
-
-    InstanceManager getInstanceManager( String componentClass )
-    {
-        return (InstanceManager) instanceManagers.get( componentClass );
-    }
-
-    // ----------------------------------------------------------------------
-    // Lifecycle Handlers
-    // ----------------------------------------------------------------------
-
-    private void initializeLifecycleHandlerManager()
-        throws Exception
-    {
-        PlexusXStream builder = new PlexusXStream();
-
-        builder.alias( "lifecycle-handler-manager", DefaultLifecycleHandlerManager.class );
-
-        PlexusConfiguration c = configuration.getChild( "lifecycle-handler-manager" );
-
-        lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( c, DefaultLifecycleHandlerManager.class );
-
-        lifecycleHandlerManager.initialize();
+        componentManagerManager.initializeLifecycleHandlerManager( configuration.getChild( "lifecycle-handler-manager" ) );
     }
 
     // ----------------------------------------------------------------------
@@ -874,5 +758,10 @@ public class DefaultPlexusContainer
         {
             throw new Exception( "The specified JAR repository doesn't exist or is not a directory." );
         }
+    }
+
+    public Logger getLogger()
+    {
+        return loggerManager.getRootLogger();
     }
 }

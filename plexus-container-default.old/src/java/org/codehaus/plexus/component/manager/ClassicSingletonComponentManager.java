@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component.manager;
 
+
+
 /**
  * This ensures only a single manager of a a component exists. Once no
  * more connections for this component exists it is disposed.
@@ -14,14 +16,7 @@ public class ClassicSingletonComponentManager
 {
     private Object singleton;
 
-    public ClassicSingletonComponentManager()
-    {
-    }
-
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#release(java.lang.Object)
-     */
-    public boolean release( Object component )
+    public void release( Object component )
     {
         if ( singleton == component )
         {
@@ -30,16 +25,12 @@ public class ClassicSingletonComponentManager
             if ( !connected() )
             {
                 dispose();
-
-                return true;
             }
         }
         else
         {
             getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component );
         }
-
-        return false;
     }
 
     public void dispose()
@@ -65,10 +56,5 @@ public class ClassicSingletonComponentManager
         incrementConnectionCount();
 
         return singleton;
-    }
-
-    public InstanceManager createInstanceManager()
-    {
-        return new TrackingInstanceManager();
     }
 }

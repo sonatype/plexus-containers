@@ -4,6 +4,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.logging.Logger;
 
 import java.io.Reader;
 import java.util.List;
@@ -94,4 +95,8 @@ public interface PlexusContainer
 
     void setConfigurationResource( Reader configuration )
         throws PlexusConfigurationResourceException;
+
+    Logger getLogger();
+
+    ClassLoader getClassLoader();
 }
