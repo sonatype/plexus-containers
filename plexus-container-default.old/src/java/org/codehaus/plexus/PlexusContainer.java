@@ -79,6 +79,8 @@ public interface PlexusContainer
     // Container setup
     // ----------------------------------------------------------------------
 
+    void setParentPlexusContainer( PlexusContainer parentContainer );
+
     void addContextValue( Object key, Object value );
 
     void setConfigurationResource( Reader configuration )
