@@ -94,6 +94,11 @@ public class ComponentDescriptor
         return version;
     }
 
+    public void setVersion( String version )
+    {
+        this.version = version;
+    }
+
     public String getInstantiationStrategy()
     {
         return instantiationStrategy;
