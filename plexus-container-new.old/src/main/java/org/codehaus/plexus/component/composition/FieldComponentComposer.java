@@ -146,7 +146,7 @@ public class FieldComponentComposer extends AbstractComponentComposer
 
             try
             {
-                fieldClass = Class.forName( requirement.getRole() );
+                fieldClass = Thread.currentThread().getContextClassLoader().loadClass( requirement.getRole() );
             }
             catch ( ClassNotFoundException e )
             {
