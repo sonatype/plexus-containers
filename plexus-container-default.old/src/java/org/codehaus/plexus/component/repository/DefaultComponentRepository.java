@@ -193,7 +193,7 @@ public class DefaultComponentRepository
         }
         catch ( CompositionException e )
         {
-            throw new ComponentRepositoryException( e.getMessage() , e ); 
+            throw new ComponentRepositoryException( e.getMessage() , e );
         }
 
 
