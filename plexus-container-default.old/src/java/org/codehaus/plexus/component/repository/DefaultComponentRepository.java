@@ -558,7 +558,7 @@ public class DefaultComponentRepository
 
         componentDescriptor.setConfiguration( configuration.getChild( CONFIGURATION ) );
 
-        Configuration[] requirements = configuration.getChild( REQUIREMENTS ).getChildren( REQUIREMENTS );
+        Configuration[] requirements = configuration.getChild( REQUIREMENTS ).getChildren( REQUIREMENT );
 
         for ( int i = 0; i < requirements.length; i++ )
         {
