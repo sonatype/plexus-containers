@@ -27,7 +27,7 @@ public class PlexusTestCase
     protected void setUp()
         throws Exception
     {
-        
+
         InputStream configuration = null;
 
         try
@@ -54,23 +54,22 @@ public class PlexusTestCase
 
         customizeContext();
         
-        container.addContextValue( "plexus.home", System.getProperty( "plexus.home" ) );
+        boolean hasPlexusHome =  getContext().contains( "plexus.home" );
+
+        if ( hasPlexusHome )
+        {
+
+            File f = new File( basedir, "target/plexus-home" );
+
+            if ( !f.isDirectory() )
+            {
+                f.mkdir();
+            }
+
+            getContext().put( "plexus.home", f.getAbsolutePath() );
+
+        }
         
-//        String plexusHome = ( String ) getContext().get( "plexus.home" );
-//                       
-//        if ( plexusHome == null )
-//        {
-//        
-//            File f = new File( basedir, "target/plexus-home" );
-//            
-//            if ( !f.isDirectory() )
-//            {
-//                f.mkdir();
-//            }
-//            
-//            getContext().put( "plexus.home", f.getAbsolutePath() );
-//
-//        }
         
         if ( configuration != null )
         {
@@ -86,7 +85,7 @@ public class PlexusTestCase
      * @return
      */
     private Context getContext()
-    {     
+    {
         return container.getContext();
     }
 

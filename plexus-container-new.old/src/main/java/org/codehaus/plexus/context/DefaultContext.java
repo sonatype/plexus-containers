@@ -35,7 +35,7 @@ public class DefaultContext
     public DefaultContext( Map contextData, Context parent )
     {
         this.parent = parent;
-        
+
         this.contextData = contextData;
     }
 
@@ -67,6 +67,31 @@ public class DefaultContext
     {
         this( (Context) null );
     }
+
+    public boolean contains( Object key )
+    {
+
+        Object data = contextData.get( key );
+
+        if ( null != data )
+        {
+            if ( data instanceof Hidden )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // If data was null, check the parent
+        if ( null == parent )
+        {
+            return false;
+        }
+
+        return parent.contains( key );
+    }
+
 
     public Object get( Object key )
         throws ContextException
@@ -108,7 +133,7 @@ public class DefaultContext
         throws IllegalStateException
     {
         checkWriteable();
-        
+
         if ( null == value )
         {
             contextData.remove( key );

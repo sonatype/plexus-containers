@@ -59,7 +59,10 @@ public interface Context
 {
     Object get( Object key )
         throws ContextException;
-    
+
+    boolean contains( Object key );
+
+
     /**
      * Adds the item to the context.
      *
