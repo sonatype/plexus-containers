@@ -230,6 +230,7 @@ public class Embedder
      *       all this logic.
      *
      * JVZ - What about uberjar applications?
+     * BRW - If it doesn't work in uberjar, then we'll have a good test case and I'll fix classworlds.
      *
      * @return the stream containing the configuration
      * @throws RuntimeException when the configuration can not be found / opened
