@@ -7,7 +7,7 @@ package org.codehaus.plexus.component.composition;
  *
  * This is considered bad but is supported because the Avalon model
  * of assembly promotes this usage pattern.
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
@@ -15,8 +15,4 @@ package org.codehaus.plexus.component.composition;
 public class ManualComponentComposer
     extends AbstractComponentComposer
 {
-    public void compose( Object component )
-        throws CompositionException
-    {
-    }
 }

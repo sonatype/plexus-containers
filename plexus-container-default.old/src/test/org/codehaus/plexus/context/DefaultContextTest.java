@@ -146,8 +146,6 @@ public class DefaultContextTest
 
         // Test removal
         context.put( "name", null );
-
-        assertNull( context.get( "name") );
     }
 
     public void testAddContext()

@@ -11,7 +11,4 @@ public interface ComponentComposer
 {
     /** Role for this component. */
     static String ROLE = ComponentComposer.class.getName();
-
-    void compose( Object component )
-        throws CompositionException;
 }
