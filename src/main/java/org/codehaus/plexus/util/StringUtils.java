@@ -59,6 +59,11 @@ import java.util.StringTokenizer;
 
 public class StringUtils
 {
+    public static boolean isEmpty( String str )
+    {
+        return ( str == null || str.trim().length() == 0 );
+    }
+
     public static String[] split( String text, String separator )
     {
         return split( text, separator, -1 );

@@ -56,6 +56,9 @@ package org.codehaus.plexus.util;
  */
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -118,5 +121,86 @@ public class FileUtils
         }
 
         return list;
+    }
+
+    // used by maven-artifact which requires plexus anyway.
+
+    public static void copyFile( final File source, final File destination )
+        throws IOException
+    {
+        //check source exists
+        if ( !source.exists() )
+        {
+            final String message = "File " + source + " does not exist";
+            throw new IOException( message );
+        }
+
+        //does destinations directory exist ?
+        if ( destination.getParentFile() != null &&
+            !destination.getParentFile().exists() )
+        {
+            destination.getParentFile().mkdirs();
+        }
+
+        //make sure we can write to destination
+        if ( destination.exists() && !destination.canWrite() )
+        {
+            final String message = "Unable to open file " +
+                destination + " for writing.";
+            throw new IOException( message );
+        }
+
+        final FileInputStream input = new FileInputStream( source );
+        final FileOutputStream output = new FileOutputStream( destination );
+        IOUtil.copy( input, output );
+
+        input.close();
+        output.close();
+
+        if ( source.length() != destination.length() )
+        {
+            final String message = "Failed to copy full contents from " + source +
+                " to " + destination;
+            throw new IOException( message );
+        }
+    }
+
+    public static String fileRead( String file )
+        throws IOException
+    {
+        return fileRead( new File( file ) );
+    }
+
+    public static String fileRead( File file )
+        throws IOException
+    {
+        StringBuffer buf = new StringBuffer();
+
+        FileInputStream in = new FileInputStream( file );
+
+        int count;
+        byte[] b = new byte[512];
+        while ( ( count = in.read( b ) ) > 0 )  // blocking read
+        {
+            buf.append( new String( b, 0, count ) );
+        }
+
+        in.close();
+
+        return buf.toString();
+    }
+
+    /**
+     * Writes data to a file. The file will be created if it does not exist.
+     *
+     * @param fileName The name of the file to write.
+     * @param data The content to write to the file.
+     */
+    public static void fileWrite( String fileName, String data )
+        throws IOException
+    {
+        FileOutputStream out = new FileOutputStream( fileName );
+        out.write( data.getBytes() );
+        out.close();
     }
 }
