@@ -21,9 +21,6 @@ public interface InstanceManager
 {
     static String ROLE = InstanceManager.class.getName();
 
-    /* ComponentHousing newHousingInstance()
-          throws Exception;
-  */
     void configure( Configuration configuration )
         throws ConfigurationException;
 
