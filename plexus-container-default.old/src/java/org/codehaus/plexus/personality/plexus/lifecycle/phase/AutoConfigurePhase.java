@@ -4,7 +4,7 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 
-public class ConfigurePhase
+public class AutoConfigurePhase
     extends AbstractPhase
 {
     public void execute( Object object, ComponentManager manager )
