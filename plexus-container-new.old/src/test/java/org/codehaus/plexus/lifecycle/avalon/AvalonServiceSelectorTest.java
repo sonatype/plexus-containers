@@ -26,8 +26,12 @@ public class AvalonServiceSelectorTest
         
         assertTrue( selector != null );
         assertTrue( selector.isSelectable( "only-instance" ) );
-        
+
+
         ServiceC serviceC = (ServiceC) selector.select( "only-instance" );
         assertTrue( serviceC != null );
+
+        release( selector );
+        release( serviceC );
     }
 }
