@@ -1,7 +1,7 @@
 package org.codehaus.plexus.component.discovery;
 
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,18 @@ import java.util.List;
 public class MavenPluginDiscoverer
     extends AbstractComponentDiscoverer
 {
+    private PlexusXStream xstream;
+
+    public MavenPluginDiscoverer()
+    {
+        xstream = new PlexusXStream();
+
+        xstream.alias( "plugin", MavenPluginDescriptor.class );
+
+        xstream.alias( "goal", GoalDescriptor.class );
+    }
+
+
     public String getComponentDescriptorLocation()
     {
         return "META-INF/maven/plugin.xml";
@@ -42,18 +54,9 @@ public class MavenPluginDiscoverer
     {
         List componentDescriptors = new ArrayList();
 
-        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
+        MavenPluginDescriptor pluginDescriptor = (MavenPluginDescriptor) xstream.build( componentDescriptorConfiguration );
 
-        // The role will be the same for all maven plugins.
-        componentDescriptor.setRole( "org.apache.maven.plugin.Plugin" );
-
-        // The id of the plugin will be our role hint.
-        componentDescriptor.setRoleHint( componentDescriptorConfiguration.getChild( "id" ).getValue() );
-
-        // The implemenation is specified.
-        componentDescriptor.setImplementation( componentDescriptorConfiguration.getChild( "implementation" ).getValue() );
-
-        componentDescriptors.add( componentDescriptor );
+        componentDescriptors.add( pluginDescriptor );
 
         return componentDescriptors;
     }
