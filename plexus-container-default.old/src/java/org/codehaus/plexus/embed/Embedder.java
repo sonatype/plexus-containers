@@ -37,7 +37,7 @@ public class Embedder
 {
     /** Configuration resource or file. */
     private String configuration;
-    
+
     /** Configuration resource URL */
     private URL configurationURL;
 
@@ -105,9 +105,9 @@ public class Embedder
      * Set the configuration for the <tt>PlexusContainer</tt>.  This
      * configuration can either be a file or a resource in the
      * classpath.
-     * 
+     *
      * @deprecated avoid this function - use @see setConfiguration(URL) instead
-     * 
+     *
      * @param configuration A file or resource in the classpath that
      * contains the configuration for the <tt>PlexusContainer</tt>.
      * @throws IllegalStateException If the embedder has already been
@@ -123,11 +123,11 @@ public class Embedder
 
         this.configuration = configuration;
     }
-    
+
     /**
-     * Set the configuration for the <tt>PlexusContainer</tt>.  
-     * 
-     * @param configurationURL A URL that contains the configuration 
+     * Set the configuration for the <tt>PlexusContainer</tt>.
+     *
+     * @param configurationURL A URL that contains the configuration
      * for the <tt>PlexusContainer</tt>.
      * @throws IllegalStateException If the embedder has already been
      * started or stopped.
@@ -218,32 +218,32 @@ public class Embedder
         embedderStopped = true;
     }
 
-    public void run()
-        throws Exception
-    {
-        start();
-        stop();
-    }
-
     /**
      * Tries a variety of methods to find the configuration resource.
-     * 
+     *
      * BRW - I see this as fairly pointless as putting your config into the Embedder.class package
      *       will be annoying. Far better to just force the end user to provide a URL and remove
      *       all this logic.
+     *
+     * JVZ - What about uberjar applications?
+     *
      * @return the stream containing the configuration
      * @throws RuntimeException when the configuration can not be found / opened
      */
     private InputStream findConfigurationInputStream()
     {
-        if (configurationURL != null) {
-            try {
+        if ( configurationURL != null )
+        {
+            try
+            {
                 return configurationURL.openStream();
-            } catch (IOException e){
-                throw new IllegalStateException( "The specified configuration resource cannot be found: " + configurationURL.toString());
+            }
+            catch ( IOException e )
+            {
+                throw new IllegalStateException( "The specified configuration resource cannot be found: " + configurationURL.toString() );
             }
         }
-        
+
         InputStream is = getClass().getResourceAsStream( configuration );
 
         if ( is == null )
