@@ -26,17 +26,6 @@ public class DefaultLifecycleHandlerManager
         }
     }
 
-    public void addEntity( String key, Object entity )
-        throws Exception
-    {
-        for ( Iterator iterator = lifecycleHandlers.iterator(); iterator.hasNext(); )
-        {
-            LifecycleHandler lifecycleHandler = (LifecycleHandler) iterator.next();
-
-            lifecycleHandler.addEntity( key, entity );
-        }
-    }
-
     public LifecycleHandler getLifecycleHandler( String id )
         throws UndefinedLifecycleHandlerException
     {

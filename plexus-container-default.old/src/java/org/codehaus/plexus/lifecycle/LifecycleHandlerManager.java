@@ -12,9 +12,6 @@ package org.codehaus.plexus.lifecycle;
  */
 public interface LifecycleHandlerManager
 {
-    void addEntity( String key, Object entity )
-        throws Exception;
-
     void initialize()
         throws Exception;
 

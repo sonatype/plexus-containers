@@ -2,13 +2,10 @@ package org.codehaus.plexus.lifecycle;
 
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.phase.Phase;
-import org.codehaus.plexus.PlexusContainer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractLifecycleHandler
     implements LifecycleHandler
@@ -16,8 +13,6 @@ public abstract class AbstractLifecycleHandler
     private String id = null;
 
     private String name = null;
-
-    private Map entities;
 
     private List beginSegment;
 
@@ -46,21 +41,6 @@ public abstract class AbstractLifecycleHandler
     public String getName()
     {
         return name;
-    }
-
-    public Map getEntities()
-    {
-        if ( entities == null )
-        {
-            entities = new HashMap();
-        }
-
-        return entities;
-    }
-
-    public void addEntity( String key, Object entity )
-    {
-        getEntities().put( key, entity );
     }
 
     // ----------------------------------------------------------------------
