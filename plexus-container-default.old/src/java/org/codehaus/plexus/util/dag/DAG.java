@@ -150,11 +150,6 @@ public class DAG implements Cloneable, Serializable
     {
         final Vertex retValue = ( Vertex ) vertexMap.get( label );
 
-        if ( retValue == null )
-        {
-            throw new IllegalArgumentException( "Vertex of label '" + label + "' does not exist" );
-        }
-
         return retValue;
     }
 
