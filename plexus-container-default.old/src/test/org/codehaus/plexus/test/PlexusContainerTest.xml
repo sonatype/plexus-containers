@@ -38,15 +38,6 @@
     <!-- start: Component from original DefaultPlexusContainerTest -->
 
     <component>
-      <role>org.codehaus.plexus.test.ConfigurableComponent</role>
-      <implementation>org.codehaus.plexus.test.DefaultConfigurableComponent</implementation>
-      <configuration>
-        <host>localhost</host>
-        <port>10000</port>
-      </configuration>
-    </component>
-
-    <component>
       <role>org.codehaus.plexus.test.ServiceB</role>
       <implementation>org.codehaus.plexus.test.DefaultServiceB</implementation>
     </component>
