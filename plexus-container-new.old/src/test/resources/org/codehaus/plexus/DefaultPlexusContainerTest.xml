@@ -23,11 +23,6 @@
     <implementation>org.codehaus.plexus.component.repository.DefaultComponentRepository</implementation>
   </service-repository>
 
-  <!--
-   |
-   | User defined lifecycle handlers
-   |
-   -->
   <lifecycle-handlers>
     <lifecycle-handler implementation="org.codehaus.plexus.SimpleLifecycleHandler">
       <id>arbitrary</id>
@@ -49,41 +44,6 @@
 
   <components>
 
-    <!--
-     |
-     | A Service
-     |
-     | This service implements all the Avalon lifecycle methods.
-     |
-     -->
-    <component>
-      <role>org.codehaus.plexus.ServiceA</role>
-      <implementation>org.codehaus.plexus.DefaultServiceA</implementation>
-      <configuration>
-        <host>localhost</host>
-        <port>10000</port>
-      </configuration>
-    </component>
-
-    <!--
-     |
-     | B Service
-     |
-     -->
-    <component>
-      <role>org.codehaus.plexus.ServiceB</role>
-      <implementation>org.codehaus.plexus.DefaultServiceB</implementation>
-      <configuration>
-        <host>localhost</host>
-        <port>10000</port>
-      </configuration>
-    </component>
-
-    <!--
-     |
-     | C Service
-     |
-     -->
     <component>
       <role>org.codehaus.plexus.ServiceC</role>
       <role-hint>first-instance</role-hint>
@@ -104,11 +64,6 @@
       </configuration>
     </component>
 
-    <!--
-     |
-     | D Service
-     |
-     -->
     <component>
       <role>org.codehaus.plexus.ServiceD</role>
       <implementation>org.codehaus.plexus.DefaultServiceD</implementation>
@@ -118,39 +73,6 @@
         <port>10000</port>
       </configuration>
     </component>
-
-    <!--
-     |
-     | E Service
-     |
-     | This service implements Configurable, but the component configuration below
-     | deliberately omits the <configuration> element to verify that such elements
-     | are not mandatory.
-     -->
-    <component>
-      <role>org.codehaus.plexus.ServiceE</role>
-      <implementation>org.codehaus.plexus.DefaultServiceE</implementation>
-      <instantiation-strategy>per-lookup</instantiation-strategy>
-    </component>
-
-
-    <!--
-     |
-     | G Service
-     |
-     -->
-    <component>
-      <role>org.codehaus.plexus.ServiceG</role>
-      <implementation>org.codehaus.plexus.DefaultServiceG</implementation>
-      <instantiation-strategy>singleton-keep-alive</instantiation-strategy>
-      <configuration/>
-    </component>
-
-    <!--
-     |
-     | H Service
-     |
-     -->
 
     <component>
       <role>org.codehaus.plexus.ServiceH</role>
