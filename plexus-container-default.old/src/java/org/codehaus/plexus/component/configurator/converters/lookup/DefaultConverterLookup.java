@@ -3,17 +3,17 @@ package org.codehaus.plexus.component.configurator.converters.lookup;
 //import org.codehaus.plexus.component.configurator.converters.basic.BigIntegerConverter;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.BooleanConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.ByteConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.CharConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.DateConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.DoubleConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.FloatConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.IntConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.LongConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.ShortConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.StringBufferConfigurationConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.StringConfigurationConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.BooleanConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.ByteConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.CharConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.DoubleConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.FloatConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.IntConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.LongConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.ShortConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.StringBufferConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.StringConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.DateConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.CollectionConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PlexusConfigurationConverter;
@@ -79,27 +79,27 @@ public class DefaultConverterLookup implements ConverterLookup
 
     private void registerDefaultBasicConverters()
     {
-        registerConverter( new BooleanConfigurationConverter() );
+        registerConverter( new BooleanConverter() );
 
-        registerConverter( new ByteConfigurationConverter() );
+        registerConverter( new ByteConverter() );
 
-        registerConverter( new CharConfigurationConverter() );
+        registerConverter( new CharConverter() );
 
-        registerConverter( new DoubleConfigurationConverter() );
+        registerConverter( new DoubleConverter() );
 
-        registerConverter( new FloatConfigurationConverter() );
+        registerConverter( new FloatConverter() );
 
-        registerConverter( new IntConfigurationConverter() );
+        registerConverter( new IntConverter() );
 
-        registerConverter( new LongConfigurationConverter() );
+        registerConverter( new LongConverter() );
 
-        registerConverter( new ShortConfigurationConverter() );
+        registerConverter( new ShortConverter() );
 
-        registerConverter( new StringBufferConfigurationConverter() );
+        registerConverter( new StringBufferConverter() );
 
-        registerConverter( new StringConfigurationConverter() );
+        registerConverter( new StringConverter() );
 
-        registerConverter( new DateConfigurationConverter() );
+        registerConverter( new DateConverter() );
 
         //registerConverter( new BigIntegerConverter() );
     }
