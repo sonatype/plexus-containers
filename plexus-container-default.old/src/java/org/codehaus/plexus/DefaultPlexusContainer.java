@@ -7,6 +7,8 @@ import org.codehaus.plexus.classloader.ResourceManagerFactory;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
+import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.ConfigurationMerger;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
@@ -603,6 +605,20 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     // Component Managers
     // ----------------------------------------------------------------------
+
+    private ComponentManagerManager componentManagerManager;
+
+    private void initializeComponentManagerManager()
+        throws Exception
+    {
+        XStreamTool builder = new XStreamTool();
+
+        builder.alias( "component-manager-manager", DefaultComponentManagerManager.class );
+
+        Configuration c = getConfiguration().getChild( "component-manager-manager" );
+
+        componentManagerManager = (ComponentManagerManager) builder.build( (PlexusConfiguration) c, DefaultComponentManagerManager.class );
+    }
 
     // ----------------------------------------------------------------------
     // Lifecycle Handlers
