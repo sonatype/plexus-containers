@@ -45,6 +45,9 @@ import java.util.Map;
 /**
  * @todo clarify configuration handling vis-a-vis user vs default values
  * @todo use classworlds whole hog, plexus' concern is applications.
+ * @todo allow setting of a live configuraton so applications that embed plexus
+ *       can use whatever configuration mechanism they like. They just have to
+ *       adapt it into something plexus can understand.
  */
 public class DefaultPlexusContainer
     extends AbstractLogEnabled
