@@ -1,4 +1,4 @@
-package org.codehaus.plexus.logging;
+package org.codehaus.plexus.logging.console;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.util.StringUtils;

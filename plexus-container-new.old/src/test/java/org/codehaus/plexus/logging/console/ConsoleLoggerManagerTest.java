@@ -1,4 +1,7 @@
-package org.codehaus.plexus.logging;
+package org.codehaus.plexus.logging.console;
+
+import org.codehaus.plexus.logging.AbstractLoggerManagerTest;
+import org.codehaus.plexus.logging.LoggerManager;
 
 /**
  * Test for {@link org.codehaus.plexus.logging.console.ConsoleLoggerManager} and 
