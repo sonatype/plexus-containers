@@ -39,7 +39,6 @@ public abstract class AbstractComponentManager
 
     public AbstractComponentManager()
     {
-        super();
     }
 
     // ----------------------------------------------------------------------
@@ -71,6 +70,11 @@ public abstract class AbstractComponentManager
         this.implementation = implementation;
     }
 
+    public LifecycleHandler getLifecycleHandler()
+    {
+        return lifecycleHandler;
+    }
+
     /**
      * @see ComponentManager#setLifecycleHandler(org.codehaus.plexus.lifecycle.LifecycleHandler)
      */
@@ -87,11 +91,6 @@ public abstract class AbstractComponentManager
     public void setClassLoader( ClassLoader classLoader )
     {
         this.classLoader = classLoader;
-    }
-
-    public LifecycleHandler getLifecycleHandler()
-    {
-        return lifecycleHandler;
     }
 
     /**

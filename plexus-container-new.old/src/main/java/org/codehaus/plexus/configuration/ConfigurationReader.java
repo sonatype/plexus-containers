@@ -16,12 +16,16 @@ import java.util.LinkedList;
 public class ConfigurationReader
     implements XMLReader
 {
+    /** */
     private DefaultConfiguration current;
+
+    /** */
     private LinkedList pointers = new LinkedList();
 
     public ConfigurationReader( Configuration configuration )
     {
         current = (DefaultConfiguration) configuration;
+
         pointers.addLast( new Pointer() );
     }
 

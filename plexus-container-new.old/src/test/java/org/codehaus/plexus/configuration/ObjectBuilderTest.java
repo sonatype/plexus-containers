@@ -59,6 +59,16 @@ public class ObjectBuilderTest
         Message message = (Message) builder.build( c, Message.class );
 
         messageValueTest( message );
+
+        DefaultConfiguration cc = builder.write( message );
+
+        assertNotNull( cc );
+
+        Message message1 = (Message) builder.build( cc, Message.class );
+
+        assertNotNull( message1 );
+
+        messageValueTest( message1 );
     }
 
     public void messageValueTest( Message message )

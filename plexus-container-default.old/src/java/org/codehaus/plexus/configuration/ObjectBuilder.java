@@ -40,6 +40,15 @@ public class ObjectBuilder
         return object;
     }
 
+    public DefaultConfiguration write( Object o )
+    {
+        ConfigurationWriter writer = new ConfigurationWriter();
+
+        xstream.toXML( o, writer );
+
+        return writer.getConfiguration();
+    }
+
     public String addAndDeHump( String view )
     {
         StringBuffer sb = new StringBuffer();
@@ -185,9 +194,12 @@ public class ObjectBuilder
                 elementName = elementName.substring( 0, elementName.length() - 6 ); // cut off -array
             }
 
-            elementName = capitalizeFirstLetter( elementMapper.fromXml( elementName ) );
+            if ( elementName.indexOf( "." ) < 0 )
+            {
+                elementName = capitalizeFirstLetter( elementMapper.fromXml( elementName ) );
 
-            elementName = basePackage + "." + elementName;
+                elementName = basePackage + "." + elementName;
+            }
 
             // the $ used in inner class names is illegal as an xml element name
             elementName = elementName.replaceAll( "\\-", "\\$" );
