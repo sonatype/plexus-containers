@@ -9,6 +9,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 public class DefaultComponentRepository
     extends AbstractLogEnabled
@@ -156,7 +157,7 @@ public class DefaultComponentRepository
         componentDescriptors.put( componentDescriptor.getComponentKey(), componentDescriptor );
     }
 
-    protected void validateComponentDescriptor( ComponentDescriptor componentDescriptor )
+    public void validateComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws ComponentImplementationNotFoundException
     {
         // Make sure the component implementation classes can be found.
@@ -164,5 +165,10 @@ public class DefaultComponentRepository
         // Validate lifecycle.
         // Validate the component configuration.
         // Validate the component profile if one is used.
+    }
+
+    public List getComponentDependencies( ComponentDescriptor componentDescriptor )
+    {
+        return compositionResolver.getComponentDependencies( componentDescriptor.getComponentKey() );
     }
 }

@@ -51,7 +51,7 @@ public class CompositionResolverTest
             "  <role>c3</role>" +
             "</component>";
 
-        CompositionResolver cr = new CompositionResolver();
+        CompositionResolver compositionResolver = new CompositionResolver();
 
         ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
 
@@ -59,13 +59,13 @@ public class CompositionResolverTest
 
         ComponentDescriptor c3 = PlexusTools.buildComponentDescriptor( cc3 );
 
-        cr.addComponentDescriptor( c1 );
+        compositionResolver.addComponentDescriptor( c1 );
 
-        cr.addComponentDescriptor( c2 );
+        compositionResolver.addComponentDescriptor( c2 );
 
-        cr.addComponentDescriptor( c3 );
+        compositionResolver.addComponentDescriptor( c3 );
 
-        List dependencies = cr.getComponentDependencies( c1.getComponentKey() );
+        List dependencies = compositionResolver.getComponentDependencies( c1.getComponentKey() );
 
         assertTrue( dependencies.contains( c2.getRole() ) );
 
@@ -130,7 +130,7 @@ public class CompositionResolverTest
             "</component>";
 
 
-        CompositionResolver cr = new CompositionResolver();
+        CompositionResolver compositionResolver = new CompositionResolver();
 
         ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
 
@@ -142,17 +142,17 @@ public class CompositionResolverTest
 
         ComponentDescriptor c5 = PlexusTools.buildComponentDescriptor( cc5 );
 
-        cr.addComponentDescriptor( c1 );
+        compositionResolver.addComponentDescriptor( c1 );
 
-        cr.addComponentDescriptor( c2 );
+        compositionResolver.addComponentDescriptor( c2 );
 
-        cr.addComponentDescriptor( c3 );
+        compositionResolver.addComponentDescriptor( c3 );
 
-        cr.addComponentDescriptor( c4 );
+        compositionResolver.addComponentDescriptor( c4 );
 
-        cr.addComponentDescriptor( c5 );
+        compositionResolver.addComponentDescriptor( c5 );
 
-        List dependencies = cr.getComponentDependencies( c1.getComponentKey() );
+        List dependencies = compositionResolver.getComponentDependencies( c1.getComponentKey() );
 
         assertEquals( 4, dependencies.size() );
 
