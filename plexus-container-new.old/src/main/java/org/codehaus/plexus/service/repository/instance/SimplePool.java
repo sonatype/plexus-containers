@@ -73,7 +73,7 @@ package org.codehaus.plexus.service.repository.instance;
  * @author <a href="mailto:geirm@optonline.net">Geir Magnusson Jr.</a>
  * @version $Id$
  */
-public final class SimplePool  
+public final class SimplePool
 {
     /*
      * Where the objects are held.
@@ -84,43 +84,43 @@ public final class SimplePool
      *  max amount of objects to be managed
      *  set via CTOR
      */
-    private int max;    
-    
+    private int max;
+
     /**
      *  index of previous to next
      *  free slot
      */
-    private int current=-1;
-       
-    public SimplePool(int max) 
+    private int current = -1;
+
+    public SimplePool( int max )
     {
         this.max = max;
         pool = new Object[max];
-    } 
+    }
 
     /**
      * Add the object to the pool, silent nothing if the pool is full
      */
-    public void put(Object o) 
+    public void put( Object o )
     {
-        int idx=-1;
-     
-        synchronized( this ) 
+        int idx = -1;
+
+        synchronized ( this )
         {
             /*
              *  if we aren't full
              */
 
-            if( current < max - 1 )
+            if ( current < max - 1 )
             {
                 /*
-                 *  then increment the 
+                 *  then increment the
                  *  current index.
                  */
                 idx = ++current;
             }
 
-            if( idx >= 0 ) 
+            if ( idx >= 0 )
             {
                 pool[idx] = o;
             }
@@ -130,16 +130,16 @@ public final class SimplePool
     /**
      * Get an object from the pool, null if the pool is empty.
      */
-    public  Object get() 
+    public Object get()
     {
         int idx = -1;
-        
-        synchronized( this ) 
+
+        synchronized ( this )
         {
             /*
              *  if we have any in the pool
              */
-            if( current >= 0 )
+            if ( current >= 0 )
             {
                 /*
                  *  take one out, so to speak -
@@ -150,7 +150,7 @@ public final class SimplePool
 
                 idx = current;
                 current--;
-               
+
                 /*
                  *  and since current was >= 0
                  *  to get in here, idx must be as well
@@ -160,13 +160,13 @@ public final class SimplePool
                 return pool[idx];
             }
         }
-        
+
         return null;
     }
 
     /** Return the size of the pool
      */
-    public int getMax() 
+    public int getMax()
     {
         return max;
     }

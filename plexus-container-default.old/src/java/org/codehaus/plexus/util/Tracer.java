@@ -14,28 +14,28 @@ import java.io.StringWriter;
 public class Tracer
 {
 
-	/**
-	 * Constructor
-	 *
-	 *
-	 */
-	private Tracer()
-	{
-		super();
-	}
+    /**
+     * Constructor
+     *
+     *
+     */
+    private Tracer()
+    {
+        super();
+    }
 
-	/**
-	 * Return the throwable stack trace as a string
-	 * */
-	public static String traceToString(Throwable t)
-	{
-		if( t== null)
+    /**
+     * Return the throwable stack trace as a string
+     * */
+    public static String traceToString( Throwable t )
+    {
+        if ( t == null )
         {
-			return null;
+            return null;
         }
-		StringWriter sw = new StringWriter();
-		t.printStackTrace(new PrintWriter(sw));
-		return sw.toString();
-	}
+        StringWriter sw = new StringWriter();
+        t.printStackTrace( new PrintWriter( sw ) );
+        return sw.toString();
+    }
 
 }

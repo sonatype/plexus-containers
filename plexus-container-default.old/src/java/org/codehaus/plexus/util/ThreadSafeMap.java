@@ -49,7 +49,7 @@ public class ThreadSafeMap implements Map
      * Map instance because we don't know if external code is going to
      * synchronize on this Map and stuff things up.
      */
-    private Object lock = new Object(  );
+    private Object lock = new Object();
     private ThreadSafeSet keySet = null;
     private ThreadSafeSet entrySet = null;
     private ThreadSafeCollection values = null;
@@ -59,27 +59,27 @@ public class ThreadSafeMap implements Map
      *
      *
      */
-    public ThreadSafeMap(  )
+    public ThreadSafeMap()
     {
-        super(  );
-        objects = new HashMap(  );
+        super();
+        objects = new HashMap();
     }
 
-    public Set entrySet(  )
+    public Set entrySet()
     {
-        if( entrySet == null )
+        if ( entrySet == null )
         {
-            entrySet = new ThreadSafeSet( this, objects.entrySet(  ) );
+            entrySet = new ThreadSafeSet( this, objects.entrySet() );
         }
 
         return entrySet;
     }
 
-    public Set keySet(  )
+    public Set keySet()
     {
-        if( keySet == null )
+        if ( keySet == null )
         {
-            keySet = new ThreadSafeSet( this, objects.keySet(  ) );
+            keySet = new ThreadSafeSet( this, objects.keySet() );
         }
 
         return keySet;
@@ -92,7 +92,7 @@ public class ThreadSafeMap implements Map
      */
     public ThreadSafeMap( int initializeSize )
     {
-        super(  );
+        super();
         objects = new HashMap( initializeSize );
     }
 
@@ -106,7 +106,7 @@ public class ThreadSafeMap implements Map
      *
      * @return
      */
-    public Object getWriteLock(  )
+    public Object getWriteLock()
     {
         return lock;
     }
@@ -116,19 +116,19 @@ public class ThreadSafeMap implements Map
      * this method will block until the write has completed.
      *
      */
-    private void enteringRead(  )
+    private void enteringRead()
     {
-        if( writeLock )
+        if ( writeLock )
         {
-            synchronized( lock )
+            synchronized ( lock )
             {
-                while( writeLock )
+                while ( writeLock )
                 {
                     try
                     {
-                        lock.wait(  );
+                        lock.wait();
                     }
-                    catch( InterruptedException e )
+                    catch ( InterruptedException e )
                     {
                     }
                 }
@@ -143,96 +143,96 @@ public class ThreadSafeMap implements Map
      * waiting writer.
      *
      */
-    private void exitingRead(  )
+    private void exitingRead()
     {
         readers--;
 
-        if( readers == 0 )
+        if ( readers == 0 )
         {
             //notify waiting write lock...
-            synchronized( lock )
+            synchronized ( lock )
             {
-                lock.notifyAll(  );
+                lock.notifyAll();
             }
         }
     }
 
-    public Object[] getValues(  )
+    public Object[] getValues()
     {
-        enteringRead(  );
+        enteringRead();
 
-        Object[] values = objects.values(  ).toArray(  );
-        exitingRead(  );
+        Object[] values = objects.values().toArray();
+        exitingRead();
 
         return values;
     }
 
     public Object get( Object key )
     {
-        if( key == null )
+        if ( key == null )
         {
             return null;
         }
 
-        enteringRead(  );
+        enteringRead();
 
         Object obj = objects.get( key );
-        exitingRead(  );
+        exitingRead();
 
         return obj;
     }
 
     public Object put( Object key, Object obj )
     {
-        if( key == null )
+        if ( key == null )
         {
             return null;
         }
 
-        obtainWriteLock(  );
+        obtainWriteLock();
 
         Object prev = objects.put( key, obj );
-        releaseWriteLock(  );
+        releaseWriteLock();
 
         return prev;
     }
 
     public Object remove( Object key )
     {
-        if( key == null )
+        if ( key == null )
         {
             return null;
         }
 
-        obtainWriteLock(  );
+        obtainWriteLock();
 
         Object obj = objects.remove( key );
-        releaseWriteLock(  );
+        releaseWriteLock();
 
         return obj;
     }
 
     public void removeAll( Object[] keys )
     {
-        obtainWriteLock(  );
+        obtainWriteLock();
 
-        for( int i = 0; i < keys.length; i++ )
+        for ( int i = 0; i < keys.length; i++ )
         {
             objects.remove( keys[i] );
         }
 
-        releaseWriteLock(  );
+        releaseWriteLock();
     }
 
     /**
-         * @see java.util.Map#containsKey(java.lang.Object)
-         */
+     * @see java.util.Map#containsKey(java.lang.Object)
+     */
     public boolean containsKey( Object key )
     {
-        enteringRead(  );
+        enteringRead();
 
         boolean ret = objects.containsKey( key );
-        exitingRead(  );
+        exitingRead();
 
         return ret;
     }
@@ -242,10 +242,10 @@ public class ThreadSafeMap implements Map
      */
     public boolean containsValue( Object value )
     {
-        enteringRead(  );
+        enteringRead();
 
         boolean ret = objects.containsValue( value );
-        exitingRead(  );
+        exitingRead();
 
         return ret;
     }
@@ -253,9 +253,9 @@ public class ThreadSafeMap implements Map
     /**
      * @see java.util.Map#isEmpty()
      */
-    public boolean isEmpty(  )
+    public boolean isEmpty()
     {
-        if( objects.size(  ) == 0 )
+        if ( objects.size() == 0 )
         {
             return true;
         }
@@ -270,12 +270,12 @@ public class ThreadSafeMap implements Map
      */
     public void putAll( Map map )
     {
-        if( map == null )
+        if ( map == null )
         {
             return;
         }
 
-        obtainWriteLock(  );
+        obtainWriteLock();
 
         //put this in a try block as the underlying map may
         //throw an exception (for example if the given Map is modified,
@@ -287,37 +287,37 @@ public class ThreadSafeMap implements Map
         }
         finally
         {
-            releaseWriteLock(  );
+            releaseWriteLock();
         }
     }
 
     /**
      * @see java.util.Map#size()
      */
-    public int size(  )
+    public int size()
     {
-        return objects.size(  );
+        return objects.size();
     }
 
     /**
      * @todo : return a non modifiable or locking Collection??
      * @see java.util.Map#values()
      */
-    public Collection values(  )
+    public Collection values()
     {
-        if( values == null )
+        if ( values == null )
         {
-            values = new ThreadSafeCollection( this, objects.values(  ) );
+            values = new ThreadSafeCollection( this, objects.values() );
         }
 
         return values;
     }
 
-    public void clear(  )
+    public void clear()
     {
-        obtainWriteLock(  );
-        objects.clear(  );
-        releaseWriteLock(  );
+        obtainWriteLock();
+        objects.clear();
+        releaseWriteLock();
     }
 
     /**
@@ -326,18 +326,18 @@ public class ThreadSafeMap implements Map
      * also block until this write has completed.
      *
      */
-    private void obtainWriteLock(  )
+    private void obtainWriteLock()
     {
-        synchronized( lock )
+        synchronized ( lock )
         {
-            while( writeLock )
+            while ( writeLock )
             {
                 //wait till the current writer has finished
                 try
                 {
-                    lock.wait(  );
+                    lock.wait();
                 }
-                catch( InterruptedException e )
+                catch ( InterruptedException e )
                 {
                 }
             }
@@ -350,13 +350,13 @@ public class ThreadSafeMap implements Map
             //wait till all the readers have finished.
             //Need to do this as some reads may take a long
             //time if the Map is large.
-            while( readers > 0 )
+            while ( readers > 0 )
             {
                 try
                 {
-                    lock.wait(  );
+                    lock.wait();
                 }
-                catch( InterruptedException e )
+                catch ( InterruptedException e )
                 {
                 }
             }
@@ -367,17 +367,17 @@ public class ThreadSafeMap implements Map
      * Release the write lock and notify and waiting readers to continue.
      *
      */
-    private synchronized void releaseWriteLock(  )
+    private synchronized void releaseWriteLock()
     {
         //only the current thread which holds
         //the lock can do this
-        synchronized( lock )
+        synchronized ( lock )
         {
             writeLock = false;
 
             //and notify waiting readers and
             //writers.
-            lock.notifyAll(  );
+            lock.notifyAll();
         }
     }
 
@@ -407,10 +407,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean add( Object o )
         {
-            map.obtainWriteLock(  );
+            map.obtainWriteLock();
 
             boolean ret = set.add( o );
-            map.releaseWriteLock(  );
+            map.releaseWriteLock();
 
             return ret;
         }
@@ -421,10 +421,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean addAll( Collection c )
         {
-            map.obtainWriteLock(  );
+            map.obtainWriteLock();
 
             boolean ret = set.addAll( c );
-            map.releaseWriteLock(  );
+            map.releaseWriteLock();
 
             return ret;
         }
@@ -432,11 +432,11 @@ public class ThreadSafeMap implements Map
         /**
          *
          */
-        public void clear(  )
+        public void clear()
         {
-            map.obtainWriteLock(  );
-            set.clear(  );
-            map.releaseWriteLock(  );
+            map.obtainWriteLock();
+            set.clear();
+            map.releaseWriteLock();
         }
 
         /**
@@ -445,10 +445,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean contains( Object o )
         {
-            map.enteringRead(  );
+            map.enteringRead();
 
             boolean result = set.contains( o );
-            map.exitingRead(  );
+            map.exitingRead();
 
             return result;
         }
@@ -459,10 +459,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean containsAll( Collection c )
         {
-            map.enteringRead(  );
+            map.enteringRead();
 
             boolean result = set.containsAll( c );
-            map.exitingRead(  );
+            map.exitingRead();
 
             return result;
         }
@@ -472,10 +472,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean equals( Object obj )
         {
-            map.enteringRead(  );
+            map.enteringRead();
 
             boolean result = set.equals( obj );
-            map.exitingRead(  );
+            map.exitingRead();
 
             return result;
         }
@@ -483,12 +483,12 @@ public class ThreadSafeMap implements Map
         /**
          * @see java.lang.Object#hashCode()
          */
-        public int hashCode(  )
+        public int hashCode()
         {
-            map.enteringRead(  );
+            map.enteringRead();
 
-            int ret = set.hashCode(  );
-            map.exitingRead(  );
+            int ret = set.hashCode();
+            map.exitingRead();
 
             return ret;
         }
@@ -496,17 +496,17 @@ public class ThreadSafeMap implements Map
         /**
          * @return
          */
-        public boolean isEmpty(  )
+        public boolean isEmpty()
         {
-            return set.isEmpty(  );
+            return set.isEmpty();
         }
 
         /**
          * @return
          */
-        public Iterator iterator(  )
+        public Iterator iterator()
         {
-            return new ThreadSafeIterator( map, set.iterator(  ) );
+            return new ThreadSafeIterator( map, set.iterator() );
         }
 
         /**
@@ -515,10 +515,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean remove( Object o )
         {
-            map.obtainWriteLock(  );
+            map.obtainWriteLock();
 
             boolean ret = set.remove( o );
-            map.releaseWriteLock(  );
+            map.releaseWriteLock();
 
             return ret;
         }
@@ -529,10 +529,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean removeAll( Collection c )
         {
-            map.obtainWriteLock(  );
+            map.obtainWriteLock();
 
             boolean ret = set.removeAll( c );
-            map.releaseWriteLock(  );
+            map.releaseWriteLock();
 
             return ret;
         }
@@ -543,10 +543,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean retainAll( Collection c )
         {
-            map.obtainWriteLock(  );
+            map.obtainWriteLock();
 
             boolean ret = set.retainAll( c );
-            map.releaseWriteLock(  );
+            map.releaseWriteLock();
 
             return ret;
         }
@@ -554,17 +554,17 @@ public class ThreadSafeMap implements Map
         /**
          * @return
          */
-        public int size(  )
+        public int size()
         {
-            return set.size(  );
+            return set.size();
         }
 
         /**
          * @return
          */
-        public Object[] toArray(  )
+        public Object[] toArray()
         {
-            return set.toArray(  );
+            return set.toArray();
         }
 
         /**
@@ -579,9 +579,9 @@ public class ThreadSafeMap implements Map
         /**
          * @see java.lang.Object#toString()
          */
-        public String toString(  )
+        public String toString()
         {
-            return set.toString(  );
+            return set.toString();
         }
     }
 
@@ -591,13 +591,13 @@ public class ThreadSafeMap implements Map
         private final ThreadSafeMap map;
 
         /**
-        * Constructor
-        *
-        *
-        */
+         * Constructor
+         *
+         *
+         */
         public ThreadSafeIterator( ThreadSafeMap lockMap, Iterator delegate )
         {
-            super(  );
+            super();
             this.iter = delegate;
             this.map = lockMap;
         }
@@ -613,25 +613,25 @@ public class ThreadSafeMap implements Map
         /**
          * @see java.lang.Object#hashCode()
          */
-        public int hashCode(  )
+        public int hashCode()
         {
-            return iter.hashCode(  );
+            return iter.hashCode();
         }
 
         /**
          * @return
          */
-        public boolean hasNext(  )
+        public boolean hasNext()
         {
-            return iter.hasNext(  );
+            return iter.hasNext();
         }
 
         /**
          * @return
          */
-        public Object next(  )
+        public Object next()
         {
-            map.enteringRead(  );
+            map.enteringRead();
 
             Object ret = null;
 
@@ -640,11 +640,11 @@ public class ThreadSafeMap implements Map
                 //within try incase something gets modified and it
                 //throws a wobbly, though shouldn't happen with
                 //the locks
-                ret = iter.next(  );
+                ret = iter.next();
             }
             finally
             {
-                map.exitingRead(  );
+                map.exitingRead();
             }
 
             return ret;
@@ -653,25 +653,25 @@ public class ThreadSafeMap implements Map
         /**
          *
          */
-        public void remove(  )
+        public void remove()
         {
             try
             {
-                map.obtainWriteLock(  );
-                iter.remove(  );
+                map.obtainWriteLock();
+                iter.remove();
             }
             finally
             {
-                map.releaseWriteLock(  );
+                map.releaseWriteLock();
             }
         }
 
         /**
          * @see java.lang.Object#toString()
          */
-        public String toString(  )
+        public String toString()
         {
-            return iter.toString(  );
+            return iter.toString();
         }
     }
 
@@ -687,8 +687,8 @@ public class ThreadSafeMap implements Map
         }
 
         /**
-        * @see java.util.Collection#add(java.lang.Object)
-        */
+         * @see java.util.Collection#add(java.lang.Object)
+         */
         public boolean add( Object o )
         {
             // not supported
@@ -707,9 +707,9 @@ public class ThreadSafeMap implements Map
         /**
          * @see java.util.Collection#clear()
          */
-        public void clear(  )
+        public void clear()
         {
-            map.clear(  );
+            map.clear();
         }
 
         /**
@@ -725,10 +725,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean containsAll( Collection c )
         {
-            map.enteringRead(  );
+            map.enteringRead();
 
             boolean ret = col.containsAll( c );
-            map.exitingRead(  );
+            map.exitingRead();
 
             return ret;
         }
@@ -736,9 +736,9 @@ public class ThreadSafeMap implements Map
         /**
          * @see java.util.Collection#isEmpty()
          */
-        public boolean isEmpty(  )
+        public boolean isEmpty()
         {
-            if( map.size(  ) == 0 )
+            if ( map.size() == 0 )
             {
                 return true;
             }
@@ -751,12 +751,12 @@ public class ThreadSafeMap implements Map
         /**
          * @see java.util.Collection#iterator()
          */
-        public Iterator iterator(  )
+        public Iterator iterator()
         {
-            map.enteringRead(  );
+            map.enteringRead();
 
-            Iterator iter = new ThreadSafeIterator( map, col.iterator(  ) );
-            map.exitingRead(  );
+            Iterator iter = new ThreadSafeIterator( map, col.iterator() );
+            map.exitingRead();
 
             return iter;
         }
@@ -766,10 +766,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean remove( Object o )
         {
-            map.obtainWriteLock(  );
+            map.obtainWriteLock();
 
             boolean ret = col.remove( o );
-            map.releaseWriteLock(  );
+            map.releaseWriteLock();
 
             return ret;
         }
@@ -779,10 +779,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean removeAll( Collection c )
         {
-            map.obtainWriteLock(  );
+            map.obtainWriteLock();
 
             boolean ret = col.removeAll( c );
-            map.releaseWriteLock(  );
+            map.releaseWriteLock();
 
             return ret;
         }
@@ -792,10 +792,10 @@ public class ThreadSafeMap implements Map
          */
         public boolean retainAll( Collection c )
         {
-            map.obtainWriteLock(  );
+            map.obtainWriteLock();
 
             boolean ret = col.retainAll( c );
-            map.releaseWriteLock(  );
+            map.releaseWriteLock();
 
             return ret;
         }
@@ -803,20 +803,20 @@ public class ThreadSafeMap implements Map
         /**
          * @see java.util.Collection#size()
          */
-        public int size(  )
+        public int size()
         {
-            return map.size(  );
+            return map.size();
         }
 
         /**
          * @see java.util.Collection#toArray()
          */
-        public Object[] toArray(  )
+        public Object[] toArray()
         {
-            map.enteringRead(  );
+            map.enteringRead();
 
-            Object[] ret = col.toArray(  );
-            map.exitingRead(  );
+            Object[] ret = col.toArray();
+            map.exitingRead();
 
             return ret;
         }
@@ -826,10 +826,10 @@ public class ThreadSafeMap implements Map
          */
         public Object[] toArray( Object[] a )
         {
-            map.enteringRead(  );
+            map.enteringRead();
 
             Object[] ret = col.toArray( a );
-            map.exitingRead(  );
+            map.exitingRead();
 
             return ret;
         }

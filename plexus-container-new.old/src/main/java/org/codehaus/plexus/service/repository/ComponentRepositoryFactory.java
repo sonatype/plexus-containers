@@ -14,7 +14,7 @@ public class ComponentRepositoryFactory
                                               LoggerManager loggerManager,
                                               PlexusContainer container,
                                               ClassLoader classLoader,
-											  Context context )
+                                              Context context )
         throws Exception
     {
         String implementation;
@@ -33,9 +33,9 @@ public class ComponentRepositoryFactory
 
         ComponentRepository sr =
             (ComponentRepository) getInstance( implementation, classLoader );
-		sr.setComponentLogManager(loggerManager);
+        sr.setComponentLogManager( loggerManager );
         sr.enableLogging( loggerManager.getLogger( "service-repository" ) );
-        sr.contextualize(context);
+        sr.contextualize( context );
         sr.setPlexusContainer( container );
         sr.configure( defaultConfiguration, configuration );
         sr.initialize();

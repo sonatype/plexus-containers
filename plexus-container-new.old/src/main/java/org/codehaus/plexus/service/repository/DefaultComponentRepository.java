@@ -6,9 +6,9 @@ import org.apache.avalon.framework.context.Context;
 import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
+import org.codehaus.plexus.lifecycle.LifecycleHandlerFactory;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerHousing;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
-import org.codehaus.plexus.lifecycle.LifecycleHandlerFactory;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.ThreadSafeMap;
@@ -205,7 +205,7 @@ public class DefaultComponentRepository
         }
 
         defaultInstantiationStrategy = getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute(
-                "default", getDefaultConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute( "default", null ) );
+            "default", getDefaultConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute( "default", null ) );
 
         if ( defaultInstantiationStrategy == null || defaultInstantiationStrategy.length() == 0 )
         {

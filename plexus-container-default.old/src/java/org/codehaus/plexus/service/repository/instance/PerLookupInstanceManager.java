@@ -12,6 +12,7 @@ import org.codehaus.plexus.service.repository.ComponentHousing;
 public class PerLookupInstanceManager extends AbstractMultipleInstanceManager
 {
     private int connections = 0;
+
     /**
      *
      */
@@ -34,7 +35,7 @@ public class PerLookupInstanceManager extends AbstractMultipleInstanceManager
      */
     public int getConnections()
     {
-    	return connections;
+        return connections;
     }
 
     /* (non-Javadoc)
@@ -43,7 +44,7 @@ public class PerLookupInstanceManager extends AbstractMultipleInstanceManager
     public Object getComponent() throws Exception
     {
         ComponentHousing h = newHousingInstance();
-        putHousing(h.getComponent(), h);
+        putHousing( h.getComponent(), h );
         connections++;
         return h.getComponent();
     }
@@ -51,16 +52,15 @@ public class PerLookupInstanceManager extends AbstractMultipleInstanceManager
     /**
      * @see org.codehaus.plexus.service.repository.instance.InstanceManager#release(java.lang.Object)
      */
-    public void release(Object component)
+    public void release( Object component )
     {
-        ComponentHousing h =removeHousing(component);
-        if (h != null)
+        ComponentHousing h = removeHousing( component );
+        if ( h != null )
         {
-        	connections--;
+            connections--;
             endComponentLifecycle( h );
         }
     }
-
 
 
 }

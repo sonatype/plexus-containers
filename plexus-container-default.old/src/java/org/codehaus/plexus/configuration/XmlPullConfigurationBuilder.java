@@ -132,8 +132,8 @@ public class XmlPullConfigurationBuilder
                     if ( trimmedValue.length() > 0 )
                     {
                         throw new Exception( "Not allowed to define mixed content in the "
-                                                + "element " + finishedConfiguration.getName() + " at "
-                                                + finishedConfiguration.getLocation() );
+                                             + "element " + finishedConfiguration.getName() + " at "
+                                             + finishedConfiguration.getLocation() );
                     }
                 }
 

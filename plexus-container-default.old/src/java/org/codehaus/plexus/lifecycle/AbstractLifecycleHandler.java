@@ -21,8 +21,8 @@ public abstract class AbstractLifecycleHandler
     private List suspendSegment;
     private List resumeSegment;
     private List endSegment;
-	private Configuration configuration;
-	
+    private Configuration configuration;
+
     public AbstractLifecycleHandler()
     {
         beginSegment = new ArrayList();
@@ -164,21 +164,21 @@ public abstract class AbstractLifecycleHandler
             phase.execute( housing, this );
         }
     }
-    
-	/**
-	 * @see org.codehaus.plexus.lifecycle.LifecycleHandler#configure(org.apache.avalon.framework.configuration.Configuration)
-	 */
-	public void configure(Configuration config) throws ConfigurationException
-	{
-		this.configuration = config;
 
-	}
+    /**
+     * @see org.codehaus.plexus.lifecycle.LifecycleHandler#configure(org.apache.avalon.framework.configuration.Configuration)
+     */
+    public void configure( Configuration config ) throws ConfigurationException
+    {
+        this.configuration = config;
 
-	/**
-	 * @return
-	 */
-	public Configuration getConfiguration()
-	{
-		return configuration;
-	}
+    }
+
+    /**
+     * @return
+     */
+    public Configuration getConfiguration()
+    {
+        return configuration;
+    }
 }

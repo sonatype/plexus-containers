@@ -5,7 +5,7 @@ import org.apache.avalon.framework.logger.Logger;
 
 /**
  * Sample configuration.
- * 
+ *
  * <pre>
  * <logging>
  *   <implementation>org.codehaus.plexus.logging.ConsoleLoggerManager</implementation>
@@ -26,7 +26,7 @@ public class ConsoleLoggerManager
 
     /** Message of this level or higher will be logged. */
     private int thresholdLevel;
-    
+
     /** The console logger used by the manager. */
     private ConsoleLogger consoleLogger;
 
@@ -34,11 +34,11 @@ public class ConsoleLoggerManager
     {
         setThresholdLevel(
             configuration
-                .getChild( LOGGER_TAG )
-                .getChild( THRESHOLD_TAG )
-                .getValue( "info" )
-                .trim()
-                .toLowerCase() );
+            .getChild( LOGGER_TAG )
+            .getChild( THRESHOLD_TAG )
+            .getValue( "info" )
+            .trim()
+            .toLowerCase() );
     }
 
     public void initialize()
@@ -82,7 +82,7 @@ public class ConsoleLoggerManager
         }
         else if ( text.equals( "info" ) )
         {
-            thresholdLevel = ConsoleLogger.LEVEL_INFO;            
+            thresholdLevel = ConsoleLogger.LEVEL_INFO;
         }
         else if ( text.equals( "warn" ) )
         {

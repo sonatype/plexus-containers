@@ -118,7 +118,7 @@ public class PlexusLoaderServlet extends HttpServlet
         container = new DefaultPlexusContainer();
         try
         {
-            container.addContextValue("plexus.home", applicationRoot + "/WEB-INF");
+            container.addContextValue( "plexus.home", applicationRoot + "/WEB-INF" );
             container.setConfigurationResource( config );
             container.initialize();
             container.start();
@@ -143,9 +143,9 @@ public class PlexusLoaderServlet extends HttpServlet
     {
         try
         {
-			log( "Shutting down plexus!...");
-            container.dispose();           
-			log( "...plexus shutdown. goodbye" );
+            log( "Shutting down plexus!..." );
+            container.dispose();
+            log( "...plexus shutdown. goodbye" );
         }
         catch ( Exception e )
         {

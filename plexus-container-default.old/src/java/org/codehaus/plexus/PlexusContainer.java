@@ -1,7 +1,6 @@
 package org.codehaus.plexus;
 
 import com.werken.classworlds.ClassWorld;
-
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 import org.codehaus.plexus.service.repository.ComponentRepository;
 
@@ -27,7 +26,7 @@ public interface PlexusContainer
     // ----------------------------------------------------------------------
     // Pre-initialization - can only be called prior to initialization
     // ----------------------------------------------------------------------
-    
+
     /** */
     public void addContextValue( Object key, Object value );
 

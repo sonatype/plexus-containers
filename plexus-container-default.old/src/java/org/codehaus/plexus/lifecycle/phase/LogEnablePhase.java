@@ -22,7 +22,7 @@ public class LogEnablePhase
                 throw new IllegalArgumentException( message );
             }
             //give a new child logger named by the components class
-            ( (LogEnabled) object ).enableLogging( logger.getChildLogger(object.getClass().getName()) );
+            ( (LogEnabled) object ).enableLogging( logger.getChildLogger( object.getClass().getName() ) );
         }
     }
 }

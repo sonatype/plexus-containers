@@ -1,17 +1,16 @@
 package org.codehaus.plexus.service.repository;
 
+import com.werken.classworlds.ConfigurationException;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.service.repository.instance.InstanceManager;
 
-import com.werken.classworlds.ConfigurationException;
-
-/** 
+/**
  * House the information for a component
- * and the instance manager which performs the 
- * management of this component on behalf of this 
+ * and the instance manager which performs the
+ * management of this component on behalf of this
  * ComponentManager.
- * 
+ *
  * <p>This is used so that the instance managers can be pluggable</p>
  *
  */
@@ -33,7 +32,7 @@ public class ComponentManager
         ComponentDescriptor componentDescriptor,
         ComponentRepository componentRepository,
         ComponentDescriptor instanceManagerDescriptor,
-        ClassLoader classLoader)
+        ClassLoader classLoader )
     {
         this.componentDescriptor = componentDescriptor;
         this.componentRespository = componentRepository;
@@ -47,36 +46,36 @@ public class ComponentManager
 
     public void initialize() throws Exception
     {
-        Class c = classLoader.loadClass(instanceManagerDescriptor.getImplementation());
+        Class c = classLoader.loadClass( instanceManagerDescriptor.getImplementation() );
         instanceManager = (InstanceManager) c.newInstance();
-        instanceManager.setClassLoader(classLoader);
-        instanceManager.setComponentImplementation(componentDescriptor.getImplementation());
-		instanceManager.setComponentManager( this );
-        //the lifecyclehandler used is based on the component descriptor        
+        instanceManager.setClassLoader( classLoader );
+        instanceManager.setComponentImplementation( componentDescriptor.getImplementation() );
+        instanceManager.setComponentManager( this );
+        //the lifecyclehandler used is based on the component descriptor
         //look it up from the component repository
         String id = componentDescriptor.getLifecycleHandlerId();
-        if (id == null)
+        if ( id == null )
         {
             //use the default handler
             instanceManager.setLifecycleHandler(
-                getComponentRespository().getDefaultLifecycleHandler());
+                getComponentRespository().getDefaultLifecycleHandler() );
         }
         else
         {
             LifecycleHandler lh;
             try
             {
-                lh = getComponentRespository().getLifecycleHandler(id);
+                lh = getComponentRespository().getLifecycleHandler( id );
             }
-            catch (UndefinedLifecycleHandlerException e)
+            catch ( UndefinedLifecycleHandlerException e )
             {
                 throw new ConfigurationException(
                     "No LifecycleHandler confgured with id:"
-                        + id
-                        + " required by component with role:"
-                        + componentDescriptor.getRole());
+                    + id
+                    + " required by component with role:"
+                    + componentDescriptor.getRole() );
             }
-            instanceManager.setLifecycleHandler(lh);
+            instanceManager.setLifecycleHandler( lh );
         }
         instanceManager.initialize();
     }
@@ -112,31 +111,31 @@ public class ComponentManager
         return componentRespository;
     }
 
-	/**
-	 *
-	 * @param componentRespository
-	 */
-	public void setComponentRespository( ComponentRepository componentRespository )
-	{
-		this.componentRespository = componentRespository;
-	}
+    /**
+     *
+     * @param componentRespository
+     */
+    public void setComponentRespository( ComponentRepository componentRespository )
+    {
+        this.componentRespository = componentRespository;
+    }
 
     /**
-     * Release the component back to this manager. 
-     * 
+     * Release the component back to this manager.
+     *
      * @param component
      */
-    public void release(Object component)
+    public void release( Object component )
     {
-        if (component != null)
+        if ( component != null )
         {
-            getInstanceManager().release(component);
+            getInstanceManager().release( component );
         }
     }
 
     /**
      * Obtain the component this manager manages.
-     * 
+     *
      * @return
      */
     public Object getComponent() throws Exception
@@ -170,7 +169,7 @@ public class ComponentManager
        }*/
 
     /**
-     * Dispose this manager. This will also cause all components this manager 
+     * Dispose this manager. This will also cause all components this manager
      * manages to be disposed.
      */
     public void dispose()

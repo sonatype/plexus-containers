@@ -8,9 +8,9 @@ public class ResourceManagerFactory
     extends AbstractPlexusFactory
 {
     public static DefaultResourceManager create( Configuration defaultConfiguration,
-                                          Configuration configuration,
-                                          LoggerManager loggerManager,
-                                          ClassLoader classLoader )
+                                                 Configuration configuration,
+                                                 LoggerManager loggerManager,
+                                                 ClassLoader classLoader )
         throws Exception
     {
         String implementation;

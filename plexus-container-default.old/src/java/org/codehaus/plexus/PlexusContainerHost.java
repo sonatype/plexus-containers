@@ -95,7 +95,7 @@ public class PlexusContainerHost
     {
         PlexusContainer container = new DefaultPlexusContainer();
         container.setClassWorld( classWorld );
-        container.setConfigurationResource( new FileReader( configurationResource  ) );
+        container.setConfigurationResource( new FileReader( configurationResource ) );
 
         container.addContextValue( "plexus.home",
                                    System.getProperty( "plexus.home" ) );

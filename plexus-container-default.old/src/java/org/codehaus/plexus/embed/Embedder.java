@@ -1,9 +1,8 @@
 package org.codehaus.plexus.embed;
 
+import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.service.ServiceException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -72,31 +71,31 @@ public class Embedder
         return container;
     }
 
-    public Object lookup(String role) throws ServiceException
+    public Object lookup( String role ) throws ServiceException
     {
-        return getContainer().getComponentRepository().lookup(role);
+        return getContainer().getComponentRepository().lookup( role );
     }
 
-    public Object lookup(String role, String id) throws ServiceException
+    public Object lookup( String role, String id ) throws ServiceException
     {
-        return getContainer().getComponentRepository().lookup(role, id);
+        return getContainer().getComponentRepository().lookup( role, id );
     }
 
-    public boolean hasService(String role)
+    public boolean hasService( String role )
     {
-        return getContainer().getComponentRepository().hasService(role);        
+        return getContainer().getComponentRepository().hasService( role );
     }
 
-    public boolean hasService(String role, String id)
+    public boolean hasService( String role, String id )
     {
-        return getContainer().getComponentRepository().hasService(role, id);
+        return getContainer().getComponentRepository().hasService( role, id );
     }
 
-    public void release(Object service)
+    public void release( Object service )
     {
-        getContainer().getComponentRepository().release(service);
+        getContainer().getComponentRepository().release( service );
     }
-    
+
     /**
      * Set the configuration for the <tt>PlexusContainer</tt>.  This
      * configuration can either be a file or a resource in the

@@ -39,42 +39,42 @@ public class SweeperPool
     /**
      *
      * <p>There are a number of settings to control how the pool operates.
-    * <ul>
-    *  <li><code>minSize</code> - this is the size the pool is trimmed to</li>
-    *  <li><code>triggerSize</code> - this determines if the pool is trimmed when
-    * the sweeper runs. If the pool size is greater or equal than this value then
-    * the pool is trimmed to <code>minSize</code>.</lie>
-    * <li><code>maxSize</code> - if the pool has reached this size, any objects added
-    * are immediatley disposed. If the pool is this size when the sweeper runs, then
-    * the pool is also trimmed to <code>minSize</code> irrespective of the triggerSize.
-    * </li>
-    * <li><code>sweepInterval</code> - how often the sweeper runs. Is actually the
-    * time since the sweeper last finished a pass. 0 if the sweeper should not run.
-    * </li>
-    * </ul>
-    * </p>
-    *
-    * <p>Any value less than 0 is automatically converted to 0</p>
+     * <ul>
+     *  <li><code>minSize</code> - this is the size the pool is trimmed to</li>
+     *  <li><code>triggerSize</code> - this determines if the pool is trimmed when
+     * the sweeper runs. If the pool size is greater or equal than this value then
+     * the pool is trimmed to <code>minSize</code>.</lie>
+     * <li><code>maxSize</code> - if the pool has reached this size, any objects added
+     * are immediatley disposed. If the pool is this size when the sweeper runs, then
+     * the pool is also trimmed to <code>minSize</code> irrespective of the triggerSize.
+     * </li>
+     * <li><code>sweepInterval</code> - how often the sweeper runs. Is actually the
+     * time since the sweeper last finished a pass. 0 if the sweeper should not run.
+     * </li>
+     * </ul>
+     * </p>
+     *
+     * <p>Any value less than 0 is automatically converted to 0</p>
      */
     public SweeperPool( int maxSize, int minSize, int intialCapacity,
-        int sweepInterval, int triggerSize )
+                        int sweepInterval, int triggerSize )
     {
-        super(  );
+        super();
         this.maxSize = saneConvert( maxSize );
         this.minSize = saneConvert( minSize );
         this.triggerSize = saneConvert( triggerSize );
         pooledObjects = new ArrayList( intialCapacity );
 
-        if( sweepInterval > 0 )
+        if ( sweepInterval > 0 )
         {
             sweeper = new Sweeper( this, sweepInterval );
-            sweeper.start(  );
+            sweeper.start();
         }
     }
 
     private int saneConvert( int value )
     {
-        if( value < 0 )
+        if ( value < 0 )
         {
             return 0;
         }
@@ -87,9 +87,9 @@ public class SweeperPool
     /**
      * Return the pooled object
      */
-    public synchronized Object get(  )
+    public synchronized Object get()
     {
-        if( ( pooledObjects.size(  ) == 0 ) || shuttingDown )
+        if ( ( pooledObjects.size() == 0 ) || shuttingDown )
         {
             return null;
         }
@@ -115,16 +115,16 @@ public class SweeperPool
     {
         objectAdded( obj );
 
-        if( ( obj != null ) && ( pooledObjects.size(  ) < maxSize )
-                && ( shuttingDown == false ) )
+        if ( ( obj != null ) && ( pooledObjects.size() < maxSize )
+            && ( shuttingDown == false ) )
         {
             pooledObjects.add( obj );
 
             return true;
         }
-        else if( obj != null )
+        else if ( obj != null )
         {
-            //no longer need the object, so dispose it            
+            //no longer need the object, so dispose it
             objectDisposed( obj );
         }
 
@@ -137,46 +137,46 @@ public class SweeperPool
      *
      * @return the number of pooled objects
      */
-    public int getSize(  )
+    public int getSize()
     {
-        return pooledObjects.size(  );
+        return pooledObjects.size();
     }
 
     /**
      * Dispose of this pool. Stops the sweeper and disposes each object in the pool
      *
      */
-    public synchronized void dispose(  )
+    public synchronized void dispose()
     {
         shuttingDown = true;
 
-        if( sweeper != null )
+        if ( sweeper != null )
         {
-            sweeper.stop(  );
+            sweeper.stop();
         }
 
         //use an array here as objects may still be being put back in the pool
         //and we don't want to throw a ConcurrentModificationException
-        Object[] objects = pooledObjects.toArray(  );
+        Object[] objects = pooledObjects.toArray();
 
-        for( int i = 0; i < objects.length; i++ )
+        for ( int i = 0; i < objects.length; i++ )
         {
             objectDisposed( objects[i] );
         }
 
-        pooledObjects.clear(  );
+        pooledObjects.clear();
     }
 
     /**
      * Trim the pool down to min size
      *
      */
-    public void trim(  )
+    public void trim()
     {
-        if( ( ( triggerSize > 0 ) && ( pooledObjects.size(  ) >= triggerSize ) )
-                || ( ( maxSize > 0 ) && ( pooledObjects.size(  ) >= maxSize ) ) )
+        if ( ( ( triggerSize > 0 ) && ( pooledObjects.size() >= triggerSize ) )
+            || ( ( maxSize > 0 ) && ( pooledObjects.size() >= maxSize ) ) )
         {
-            while( pooledObjects.size(  ) > minSize )
+            while ( pooledObjects.size() > minSize )
             {
                 objectDisposed( pooledObjects.remove( 0 ) );
             }
@@ -205,12 +205,12 @@ public class SweeperPool
     }
 
     /**
-         * Override this to be notified of object retrieval.
-         * Called after object removed from the pool, but
-         * before returned to the client.
-         *
-         * @param obj
-         */
+     * Override this to be notified of object retrieval.
+     * Called after object removed from the pool, but
+     * before returned to the client.
+     *
+     * @param obj
+     */
     public void objectRetrieved( Object obj )
     {
     }
@@ -233,7 +233,7 @@ public class SweeperPool
          */
         public Sweeper( SweeperPool pool, int sweepInterval )
         {
-            super(  );
+            super();
             this.sweepInterval = sweepInterval;
             this.pool = pool;
         }
@@ -243,25 +243,25 @@ public class SweeperPool
          *
          * @see java.lang.Runnable#run()
          */
-        public void run(  )
+        public void run()
         {
             debug( "started" );
 
-            synchronized( this )
+            synchronized ( this )
             {
-                while( service )
+                while ( service )
                 {
-                    if( sweepInterval > 0 )
+                    if ( sweepInterval > 0 )
                     {
                         try
                         {
                             wait( sweepInterval * 1000 );
                         }
-                        catch( InterruptedException e )
+                        catch ( InterruptedException e )
                         {
                         }
 
-                        runSweep(  );
+                        runSweep();
                     }
                 }
             }
@@ -269,34 +269,34 @@ public class SweeperPool
             debug( "stopped" );
         }
 
-        public void start(  )
+        public void start()
         {
-            if( ! service )
+            if ( !service )
             {
                 Thread t = new Thread( this );
-                t.start(  );
+                t.start();
                 service = true;
             }
         }
 
-        public synchronized void stop(  )
+        public synchronized void stop()
         {
             service = false;
-            notifyAll(  );
+            notifyAll();
         }
 
         private final void debug( String msg )
         {
-            if( DEBUG )
+            if ( DEBUG )
             {
                 System.err.println( this + ":" + msg );
             }
         }
 
-        private void runSweep(  )
+        private void runSweep()
         {
-            debug( "runningSweep. time=" + System.currentTimeMillis(  ) );
-            pool.trim(  );
+            debug( "runningSweep. time=" + System.currentTimeMillis() );
+            pool.trim();
         }
     }
 }

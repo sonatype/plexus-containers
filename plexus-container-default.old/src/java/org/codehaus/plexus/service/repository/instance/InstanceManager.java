@@ -21,9 +21,9 @@ public interface InstanceManager
 {
     static String ROLE = InstanceManager.class.getName();
 
-  /* ComponentHousing newHousingInstance()
-        throws Exception;
-*/
+    /* ComponentHousing newHousingInstance()
+          throws Exception;
+  */
     void configure( Configuration configuration )
         throws ConfigurationException;
 
@@ -37,16 +37,19 @@ public interface InstanceManager
     void setComponentManager( ComponentManager manager );
 
     int getConnections();
+
     /**
      * Set the lifecycle handler to use. This is determined by the component.
      */
-    void setLifecycleHandler(LifecycleHandler handler);
+    void setLifecycleHandler( LifecycleHandler handler );
+
     /**
      * Dispose this manager. Instance manager should take any components it holds
      * through their shutdown lifecycle.
      *
      */
     void dispose();
+
     /**
      * Release the component back to this manager. The manager may decide to
      * end the components lifecycle, put it back in a pool, or just keep it alive. It can
@@ -54,14 +57,15 @@ public interface InstanceManager
      *
      * @param component
      */
-    void release(Object component);
+    void release( Object component );
 
     /**
      * Set this managers logger
      *
      * @param logger
      */
-    void enableLogging(Logger logger);
+    void enableLogging( Logger logger );
+
     /**
      * Retrieve a component instance
      *

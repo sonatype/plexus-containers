@@ -255,6 +255,7 @@ public class ComponentDescriptor
     {
         return parameters;
     }
+
     /**
      * @return
      */
@@ -268,7 +269,7 @@ public class ComponentDescriptor
      *
      * @param string
      */
-    public void setLifecycleHandlerId(String id)
+    public void setLifecycleHandlerId( String id )
     {
         lifecycleHandlerId = id;
     }

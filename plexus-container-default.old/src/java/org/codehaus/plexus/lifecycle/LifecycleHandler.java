@@ -6,13 +6,12 @@ import org.apache.avalon.framework.logger.Logger;
 import org.codehaus.plexus.lifecycle.phase.Phase;
 import org.codehaus.plexus.service.repository.ComponentHousing;
 
-
 import java.util.Map;
 
 /**
  * Takes a component through it's lifecycle.
- * 
- * 
+ *
+ *
  */
 public interface LifecycleHandler
 {
@@ -27,10 +26,10 @@ public interface LifecycleHandler
      *
      *  <p>The lifecycle of a particular service may vary from implementation
      *  to implementation.</p>
-     * 
+     *
      * <p>These entities are made available to the various phases, are are global
      * to the Lifecycel handler (no component specific stuff in here)</p>
-     * 
+     *
      */
     void addEntity( String key, Object entity );
 
@@ -60,7 +59,7 @@ public interface LifecycleHandler
     void addEndSegmentPhase( Phase phase );
 
     void enableLogging( Logger logger );
-    
-    public void configure(Configuration config) throws ConfigurationException;
-    
+
+    public void configure( Configuration config ) throws ConfigurationException;
+
 }

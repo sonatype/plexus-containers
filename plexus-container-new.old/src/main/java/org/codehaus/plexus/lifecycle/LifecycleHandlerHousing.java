@@ -2,37 +2,38 @@ package org.codehaus.plexus.lifecycle;
 
 import org.apache.avalon.framework.configuration.Configuration;
 
- /**
-  * Holds a LifecycleHandler.
-  *
-  * <p>Created on 19/07/2003</p>
-  *
-  * @author <a href="mailto:bert@tuaworks.co.nz">Bert van Brakel</a>
-  * @version $Revision$
-  */
+/**
+ * Holds a LifecycleHandler.
+ *
+ * <p>Created on 19/07/2003</p>
+ *
+ * @author <a href="mailto:bert@tuaworks.co.nz">Bert van Brakel</a>
+ * @version $Revision$
+ */
 public class LifecycleHandlerHousing
 {
-	/**
-	 * LifecycleHandler instance.
-	 */
-	private LifecycleHandler handler;
+    /**
+     * LifecycleHandler instance.
+     */
+    private LifecycleHandler handler;
 
-	/**
-	 * Configuration for the lifecycle handler
-	 */
-	private Configuration configuration;
+    /**
+     * Configuration for the lifecycle handler
+     */
+    private Configuration configuration;
 
-	/**
-	 * Lifecycle Handler implementation
-	 */
-	private String implementation;
+    /**
+     * Lifecycle Handler implementation
+     */
+    private String implementation;
 
-	/** Unique id for the held LifecycleHandler type. This id is used by
-	 * components to specify their lifecycle handler.*/
-	private String id;
+    /** Unique id for the held LifecycleHandler type. This id is used by
+     * components to specify their lifecycle handler.*/
+    private String id;
 
-	/** Used by humans?*/
-	private String name;
+    /** Used by humans?*/
+    private String name;
+
     /**
      * @return
      */
@@ -68,7 +69,7 @@ public class LifecycleHandlerHousing
     /**
      * @param configuration
      */
-    public void setConfiguration(Configuration configuration)
+    public void setConfiguration( Configuration configuration )
     {
         this.configuration = configuration;
     }
@@ -76,7 +77,7 @@ public class LifecycleHandlerHousing
     /**
      * @param handler
      */
-    public void setHandler(LifecycleHandler handler)
+    public void setHandler( LifecycleHandler handler )
     {
         this.handler = handler;
     }
@@ -84,7 +85,7 @@ public class LifecycleHandlerHousing
     /**
      * @param string
      */
-    public void setId(String id)
+    public void setId( String id )
     {
         this.id = id;
     }
@@ -92,7 +93,7 @@ public class LifecycleHandlerHousing
     /**
      * @param string
      */
-    public void setImplementation(String impl)
+    public void setImplementation( String impl )
     {
         implementation = impl;
     }
@@ -108,7 +109,7 @@ public class LifecycleHandlerHousing
     /**
      * @param string
      */
-    public void setName(String name)
+    public void setName( String name )
     {
         this.name = name;
     }

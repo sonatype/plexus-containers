@@ -11,7 +11,7 @@ public class LoggerManagerFactory
 
     /** XML element used to select the logger manager implementation. */
     private static final String IMPLEMENTATION_TAG = "implementation";
-    
+
     public static LoggerManager create( Configuration defaultConfiguration,
                                         Configuration configuration,
                                         ClassLoader classLoader )
@@ -26,8 +26,8 @@ public class LoggerManagerFactory
                 configuration.getChild( LOGGING_TAG ).getChild( IMPLEMENTATION_TAG ).getValue( null );
 
             if ( implementation == null
-                 ||
-                 implementation.trim().length() == 0 )
+                ||
+                implementation.trim().length() == 0 )
             {
                 loggingWithNoImplementationSpecified = true;
 

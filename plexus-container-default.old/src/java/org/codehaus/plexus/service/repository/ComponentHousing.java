@@ -33,17 +33,17 @@ public class ComponentHousing
         this.component = component;
     }
 
-   /* public int getConnections()
-    {
-        return connections;
-    }
+    /* public int getConnections()
+     {
+         return connections;
+     }
 
-    public void setConnections( int connections )
-    {
-        this.connections = connections;
-    }*/
+     public void setConnections( int connections )
+     {
+         this.connections = connections;
+     }*/
 
-   public ComponentManager getComponentManager()
+    public ComponentManager getComponentManager()
     {
         return componentManager;
     }

@@ -100,7 +100,7 @@ public class PlexusTestCase
 
         File f = new File( basedir, "target/plexus-home" );
         System.setProperty( "plexus.home", f.getAbsolutePath() );
-        
+
         if ( !f.isDirectory() )
         {
             f.mkdir();
@@ -132,7 +132,7 @@ public class PlexusTestCase
         container = new DefaultPlexusContainer();
         container.addContextValue( "basedir", basedir );
         container.addContextValue( "plexus.home", System.getProperty( "plexus.home" ) );
-        container.setConfigurationResource( new InputStreamReader( configuration  ) );
+        container.setConfigurationResource( new InputStreamReader( configuration ) );
         container.initialize();
         container.start();
     }

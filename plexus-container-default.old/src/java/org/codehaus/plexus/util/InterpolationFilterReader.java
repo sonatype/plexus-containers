@@ -261,7 +261,7 @@ public class InterpolationFilterReader
             // end of a token boundary so let it pass through.
             if ( ch == -1 )
             {
-                return endToken.charAt(0);
+                return endToken.charAt( 0 );
             }
 
             String variableKey = key.substring( beginTokenLength - 1, key.length() - endTokenLength );

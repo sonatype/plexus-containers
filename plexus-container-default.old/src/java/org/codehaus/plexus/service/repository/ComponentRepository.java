@@ -14,102 +14,104 @@ import org.codehaus.plexus.logging.LoggerManager;
  *
  *
  */
-public interface ComponentRepository {
-	void configure(
-		Configuration defaultConfiguration,
-		Configuration configuration);
+public interface ComponentRepository
+{
+    void configure(
+        Configuration defaultConfiguration,
+        Configuration configuration );
 
-	void contextualize(Context context);
-	/**
-	 * Initialize this repository
-	 * @throws Exception
-	 */
-	void initialize() throws Exception;
-	
-	/**
-	 * Lookup the component with the given role
-	 * 
-	 * @param role
-	 * @return
-	 * @throws ServiceException if no component with the given role exists, or there was an
-	 * error taking the component through a lifecycle
-	 */
-	Object lookup(String role) throws ServiceException;
+    void contextualize( Context context );
 
-	Object lookup(String role, String id) throws ServiceException;
+    /**
+     * Initialize this repository
+     * @throws Exception
+     */
+    void initialize() throws Exception;
 
-	/**
-	 * Test if this repository manages the component with the given role
-	 * 
-	 * @param role
-	 * @return
-	 */
-	boolean hasService(String role);
+    /**
+     * Lookup the component with the given role
+     *
+     * @param role
+     * @return
+     * @throws ServiceException if no component with the given role exists, or there was an
+     * error taking the component through a lifecycle
+     */
+    Object lookup( String role ) throws ServiceException;
 
-	/**
-		 * Test if this repository manages the component with the given role
-		 * and id
-		 * 
-		 * @param role
-		 * @return
-		 */
-	boolean hasService(String role, String id);
+    Object lookup( String role, String id ) throws ServiceException;
 
-	void release(Object service);
+    /**
+     * Test if this repository manages the component with the given role
+     *
+     * @param role
+     * @return
+     */
+    boolean hasService( String role );
 
-	/**
-	 * Dispose of this Repository
-	 *
-	 */
-	void dispose();
+    /**
+     * Test if this repository manages the component with the given role
+     * and id
+     *
+     * @param role
+     * @return
+     */
+    boolean hasService( String role, String id );
 
-	void setPlexusContainer(PlexusContainer container);
+    void release( Object service );
 
-	// Information
+    /**
+     * Dispose of this Repository
+     *
+     */
+    void dispose();
 
-	/**
-	 * Return the number of configured components
-	 */
-	int configuredComponents();
+    void setPlexusContainer( PlexusContainer container );
 
-	/**
-	 * Return the number of instantiated components
-	 * @return
-	 */
-	int instantiatedComponents();
+    // Information
 
-	ClassLoader getClassLoader();
+    /**
+     * Return the number of configured components
+     */
+    int configuredComponents();
 
-	/** Set this repositories logger */
-	void enableLogging(Logger logger);
-	
-	/** Set the logManager to be used for components */
-	void setComponentLogManager(LoggerManager logManager);
-	/**
-	 * Start the lifecycle for the component in this housing
-	 * 
-	 * @param housing
-	 */
-	//void startComponentLifecycle(ComponentHousing housing);
-	
-	/**
-	 * Return the lifecycle handler with the given id. Throws exception if no lifecycle
-	 * handler with the given id exists. 
-	 * 
-	 * <p>Note: it is recommended the returned handler is immutable</p>
-	 * 
-	 * @param id
-	 * @return
-	 */
-	LifecycleHandler getLifecycleHandler(String id)  throws UndefinedLifecycleHandlerException;
-	
-	/**
-	 * Return the default lifecycle handler. This is the handler used for components 
-	 * which don't specify a handler.
-	 * 
-	 * <p>Note: it is recommended the returned handler is immutable</p>
-	 * 
-	 * @return
-	 */
-	LifecycleHandler getDefaultLifecycleHandler();
+    /**
+     * Return the number of instantiated components
+     * @return
+     */
+    int instantiatedComponents();
+
+    ClassLoader getClassLoader();
+
+    /** Set this repositories logger */
+    void enableLogging( Logger logger );
+
+    /** Set the logManager to be used for components */
+    void setComponentLogManager( LoggerManager logManager );
+    /**
+     * Start the lifecycle for the component in this housing
+     *
+     * @param housing
+     */
+    //void startComponentLifecycle(ComponentHousing housing);
+
+    /**
+     * Return the lifecycle handler with the given id. Throws exception if no lifecycle
+     * handler with the given id exists.
+     *
+     * <p>Note: it is recommended the returned handler is immutable</p>
+     *
+     * @param id
+     * @return
+     */
+    LifecycleHandler getLifecycleHandler( String id ) throws UndefinedLifecycleHandlerException;
+
+    /**
+     * Return the default lifecycle handler. This is the handler used for components
+     * which don't specify a handler.
+     *
+     * <p>Note: it is recommended the returned handler is immutable</p>
+     *
+     * @return
+     */
+    LifecycleHandler getDefaultLifecycleHandler();
 }
