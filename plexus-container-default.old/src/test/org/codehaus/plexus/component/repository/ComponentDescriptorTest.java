@@ -49,10 +49,13 @@ public class ComponentDescriptorTest
         System.out.println( "req:" + requirements );
 
         boolean containsC2 = false;
+
         boolean containsC3 = false;
+
         for ( Iterator iterator = requirements.iterator(); iterator.hasNext(); )
         {
             ComponentRequirement requirement = ( ComponentRequirement ) iterator.next();
+
             if ( requirement.getRole().equals( "c2" ))
             {
                 containsC2 = true;
