@@ -195,6 +195,27 @@ public class PhaseTest
         assertTrue( service.recontextualize );
     }
 
+    public void testRecontextualizePhaseWithoutContext() throws Exception
+    {
+        RecontextualizePhase phase = new RecontextualizePhase();
+
+        phase.execute( service, manager );
+
+        assertTrue( service.contextualize );
+
+        manager.getLifecycleHandler().getEntities().remove( "context" );
+
+        try
+        {
+            phase.execute( service, manager );
+
+            fail( "Phase should fail with no  context available." );
+        }
+        catch ( IllegalArgumentException e )
+        {
+        }
+    }
+
     public void testSuspendPhase() throws Exception
     {
         SuspendPhase phase = new SuspendPhase();
