@@ -3,6 +3,7 @@ package org.codehaus.plexus;
 import junit.framework.TestCase;
 
 import java.io.File;
+import java.net.URL;
 
 /**
  *

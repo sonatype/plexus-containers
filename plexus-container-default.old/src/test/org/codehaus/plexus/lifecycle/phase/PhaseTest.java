@@ -164,4 +164,20 @@ public class PhaseTest
         phase.execute( service, manager );
         assertTrue( service.recontextualize );
     }
+
+    public void testSuspendPhase() throws Exception
+    {
+        SuspendPhase phase = new SuspendPhase();
+        phase.execute( "not-suspendable", manager );
+        phase.execute( service, manager );
+        assertTrue( service.suspend );
+    }
+
+    public void testResumePhase() throws Exception
+    {
+        ResumePhase phase = new ResumePhase();
+        phase.execute( "not-resumable", manager );
+        phase.execute( service, manager );
+        assertTrue( service.resume );
+    }
 }

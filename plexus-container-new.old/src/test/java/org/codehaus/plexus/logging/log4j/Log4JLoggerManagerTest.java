@@ -82,6 +82,8 @@ public class Log4JLoggerManagerTest
         assertEquals( "%-4r [%t] %-5p %c %x - %m%n", p.getProperty( "log4j.appender.default.layout.conversionPattern" ) );
 
         assertEquals( "INFO", p.getProperty( "log4j.appender.default.threshold" ) );
+
+        assertEquals( "org.apache.log4j.RollingFileAppender", p.getProperty( "log4j.appender.rolling" ) );
     }
 
     public void testLog4JLoggerManagerWithNoRootLoggerProperties()

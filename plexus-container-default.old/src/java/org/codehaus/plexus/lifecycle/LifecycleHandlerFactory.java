@@ -38,6 +38,8 @@ public class LifecycleHandlerFactory
 
         housing.setId( id );
 
+        housing.setName( config.getChild( "name" ).getValue( "" ) );
+
         LifecycleHandler lifecycleHandler = (LifecycleHandler) getInstance( implementation, classLoader );
 
         // Setup logging for the lifecycle handler. Not used by components
@@ -50,11 +52,25 @@ public class LifecycleHandlerFactory
             lifecycleHandler.addBeginSegmentPhase( (Phase) getInstance( a[i].getAttribute( "implementation" ), classLoader ) );
         }
 
-        Configuration[] b = config.getChild( "end-segment" ).getChildren( "phase" );
+        Configuration[] b = config.getChild( "suspend-segment" ).getChildren( "phase" );
 
         for ( int i = 0; i < b.length; i++ )
         {
-            lifecycleHandler.addEndSegmentPhase( (Phase) getInstance( b[i].getAttribute( "implementation" ), classLoader ) );
+            lifecycleHandler.addSuspendSegmentPhase( (Phase) getInstance( b[i].getAttribute( "implementation" ), classLoader ) );
+        }
+
+        Configuration[] c = config.getChild( "resume-segment" ).getChildren( "phase" );
+
+        for ( int i = 0; i < c.length; i++ )
+        {
+            lifecycleHandler.addResumeSegmentPhase( (Phase) getInstance( c[i].getAttribute( "implementation" ), classLoader ) );
+        }
+
+        Configuration[] d = config.getChild( "end-segment" ).getChildren( "phase" );
+
+        for ( int i = 0; i < d.length; i++ )
+        {
+            lifecycleHandler.addEndSegmentPhase( (Phase) getInstance( d[i].getAttribute( "implementation" ), classLoader ) );
         }
 
         // Add some standard entities to the lifecycle handler. The lifecycle

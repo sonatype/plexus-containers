@@ -15,6 +15,7 @@ import org.apache.avalon.framework.service.Serviceable;
 import org.apache.avalon.framework.activity.Disposable;
 import org.apache.avalon.framework.activity.Initializable;
 import org.apache.avalon.framework.activity.Startable;
+import org.apache.avalon.framework.activity.Suspendable;
 import org.apache.avalon.framework.logger.Logger;
 
 /** This component implements all phases:
@@ -31,7 +32,7 @@ public class AllPhaseService
     extends AbstractLogEnabled
     implements ServiceA, Contextualizable, Serviceable, Configurable,
                Initializable, Startable, Disposable, Reconfigurable,
-               Recontextualizable
+               Recontextualizable, Suspendable
 {
     boolean enableLogging;
     boolean contextualize;
@@ -43,6 +44,8 @@ public class AllPhaseService
     boolean reconfigure;
     boolean dispose;
     boolean recontextualize;
+    boolean suspend;
+    boolean resume;
 
     // ----------------------------------------------------------------------
     // Lifecylce Management
@@ -97,11 +100,20 @@ public class AllPhaseService
         reconfigure = true;
     }
 
-    /**
-     * @see org.apache.avalon.framework.context.Recontextualizable#recontextualize(org.apache.avalon.framework.context.Context)
-     */
-    public void recontextualize(Context context) throws ContextException
+    public void recontextualize(Context context)
+        throws ContextException
     {
         recontextualize = true;
     }
+
+    public void suspend()
+    {
+        suspend = true;
+    }
+
+    public void resume()
+    {
+        resume = true;
+    }
+
 }

@@ -37,15 +37,15 @@ public interface LifecycleHandler
      */
     Map getEntities();
 
-    /** Start lifecycle.
-     *
-     */
     void startLifecycle( Object component, ComponentManager manager )
         throws Exception;
 
-    /** End Lifecycle
-     *
-     */
+    void suspend( Object component, ComponentManager manager )
+        throws Exception;
+
+    void resume( Object component, ComponentManager manager )
+        throws Exception;
+
     void endLifecycle( Object component, ComponentManager manager )
         throws Exception;
 
@@ -53,6 +53,10 @@ public interface LifecycleHandler
         throws Exception;
 
     void addBeginSegmentPhase( Phase phase );
+
+    void addSuspendSegmentPhase( Phase phase );
+
+    void addResumeSegmentPhase( Phase phase );
 
     void addEndSegmentPhase( Phase phase );
 

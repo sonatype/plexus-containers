@@ -604,6 +604,30 @@ public class DefaultComponentRepository
         return lookup( role + id );
     }
 
+    public synchronized void suspend( Object component )
+    {
+        if ( component == null )
+        {
+            return;
+        }
+
+        ComponentManager componentManager = findComponentManager( component );
+
+        componentManager.suspend( component );
+    }
+
+    public synchronized void resume( Object component )
+    {
+        if ( component == null )
+        {
+            return;
+        }
+
+        ComponentManager componentManager = findComponentManager( component );
+
+        componentManager.resume( component );
+    }
+
     /**
      * Release the specified component.
      *
@@ -616,15 +640,14 @@ public class DefaultComponentRepository
             return;
         }
 
-        ComponentManager cm = (ComponentManager) compManagersByCompClass.get( component.getClass().getName() );
+        ComponentManager componentManager = findComponentManager( component );
 
-        //this repository does not deal with this component
-        if ( cm == null )
-        {
-            return;
-        }
+        componentManager.release( component );
+    }
 
-        cm.release( component );
+    protected ComponentManager findComponentManager( Object component )
+    {
+        return (ComponentManager) compManagersByCompClass.get( component.getClass().getName() );
     }
 
     /**

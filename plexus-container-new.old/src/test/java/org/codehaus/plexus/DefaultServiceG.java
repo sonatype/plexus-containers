@@ -9,6 +9,7 @@ import org.apache.avalon.framework.service.ServiceManager;
 import org.apache.avalon.framework.service.Serviceable;
 import org.apache.avalon.framework.activity.Initializable;
 import org.apache.avalon.framework.activity.Startable;
+import org.apache.avalon.framework.activity.Suspendable;
 import org.apache.avalon.framework.logger.Logger;
 
 /** This component implements all the start phases:
@@ -23,7 +24,7 @@ import org.apache.avalon.framework.logger.Logger;
  */
 public class DefaultServiceG
     extends AbstractLogEnabled
-    implements ServiceG, Contextualizable, Serviceable, Configurable, Initializable, Startable
+    implements ServiceG, Contextualizable, Serviceable, Configurable, Initializable, Startable, Suspendable
 {
     boolean enableLogging;
     boolean contextualize;
@@ -32,6 +33,8 @@ public class DefaultServiceG
     boolean initialize;
     boolean start;
     boolean stop;
+    boolean suspend;
+    boolean resume;
 
     // ----------------------------------------------------------------------
     // Lifecylce Management
@@ -73,5 +76,15 @@ public class DefaultServiceG
         throws Exception
     {
         stop = true;
+    }
+
+    public void suspend()
+    {
+        suspend = true;
+    }
+
+    public void resume()
+    {
+        resume = true;
     }
 }

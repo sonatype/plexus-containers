@@ -145,6 +145,26 @@ public abstract class AbstractLifecycleHandler
         }
     }
 
+    public void suspend( Object component, ComponentManager manager )
+        throws Exception
+    {
+        for ( Iterator i = getSuspendSegment().iterator(); i.hasNext(); )
+        {
+            Phase phase = (Phase) i.next();
+            phase.execute( component, manager );
+        }
+    }
+
+    public void resume( Object component, ComponentManager manager )
+        throws Exception
+    {
+        for ( Iterator i = getResumeSegment().iterator(); i.hasNext(); )
+        {
+            Phase phase = (Phase) i.next();
+            phase.execute( component, manager );
+        }
+    }
+
     /** End a component's lifecycle.
      *
      *  @param component

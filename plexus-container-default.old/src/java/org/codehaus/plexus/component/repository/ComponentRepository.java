@@ -58,12 +58,12 @@ public interface ComponentRepository
      */
     boolean hasService( String role, String id );
 
+    void suspend( Object component );
+
+    void resume( Object component );
+
     void release( Object service );
 
-    /**
-     * Dispose of this Repository
-     *
-     */
     void dispose();
 
     void setPlexusContainer( PlexusContainer container );

@@ -65,11 +65,6 @@ public abstract class AbstractComponentManager
         return implementation;
     }
 
-    public void setImplementation( String implementation )
-    {
-        this.implementation = implementation;
-    }
-
     public LifecycleHandler getLifecycleHandler()
     {
         return lifecycleHandler;
@@ -181,9 +176,30 @@ public abstract class AbstractComponentManager
         }
     }
 
-    /** End a component's lifecycle.
-     *
-     */
+    public void suspend( Object component )
+    {
+        try
+        {
+            getLifecycleHandler().suspend( component, this );
+        }
+        catch ( Exception e )
+        {
+            getLogger().error( "Cannot suspend component with role : " + getComponentDescriptor().getRole(), e );
+        }
+    }
+
+    public void resume( Object component )
+    {
+        try
+        {
+            getLifecycleHandler().resume( component, this );
+        }
+        catch ( Exception e )
+        {
+            getLogger().error( "Cannot suspend component with role : " + getComponentDescriptor().getRole(), e );
+        }
+    }
+
     protected void endComponentLifecycle( Object component )
     {
         try
@@ -195,7 +211,4 @@ public abstract class AbstractComponentManager
             getLogger().error( "Cannot start component lifecycle with role : " + getComponentDescriptor().getRole(), e );
         }
     }
-
-    public abstract void release( Object component );
-
 }

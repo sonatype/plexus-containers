@@ -31,8 +31,6 @@ public interface ComponentManager
 
     void setClassLoader( ClassLoader classLoader );
 
-    void setImplementation( String implementation );
-
     int getConnections();
 
     void setComponentDescriptor( ComponentDescriptor descriptor );
@@ -61,6 +59,10 @@ public interface ComponentManager
      * @param component
      */
     void release( Object component );
+
+    void suspend( Object component );
+
+    void resume( Object component );
 
     /**
      * Set this managers logger

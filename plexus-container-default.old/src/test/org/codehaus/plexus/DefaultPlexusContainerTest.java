@@ -398,12 +398,18 @@ public class DefaultPlexusContainerTest
         assertNotNull( serviceG );
 
         // Make sure the component went through all the lifecycle phases
-        assertEquals( true, serviceG.enableLogging );
-        assertEquals( true, serviceG.contextualize );
-        assertEquals( true, serviceG.service );
-        assertEquals( true, serviceG.configure );
-        assertEquals( true, serviceG.initialize );
-        assertEquals( true, serviceG.start );
+        assertTrue( serviceG.enableLogging );
+        assertTrue( serviceG.contextualize );
+        assertTrue( serviceG.service );
+        assertTrue( serviceG.configure );
+        assertTrue( serviceG.initialize );
+        assertTrue( serviceG.start );
+
+        container.getComponentRepository().suspend( serviceG );
+        assertTrue( serviceG.suspend );
+
+        container.getComponentRepository().resume( serviceG );
+        assertTrue( serviceG.resume );
 
         // Now how do we make sure it has been released and decomissioned
         // properly.
