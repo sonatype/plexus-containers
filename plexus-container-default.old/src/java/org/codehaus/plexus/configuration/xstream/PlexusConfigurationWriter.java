@@ -5,7 +5,8 @@ import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 
 import java.util.LinkedList;
 
-public class PlexusConfigurationWriter implements XMLWriter
+public class PlexusConfigurationWriter
+    implements XMLWriter
 {
     private LinkedList elementStack = new LinkedList();
 
@@ -13,7 +14,6 @@ public class PlexusConfigurationWriter implements XMLWriter
 
     public PlexusConfigurationWriter()
     {
-
     }
 
     public DefaultPlexusConfiguration getConfiguration()
