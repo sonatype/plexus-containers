@@ -3,6 +3,7 @@ package org.codehaus.plexus.component.repository;
 import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
@@ -33,11 +34,15 @@ public class DefaultComponentRepository
 
     private Map componentDescriptors;
 
+    private CompositionResolver compositionResolver;
+
     public DefaultComponentRepository()
     {
         componentDescriptors = new HashMap();
 
         componentDescriptorMaps = new HashMap();
+
+        compositionResolver = new CompositionResolver();
     }
 
     // ----------------------------------------------------------------------
@@ -84,12 +89,6 @@ public class DefaultComponentRepository
         initializeComponentDescriptors();
     }
 
-    /**
-     * Grab all the component descriptors from the configuration and
-     * make them available during lookup
-     *
-     * @throws Exception
-     */
     public void initializeComponentDescriptors()
         throws Exception
     {

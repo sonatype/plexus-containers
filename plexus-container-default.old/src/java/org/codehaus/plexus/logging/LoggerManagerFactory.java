@@ -9,7 +9,6 @@ import org.codehaus.plexus.factory.AbstractPlexusFactory;
 public class LoggerManagerFactory
     extends AbstractPlexusFactory
 {
-    /** XML element used to select the logger manager implementation. */
     private static final String IMPLEMENTATION_TAG = "implementation";
 
     public static LoggerManager create( Configuration configuration,

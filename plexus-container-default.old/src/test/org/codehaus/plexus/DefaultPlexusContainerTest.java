@@ -26,11 +26,6 @@ public class DefaultPlexusContainerTest
     /** Default Container. */
     private DefaultPlexusContainer container;
 
-    /**
-     * Constructor for the PlexusTest object
-     *
-     * @param name
-     */
     public DefaultPlexusContainerTest( String name )
     {
         super( name );
@@ -76,11 +71,6 @@ public class DefaultPlexusContainerTest
         assertEquals( "bar", System.getProperty( "foo" ) );
     }
 
-    /**
-     * Test component lookup for a component that has a role hint.
-     *
-     * @throws Exception
-     */
     public void testComponentLookupWithRoleHint()
         throws Exception
     {
