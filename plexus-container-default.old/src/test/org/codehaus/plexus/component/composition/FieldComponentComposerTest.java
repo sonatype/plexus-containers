@@ -24,11 +24,11 @@ package org.codehaus.plexus.component.composition;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
+import java.lang.reflect.Field;
+
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
-
-import java.lang.reflect.Field;
+import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -38,30 +38,24 @@ public class FieldComponentComposerTest
     extends TestCase
 {
     public void testGetFieldByName()
+        throws Exception
     {
         ComponentF componentF = new ComponentF();
 
         final FieldComponentComposer composer = new FieldComponentComposer();
 
-        try
-        {
-            Field fieldA = composer.getFieldByName( componentF, "componentA", null );
+        Field fieldA = composer.getFieldByName( componentF, "componentA", null );
 
-            assertEquals( ComponentA.class, fieldA.getType() );
+        assertEquals( ComponentA.class, fieldA.getType() );
 
-            Field fieldB = composer.getFieldByName( componentF, "componentB", null );
+        Field fieldB = composer.getFieldByName( componentF, "componentB", null );
 
-            assertEquals( ComponentB.class, fieldB.getType() );
+        assertEquals( ComponentB.class, fieldB.getType() );
 
-            // we have arrays of C components
-            Field fieldC = composer.getFieldByName( componentF, "componentC", null );
+        // we have arrays of C components
+        Field fieldC = composer.getFieldByName( componentF, "componentC", null );
 
-            assertTrue( fieldC.getType().isArray() );
-        }
-        catch ( CompositionException e )
-        {
-            fail( e.getMessage() );
-        }
+        assertTrue( fieldC.getType().isArray() );
 
         ComponentDescriptor componentDescriptor = new ComponentDescriptor();
 
@@ -83,35 +77,28 @@ public class FieldComponentComposerTest
         }
     }
 
-
     public void testGetFieldByType()
+        throws Exception
     {
         ComponentF componentF = new ComponentF();
 
         final FieldComponentComposer composer = new FieldComponentComposer();
 
-        try
-        {
-            Field fieldA = composer.getFieldByType( componentF, ComponentA.class, null );
+        Field fieldA = composer.getFieldByType( componentF, ComponentA.class, null );
 
-            assertEquals( ComponentA.class, fieldA.getType() );
+        assertEquals( ComponentA.class, fieldA.getType() );
 
-            assertFalse( fieldA.getType().isArray() );
+        assertFalse( fieldA.getType().isArray() );
 
-            Field fieldB = composer.getFieldByType( componentF, ComponentB.class, null );
+        Field fieldB = composer.getFieldByType( componentF, ComponentB.class, null );
 
-            assertEquals( ComponentB.class, fieldB.getType() );
+        assertEquals( ComponentB.class, fieldB.getType() );
 
-            assertFalse( fieldB.getType().isArray() );
+        assertFalse( fieldB.getType().isArray() );
 
-            Field fieldC = composer.getFieldByType( componentF, ComponentC.class, null );
+        Field fieldC = composer.getFieldByType( componentF, ComponentC.class, null );
 
-            assertTrue( fieldC.getType().isArray() );
-        }
-        catch ( CompositionException e )
-        {
-            fail( e.getMessage() );
-        }
+        assertTrue( fieldC.getType().isArray() );
 
         ComponentDescriptor componentDescriptor = new ComponentDescriptor();
 
@@ -134,6 +121,7 @@ public class FieldComponentComposerTest
     }
 
     public void testFindMatchingField()
+        throws Exception
     {
         ComponentF componentF = new ComponentF();
 
@@ -159,15 +147,92 @@ public class FieldComponentComposerTest
 
         final FieldComponentComposer composer = new FieldComponentComposer();
 
+        composer.findMatchingField( componentF, componentDescriptor, requirementA, null );
+
+        composer.findMatchingField( componentF, componentDescriptor, requirementD, null );
+    }
+
+    public void testCompositionOfComponentsWithSeveralFieldsOfTheSameType()
+        throws Exception
+    {
+        // ----------------------------------------------------------------------
+        // Set up
+        // ----------------------------------------------------------------------
+
+        // Add a single requirement
+        ComponentRequirement requirementOne = new ComponentRequirement();
+
+        requirementOne.setRole( ComponentE.class.getName() );
+
+        // The descriptor
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "1" );
+
+        descriptor.setImplementation( ComponentWithSeveralFieldsOfTheSameType.class.getName() );
+
+        descriptor.addRequirement( requirementOne );
+
+        // ----------------------------------------------------------------------
+        // Assert that this fails as there is one requirement and
+        // two fields that will match the requirement
+        // ----------------------------------------------------------------------
+
+        FieldComponentComposer composer = new FieldComponentComposer();
+
+        ComponentWithSeveralFieldsOfTheSameType component = new ComponentWithSeveralFieldsOfTheSameType();
+
         try
         {
-            composer.findMatchingField( componentF, componentDescriptor, requirementA, null );
+            composer.findMatchingField( component, descriptor, requirementOne, null );
 
-            composer.findMatchingField( componentF, componentDescriptor, requirementD, null );
+            fail( "Expected CompositionException" );
         }
-        catch ( CompositionException e )
+        catch( CompositionException ex )
         {
-            fail( e.getMessage() );
+            assertTrue( ex.getMessage().startsWith( "There are several fields of type" ) );
         }
+
+        // ----------------------------------------------------------------------
+        //
+        // ----------------------------------------------------------------------
+
+        // Make a second requirement without a field name
+        ComponentRequirement requirementTwo = new ComponentRequirement();
+
+        requirementTwo.setRole( ComponentE.class.getName() );
+
+        descriptor.addRequirement( requirementTwo );
+
+        try
+        {
+            composer.findMatchingField( component, descriptor, requirementOne, null );
+
+            fail( "Expected CompositionException" );
+        }
+        catch ( CompositionException ex )
+        {
+            assertTrue( ex.getMessage().startsWith( "There are several fields of type" ) );
+        }
+
+        // ----------------------------------------------------------------------
+        // Set the field names
+        // ----------------------------------------------------------------------
+
+        requirementOne.setFieldName( "one" );
+
+        requirementTwo.setFieldName( "two" );
+
+        Field one = composer.findMatchingField( component, descriptor, requirementOne, null );
+
+        Field two = composer.findMatchingField( component, descriptor, requirementTwo, null );
+
+        assertEquals( one.getName(), "one" );
+
+        assertEquals( one.getDeclaringClass(), component.getClass() );
+
+        assertEquals( two.getName(), "two" );
+
+        assertEquals( two.getDeclaringClass(), component.getClass() );
     }
 }

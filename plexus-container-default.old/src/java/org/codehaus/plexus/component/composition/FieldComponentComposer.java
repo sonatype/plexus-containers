@@ -34,9 +34,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.util.ReflectionUtils;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.codehaus.plexus.util.ReflectionUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -143,7 +143,8 @@ public class FieldComponentComposer
         }
         catch ( Exception e )
         {
-            throw new CompositionException( "Composition failed: " + e.getMessage() );
+            throw new CompositionException( "Composition failed of field " + field.getName() + " " +
+                                            "in object of type " + component.getClass().getName() + ":" + e.getMessage() );
         }
     }
 
@@ -196,7 +197,6 @@ public class FieldComponentComposer
         return field;
     }
 
-
     protected Field getFieldByName( Object component,
                                     String fieldName,
                                     ComponentDescriptor componentDescriptor )
@@ -225,30 +225,53 @@ public class FieldComponentComposer
                                                          ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
-        Field field = null;
+        List fields = getFieldsByTypeIncludingSuperclasses( componentClass, type, componentDescriptor );
 
+        if ( fields.size() == 0 )
+        {
+            return null;
+        }
+
+        if ( fields.size() == 1 )
+        {
+            return (Field) fields.get( 0 );
+        }
+
+        throw new CompositionException( "There are several fields of type '" + type + "', " +
+                                        "use 'field-name' to select the correct field." );
+    }
+
+    protected List getFieldsByTypeIncludingSuperclasses( Class componentClass,
+                                                         Class type,
+                                                         ComponentDescriptor componentDescriptor )
+        throws CompositionException
+    {
         Class arrayType = Array.newInstance( type, 0 ).getClass();
 
         Field[] fields = componentClass.getDeclaredFields();
 
+        List foundFields = new ArrayList();
+
         for ( int i = 0; i < fields.length; i++ )
         {
-            Class fieldType = fields[i].getType();
+            Class fieldType = fields[ i ].getType();
 
             if ( fieldType.isAssignableFrom( type ) || fieldType.isAssignableFrom( arrayType ) )
             {
-                field = fields[i];
-
-                break;
+                foundFields.add( fields[ i ] );
             }
         }
 
-        if ( field == null && componentClass.getSuperclass() != Object.class )
+        if ( componentClass.getSuperclass() != Object.class )
         {
-            field = getFieldByTypeIncludingSuperclasses( componentClass.getSuperclass(), type, componentDescriptor );
+            List superFields = getFieldsByTypeIncludingSuperclasses( componentClass.getSuperclass(),
+                                                                     type,
+                                                                     componentDescriptor );
+
+            foundFields.addAll( superFields );
         }
 
-        return field;
+        return foundFields;
     }
 
     protected Field getFieldByType( Object component,
