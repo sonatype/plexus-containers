@@ -1,9 +1,9 @@
 package org.codehaus.plexus.logging.console;
 
+import org.codehaus.plexus.logging.AbstractLoggerManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-
 
 /**
  * Sample configuration:
@@ -17,6 +17,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
  * </pre>
  */
 public class ConsoleLoggerManager
+    extends AbstractLoggerManager
     implements LoggerManager, Initializable
 {
     /** Message of this level or higher will be logged. */
@@ -25,6 +26,9 @@ public class ConsoleLoggerManager
     /** The console logger used by the manager. */
     private ConsoleLogger consoleLogger;
 
+    /**
+     * This special constructor is called directly when the container is bootstrapping itself.
+     */
     public ConsoleLoggerManager()
     {
         initialize();
@@ -32,20 +36,23 @@ public class ConsoleLoggerManager
 
     public void initialize()
     {
-        consoleLogger = new ConsoleLogger( getThreshold( threshold ) );
+        consoleLogger = new ConsoleLogger( getThreshold( getThreshold() ) );
+    }
+
+    /**
+     * @return Returns the threshold.
+     */
+    public String getThreshold() {
+        return threshold;
     }
 
     public void setThreshold( String threshold )
     {
         this.threshold = threshold;
+
         consoleLogger.setLogLevel( getThreshold( threshold ) );
     }
-
-    public String getThreshold()
-    {
-        return threshold;
-    }
-
+    
     public Logger getRootLogger()
     {
         return consoleLogger;
