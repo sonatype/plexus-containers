@@ -27,14 +27,14 @@ package org.codehaus.plexus.test;
 import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.util.AbstractTestThread;
-import org.codehaus.plexus.util.TestThreadManager;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
+import org.codehaus.plexus.util.AbstractTestThread;
+import org.codehaus.plexus.util.TestThreadManager;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -258,7 +258,7 @@ public class PlexusContainerTest
     public void testArbitraryLifecyclePassageUsingFourArbitraryPhases()
         throws Exception
     {
-        // Retrieve an manager of component G.
+        // Retrieve an manager of component H.
         DefaultServiceH serviceH = (DefaultServiceH) container.lookup( ServiceH.ROLE );
 
         // Make sure the component is alive.
@@ -321,7 +321,8 @@ public class PlexusContainerTest
         /**
          * @param registry
          */
-        public SingletonComponentTestThread( TestThreadManager registry, PlexusContainer container, String role, Object expectedComponent )
+        public SingletonComponentTestThread( TestThreadManager registry, PlexusContainer container, String role,
+                                             Object expectedComponent )
         {
             super( registry );
 
@@ -335,7 +336,8 @@ public class PlexusContainerTest
         /* (non-Javadoc)
          * @see org.codehaus.plexus.util.AbstractRegisteredThread#doRun()
          */
-        public void doRun() throws Throwable
+        public void doRun()
+            throws Throwable
         {
             try
             {
@@ -351,7 +353,9 @@ public class PlexusContainerTest
                 }
                 else
                 {
-                    setErrorMsg( "Returned component was a different manager. Expected=" + expectedComponent + ", got=" + returnedComponent );
+                    setErrorMsg(
+                        "Returned component was a different manager. Expected=" + expectedComponent + ", got=" +
+                        returnedComponent );
                 }
             }
             finally
