@@ -463,6 +463,8 @@ public class DefaultPlexusContainer
         }
 
         classLoader = classRealm.getClassLoader();
+
+        Thread.currentThread().setContextClassLoader( classLoader );
     }
 
     // ----------------------------------------------------------------------
