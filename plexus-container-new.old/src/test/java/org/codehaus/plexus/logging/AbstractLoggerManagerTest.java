@@ -52,7 +52,7 @@ public abstract class AbstractLoggerManagerTest
 
         Logger logger = extractRootLogger( manager );
 
-        checkInfoLevel(logger);
+        checkInfoLevel( logger );
 
         logger = extractLogger( manager );
 
@@ -67,7 +67,7 @@ public abstract class AbstractLoggerManagerTest
 
         Logger logger = extractRootLogger( manager );
 
-        checkWarnLevel(logger);
+        checkWarnLevel( logger );
 
         logger = extractLogger( manager );
 
@@ -82,7 +82,7 @@ public abstract class AbstractLoggerManagerTest
 
         Logger logger = extractRootLogger( manager );
 
-        checkErrorLevel(logger);
+        checkErrorLevel( logger );
 
         logger = extractLogger( manager );
 
@@ -97,7 +97,7 @@ public abstract class AbstractLoggerManagerTest
 
         Logger logger = extractRootLogger( manager );
 
-        checkFatalLevel(logger);
+        checkFatalLevel( logger );
 
         logger = extractLogger( manager );
 
@@ -106,12 +106,12 @@ public abstract class AbstractLoggerManagerTest
         managerStop( manager );
     }
 
-    protected abstract Configuration createConfiguration(String threshold)
+    protected abstract Configuration createConfiguration( String threshold )
         throws Exception;
 
     protected abstract LoggerManager createLoggerManager() throws Exception;
 
-    private LoggerManager managerStart(String threshold) throws Exception
+    private LoggerManager managerStart( String threshold ) throws Exception
     {
         Configuration config = createConfiguration( threshold );
 
@@ -148,14 +148,15 @@ public abstract class AbstractLoggerManagerTest
         return logger;
     }
 
-    private void managerStop(LoggerManager manager) throws Exception
+    private void managerStop( LoggerManager manager ) throws Exception
     {
         assertNotNull( manager );
 
         manager.stop();
     }
 
-    private void checkDebugLevel(Logger logger) {
+    private void checkDebugLevel( Logger logger )
+    {
         assertTrue( "debug enabled", logger.isDebugEnabled() );
         assertTrue( "info enabled", logger.isInfoEnabled() );
         assertTrue( "warn enabled", logger.isWarnEnabled() );
@@ -163,7 +164,8 @@ public abstract class AbstractLoggerManagerTest
         assertTrue( "fatal enabled", logger.isFatalErrorEnabled() );
     }
 
-    private void checkInfoLevel(Logger logger) {
+    private void checkInfoLevel( Logger logger )
+    {
         assertFalse( "debug disabled", logger.isDebugEnabled() );
         assertTrue( "info enabled", logger.isInfoEnabled() );
         assertTrue( "warn enabled", logger.isWarnEnabled() );
@@ -171,7 +173,8 @@ public abstract class AbstractLoggerManagerTest
         assertTrue( "fatal enabled", logger.isFatalErrorEnabled() );
     }
 
-    private void checkWarnLevel(Logger logger) {
+    private void checkWarnLevel( Logger logger )
+    {
         assertFalse( "debug disabled", logger.isDebugEnabled() );
         assertFalse( "info disabled", logger.isInfoEnabled() );
         assertTrue( "warn enabled", logger.isWarnEnabled() );
@@ -179,7 +182,8 @@ public abstract class AbstractLoggerManagerTest
         assertTrue( "fatal enabled", logger.isFatalErrorEnabled() );
     }
 
-    private void checkErrorLevel(Logger logger) {
+    private void checkErrorLevel( Logger logger )
+    {
         assertFalse( "debug disabled", logger.isDebugEnabled() );
         assertFalse( "info disabled", logger.isInfoEnabled() );
         assertFalse( "warn disabled", logger.isWarnEnabled() );
@@ -187,7 +191,8 @@ public abstract class AbstractLoggerManagerTest
         assertTrue( "fatal enabled", logger.isFatalErrorEnabled() );
     }
 
-    private void checkFatalLevel(Logger logger) {
+    private void checkFatalLevel( Logger logger )
+    {
         assertFalse( "debug disabled", logger.isDebugEnabled() );
         assertFalse( "info disabled", logger.isInfoEnabled() );
         assertFalse( "warn disabled", logger.isWarnEnabled() );

@@ -4,6 +4,8 @@
 
   <load-on-start>
     <service role="org.codehaus.plexus.LoadOnStartService"/>
+    <service role="org.codehaus.plexus.LoadOnStartServiceWithRoleHint" id="role-hint"/>
+    <service role="org.codehaus.plexus.BogusRole"/>
   </load-on-start>
 
   <system-properties>
@@ -152,6 +154,12 @@
       <configuration/>
     </component>
 
+    <component>
+      <role>org.codehaus.plexus.LoadOnStartServiceWithRoleHint</role>
+      <role-hint>role-hint</role-hint>
+      <implementation>org.codehaus.plexus.DefaultLoadOnStartServiceWithRoleHint</implementation>
+      <configuration/>
+    </component>
 
   </components>
 
