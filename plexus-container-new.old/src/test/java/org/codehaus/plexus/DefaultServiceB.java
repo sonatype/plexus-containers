@@ -13,7 +13,7 @@ import org.apache.avalon.framework.service.ServiceManager;
 import org.apache.avalon.framework.service.Serviceable;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
-/** This service implements all the start phases:
+/** This component implements all the start phases:
  *
  *  LogEnabled
  *  Plexus Contexualize

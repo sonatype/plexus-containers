@@ -32,7 +32,7 @@ public class DefaultConfiguration
     private boolean readOnly;
 
     /**
-     * Create a new <code>DefaultConfiguration</code> instance.
+     * Create a new <code>DefaultConfiguration</code> manager.
      * @param name a <code>String</code> value
      */
     public DefaultConfiguration( String name )
@@ -41,7 +41,7 @@ public class DefaultConfiguration
     }
 
     /**
-     * Create a new <code>DefaultConfiguration</code> instance.
+     * Create a new <code>DefaultConfiguration</code> manager.
      * @param name a <code>String</code> value
      * @param location a <code>String</code> value
      */
@@ -51,7 +51,7 @@ public class DefaultConfiguration
     }
 
     /**
-     * Create a new <code>DefaultConfiguration</code> instance.
+     * Create a new <code>DefaultConfiguration</code> manager.
      * @param name config node name
      * @param location Builder-specific locator string
      * @param ns Namespace string (typically a URI). Should not be null; use ""

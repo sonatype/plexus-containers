@@ -4,7 +4,7 @@ import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.codehaus.plexus.lifecycle.phase.Phase;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.service.repository.ComponentHousing;
+import org.codehaus.plexus.component.manager.ComponentManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,35 +133,35 @@ public abstract class AbstractLifecycleHandler
 
     /** Start a component's lifecycle.
      *
-     *  @param housing The component service.
+     *  @param component
      *
      *  @throws java.lang.Exception If an error occurs while attempting to beginSegment
      *          the component's lifecycle.
      */
-    public void startLifecycle( ComponentHousing housing )
+    public void startLifecycle( Object component, ComponentManager manager )
         throws Exception
     {
         for ( Iterator i = getBeginSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
-            phase.execute( housing, this );
+            phase.execute( component, manager );
         }
     }
 
     /** End a component's lifecycle.
      *
-     *  @param housing The component service.
+     *  @param component
      *
      *  @throws java.lang.Exception If an error occurs while attempting to endSegment
      *          the component's lifecycle.
      */
-    public void endLifecycle( ComponentHousing housing )
+    public void endLifecycle( Object component, ComponentManager manager )
         throws Exception
     {
         for ( Iterator i = getEndSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
-            phase.execute( housing, this );
+            phase.execute( component, manager );
         }
     }
 

@@ -2,17 +2,15 @@ package org.codehaus.plexus.lifecycle.phase;
 
 import org.apache.avalon.framework.context.Context;
 import org.apache.avalon.framework.context.Contextualizable;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.service.repository.ComponentHousing;
+import org.codehaus.plexus.component.manager.ComponentManager;
 
 public class ContextualizePhase
     extends AbstractPhase
 {
-    public void execute( ComponentHousing housing, LifecycleHandler handler )
+    public void execute( Object object, ComponentManager manager )
         throws Exception
     {
-        Object object = housing.getComponent();
-        Context context = (Context) handler.getEntities().get( "context" );
+        Context context = (Context) manager.getLifecycleHandler().getEntities().get( "context" );
 
         if ( object instanceof Contextualizable )
         {

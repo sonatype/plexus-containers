@@ -2,17 +2,16 @@ package org.codehaus.plexus.lifecycle.phase;
 
 import org.apache.avalon.framework.configuration.Configurable;
 import org.apache.avalon.framework.configuration.Configuration;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.service.repository.ComponentHousing;
+import org.codehaus.plexus.component.manager.ComponentManager;
+import org.codehaus.plexus.configuration.ConfigurationUtil;
 
 public class ConfigurePhase
     extends AbstractPhase
 {
-    public void execute( ComponentHousing housing, LifecycleHandler handler )
+    public void execute( Object object, ComponentManager manager )
         throws Exception
     {
-        Object object = housing.getComponent();
-        Configuration configuration = housing.getComponentManager().getComponentDescriptor().getConfiguration();
+        Configuration configuration = manager.getComponentDescriptor().getConfiguration();
 
         if ( object instanceof Configurable )
         {

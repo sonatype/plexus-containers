@@ -12,7 +12,7 @@ import org.apache.avalon.framework.logger.Logger;
 public abstract class AbstractLogEnabled
     implements LogEnabled
 {
-    ///Base Logger instance
+    ///Base Logger manager
     private Logger m_logger;
 
     /**

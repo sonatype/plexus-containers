@@ -46,7 +46,7 @@ public class ThreadSafeMap implements Map
 
     /**
      * The object synchronized against. Seperate object used and not this
-     * Map instance because we don't know if external code is going to
+     * Map manager because we don't know if external code is going to
      * synchronize on this Map and stuff things up.
      */
     private Object lock = new Object();

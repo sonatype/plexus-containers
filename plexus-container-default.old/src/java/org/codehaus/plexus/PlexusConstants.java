@@ -12,7 +12,7 @@ public class PlexusConstants
     public static final String SELECTORS = "selectors";
 
     /** Default selector implementation tag. */
-    public static final String DEFAULT_SERVICE_SELECTOR_IMPL = "org.codehaus.plexus.service.PlexusServiceSelector";
+    public static final String DEFAULT_SERVICE_SELECTOR_IMPL = "org.codehaus.plexus.component.PlexusServiceSelector";
 
     /** Selector impl suffix tag. */
     public static final String SELECTOR_IMPL_SUFFIX = "Selector";

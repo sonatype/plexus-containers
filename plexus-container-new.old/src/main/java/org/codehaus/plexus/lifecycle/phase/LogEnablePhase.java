@@ -2,17 +2,15 @@ package org.codehaus.plexus.lifecycle.phase;
 
 import org.apache.avalon.framework.logger.LogEnabled;
 import org.apache.avalon.framework.logger.Logger;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.service.repository.ComponentHousing;
+import org.codehaus.plexus.component.manager.ComponentManager;
 
 public class LogEnablePhase
     extends AbstractPhase
 {
-    public void execute( ComponentHousing housing, LifecycleHandler handler )
+    public void execute( Object object, ComponentManager manager )
         throws Exception
     {
-        Object object = housing.getComponent();
-        Logger logger = (Logger) handler.getEntities().get( "logger" );
+        Logger logger = (Logger) manager.getLifecycleHandler().getEntities().get( "logger" );
 
         if ( object instanceof LogEnabled )
         {

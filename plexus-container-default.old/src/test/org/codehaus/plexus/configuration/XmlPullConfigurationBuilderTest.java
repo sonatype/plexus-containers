@@ -63,7 +63,7 @@ public class XmlPullConfigurationBuilderTest
 
         Configuration componentRepository = c.getChild( "component-repository" );
         assertNotNull( componentRepository );
-        assertEquals( "org.codehaus.plexus.service.repository.DefaultComponentRepository",
+        assertEquals( "org.codehaus.plexus.component.repository.DefaultComponentRepository",
                       componentRepository.getChild( "implementation" ).getValue() );
 
         Configuration resourceManager = c.getChild( "resource-manager" );
@@ -98,11 +98,11 @@ public class XmlPullConfigurationBuilderTest
 
         Configuration[] components = c.getChild( "components" ).getChildren( "component" );
 
-        assertEquals( "org.codehaus.plexus.service.repository.factory.ComponentFactory",
+        assertEquals( "org.codehaus.plexus.component.repository.factory.ComponentFactory",
                       components[0].getChild( "role" ).getValue() );
         assertEquals( "java",
                       components[0].getChild( "role-hint" ).getValue() );
-        assertEquals( "org.codehaus.plexus.service.repository.factory.JavaComponentFactory",
+        assertEquals( "org.codehaus.plexus.component.repository.factory.JavaComponentFactory",
                       components[0].getChild( "implementation" ).getValue() );
     }
 

@@ -11,13 +11,13 @@ import java.io.FileReader;
 import java.io.Reader;
 
 /**
- * <p>PlexusLoaderServlet loads a Plexus instance for a web application.  The
- * Plexus <code>ServiceBroker</code> instance is put into the
+ * <p>PlexusLoaderServlet loads a Plexus manager for a web application.  The
+ * Plexus <code>ServiceBroker</code> manager is put into the
  * <code>ServletContext</code> so <code>PlexusServlet</code>s can retrieve it.
  * It is important to make sure that this class is loaded before the startup of
  * your web application that uses the Plexus <code>ServiceBroker</code>.
  * Alternatively, the servlet container can be loaded as a component within a
- * Plexus instance.  In that case, this class is no longer needed.
+ * Plexus manager.  In that case, this class is no longer needed.
  * </p>
  * <p>
  * To configure this servlet you must specify the location of the plexus
@@ -29,7 +29,7 @@ import java.io.Reader;
  */
 public class PlexusLoaderServlet extends HttpServlet
 {
-    /** Plexus instance */
+    /** Plexus manager */
     private DefaultPlexusContainer container;
 
     /**

@@ -92,6 +92,7 @@ public class Embedder
     }
 
     public void release( Object service )
+        throws Exception
     {
         getContainer().getComponentRepository().release( service );
     }

@@ -2,9 +2,9 @@ package org.codehaus.plexus.lifecycle.avalon;
 
 import org.codehaus.plexus.lifecycle.AbstractLifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.service.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.ComponentRepository;
 
-/** An Avalon service lifecycle handler.
+/** An Avalon component lifecycle handler.
  *
  *  The <code>AvalonLifecycleHandler</code> must have the following entities
  *  set in order to propery execute the Avalon lifecycle.
@@ -24,7 +24,7 @@ public class AvalonLifecycleHandler
     extends AbstractLifecycleHandler
 {
     /** */
-    public static String SERVICE_MANAGER = "service.manager";
+    public static String SERVICE_MANAGER = "component.manager";
 
     // ----------------------------------------------------------------------
     //  Constructors

@@ -88,7 +88,7 @@ public class PlexusTestCase
     }
 
     /**
-     * Tear down the test-case by stopping the container container instance..
+     * Tear down the test-case by stopping the container container manager..
      */
     public void tearDown()
         throws Exception
@@ -98,9 +98,9 @@ public class PlexusTestCase
     }
 
     /**
-     * Get the container container instance.
+     * Get the container container manager.
      *
-     * @return The container instance.
+     * @return The container manager.
      */
     protected DefaultPlexusContainer getContainer()
     {

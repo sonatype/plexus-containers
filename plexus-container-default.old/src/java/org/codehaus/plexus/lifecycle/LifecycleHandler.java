@@ -4,7 +4,7 @@ import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.logger.Logger;
 import org.codehaus.plexus.lifecycle.phase.Phase;
-import org.codehaus.plexus.service.repository.ComponentHousing;
+import org.codehaus.plexus.component.manager.ComponentManager;
 
 import java.util.Map;
 
@@ -20,11 +20,11 @@ public interface LifecycleHandler
     /** */
     public static String CONTEXT = "context";
     /** */
-    public static String SERVICE_REPOSITORY = "service.repository";
+    public static String SERVICE_REPOSITORY = "component.repository";
 
     /** Set lifecycle specifics.
      *
-     *  <p>The lifecycle of a particular service may vary from implementation
+     *  <p>The lifecycle of a particular component may vary from implementation
      *  to implementation.</p>
      *
      * <p>These entities are made available to the various phases, are are global
@@ -42,13 +42,13 @@ public interface LifecycleHandler
     /** Start lifecycle.
      *
      */
-    void startLifecycle( ComponentHousing housing )
+    void startLifecycle( Object component, ComponentManager manager )
         throws Exception;
 
     /** End Lifecycle
      *
      */
-    void endLifecycle( ComponentHousing housing )
+    void endLifecycle( Object component, ComponentManager manager )
         throws Exception;
 
     void initialize()
@@ -60,6 +60,7 @@ public interface LifecycleHandler
 
     void enableLogging( Logger logger );
 
-    public void configure( Configuration config ) throws ConfigurationException;
+    public void configure( Configuration config )
+        throws ConfigurationException;
 
 }

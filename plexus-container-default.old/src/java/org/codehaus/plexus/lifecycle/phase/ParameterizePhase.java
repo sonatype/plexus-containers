@@ -2,17 +2,15 @@ package org.codehaus.plexus.lifecycle.phase;
 
 import org.apache.avalon.framework.parameters.Parameterizable;
 import org.apache.avalon.framework.parameters.Parameters;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.service.repository.ComponentHousing;
+import org.codehaus.plexus.component.manager.ComponentManager;
 
 public class ParameterizePhase
     extends AbstractPhase
 {
-    public void execute( ComponentHousing housing, LifecycleHandler handler )
+    public void execute( Object object, ComponentManager manager )
         throws Exception
     {
-        Object object = housing.getComponent();
-        Parameters parameters = (Parameters) handler.getEntities().get( "parameters" );
+        Parameters parameters = (Parameters) manager.getLifecycleHandler().getEntities().get( "parameters" );
 
         if ( object instanceof Parameterizable )
         {

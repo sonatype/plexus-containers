@@ -84,7 +84,7 @@ public class PlexusContainerHost
     }
 
     /**
-     *  Asynchronous hosting service loop.
+     *  Asynchronous hosting component loop.
      */
     public void run()
     {

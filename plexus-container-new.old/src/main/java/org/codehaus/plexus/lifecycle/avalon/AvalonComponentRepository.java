@@ -1,8 +1,8 @@
 package org.codehaus.plexus.lifecycle.avalon;
 
 import org.codehaus.plexus.configuration.DefaultConfiguration;
-import org.codehaus.plexus.service.repository.ComponentDescriptor;
-import org.codehaus.plexus.service.repository.DefaultComponentRepository;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 
 /**
  * A ComponentRepository for Avalon services that creates ServiceSelectors
@@ -17,7 +17,7 @@ public class AvalonComponentRepository extends DefaultComponentRepository
      * Adds a ComponentDescriptor.  If the descriptor has an Id or a RoleHint
      * a ServiceSelector is created also.
      *
-     * @see org.codehaus.plexus.service.repository.DefaultComponentRepository#addComponentDescriptor(org.codehaus.plexus.service.repository.ComponentDescriptor)
+     * @see org.codehaus.plexus.component.repository.DefaultComponentRepository#addComponentDescriptor(org.codehaus.plexus.component.repository.ComponentDescriptor)
      */
     protected void addComponentDescriptor( ComponentDescriptor descriptor )
     {
@@ -54,13 +54,13 @@ public class AvalonComponentRepository extends DefaultComponentRepository
     private ComponentDescriptor createSelectorDescriptor( ComponentDescriptor descriptor )
     {
         ComponentDescriptor selector = new ComponentDescriptor();
+
         selector.setRole( descriptor.getRole() + "Selector" );
         selector.setImplementation( AvalonServiceSelector.class.getName() );
         selector.setInstantiationStrategy( DEFAULT_INSTANTIATION_STRATEGY );
 
         DefaultConfiguration config = new DefaultConfiguration( selector.getRole() );
-        config.setAttribute( AvalonServiceSelector.SELECTABLE_ROLE_KEY,
-                             descriptor.getRole() );
+        config.setAttribute( AvalonServiceSelector.SELECTABLE_ROLE_KEY, descriptor.getRole() );
 
         selector.setConfiguration( config );
         return selector;

@@ -13,7 +13,7 @@ import org.apache.avalon.framework.configuration.Configuration;
 public class LifecycleHandlerHousing
 {
     /**
-     * LifecycleHandler instance.
+     * LifecycleHandler manager.
      */
     private LifecycleHandler handler;
 

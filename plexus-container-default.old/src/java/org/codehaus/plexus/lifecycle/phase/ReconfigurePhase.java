@@ -3,17 +3,15 @@ package org.codehaus.plexus.lifecycle.phase;
 import org.apache.avalon.framework.configuration.Configurable;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.Reconfigurable;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.service.repository.ComponentHousing;
+import org.codehaus.plexus.component.manager.ComponentManager;
 
 public class ReconfigurePhase
     extends AbstractPhase
 {
-    public void execute( ComponentHousing housing, LifecycleHandler handler )
+    public void execute( Object object, ComponentManager manager )
         throws Exception
     {
-        Object object = housing.getComponent();
-        Configuration configuration = (Configuration) handler.getEntities().get( "configuration" );
+        Configuration configuration = (Configuration) manager.getLifecycleHandler().getEntities().get( "configuration" );
 
         if ( object instanceof Configurable )
         {

@@ -1,7 +1,7 @@
 package org.codehaus.plexus;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.service.repository.factory.ComponentFactory;
+import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.util.AbstractTestThread;
 import org.codehaus.plexus.util.TestThreadManager;
 
@@ -72,7 +72,7 @@ public class DefaultPlexusContainerTest
         // usually need to be replaced but they can be if the user desires.
 
         // Java Component factory.
-        // Singleton instance manager.
+        // Singleton manager manager.
         ComponentFactory jcf = (ComponentFactory) container.getComponentRepository().lookup( ComponentFactory.ROLE + "java" );
         assertNotNull( jcf );
 
@@ -102,10 +102,14 @@ public class DefaultPlexusContainerTest
         //  Implements all the standard Avalon lifecycle phases.
         // ----------------------------------------------------------------------
 
-        // Retrieve an instance of service a.
+        // Retrieve an manager of component a.
+
+
+        Object o = container.getComponentRepository().lookup( ServiceA.ROLE );
+
         DefaultServiceA serviceA = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
 
-        // Make sure the service is alive.
+        // Make sure the component is alive.
         assertNotNull( serviceA );
 
         assertEquals( true, serviceA.enableLogging );
@@ -119,7 +123,7 @@ public class DefaultPlexusContainerTest
         // properly.
         container.getComponentRepository().release( serviceA );
 
-        // make sure we get the same instance back everytime
+        // make sure we get the same manager back everytime
         DefaultServiceA a0 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
         DefaultServiceA a1 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
         DefaultServiceA a2 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
@@ -144,14 +148,14 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
         //  ServiceB
         //
-        //  Implements the special Plexus contextualize and service phases with
+        //  Implements the special Plexus contextualize and component phases with
         //  the rest being the standard Avalon ones.
         // ----------------------------------------------------------------------
 
-        // Retrieve an instance of service b.
+        // Retrieve an manager of component b.
         DefaultServiceB serviceB1 = (DefaultServiceB) container.getComponentRepository().lookup( ServiceB.ROLE );
 
-        // Make sure the service is alive.
+        // Make sure the component is alive.
         assertNotNull( serviceB1 );
 
         assertEquals( true, serviceB1.enableLogging );
@@ -185,19 +189,19 @@ public class DefaultPlexusContainerTest
         //  ServiceC
         // ----------------------------------------------------------------------
 
-        // Retrieve an instance of service c.
+        // Retrieve an manager of component c.
         DefaultServiceC serviceC1 = (DefaultServiceC) container.getComponentRepository().lookup( ServiceC.ROLE, "only-instance" );
 
-        // Make sure the service is alive.
+        // Make sure the component is alive.
         assertNotNull( serviceC1 );
 
-        // Retrieve the only instance again from the service repository.
+        // Retrieve the only manager again from the component repository.
         DefaultServiceC serviceC2 = (DefaultServiceC) container.getComponentRepository().lookup( ServiceC.ROLE, "only-instance" );
 
         // Make sure component is alive.
         assertNotNull( serviceC2 );
 
-        // Let's make sure it gave us back the same instance.
+        // Let's make sure it gave us back the same manager.
         assertSame( serviceC1, serviceC2 );
 
         container.getComponentRepository().release( serviceC1 );
@@ -216,7 +220,7 @@ public class DefaultPlexusContainerTest
         //  ServiceD
         // ----------------------------------------------------------------------
 
-        // Retrieve an instance of service c.
+        // Retrieve an manager of component c.
         ServiceD serviceD1 = (ServiceD) container.getComponentRepository().lookup( ServiceD.ROLE );
         assertNotNull( serviceD1 );
 
@@ -270,10 +274,10 @@ public class DefaultPlexusContainerTest
         // Per-lookup component
         // ----------------------------------------------------------------------
 
-        // Retrieve an instance of service e.
+        // Retrieve an manager of component e.
         DefaultServiceE serviceE1 = (DefaultServiceE) container.getComponentRepository().lookup( ServiceE.ROLE );
 
-        // Make sure the service is alive.
+        // Make sure the component is alive.
         assertNotNull( serviceE1 );
 
         // Check the lifecycle
@@ -287,7 +291,7 @@ public class DefaultPlexusContainerTest
         // Retrieve another
         DefaultServiceE serviceE2 = (DefaultServiceE) container.getComponentRepository().lookup( ServiceE.ROLE );
 
-        // Make sure the service is alive.
+        // Make sure the component is alive.
         assertNotNull( serviceE2 );
 
         // Check the lifecycle
@@ -323,7 +327,7 @@ public class DefaultPlexusContainerTest
 
         assertNotNull( serviceF );
 
-        // The configuration for this service has been pulled in using the 'configurations-directory'
+        // The configuration for this component has been pulled in using the 'configurations-directory'
         // directive and we want to make sure that context values are interpolated
         // correctly. For the test we are using ${plexus.home} which should be
         // interpolated so no "${" sequence should be present.
@@ -347,10 +351,10 @@ public class DefaultPlexusContainerTest
         //  Implements all the standard Avalon lifecycle phases.
         // ----------------------------------------------------------------------
 
-        // Retrieve an instance of service G.
+        // Retrieve an manager of component G.
         DefaultServiceG serviceG = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
 
-        // Make sure the service is alive.
+        // Make sure the component is alive.
         assertNotNull( serviceG );
 
         // Make sure the component went through all the lifecycle phases
@@ -365,7 +369,7 @@ public class DefaultPlexusContainerTest
         // properly.
         container.getComponentRepository().release( serviceG );
 
-        // make sure we get the same instance back everytime
+        // make sure we get the same manager back everytime
         DefaultServiceG g0 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
         DefaultServiceG g1 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
         DefaultServiceG g2 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
@@ -374,7 +378,7 @@ public class DefaultPlexusContainerTest
         assertTrue( g1.equals( g2 ) );
         assertTrue( g2.equals( g0 ) );
 
-        //Now try it again in seperate threads.Make sure the instance is the same for all threads
+        //Now try it again in seperate threads.Make sure the manager is the same for all threads
         TestThreadManager reg = new TestThreadManager( this );
         for ( int i = 0; i < 5; i++ )
         {
@@ -400,7 +404,7 @@ public class DefaultPlexusContainerTest
         }
 
         assertEquals( "Expected 5 test threads to of run", reg.getRunThreads().size(), 5 );
-        //now test if any components were returned which was not the same instance
+        //now test if any components were returned which was not the same manager
         if ( reg.hasFailedThreads() )
         {
             //collect all failed tests
@@ -430,10 +434,10 @@ public class DefaultPlexusContainerTest
     public void testArbitraryLifecyclePassageUsingFourArbitraryPhases()
         throws Exception
     {
-        // Retrieve an instance of service G.
+        // Retrieve an manager of component G.
         DefaultServiceH serviceH = (DefaultServiceH) container.getComponentRepository().lookup( ServiceH.ROLE );
 
-        // Make sure the service is alive.
+        // Make sure the component is alive.
         assertNotNull( serviceH );
 
         // Make sure the component went through all the lifecycle phases
@@ -492,7 +496,7 @@ public class DefaultPlexusContainerTest
                 }
                 else
                 {
-                    setErrorMsg( "Returned component was a different instance. Expected=" + expectedComponent + ", got=" + returnedComponent );
+                    setErrorMsg( "Returned component was a different manager. Expected=" + expectedComponent + ", got=" + returnedComponent );
                 }
             }
             finally

@@ -86,7 +86,7 @@ public class StringUtils
      * <code>StringUtils.trim(" foo ");</code>.</p>
      *
      * <p>This constructor is public to permit tools that require a JavaBean
-     * instance to operate.</p>
+     * manager to operate.</p>
      */
     public StringUtils()
     {

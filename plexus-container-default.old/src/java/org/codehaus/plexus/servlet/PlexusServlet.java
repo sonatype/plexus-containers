@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServlet;
 
 public class PlexusServlet extends HttpServlet
 {
-    public static final String SERVICE_MANAGER_KEY = "plexus.service.manager";
+    public static final String SERVICE_MANAGER_KEY = "plexus.component.manager";
 
     public ServiceManager getServiceManager()
     {

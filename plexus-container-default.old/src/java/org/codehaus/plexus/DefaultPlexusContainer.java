@@ -13,8 +13,8 @@ import org.codehaus.plexus.context.DefaultContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.LoggerManagerFactory;
-import org.codehaus.plexus.service.repository.ComponentRepository;
-import org.codehaus.plexus.service.repository.ComponentRepositoryFactory;
+import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.util.ContextMapAdapter;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.InterpolationFilterReader;
@@ -105,7 +105,7 @@ public class DefaultPlexusContainer
      * - Initialize the default configuration
      * - Initialize the configuration
      * - Initialize logger manager
-     * - Initialize service repository
+     * - Initialize component repository
      * - Initialize resource manager
      * - Initialize the context. Values put into the context at this point won't
      *   be interpolated into the configuration.  This may need to change later.
@@ -133,6 +133,7 @@ public class DefaultPlexusContainer
     }
 
     public void dispose()
+        throws Exception
     {
         componentRepository.dispose();
     }
@@ -192,7 +193,7 @@ public class DefaultPlexusContainer
     protected void loadOnStart()
         throws Exception
     {
-        Configuration[] loadOnStartServices = configuration.getChild( "load-on-start" ).getChildren( "service" );
+        Configuration[] loadOnStartServices = configuration.getChild( "load-on-start" ).getChildren( "component" );
 
         for ( int i = 0; i < loadOnStartServices.length; i++ )
         {
@@ -349,7 +350,7 @@ public class DefaultPlexusContainer
     }
 
     /**
-     * Intialize the service repository.
+     * Intialize the component repository.
      *
      * @throws Exception
      */

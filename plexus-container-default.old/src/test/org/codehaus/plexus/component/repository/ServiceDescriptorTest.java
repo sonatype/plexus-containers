@@ -1,4 +1,4 @@
-package org.codehaus.plexus.service.repository;
+package org.codehaus.plexus.component.repository;
 
 import junit.framework.TestCase;
 

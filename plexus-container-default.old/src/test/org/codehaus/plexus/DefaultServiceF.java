@@ -12,7 +12,7 @@ import org.apache.avalon.framework.activity.Initializable;
 import org.apache.avalon.framework.activity.Startable;
 import org.apache.avalon.framework.logger.Logger;
 
-/** This service implements all the start phases:
+/** This component implements all the start phases:
  *
  *  LogEnabled
  *  Contexualize

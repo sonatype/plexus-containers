@@ -348,7 +348,7 @@ public class FileUtils
      * Creates a file handle.
      *
      * @param fileName The name of the file.
-     * @return A <code>File</code> instance.
+     * @return A <code>File</code> manager.
      */
     public static File getFile( String fileName )
     {

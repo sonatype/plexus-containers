@@ -10,7 +10,7 @@
   </logging>
 
   <service-repository>
-    <implementation>org.codehaus.plexus.service.repository.DefaultComponentRepository</implementation>
+    <implementation>org.codehaus.plexus.component.repository.DefaultComponentRepository</implementation>
   </service-repository>
 
   <!--

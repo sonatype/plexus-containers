@@ -3,7 +3,7 @@ package org.codehaus.plexus.lifecycle.avalon;
 import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.service.ServiceManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.service.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.ComponentRepository;
 
 /**
  * Extended <code>ServiceManager</code> implementation.
@@ -77,7 +77,7 @@ public class AvalonServiceManager
     }
 
     // ----------------------------------------------------------------------
-    // Additional methods for dealing with service lookups by id.
+    // Additional methods for dealing with component lookups by id.
     // ----------------------------------------------------------------------
 
     /**

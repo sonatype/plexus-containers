@@ -2,7 +2,7 @@ package org.codehaus.plexus;
 
 import com.werken.classworlds.ClassWorld;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
-import org.codehaus.plexus.service.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.ComponentRepository;
 
 import java.io.Reader;
 
@@ -21,7 +21,8 @@ public interface PlexusContainer
         throws Exception;
 
     /** */
-    public void dispose();
+    public void dispose()
+        throws Exception;
 
     // ----------------------------------------------------------------------
     // Pre-initialization - can only be called prior to initialization

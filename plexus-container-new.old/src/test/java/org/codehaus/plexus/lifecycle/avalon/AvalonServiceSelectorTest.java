@@ -20,13 +20,13 @@ public class AvalonServiceSelectorTest
         super(testName);
     }
 
-    public void testSelector() throws Exception
+    public void testSelector()
+        throws Exception
     {
         ServiceSelector selector = (ServiceSelector) lookup( ServiceC.ROLE + "Selector" );
         
         assertTrue( selector != null );
         assertTrue( selector.isSelectable( "only-instance" ) );
-
 
         ServiceC serviceC = (ServiceC) selector.select( "only-instance" );
         assertTrue( serviceC != null );

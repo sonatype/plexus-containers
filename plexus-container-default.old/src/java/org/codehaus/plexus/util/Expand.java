@@ -242,7 +242,7 @@ public class Expand
      * Interpret the filename as a file relative to the given file - unless the
      * filename already represents an absolute filename.
      *
-     * @param file the "reference" file for relative paths. This instance must
+     * @param file the "reference" file for relative paths. This manager must
      *      be an absolute file and must not contain &quot;./&quot; or
      *      &quot;../&quot; sequences (same for \ instead of /). If it is null,
      *      this call is equivalent to <code>new java.io.File(filename)</code>.
