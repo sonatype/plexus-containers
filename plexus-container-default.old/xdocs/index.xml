@@ -21,7 +21,7 @@
     <p>
       This decoupling improves the modularity of services and allows services
       to evolve over time independently of configuration issues (such as
-      whether two services must be co-located or what concurreny will be used to
+      whether two services must be co-located or what concurrency will be used to
       execute the services).
     </p>
     
