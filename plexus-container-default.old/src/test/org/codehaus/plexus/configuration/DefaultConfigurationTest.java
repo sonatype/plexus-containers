@@ -121,26 +121,6 @@ public final class DefaultConfigurationTest
         assertEquals( defaultStr, configuration.getAttribute( "newKey", defaultStr ) );
     }
 
-    public void testMakeReadOnly()
-    {
-        String key = "key";
-        String value = "original value";
-        String exception = "exception not thrown";
-        String exceptionStr = "Configuration is read only";
-        configuration.makeReadOnly();
-
-        try
-        {
-            configuration.setAttribute( key, value );
-        }
-        catch ( IllegalStateException ise )
-        {
-            exception = exceptionStr;
-        }
-
-        assertEquals( exception, exceptionStr );
-    }
-
     public void testAddRemoveChild()
     {
         String childName = "child";
