@@ -14,6 +14,10 @@ public abstract class AbstractLifecycleHandler
     extends AbstractLogEnabled
     implements LifecycleHandler
 {
+    private String id;
+
+    private String name;
+
     private Map entities;
     private List beginSegment;
     private List suspendSegment;
@@ -26,6 +30,16 @@ public abstract class AbstractLifecycleHandler
         suspendSegment = new ArrayList();
         resumeSegment = new ArrayList();
         endSegment = new ArrayList();
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public String getName()
+    {
+        return name;
     }
 
     public Map getEntities()

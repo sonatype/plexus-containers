@@ -37,6 +37,8 @@ public interface LifecycleHandler
      */
     Map getEntities();
 
+    String getId();
+
     void startLifecycle( Object component, ComponentManager manager )
         throws Exception;
 

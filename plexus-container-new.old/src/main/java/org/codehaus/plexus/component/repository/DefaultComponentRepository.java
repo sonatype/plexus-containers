@@ -289,8 +289,7 @@ public class DefaultComponentRepository
     private void initializeLifecycleHandlers()
         throws Exception
     {
-        String defaultHandlerId = getConfiguration().getChild( LIFECYCLE_HANDLERS )
-            .getAttribute( "default", getConfiguration().getChild( LIFECYCLE_HANDLERS ).getAttribute( "default", null ) );
+        String defaultHandlerId = getConfiguration().getChild( LIFECYCLE_HANDLERS ).getAttribute( "default", null );
 
         if ( defaultHandlerId == null )
         {
