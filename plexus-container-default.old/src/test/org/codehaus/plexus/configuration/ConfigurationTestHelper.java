@@ -31,7 +31,7 @@ public class ConfigurationTestHelper
     public static String getXmlConfiguration()
     {
         return "<configuration>" +
-                  "<string>string</string>" +
+                  "<string string='string'>string</string>" +
                   "<number number='0'>0</number>" +
                   "<not-a-number not-a-number='foo'>not-a-number</not-a-number>" +
                   "<boolean-true boolean-true='true'>true</boolean-true>" +
@@ -191,5 +191,17 @@ public class ConfigurationTestHelper
         assertFalse( c.getChild( "boolean-false" ).getAttributeAsBoolean( "boolean-false" ) );
 
         assertFalse( c.getChild( "boolean-false" ).getAttributeAsBoolean( "boolean-false", false ) );
+
+        try
+        {
+            c.getChild( "string" ).getAttributeAsBoolean( "string" );
+
+            fail( "A ConfigurationException should be thrown." );
+        }
+        catch( ConfigurationException e )
+        {
+            // do nothing
+        }
+
     }
 }
