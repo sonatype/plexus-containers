@@ -73,7 +73,7 @@ public abstract class AbstractCompositionResolverTest
 
         compositionResolver.addComponentDescriptor( c3 );
 
-        List dependencies = compositionResolver.getComponentDependencies( c1.getComponentKey() );
+        List dependencies = compositionResolver.getRequirements( c1.getComponentKey() );
 
         assertEquals( 2, dependencies.size() );
 
@@ -162,7 +162,7 @@ public abstract class AbstractCompositionResolverTest
 
         compositionResolver.addComponentDescriptor( c5 );
 
-        List dependencies = compositionResolver.getComponentDependencies( c1.getComponentKey() );
+        List dependencies = compositionResolver.getRequirements( c1.getComponentKey() );
 
         assertEquals( 2, dependencies.size() );
 

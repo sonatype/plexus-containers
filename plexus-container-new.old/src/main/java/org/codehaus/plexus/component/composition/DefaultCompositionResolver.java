@@ -19,14 +19,10 @@ import java.util.Iterator;
 public class DefaultCompositionResolver implements CompositionResolver
 {
     private DAG dag = new DAG();
+    
 
-    public List getComponentDependencies( final String componentKey )
-    {
-        return dag.getAdjacentLabels( componentKey );        
-    }
-
-    public void addComponentDescriptor( final ComponentDescriptor componentDescriptor )
-    {
+    public void addComponentDescriptor( final ComponentDescriptor componentDescriptor ) 
+    {                       
         final String componentKey = componentDescriptor.getComponentKey();        
         final Set requirements = componentDescriptor.getRequirements();        
         for ( final Iterator iterator = requirements.iterator(); iterator.hasNext(); )
@@ -34,5 +30,23 @@ public class DefaultCompositionResolver implements CompositionResolver
             final String requirement = ( String ) iterator.next();
             dag.addEdge( componentKey, requirement );
         }
+    }
+
+    /**
+     * 
+     * @see org.codehaus.plexus.component.composition.CompositionResolver#getRequirements(java.lang.String)
+     */
+    public List getRequirements( final String componentKey )
+    {
+        return dag.getChildLabels( componentKey );        
+    }
+    
+    
+    /**
+     * @see org.codehaus.plexus.component.composition.CompositionResolver#findRequirements(java.lang.String)
+     */
+    public List findRequirements( String componentKey )
+    {        
+        return dag.getParentLabels( componentKey );   
     }
 }

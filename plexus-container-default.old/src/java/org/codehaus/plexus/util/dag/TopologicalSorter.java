@@ -72,7 +72,7 @@ public class TopologicalSorter
     private static void dfsVisit( final Vertex vertex, final Map vertexStateMap, final List list )
     {
         vertexStateMap.put( vertex, VISITING );
-        final List verticies = vertex.getAdjacencyList();
+        final List verticies = vertex.getChildren();
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
             final Vertex v = (Vertex) iter.next();

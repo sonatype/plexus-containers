@@ -12,7 +12,7 @@ import java.util.Set;
  * @author <a href="michal.maczka@dimatics.com">Michal Maczka</a>
  * @version $Id$
  */
-public class DAG
+public class DAG implements Cloneable
 {
     //------------------------------------------------------------
     //Fields
@@ -88,6 +88,7 @@ public class DAG
         final Vertex v1 = addVertex( from );
         final Vertex v2 = addVertex( to );
         v1.addEdgeTo( v2 );
+        v2.addEdgeFrom( v1 );
     }
 
     public Vertex getVertex( final String label )
@@ -108,7 +109,7 @@ public class DAG
         {
             throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label2 + "' must exist" );
         }
-        return v1.getAdjacencyList().contains( v2 );
+        return v1.getChildren().contains( v2 );
 
     }
 
@@ -116,13 +117,39 @@ public class DAG
      * @param label
      * @return
      */
-    public List getAdjacentLabels( final String label )
+    public List getChildLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
         if ( vertex == null )
         {
-            throw new IllegalArgumentException( "getAdjacentLabels: A vertex for label '" + label + "' must exist" );
+            throw new IllegalArgumentException( "getChildLabels: A vertex for label '" + label + "' must exist" );
         }
-        return vertex.getAdjacentLabels();
+        return vertex.getChildLabels();
     }
+    
+    /**
+     * @param label
+     * @return
+     */
+    public List getParentLabels( final String label )
+    {
+        final Vertex vertex = getVertex( label );
+        if ( vertex == null )
+        {
+            throw new IllegalArgumentException( "getChildLabels: A vertex for label '" + label + "' must exist" );
+        }
+        return vertex.getChildLabels();
+    }
+    
+    
+    /**      
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() throws CloneNotSupportedException 
+    {                
+        Object o = super.clone();	// this is what's failing..               
+        return o;
+    }
+   
+    
 }

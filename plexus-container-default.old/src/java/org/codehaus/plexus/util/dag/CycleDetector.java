@@ -82,7 +82,7 @@ public class CycleDetector
     private static boolean dfsVisit( final Vertex vertex, final Map vertexStateMap )
     {
         vertexStateMap.put( vertex, VISITING );
-        final List verticies = vertex.getAdjacencyList();
+        final List verticies = vertex.getChildren();
         for ( final Iterator iter = verticies.iterator(); iter.hasNext(); )
         {
             final Vertex v = (Vertex) iter.next();
