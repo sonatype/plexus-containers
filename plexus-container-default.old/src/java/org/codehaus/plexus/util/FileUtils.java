@@ -55,7 +55,6 @@ package org.codehaus.plexus.util;
  *
  */
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -304,7 +303,11 @@ public class FileUtils
      */
     public static boolean waitFor( String fileName, int seconds )
     {
-        File file = new File( fileName );
+        return waitFor( new File( fileName ), seconds );
+    }
+
+    public static boolean waitFor( File file, int seconds )
+    {
         int timeout = 0;
         int tick = 0;
         while ( !file.exists() )
@@ -323,10 +326,6 @@ public class FileUtils
             }
             catch ( InterruptedException ignore )
             {
-            }
-            catch ( Exception ex )
-            {
-                break;
             }
         }
         return true;
@@ -1347,6 +1346,68 @@ public class FileUtils
 
             copyFileToDirectory( file, destinationDirectory );
         }
+    }
+
+    /**
+     * Copies a entire directory structure.
+     * 
+     * Note:
+     * <ul>
+     * <li>It will include empty directories.
+     * <li>The <code>sourceDirectory</code> must exists.
+     * </ul>
+     * 
+     * @param sourceDirectory
+     * @param destinationDirectory
+     * @throws IOException
+     */
+    public static void copyDirectoryStructure( File sourceDirectory, File destinationDirectory )
+        throws IOException
+    {
+       if ( !sourceDirectory.exists() )
+       {
+           throw new IOException( "Source directory doesn't exists (" + sourceDirectory.getAbsolutePath() + ")." );
+       }
+
+       File[] files = sourceDirectory.listFiles();
+
+       String sourcePath = sourceDirectory.getAbsolutePath();
+
+       System.err.println( "Copying from " + sourcePath + " to " + destinationDirectory.getAbsolutePath() );
+
+       for ( int i = 0; i < files.length; i++ )
+       {
+           File file = files[i];
+
+           String dest = file.getAbsolutePath();
+
+           dest = dest.substring( sourcePath.length() + 1 );
+
+           File destination = new File( destinationDirectory, dest );
+
+           System.err.println( "destination: " + dest );
+
+           if ( file.isFile() )
+           {
+               System.out.println( "Copying file " + file.getAbsolutePath() + " to " + destination.getAbsolutePath() );
+               destination = destination.getParentFile();
+
+               FileUtils.copyFileToDirectory( file, destination );
+           }
+           else if ( file.isDirectory() )
+           {
+               if ( !destination.exists() && !destination.mkdirs() )
+               {
+                   throw new IOException( "Could not create destination directory '" + destination.getAbsolutePath() + "'." );
+               }
+
+               copyDirectoryStructure( file, destination );
+           }
+           else
+           {
+               throw new IOException( "Unknown file type: " + file.getAbsolutePath() );
+           }
+       }
     }
 
     /**

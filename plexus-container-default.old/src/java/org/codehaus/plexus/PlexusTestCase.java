@@ -20,8 +20,12 @@ public class PlexusTestCase
 
     /**
      * @deprecated Use getBasedir(); instead of accessing this variable directly.
+     * 
+     * When removing this variable rename basedirPath to basedir. Trygve.
      */
     protected String basedir;
+
+    private static String basedirPath;
 
     public PlexusTestCase()
     {
@@ -58,12 +62,7 @@ public class PlexusTestCase
             fail( e.getMessage() );
         }
 
-        basedir = System.getProperty( "basedir" );
-
-        if ( basedir == null )
-        {
-            basedir = new File( "" ).getAbsolutePath();
-        }
+        basedir = getBasedir();
 
 //        container = new DefaultPlexusContainer();
         container = getContainerInstance();
@@ -201,33 +200,40 @@ public class PlexusTestCase
     // Helper methods for sub classes
     // ----------------------------------------------------------------------
 
-    public File getTestFile( String path )
+    public static File getTestFile( String path )
     {
-        return new File( basedir, path );
+        return new File( getBasedir(), path );
     }
 
-    public File getTestFile( String basedir, String path )
+    public static File getTestFile( String basedir, String path )
     {
-        return new File( basedir, path );
+        return new File( getBasedir(), path );
     }
 
-    public String getTestPath( String path )
+    public static String getTestPath( String path )
     {
-        return new File( basedir, path ).getAbsolutePath();
+        return new File( getBasedir(), path ).getAbsolutePath();
     }
 
-    public String getTestPath( String basedir, String path )
+    public static String getTestPath( String basedir, String path )
     {
-        return new File( basedir, path ).getAbsolutePath();
+        return new File( getBasedir(), path ).getAbsolutePath();
     }
 
-    public String getBasedir()
+    public static String getBasedir()
     {
-        if ( basedir == null )
+        if ( basedirPath != null )
         {
-            fail( "'basedir' isn't set." );
+            return basedirPath;
         }
 
-        return basedir;
+        basedirPath = System.getProperty( "basedir" );
+
+        if ( basedirPath == null )
+        {
+            basedirPath = new File( "" ).getAbsolutePath();
+        }
+
+        return basedirPath;
     }
 }

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -186,6 +187,27 @@ public class CollectionUtils
         }
         return count;
     }
+
+    public static List iteratorToList( Iterator it )
+    {
+        if ( it == null )
+        {
+            throw new NullPointerException( "it cannot be null." );
+        }
+
+        List list = new ArrayList();
+
+        while ( it.hasNext() )
+        {
+            list.add( it.next() );
+        }
+
+        return list;
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
 
     private static final int getFreq( final Object obj, final Map freqMap )
     {
