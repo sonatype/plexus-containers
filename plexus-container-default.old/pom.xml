@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <project>
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>plexus</groupId>
     <artifactId>plexus-root</artifactId>
