@@ -63,7 +63,7 @@ public abstract class AbstractComponentComposer
             throw new CompositionException( "Target object is null." );
         }
 
-        Class componentClass = requirement.getClass();
+        Class requirementClass = requirement.getClass();
 
         Field[] fields = component.getClass().getDeclaredFields();
 
@@ -71,7 +71,7 @@ public abstract class AbstractComponentComposer
 
         for ( int i = 0; i < fields.length; i++ )
         {
-            if ( componentClass.isAssignableFrom( fields[i].getType() ) )
+            if ( fields[i].getType().isAssignableFrom( requirementClass ) )
             {
                 field = fields[i];
 
@@ -81,7 +81,7 @@ public abstract class AbstractComponentComposer
 
         if ( field == null )
         {
-            throw new CompositionException( "No field which is compatible in component object: " + field.getName() );
+            throw new CompositionException( "No field which is compatible in component object: " + requirement.getClass().getName() );
         }
 
         field.setAccessible( true );
