@@ -254,10 +254,10 @@ public class Commandline implements Cloneable
         if ( shell != null )
         {
             String args = "";
-            for (Enumeration enum = shellArgs.elements(); enum.hasMoreElements(); )
+            for (Enumeration enums = shellArgs.elements(); enums.hasMoreElements(); )
             {
-                args += (String)enum.nextElement();
-                if (enum.hasMoreElements())
+                args += (String)enums.nextElement();
+                if (enums.hasMoreElements())
                 {
                     args += " ";
                 }
