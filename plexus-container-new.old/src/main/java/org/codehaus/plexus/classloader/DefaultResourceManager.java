@@ -36,7 +36,6 @@ public class DefaultResourceManager
 
     public void setClassLoader( ClassLoader classLoader )
     {
-        //this.classLoader = classLoader;
         plexusClassLoader = new PlexusClassLoader( classLoader );
     }
 
@@ -46,7 +45,12 @@ public class DefaultResourceManager
      */
     public PlexusClassLoader getPlexusClassLoader()
     {
-        return this.plexusClassLoader;
+        if ( plexusClassLoader == null )
+        {
+            throw new IllegalStateException( "The resource manager's classloader cannot be null." );
+        }
+
+        return plexusClassLoader;
     }
 
     // ----------------------------------------------------------------------
@@ -85,30 +89,14 @@ public class DefaultResourceManager
             {
                 if ( resourceConfigs[i].getName().equals( "jar-repository" ) )
                 {
-                    addJarRepository( resourceConfigs[i].getValue() );
-                }
-                else
-                {
-                    getLogger().warn( "unknown resource type: " + resourceConfigs[i].getName() );
+                    addJarRepository( new File( resourceConfigs[i].getValue() ) );
                 }
             }
             catch ( Exception e )
             {
-                throw new ConfigurationException( "error configuring resource: " + resourceConfigs[i].getValue(), e );
+                getLogger().error( "error configuring resource: " + resourceConfigs[i].getValue(), e );
             }
         }
-    }
-
-    /** Add a jar resource.
-     *
-     *  @param jar The jar.
-     *
-     *  @throws Exception If an error occurs while adding the resource.
-     */
-    public void addJarResource( String jar )
-        throws Exception
-    {
-        addJarResource( new File( jar ) );
     }
 
     /** Add a jar resource.
@@ -121,24 +109,6 @@ public class DefaultResourceManager
         throws Exception
     {
         getPlexusClassLoader().addURL( jar.toURL() );
-
-        getLogger().info( "added jar resource: " + jar.getPath() );
-    }
-
-    /**
-     * Add a new repository to the set of places this ClassLoader can look for
-     * classes to be loaded.
-     *
-     * @param repository Name of a source of classes to be loaded, such as a
-     *      directory pathname, a JAR file pathname, or a ZIP file pathname. The
-     *      parameter must be in the form of an URL.
-     * @exception IllegalArgumentException if the specified repository is
-     *      invalid or does not exist
-     */
-    public void addJarRepository( String repository )
-        throws Exception
-    {
-        addJarRepository( new File( repository ) );
     }
 
     /**
@@ -165,6 +135,10 @@ public class DefaultResourceManager
                     addJarResource( jars[j] );
                 }
             }
+        }
+        else
+        {
+            throw new Exception( "The specified JAR repository doesn't exist or is not a directory." );
         }
     }
 }
