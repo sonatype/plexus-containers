@@ -124,9 +124,17 @@ public class MockServletContext implements ServletContext
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#getRealPath(java.lang.String)
      */
-    public String getRealPath(String arg0)
+    public String getRealPath(String resourceName)
     {
-        throw new RuntimeException("not implemented");
+        if (resourceName.equals("/WEB-INF"))
+        {
+            return resourceName;
+        }
+        if (resourceName.equals("/WEB-INF/plexus.xml"))
+        {
+            return MockServletContext.class.getResource("plexus.xml").getPath();
+        }
+        return null;
     }
 
     public String getServerInfo()

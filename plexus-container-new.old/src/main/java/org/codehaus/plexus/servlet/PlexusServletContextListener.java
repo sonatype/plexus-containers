@@ -1,32 +1,33 @@
 package org.codehaus.plexus.servlet;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletException;
 
 import org.apache.avalon.framework.service.ServiceManager;
-import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.lifecycle.avalon.AvalonServiceManager;
+import org.codehaus.plexus.embed.Embedder;
 
 /**
  * By adding this to the listeners for your web application, a Plexus container
  * will be instantiated and added to the attributes of the ServletContext.
- * 
+ * <p>
+ * The interface that this class implements appeared in the Java Servlet
+ * API 2.3. For compatability with Java Servlet API 2.2 and before use
+ * {@link PlexusLoaderServlet}.
+ *
+ * @see PlexusLoaderServlet
+ *
  * @author <a href="bwalding@apache.org">Ben Walding</a>
+ * @author <a href="mhw@kremvax.net">Mark Wilkinson</a>
  * @version $Id$
  */
 public class PlexusServletContextListener implements ServletContextListener
 {
-    private PlexusContainer container = null;
     private static final String PLEXUSCONFIG = "/WEB-INF/plexus.xml";
-    public static final String PLEXUS_CONTAINER = "plexus.container";
-    public static final String PLEXUS_SERVICE_MANAGER = "plexus.service.manager";
+
+    private Embedder embedder = null;
 
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
@@ -36,33 +37,14 @@ public class PlexusServletContextListener implements ServletContextListener
         ServletContext context = sce.getServletContext();
 
         context.log("Initializing Plexus container...");
-        InputStream is = null;
         try
         {
-            is = context.getResourceAsStream(PLEXUSCONFIG);
-            if (is == null)
-            {
-                throw new RuntimeException(PLEXUSCONFIG + " not found");
-            }
-            container = createContainer(is);
+            embedder = ServletContextUtils.createContainer(context, PLEXUSCONFIG);
         }
-        finally
+        catch (ServletException e)
         {
-            if (is != null)
-            {
-                try
-                {
-                    is.close();
-                }
-                catch (IOException e)
-                {
-                    //Don't care
-                }
-            }
+            throw new RuntimeException();
         }
-
-        context.setAttribute(PLEXUS_CONTAINER, container);
-        context.setAttribute(PLEXUS_SERVICE_MANAGER, new AvalonServiceManager(container.getComponentRepository()));
         context.log("Plexus container initialized.");
     }
 
@@ -72,50 +54,21 @@ public class PlexusServletContextListener implements ServletContextListener
     public void contextDestroyed(ServletContextEvent sce)
     {
         ServletContext context = sce.getServletContext();
-        if (container != null)
-        {
-            context.log("Disposing of Plexus container.");
-            try
-            {
-                container.dispose();
-            }
-            catch (Exception e)
-            {
-                context.log("Trying to dispose of Plexus container", e);
-            }
-        }
-        context.removeAttribute(PLEXUS_CONTAINER);
-        context.removeAttribute(PLEXUS_SERVICE_MANAGER);
+        context.log( "Disposing of Plexus container." );
+        ServletContextUtils.destroyContainer( embedder, context );
     }
 
     /**
-     * 
-     * @param is
-     * @return
+     * @deprecated Moved to {@link PlexusServletUtils#getServiceManager}.
      */
-    private PlexusContainer createContainer(InputStream is)
-    {
-        PlexusContainer newContainer = new DefaultPlexusContainer();
-        try
-        {
-            Reader config = new InputStreamReader(is);
-            newContainer.setConfigurationResource(config);
-            newContainer.initialize();
-            newContainer.start();
-            return newContainer;
-        }
-        catch (Exception e)
-        {
-            throw new RuntimeException("Could not start Plexus!", e);
-        }
-    }
-    
     public static ServiceManager getServiceManager(ServletContext sc)  {
-        return (ServiceManager) sc.getAttribute(PLEXUS_SERVICE_MANAGER);
+        return PlexusServletUtils.getServiceManager(sc);
     }
 
+    /**
+     * @deprecated Moved to {@link PlexusServletUtils#getPlexusContainer}.
+     */
     public static PlexusContainer getPlexusContainer(ServletContext sc)  {
-        return (PlexusContainer) sc.getAttribute(PLEXUS_CONTAINER);
+        return PlexusServletUtils.getPlexusContainer(sc);
     }
-
 }

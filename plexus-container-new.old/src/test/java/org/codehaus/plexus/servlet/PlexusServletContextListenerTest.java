@@ -4,6 +4,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.avalon.framework.service.ServiceManager;
+
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 
 import junit.framework.TestCase;
@@ -23,16 +25,16 @@ public class PlexusServletContextListenerTest extends TestCase
 
         pacl.contextInitialized(sce);
         {
-            PlexusContainer pc = (PlexusContainer) sc.getAttribute(PlexusServletContextListener.PLEXUS_CONTAINER);
-            ServiceManager sm = (ServiceManager) sc.getAttribute(PlexusServletContextListener.PLEXUS_SERVICE_MANAGER);
+            PlexusContainer pc = (PlexusContainer) sc.getAttribute( PlexusConstants.PLEXUS_KEY );
+            ServiceManager sm = (ServiceManager) sc.getAttribute( PlexusConstants.SERVICE_MANAGER_KEY );
             assertNotNull("pc", pc);
             assertNotNull("sm", sm);
         }
 
         pacl.contextDestroyed(sce);
         {
-            PlexusContainer pc = (PlexusContainer) sc.getAttribute(PlexusServletContextListener.PLEXUS_CONTAINER);
-            ServiceManager sm = (ServiceManager) sc.getAttribute(PlexusServletContextListener.PLEXUS_SERVICE_MANAGER);
+            PlexusContainer pc = (PlexusContainer) sc.getAttribute( PlexusConstants.PLEXUS_KEY );
+            ServiceManager sm = (ServiceManager) sc.getAttribute( PlexusConstants.SERVICE_MANAGER_KEY );
             assertNull("pc", pc);
             assertNull("sm", sm);
         }
