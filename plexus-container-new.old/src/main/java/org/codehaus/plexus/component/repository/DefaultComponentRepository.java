@@ -23,6 +23,7 @@ import java.util.Map;
 /**
  * @todo remove explicit avalon dependencies from here.
  * @todo remove lifecycle handling from the repository.
+ * @todo remove plexus container reference.
  */
 public class DefaultComponentRepository
     extends AbstractLogEnabled
@@ -568,6 +569,7 @@ public class DefaultComponentRepository
             synchronized ( lookupLock )
             {
                 componentManager = getComponentManager( key );
+
                 if ( componentManager != null )
                 {
                     try
@@ -576,11 +578,10 @@ public class DefaultComponentRepository
                     }
                     catch ( Exception e )
                     {
-                        throw new ServiceException(
-                            key,
-                            "Error retrieving component from ComponentManager" );
+                        throw new ServiceException( key, "Error retrieving component from ComponentManager" );
                     }
                 }
+
                 // We need to create an manager of this componentManager.
                 getLogger().debug( "Creating new ComponentDescriptor for role: " + key );
 
@@ -589,6 +590,7 @@ public class DefaultComponentRepository
                 if ( descriptor == null )
                 {
                     getLogger().error( "Non existant component: " + key );
+
                     throw new ServiceException( key, "Non existant component for key " + key + "." );
                 }
 
@@ -599,10 +601,8 @@ public class DefaultComponentRepository
                 catch ( Exception e )
                 {
                     getLogger().error( "Could not create component: " + key, e );
-                    throw new ServiceException(
-                        key,
-                        "Could not create component for key " + key + "!",
-                        e );
+
+                    throw new ServiceException( key, "Could not create component for key " + key + "!", e );
                 }
                 try
                 {
@@ -610,10 +610,7 @@ public class DefaultComponentRepository
                 }
                 catch ( Exception e )
                 {
-                    throw new ServiceException(
-                        key,
-                        "Error retrieving component from ComponentManager. cause="
-                        + Tracer.traceToString( e ) );
+                    throw new ServiceException( key, "Error retrieving component from ComponentManager. cause=" + Tracer.traceToString( e ) );
                 }
                 if ( getLogger().isDebugEnabled() )
                 {
@@ -624,13 +621,13 @@ public class DefaultComponentRepository
                     buff.append( ",strategy=" ).append( descriptor.getInstantiationStrategy() );
                     getLogger().debug( buff.toString() );
                 }
+
                 // We do this so we know what to do when releasing. Only have to do it once
                 //per component class
                 compManagersByCompClass.put( component.getClass().getName(), componentManager );
 
                 lookupLock.notifyAll();
             }
-
         }
         else
         {
@@ -643,6 +640,7 @@ public class DefaultComponentRepository
                 throw new ServiceException( key, "Error retrieving component from ComponentManager" );
             }
         }
+
         return component;
     }
 
@@ -682,6 +680,7 @@ public class DefaultComponentRepository
     public synchronized void dispose()
     {
         getLogger().info( "Disposing ComponentRepository..." );
+
         disposeAllComponents();
     }
 
