@@ -3,7 +3,7 @@
  * Latest release available at http://jade.dautelle.com/
  * This class is public domain (not copyrighted).
  */
-package com.dautelle.util;
+package org.codehaus.plexus.util;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
