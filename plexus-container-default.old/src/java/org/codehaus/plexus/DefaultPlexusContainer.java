@@ -749,7 +749,6 @@ public class DefaultPlexusContainer
 
                     if ( directory.exists() && directory.isDirectory() )
                     {
-                        System.out.println( "adding directory = " + directory );
                         classRealm.addConstituent( directory.toURL() );
                     }
                 }
