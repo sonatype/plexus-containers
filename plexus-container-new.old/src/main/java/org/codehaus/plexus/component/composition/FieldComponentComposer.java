@@ -154,7 +154,7 @@ public class FieldComponentComposer extends AbstractComponentComposer
                 
                 msg.append( componentDescriptor.getHumanReadableKey() );
                 
-                msg.append( " Requirment class: '" );
+                msg.append( " Requirement class: '" );
 
                 msg.append( requirement.getRole() );
 
