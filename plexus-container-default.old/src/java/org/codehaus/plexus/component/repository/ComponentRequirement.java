@@ -7,9 +7,11 @@ package org.codehaus.plexus.component.repository;
  */
 public final class ComponentRequirement
 {
-    String role;
+    private String role;
 
-    String fieldName;
+    private String roleHint;
+
+    private String fieldName;
     
     public String getFieldName()
     {
@@ -31,6 +33,16 @@ public final class ComponentRequirement
         this.role = role;
     }
 
+    public String getRoleHint()
+    {
+        return roleHint;
+    }
+
+    public void setRoleHint( String roleHint )
+    {
+        this.roleHint = roleHint;
+    }
+
     public String toString()
     {
         return "org.codehaus.plexus.component.repository.ComponentRequirement{" +
@@ -38,6 +50,4 @@ public final class ComponentRequirement
                 ", fieldName='" + fieldName + "'" +
                 "}";
     }
-
-
 }
