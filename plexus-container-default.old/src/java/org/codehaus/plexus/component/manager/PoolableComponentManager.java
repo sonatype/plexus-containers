@@ -2,7 +2,6 @@ package org.codehaus.plexus.component.manager;
 
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.util.SweeperPool;
 
 /**
@@ -29,7 +28,7 @@ public class PoolableComponentManager
         throws Exception
     {
         super.initialize();
-        pool = newSeeperPool( getConfiguration(), null );
+        pool = newSeeperPool( getConfiguration() );
     }
 
     /**
@@ -86,41 +85,20 @@ public class PoolableComponentManager
      *
      *
      * @param config the custom configuration for the pool
-     * @param defaultConfig the configuration used to fill out any gaps in
      * the custom configuration.
      * @return a new ObjectPool
      */
-    private SweeperPool newSeeperPool( Configuration config, Configuration defaultConfig )
+    private SweeperPool newSeeperPool( Configuration config )
     {
-        if ( config == null )
-        {
-            config = new DefaultConfiguration( "" );
-        }
+        int sweepInterval = config.getChild( "sweep-interval" ).getValueAsInteger( 5 );
 
-        if ( defaultConfig == null )
-        {
-            defaultConfig = new DefaultConfiguration( "" );
-        }
+        int minCapacity = config.getChild( "min-capacity" ).getValueAsInteger( 3 );
 
-        int sweepInterval =
-            config.getChild( "sweep-interval" ).getValueAsInteger(
-                defaultConfig.getChild( "sweep-interval" ).getValueAsInteger( 5 ) );
+        int maxCapacity = config.getChild( "max-capacity" ).getValueAsInteger( 30 );
 
-        int minCapacity =
-            config.getChild( "min-capacity" ).getValueAsInteger(
-                defaultConfig.getChild( "min-capacity" ).getValueAsInteger( 3 ) );
+        int triggerSize = config.getChild( "trigger-size" ).getValueAsInteger( 15 );
 
-        int maxCapacity =
-            config.getChild( "max-capacity" ).getValueAsInteger(
-                defaultConfig.getChild( "max-capacity" ).getValueAsInteger( 30 ) );
-
-        int triggerSize =
-            config.getChild( "trigger-size" ).getValueAsInteger(
-                defaultConfig.getChild( "trigger-size" ).getValueAsInteger( 15 ) );
-
-        int initialCapacity =
-            config.getChild( "initial-capacity" ).getValueAsInteger(
-                defaultConfig.getChild( "initial-capacity" ).getValueAsInteger( 10 ) );
+        int initialCapacity = config.getChild( "initial-capacity" ).getValueAsInteger( 10 );
 
         return new SweeperPool( maxCapacity,
                                 minCapacity,
