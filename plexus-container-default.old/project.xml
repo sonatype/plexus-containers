@@ -25,7 +25,7 @@
   <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10080</issueTrackingUrl>
 
   <siteAddress>plexus.codehaus.org</siteAddress>
-  <siteDirectory>/www/plexus.codehaus.org</siteDirectory>
+  <siteDirectory>/www/plexus.codehaus.org/plexus-container</siteDirectory>
 
   <repository>
     <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvspublic:plexus/plexus-container</connection>
