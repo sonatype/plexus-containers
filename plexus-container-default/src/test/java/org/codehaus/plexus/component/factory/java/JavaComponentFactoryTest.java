@@ -26,6 +26,8 @@ package org.codehaus.plexus.component.factory.java;
 
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.factory.Component;
 import org.codehaus.plexus.component.factory.ComponentImplA;
 import org.codehaus.plexus.component.factory.ComponentImplB;
@@ -34,13 +36,15 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 import junit.framework.TestCase;
 
+import java.util.AbstractMap;
+
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
 public class JavaComponentFactoryTest
-    extends TestCase
+    extends PlexusTestCase
 {
     public void testComponentCreation()
         throws Exception
@@ -57,7 +61,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), null );
+        Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
 
         assertNotNull( component );
     }
@@ -77,7 +81,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), null );
+        factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
     }
 
     public void testInstanciationOfAAbstractComponent()
@@ -89,19 +93,15 @@ public class JavaComponentFactoryTest
 
         componentDescriptor.setRole( Component.class.getName() );
 
-        componentDescriptor.setImplementation( ComponentImplB.class.getName() );
+        componentDescriptor.setImplementation( AbstractMap.class.getName() );
 
         ClassWorld classWorld = new ClassWorld();
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        DefaultPlexusContainer container = new DefaultPlexusContainer();
-
-//        container.
-
         try
         {
-            factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), container );
+            factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), getContainer() );
 
             fail( "Expected ComponentInstantiationException when instanciating a abstract class." );
         }
