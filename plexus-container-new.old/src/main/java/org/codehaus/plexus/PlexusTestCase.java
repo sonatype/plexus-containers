@@ -9,28 +9,15 @@ import java.io.InputStreamReader;
 public class PlexusTestCase
     extends TestCase
 {
-    /** Plexus container to run test in. */
-    DefaultPlexusContainer container;
+    private DefaultPlexusContainer container;
 
-    /**
-     * Basedir for all file I/O. Important when running tests from
-     * the reactor.
-     */
     public String basedir = System.getProperty( "basedir" );
 
-    /**
-     * Constructor.
-     *
-     *  @param testName
-     */
     public PlexusTestCase( String testName )
     {
         super( testName );
     }
 
-    /**
-     * Set up the test-case by starting the container.
-     */
     protected void setUp()
         throws Exception
     {
@@ -72,6 +59,8 @@ public class PlexusTestCase
 
         container.addContextValue( "plexus.home", System.getProperty( "plexus.home" ) );
 
+        customizeContext();
+
         container.setConfigurationResource( new InputStreamReader( configuration ) );
 
         container.initialize();
@@ -79,15 +68,16 @@ public class PlexusTestCase
         container.start();
     }
 
-    public InputStream getCustomConfiguration()
+    protected void customizeContext()
+    {
+    }
+
+    protected InputStream getCustomConfiguration()
         throws Exception
     {
         return null;
     }
 
-    /**
-     * Tear down the test-case by stopping the container container manager..
-     */
     protected void tearDown()
         throws Exception
     {
@@ -95,33 +85,17 @@ public class PlexusTestCase
         container = null;
     }
 
-    /**
-     * Get the container container manager.
-     *
-     * @return The container manager.
-     */
     protected DefaultPlexusContainer getContainer()
     {
         return container;
     }
 
-    /**
-     * Get the configuration for this test.
-     *
-     * @return Configuration for this test.
-     *
-     * @throws Exception If an error occurs retrieve the container configuration.
-     */
     protected InputStream getConfiguration()
         throws Exception
     {
         return getConfiguration( null );
     }
 
-    /** Retrieve the default Plexus configuration.
-     *
-     *  @return The configuration.
-     */
     protected InputStream getConfiguration( String subname )
         throws Exception
     {
@@ -145,34 +119,16 @@ public class PlexusTestCase
         return configStream;
     }
 
-    /**
-     *  Retrieve a test resource that is in the same package as the test case.
-     *
-     *  @param resource Resource to find.
-     *
-     *  @return The input stream or null if the resource couldn't be located.
-     */
     protected InputStream getResourceAsStream( String resource )
     {
         return getClass().getResourceAsStream( resource );
     }
 
-    /**
-     * Get the classloader used by the testcase.
-     *
-     * @return The classloader used by test case.
-     */
     protected ClassLoader getClassLoader()
     {
         return getClass().getClassLoader();
     }
 
-    /**
-     *
-     * @param componentKey
-     * @return
-     * @throws Exception
-     */
     protected Object lookup( String componentKey )
         throws Exception
     {
@@ -191,23 +147,11 @@ public class PlexusTestCase
         getContainer().release( component );
     }
 
-    // Some convenience methods for retrieving files in tests.
-
-    /**
-     * Get test input file.
-     *
-     * @param path Path to test input file.
-     */
     public String getTestFile( String path )
     {
         return new File( basedir, path ).getAbsolutePath();
     }
 
-    /**
-     * Get test input file.
-     *
-     * @param path Path to test input file.
-     */
     public String getTestFile( String basedir, String path )
     {
         return new File( basedir, path ).getAbsolutePath();
