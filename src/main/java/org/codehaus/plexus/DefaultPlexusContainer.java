@@ -117,6 +117,8 @@ public class DefaultPlexusContainer
 
     private Map realmAliases;
 
+    public static final String BOOTSTRAP_CONFIGURATION = "org/codehaus/plexus/plexus-bootstrap.xml";
+
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -889,7 +891,7 @@ public class DefaultPlexusContainer
     {
         // System userConfiguration
 
-        InputStream is = coreRealm.getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
+        InputStream is = coreRealm.getResourceAsStream( BOOTSTRAP_CONFIGURATION );
 
         if ( is == null )
         {

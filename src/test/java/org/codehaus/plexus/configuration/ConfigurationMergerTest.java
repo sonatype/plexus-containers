@@ -24,13 +24,13 @@ package org.codehaus.plexus.configuration;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
-import org.codehaus.plexus.component.repository.io.PlexusTools;
+
+import junit.framework.TestCase;
 
 /**
  *
@@ -62,7 +62,7 @@ public class ConfigurationMergerTest
         user = PlexusTools.buildConfiguration( new InputStreamReader( userStream ) );
 
         InputStream systemStream =
-            Thread.currentThread().getContextClassLoader().getResourceAsStream( "org/codehaus/plexus/plexus.conf" );
+            Thread.currentThread().getContextClassLoader().getResourceAsStream( DefaultPlexusContainer.BOOTSTRAP_CONFIGURATION );
 
         assertNotNull( systemStream );
 
