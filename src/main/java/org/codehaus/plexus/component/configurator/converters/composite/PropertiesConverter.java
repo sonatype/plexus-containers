@@ -29,7 +29,6 @@ import org.codehaus.plexus.component.configurator.converters.AbstractConfigurati
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 import java.util.Properties;
 
@@ -73,24 +72,12 @@ public class PropertiesConverter
         return retValue;
     }
 
-    private void addEntry( Properties properties, String element, PlexusConfiguration child, ComponentDescriptor componentDescriptor )
+    private void addEntry( Properties properties, String element, PlexusConfiguration property, ComponentDescriptor componentDescriptor )
     	throws ComponentConfigurationException
     {
         String name;
 
-        try
-        {
-            name = child.getChild( "name" ).getValue();
-        }
-        catch ( PlexusConfigurationException e )
-        {
-            String msg = "Error occured while configuring component: " + componentDescriptor.getHumanReadableKey() + ". " +
-            "Converter: java.util.Properties. Trying to convert the configuration element: '" + element + "', missing child element 'name'.";
-
-            throw new ComponentConfigurationException( msg );
-        }
-
-        String value = child.getChild( "value" ).getValue( null );
+        name = property.getChild( "name" ).getValue( null );
 
         if ( name == null )
         {
@@ -99,6 +86,8 @@ public class PropertiesConverter
 
             throw new ComponentConfigurationException( msg );
         }
+
+        String value = property.getChild( "value" ).getValue( "" );
 
         properties.put( name, value );
     }
