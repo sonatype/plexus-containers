@@ -8,6 +8,8 @@ import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
+import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
@@ -71,6 +73,8 @@ public class DefaultPlexusContainer
     private ComponentManagerManager componentManagerManager;
 
     private LifecycleHandlerManager lifecycleHandlerManager;
+
+    private ComponentDiscovererManager componentDiscovererManager;
 
     // ----------------------------------------------------------------------
     //  Constructors
@@ -400,11 +404,31 @@ public class DefaultPlexusContainer
 
         // Should be safe now to lookup any component aside from the cmm and lhm
 
+        discoverComponents();
+
         initializeLoggerManager();
 
         initializeContext();
 
         initializeSystemProperties();
+    }
+
+    private void discoverComponents()
+        throws Exception
+    {
+        for ( Iterator i = componentDiscovererManager.getComponentDiscoverers().iterator(); i.hasNext(); )
+        {
+            ComponentDiscoverer componentDiscoverer = (ComponentDiscoverer) i.next();
+
+            List componentDescriptors = componentDiscoverer.findComponents( classRealm.getClassLoader() );
+
+            for ( Iterator j = componentDescriptors.iterator(); j.hasNext(); )
+            {
+                ComponentDescriptor componentDescriptor = (ComponentDescriptor) j.next();
+
+                componentRepository.addComponentDescriptor( componentDescriptor );
+            }
+        }
     }
 
     public void start()
@@ -682,6 +706,12 @@ public class DefaultPlexusContainer
         componentManagerManager = (ComponentManagerManager) builder.build( c );
 
         componentManagerManager.setLifecycleHandlerManager( lifecycleHandlerManager );
+
+        // Component discoverer manager
+
+        c = configuration.getChild( "component-discoverer-manager" );
+
+        componentDiscovererManager = (ComponentDiscovererManager) builder.build( c );
     }
 
     private void initializeSystemProperties()
