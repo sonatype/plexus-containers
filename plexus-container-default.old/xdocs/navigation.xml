@@ -8,7 +8,7 @@
   <organizationLogo href="/images/jakarta-logo.gif">Jakarta</organizationLogo>
   <body>
     <links>
-       <item name="Plexus Home"                   href="http://plexus.werken.com"/>
+       <item name="Plexus Home"                   href="http://plexus.codehaus.org"/>
     </links>
     <menu name="Plexus">
       <item name="Main"          				href="/index.html"/>
