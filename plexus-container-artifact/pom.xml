@@ -3,12 +3,11 @@
   <parent>
     <groupId>plexus</groupId>
     <artifactId>plexus-containers</artifactId>
-    <version>1.0</version>
+    <version>1.0-alpha-2</version>
   </parent>
   <groupId>plexus</groupId>
   <artifactId>plexus-container-artifact</artifactId>
   <name>Plexus Artifact-Enabled Container</name>
-  <version>1.0-alpha-2-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>plexus</groupId>
