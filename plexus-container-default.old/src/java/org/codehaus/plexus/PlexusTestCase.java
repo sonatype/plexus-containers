@@ -18,6 +18,9 @@ public class PlexusTestCase
 {
     protected DefaultPlexusContainer container;
 
+    /**
+     * @deprecated Use getBasedir(); instead of accessing this variable directly.
+     */
     public String basedir;
 
     public PlexusTestCase()
@@ -139,8 +142,7 @@ public class PlexusTestCase
 
         String config = null;
 
-        if ( subname == null
-            || subname.equals( "" ) )
+        if ( subname == null || subname.equals( "" ) )
         {
             config = base + ".xml";
         }
@@ -164,6 +166,10 @@ public class PlexusTestCase
         return getClass().getClassLoader();
     }
 
+    // ----------------------------------------------------------------------
+    // Container access
+    // ----------------------------------------------------------------------
+
     protected Object lookup( String componentKey )
         throws Exception
     {
@@ -181,6 +187,10 @@ public class PlexusTestCase
     {
         getContainer().release( component );
     }
+
+    // ----------------------------------------------------------------------
+    // Helper methods for sub classes
+    // ----------------------------------------------------------------------
 
     /**
      * @deprecated Use String getTestPath() instead.
@@ -212,7 +222,7 @@ public class PlexusTestCase
     {
         if ( basedir == null )
         {
-            throw new RuntimeException( "basedir isn't set." );
+            fail( "'basedir' isn't set." );
         }
 
         return basedir;
