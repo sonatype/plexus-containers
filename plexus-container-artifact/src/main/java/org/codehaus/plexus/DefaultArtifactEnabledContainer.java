@@ -70,7 +70,7 @@ public class DefaultArtifactEnabledContainer
 
     public void addComponent( Artifact component,
                               ArtifactResolver artifactResolver,
-                              Set remoteRepositories,
+                              List remoteRepositories,
                               ArtifactRepository localRepository,
                               ArtifactMetadataSource sourceReader,
                               ArtifactFilter filter )
