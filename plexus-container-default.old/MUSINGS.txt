@@ -36,17 +36,6 @@ are very detailed and specific, while others are more general.  -pete
 - Not sure why PlexusContainer even exists ... why not just have a
   ComponentRepository? 
 
-- Singleton instantiation pattern seems poorly named.  I think
-  ThreadSafe would be better.  This singleton name lead to confusion
-  on irc with one of our users.  I think ThreadSafe is less confusing
-  with the design pattern called Singleton.
-
-  Also, as it stands there is a severe implementation problem with
-  it.  If one client is using the "singleton" and another is as
-  well, if the first client release()s the "singleton", it screws the
-  second client that was using the "singleton" because the singleton
-  would have been disposed().
-
 - Comments in ComponentDescriptor refer that unidentified component as
   having an 'id' of '*'.  This doesn't appear to be the case.
   Instead, it appears they are null instead.
