@@ -83,6 +83,12 @@
     </component>
 
     <component>
+      <role>org.codehaus.plexus.test.ServiceE</role>
+      <implementation>org.codehaus.plexus.test.DefaultServiceE</implementation>
+      <lifecycle-handler>plexus-configurable</lifecycle-handler>
+    </component>
+    
+    <component>
       <role>org.codehaus.plexus.test.ServiceH</role>
       <implementation>org.codehaus.plexus.test.DefaultServiceH</implementation>
       <lifecycle-handler>arbitrary</lifecycle-handler>

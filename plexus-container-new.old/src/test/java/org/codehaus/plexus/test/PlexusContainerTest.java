@@ -107,7 +107,35 @@ public class PlexusContainerTest
 
         assertEquals( true, serviceB.stop );
     }
-
+    
+    public void testConfigurableLifecyclePassage()
+        throws Exception
+    {
+        DefaultServiceE serviceE = (DefaultServiceE) container.lookup( ServiceE.ROLE );
+    
+        // Make sure the component is alive.
+        assertNotNull( serviceE );
+    
+        // Make sure the component went through all the lifecycle phases
+        assertEquals( true, serviceE.enableLogging );
+    
+        assertEquals( true, serviceE.contextualize );
+    
+        assertEquals( true, serviceE.initialize );
+    
+        assertEquals( true, serviceE.start );
+    
+        assertEquals( false, serviceE.stop );
+        
+        assertEquals( true, serviceE.serviced );
+    
+        assertEquals( true, serviceE.configured );
+    
+        container.release( serviceE );
+    
+        assertEquals( true, serviceE.stop );
+    }
+    
     /*
      * Check that we can get references to a single component with a role
      * hint.

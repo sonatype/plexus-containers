@@ -6,12 +6,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
 
+import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.classworlds.ClassRealm;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -65,7 +63,7 @@ public abstract class AbstractComponentDiscoverer
         }
         catch ( Exception e )
         {
-            classRealm.display();
+            //classRealm.display();
 
             e.printStackTrace();
         }
