@@ -53,10 +53,6 @@ package org.codehaus.plexus.context;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import org.apache.avalon.framework.context.Context;
-import org.apache.avalon.framework.context.ContextException;
-import org.apache.avalon.framework.context.Resolvable;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,62 +65,6 @@ import java.util.Map;
 public class DefaultContextTest
     extends TestCase
 {
-    private static class ResolvableString implements Resolvable
-    {
-        private String content;
-
-        public ResolvableString( String content )
-        {
-            this.content = content;
-        }
-
-        public ResolvableString()
-        {
-            this( "This is a ${test}." );
-        }
-
-        public Object resolve( Context context )
-            throws ContextException
-        {
-            int index = this.content.indexOf( "${" );
-
-            if ( index < 0 )
-            {
-                return this.content;
-            }
-
-            StringBuffer buf = new StringBuffer( this.content.substring( 0, index ) );
-
-            while ( index >= 0 && index <= this.content.length() )
-            {
-                index += 2;
-                int end = this.content.indexOf( "}", index );
-
-                if ( end < 0 )
-                {
-                    end = this.content.length();
-                }
-
-                buf.append( context.get( this.content.substring( index, end ) ) );
-                end++;
-
-                index = this.content.indexOf( "${", end ) + 2;
-
-                if ( index < 2 )
-                {
-                    index = -1;
-                    buf.append( this.content.substring( end, this.content.length() ) );
-                }
-
-                if ( index >= 0 && index <= this.content.length() )
-                {
-                    buf.append( this.content.substring( end, index ) );
-                }
-            }
-
-            return buf.toString();
-        }
-    }
 
     public DefaultContextTest( String name )
     {
@@ -181,36 +121,6 @@ public class DefaultContextTest
         {
             assertTrue( "Value is null", "value1".equals( context.get( "key1" ) ) );
         }
-    }
-
-    public void testResolveableObject()
-        throws ContextException
-    {
-        DefaultContext context = new DefaultContext();
-        context.put( "key1", new ResolvableString() );
-        context.put( "test", "Cool Test" );
-        context.makeReadOnly();
-
-        Context newContext = context;
-        assertTrue( "Cool Test".equals( newContext.get( "test" ) ) );
-        assertTrue( !"This is a ${test}.".equals( newContext.get( "key1" ) ) );
-        assertTrue( "This is a Cool Test.".equals( newContext.get( "key1" ) ) );
-    }
-
-    public void testCascadingContext()
-        throws ContextException
-    {
-        DefaultContext parent = new DefaultContext();
-        parent.put( "test", "ok test" );
-        parent.makeReadOnly();
-        DefaultContext child = new DefaultContext( parent );
-        child.put( "check", new ResolvableString( "This is an ${test}." ) );
-        child.makeReadOnly();
-        Context context = child;
-
-        assertTrue( "ok test".equals( context.get( "test" ) ) );
-        assertTrue( !"This is an ${test}.".equals( context.get( "check" ) ) );
-        assertTrue( "This is an ok test.".equals( context.get( "check" ) ) );
     }
 
     public void testHiddenItems()

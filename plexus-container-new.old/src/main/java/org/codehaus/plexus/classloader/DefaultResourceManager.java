@@ -1,8 +1,7 @@
 package org.codehaus.plexus.classloader;
 
-import org.apache.avalon.framework.configuration.Configurable;
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
+import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.ConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.io.File;
@@ -17,7 +16,7 @@ import java.net.URL;
  */
 public class DefaultResourceManager
     extends AbstractLogEnabled
-    implements Configurable, ResourceManager
+    implements ResourceManager
 {
     /** The classloader to use for loading resources and classes. */
     private PlexusClassLoader plexusClassLoader;

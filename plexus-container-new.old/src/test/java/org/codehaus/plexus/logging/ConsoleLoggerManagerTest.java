@@ -1,8 +1,9 @@
 package org.codehaus.plexus.logging;
 
-import org.apache.avalon.framework.configuration.Configuration;
+
 
 import org.codehaus.plexus.configuration.DefaultConfiguration;
+import org.codehaus.plexus.configuration.Configuration;
 
 /**
  * Test for {@link ConsoleLoggerManager} and {@link ConsoleLogger}.

@@ -1,7 +1,5 @@
 package org.codehaus.plexus.configuration.xstream;
 
-import org.apache.avalon.framework.configuration.Configuration;
-
 /**
  *
  *
@@ -15,7 +13,7 @@ public class Person
 
     private String name;
 
-    private Configuration configuration;
+    private org.codehaus.plexus.configuration.Configuration configuration;
 
     private String occupation;
 
@@ -29,7 +27,7 @@ public class Person
         return name;
     }
 
-    public Configuration getConfiguration()
+    public org.codehaus.plexus.configuration.Configuration getConfiguration()
     {
         return configuration;
     }

@@ -1,8 +1,5 @@
 package org.codehaus.plexus.configuration;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-
 /**
  * This is an abstract <code>Configuration</code> implementation that deals
  * with methods that can be abstracted away from underlying implementations.
@@ -17,27 +14,9 @@ import org.apache.avalon.framework.configuration.ConfigurationException;
 public abstract class AbstractConfiguration
     implements PlexusConfiguration
 {
-    /**
-     * Returns the prefix of the namespace.  This is only used as a serialization
-     * hint, therefore is not part of the client API.  It should be included in
-     * all Configuration implementations though.
-     * @return A non-null String (defaults to "")
-     * @throws org.apache.avalon.framework.configuration.ConfigurationException if no prefix was defined (prefix is
-     * <code>null</code>.
-     * @since 4.1
-     */
     protected abstract String getPrefix()
         throws ConfigurationException;
 
-    /**
-     * Returns the value of the configuration element as an <code>int</code>.
-     *
-     * Hexadecimal numbers begin with 0x, Octal numbers begin with 0o and binary
-     * numbers begin with 0b, all other values are assumed to be decimal.
-     *
-     * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
-     * @return the value
-     */
     public int getValueAsInteger()
         throws ConfigurationException
     {
@@ -57,15 +36,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the configuration element as an <code>int</code>.
-     *
-     * Hexadecimal numbers begin with 0x, Octal numbers begin with 0o and binary
-     * numbers begin with 0b, all other values are assumed to be decimal.
-     *
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public int getValueAsInteger( int defaultValue )
     {
         try
@@ -78,15 +48,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the configuration element as a <code>long</code>.
-     *
-     * Hexadecimal numbers begin with 0x, Octal numbers begin with 0o and binary
-     * numbers begin with 0b, all other values are assumed to be decimal.
-     *
-     * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
-     * @return the value
-     */
     public long getValueAsLong()
         throws ConfigurationException
     {
@@ -105,15 +66,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the configuration element as a <code>long</code>.
-     *
-     * Hexadecimal numbers begin with 0x, Octal numbers begin with 0o and binary
-     * numbers begin with 0b, all other values are assumed to be decimal.
-     *
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public long getValueAsLong( long defaultValue )
     {
         try
@@ -126,12 +78,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the configuration element as a <code>float</code>.
-     *
-     * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
-     * @return the value
-     */
     public float getValueAsFloat()
         throws ConfigurationException
     {
@@ -150,12 +96,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the configuration element as a <code>float</code>.
-     *
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public float getValueAsFloat( float defaultValue )
     {
         try
@@ -168,12 +108,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the configuration element as a <code>boolean</code>.
-     *
-     * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
-     * @return the value
-     */
     public boolean getValueAsBoolean()
         throws ConfigurationException
     {
@@ -197,12 +131,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the configuration element as a <code>boolean</code>.
-     *
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public boolean getValueAsBoolean( boolean defaultValue )
     {
         try
@@ -215,12 +143,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the configuration element as a <code>String</code>.
-     *
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public String getValue( String defaultValue )
     {
         try
@@ -233,17 +155,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the attribute specified by its name as an
-     * <code>int</code>.
-     *
-     * Hexadecimal numbers begin with 0x, Octal numbers begin with 0o and binary
-     * numbers begin with 0b, all other values are assumed to be decimal.
-     *
-     * @param name the name of the attribute
-     * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
-     * @return the value
-     */
     public int getAttributeAsInteger( String name )
         throws ConfigurationException
     {
@@ -262,17 +173,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the attribute specified by its name as an
-     * <code>int</code>.
-     *
-     * Hexadecimal numbers begin with 0x, Octal numbers begin with 0o and binary
-     * numbers begin with 0b, all other values are assumed to be decimal.
-     *
-     * @param name the name of the attribute
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public int getAttributeAsInteger( String name, int defaultValue )
     {
         try
@@ -285,17 +185,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the attribute specified by its name as a
-     * <code>long</code>.
-     *
-     * Hexadecimal numbers begin with 0x, Octal numbers begin with 0o and binary
-     * numbers begin with 0b, all other values are assumed to be decimal.
-     *
-     * @param name the name of the attribute
-     * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
-     * @return the value
-     */
     public long getAttributeAsLong( String name )
         throws ConfigurationException
     {
@@ -315,17 +204,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the attribute specified by its name as a
-     * <code>long</code>.
-     *
-     * Hexadecimal numbers begin with 0x, Octal numbers begin with 0o and binary
-     * numbers begin with 0b, all other values are assumed to be decimal.
-     *
-     * @param name the name of the attribute
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public long getAttributeAsLong( String name, long defaultValue )
     {
         try
@@ -338,14 +216,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the attribute specified by its name as a
-     * <code>float</code>.
-     *
-     * @param name the name of the attribute
-     * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
-     * @return the value
-     */
     public float getAttributeAsFloat( String name )
         throws ConfigurationException
     {
@@ -364,14 +234,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the attribute specified by its name as a
-     * <code>float</code>.
-     *
-     * @param name the name of the attribute
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public float getAttributeAsFloat( String name, float defaultValue )
     {
         try
@@ -384,14 +246,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the attribute specified by its name as a
-     * <code>boolean</code>.
-     *
-     * @param name the name of the attribute
-     * @throws org.apache.avalon.framework.configuration.ConfigurationException if an error occurs
-     * @return the value
-     */
     public boolean getAttributeAsBoolean( String name )
         throws ConfigurationException
     {
@@ -431,14 +285,6 @@ public abstract class AbstractConfiguration
             || value.equalsIgnoreCase( "0" );
     }
 
-    /**
-     * Returns the value of the attribute specified by its name as a
-     * <code>boolean</code>.
-     *
-     * @param name the name of the attribute
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public boolean getAttributeAsBoolean( String name, boolean defaultValue )
     {
         try
@@ -451,14 +297,6 @@ public abstract class AbstractConfiguration
         }
     }
 
-    /**
-     * Returns the value of the attribute specified by its name as a
-     * <code>String</code>.
-     *
-     * @param name the name of the attribute
-     * @param defaultValue the default value to return if value malformed or empty
-     * @return the value
-     */
     public String getAttribute( String name, String defaultValue )
     {
         try

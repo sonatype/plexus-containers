@@ -1,8 +1,8 @@
 package org.codehaus.plexus.logging;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.logger.Logger;
+import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.ConfigurationException;
+
 
 public abstract class AbstractLoggerManager
     implements LoggerManager

@@ -1,8 +1,6 @@
 package org.codehaus.plexus.lifecycle;
 
-import org.codehaus.plexus.lifecycle.AbstractLifecycleHandler;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.component.repository.ComponentRepository;
+
 
 /** An Avalon component lifecycle handler.
  *

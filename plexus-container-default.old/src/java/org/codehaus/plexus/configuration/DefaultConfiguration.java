@@ -1,7 +1,5 @@
 package org.codehaus.plexus.configuration;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -292,7 +290,7 @@ public class DefaultConfiguration
         }
 
         // Hack until we alter the configuration interface and move away from avalon.
-        ((PlexusConfiguration)configuration).setParent( this );
+        ( (PlexusConfiguration) configuration ).setParent( this );
 
         children.add( configuration );
     }

@@ -27,7 +27,7 @@ public class ClassicSingletonComponentManager
         {
             decrementConnectionCount();
 
-            if ( ! connected() )
+            if ( !connected() )
             {
                 dispose();
             }

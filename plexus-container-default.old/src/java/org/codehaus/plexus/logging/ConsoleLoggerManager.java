@@ -1,7 +1,7 @@
 package org.codehaus.plexus.logging;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.logger.Logger;
+import org.codehaus.plexus.configuration.Configuration;
+
 
 /**
  * Sample configuration.

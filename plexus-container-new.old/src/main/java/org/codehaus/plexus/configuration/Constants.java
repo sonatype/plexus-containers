@@ -85,6 +85,7 @@
  * SUCH DAMAGE.
  */
 package org.codehaus.plexus.configuration;
+
 /**
  * Constants used by this package
  *

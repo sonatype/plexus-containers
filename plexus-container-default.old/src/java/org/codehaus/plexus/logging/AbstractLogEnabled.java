@@ -1,7 +1,5 @@
 package org.codehaus.plexus.logging;
 
-import org.apache.avalon.framework.logger.LogEnabled;
-import org.apache.avalon.framework.logger.Logger;
 
 /**
  * Utility class to allow construction of easy components that will perform logging.

@@ -1,14 +1,18 @@
 package org.codehaus.plexus.hierarchy;
 
-import org.apache.avalon.framework.configuration.Configurable;
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.context.Context;
-import org.apache.avalon.framework.context.ContextException;
-import org.apache.avalon.framework.context.Contextualizable;
+
+
+
+
+
+
 
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.ConfigurationException;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 /**
@@ -16,8 +20,9 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
  *
  * @author <a href="mailto:mhw@kremvax.net">Mark Wilkinson</a>
  */
-public class TestServiceImpl
-    implements TestService, Contextualizable, Configurable
+public class
+    TestServiceImpl
+    implements TestService//, Contextualizable, Configurable
 {
     private PlexusContainer parentPlexus;
 

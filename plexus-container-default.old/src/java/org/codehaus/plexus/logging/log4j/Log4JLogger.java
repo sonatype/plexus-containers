@@ -9,7 +9,7 @@ import org.apache.log4j.Priority;
  * @author <a href="mailto:avalon-dev@jakarta.codehaus.org">Avalon Development Team</a>
  */
 class Log4JLogger
-    implements org.apache.avalon.framework.logger.Logger
+    implements org.codehaus.plexus.logging.Logger
 {
     //underlying implementation
     private Logger logger;
@@ -187,7 +187,7 @@ class Log4JLogger
      * @param name the subname of this logger
      * @return the new logger
      */
-    public org.apache.avalon.framework.logger.Logger getChildLogger( String name )
+    public org.codehaus.plexus.logging.Logger getChildLogger( String name )
     {
         return new Log4JLogger( Logger.getLogger( logger.getName() + "." + name ) );
     }

@@ -1,6 +1,5 @@
 package org.codehaus.plexus.logging;
 
-import org.apache.avalon.framework.logger.Logger;
 
 /**
  * Logger sending everything to the standard output streams.

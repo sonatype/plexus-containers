@@ -5,13 +5,13 @@ import junit.framework.TestCase;
 import java.io.StringReader;
 import java.util.List;
 
-import org.apache.avalon.framework.configuration.Configuration;
 import org.codehaus.plexus.configuration.xstream.Element;
 import org.codehaus.plexus.configuration.xstream.Message;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
+import org.codehaus.plexus.configuration.Configuration;
 
 /**
  *

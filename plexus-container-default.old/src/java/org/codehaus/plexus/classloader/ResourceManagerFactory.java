@@ -1,6 +1,6 @@
 package org.codehaus.plexus.classloader;
 
-import org.apache.avalon.framework.configuration.Configuration;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.factory.AbstractPlexusFactory;
 import org.codehaus.plexus.logging.LoggerManager;
 

@@ -1,13 +1,13 @@
 package org.codehaus.plexus;
 
-import org.apache.avalon.framework.configuration.Configuration;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.classloader.DefaultResourceManager;
 import org.codehaus.plexus.classloader.ResourceManagerFactory;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.ConfigurationMerger;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
@@ -360,8 +360,8 @@ public class DefaultPlexusContainer
             File configurationsDirectory = new File( s );
 
             if ( configurationsDirectory.exists()
-                 &&
-                 configurationsDirectory.isDirectory() )
+                &&
+                configurationsDirectory.isDirectory() )
             {
                 DirectoryScanner scanner = new DirectoryScanner();
 

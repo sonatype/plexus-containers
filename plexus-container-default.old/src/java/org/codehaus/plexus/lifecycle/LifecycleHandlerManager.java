@@ -1,12 +1,13 @@
 package org.codehaus.plexus.lifecycle;
 
 import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.apache.avalon.framework.context.Context;
+
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$

@@ -2,10 +2,8 @@ package org.codehaus.plexus.logging;
 
 import java.io.File;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.logger.Logger;
-
 import junit.framework.TestCase;
+import org.codehaus.plexus.configuration.Configuration;
 
 /**
  * Abtract base class for testing implementations of the {@link LoggerManager}

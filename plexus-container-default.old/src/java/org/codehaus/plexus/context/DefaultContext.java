@@ -1,9 +1,5 @@
 package org.codehaus.plexus.context;
 
-import org.apache.avalon.framework.context.Context;
-import org.apache.avalon.framework.context.ContextException;
-import org.apache.avalon.framework.context.Resolvable;
-
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
@@ -19,18 +15,18 @@ public class DefaultContext
     implements Context
 {
     /** */
-     private static  Hidden HIDDEN_MAKER = new Hidden();
+    private static Hidden HIDDEN_MAKER = new Hidden();
 
     /** Context data. */
-     private  Map contextData;
+    private Map contextData;
 
     /** Parent Context. */
-     private  Context parent;
+    private Context parent;
 
-     /** Is the context read only. */
-     private boolean readOnly;
+    /** Is the context read only. */
+    private boolean readOnly;
 
-     /**
+    /**
      * Create a Context with specified data and parent.
      *
      * @param contextData the context data
@@ -71,13 +67,6 @@ public class DefaultContext
         this( (Context) null );
     }
 
-    /**
-     * Retrieve an item from the Context.
-     *
-     * @param key the key of item
-     * @return the item stored in context
-     * @throws org.apache.avalon.framework.context.ContextException if item not present
-     */
     public Object get( Object key )
         throws ContextException
     {
@@ -90,11 +79,6 @@ public class DefaultContext
                 // Always fail.
                 String message = "Unable to locate " + key;
                 throw new ContextException( message );
-            }
-
-            if ( data instanceof Resolvable )
-            {
-                return ( (Resolvable) data ).resolve( this );
             }
 
             return data;

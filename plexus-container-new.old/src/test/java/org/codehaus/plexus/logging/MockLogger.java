@@ -7,7 +7,7 @@
  */
 package org.codehaus.plexus.logging;
 
-import org.apache.avalon.framework.logger.Logger;
+
 
 /**
  *

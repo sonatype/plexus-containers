@@ -1,8 +1,8 @@
 package org.codehaus.plexus.embed;
 
-import org.apache.avalon.framework.context.Contextualizable;
-import org.apache.avalon.framework.context.ContextException;
-import org.apache.avalon.framework.context.Context;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
+
 
 /**
  * @author  Ben Walding
@@ -24,7 +24,6 @@ public class MockComponent
         return foo;
     }
 
-    /** @see Contextualizable#contextualize */
     public void contextualize( Context context )
         throws ContextException
     {

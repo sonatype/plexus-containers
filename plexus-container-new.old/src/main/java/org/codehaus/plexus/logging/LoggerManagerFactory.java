@@ -1,6 +1,6 @@
 package org.codehaus.plexus.logging;
 
-import org.apache.avalon.framework.configuration.Configuration;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.factory.AbstractPlexusFactory;
 
 /**

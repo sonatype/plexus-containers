@@ -48,7 +48,7 @@ public class ConnectorGenerator
 
         ClassWriter cw = new ClassWriter( true );
 
-        String[] interfaces = new String[]{slashName( providerInterface ), CONNECTOR_INTERFACE };
+        String[] interfaces = new String[]{slashName( providerInterface ), CONNECTOR_INTERFACE};
 
         cw.visit( Constants.ACC_PUBLIC + Constants.ACC_SUPER, className, BASE_CLASS, interfaces, className );
 

@@ -1,7 +1,6 @@
 package org.codehaus.plexus.component.composition;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.ConfigurationResourceException;
 
 /**
  *

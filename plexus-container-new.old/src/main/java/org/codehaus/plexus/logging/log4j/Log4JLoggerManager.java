@@ -1,13 +1,11 @@
 package org.codehaus.plexus.logging.log4j;
 
-import org.apache.avalon.framework.activity.Initializable;
-import org.apache.avalon.framework.activity.Startable;
-import org.apache.avalon.framework.configuration.Configurable;
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.logger.Logger;
+
 import org.apache.log4j.PropertyConfigurator;
+import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.ConfigurationException;
 import org.codehaus.plexus.logging.AbstractLoggerManager;
+import org.codehaus.plexus.logging.Logger;
 
 import java.util.Properties;
 
@@ -44,7 +42,6 @@ import java.util.Properties;
  */
 public class Log4JLoggerManager
     extends AbstractLoggerManager
-    implements Configurable, Initializable, Startable
 {
     // Sink tags.
 
@@ -114,7 +111,6 @@ public class Log4JLoggerManager
     // Lifecycle Management
     // ----------------------------------------------------------------------
 
-    /** @see Configurable#configure */
     public void configure( Configuration configuration )
         throws ConfigurationException
     {
@@ -122,7 +118,6 @@ public class Log4JLoggerManager
         loggerConfigurations = configuration.getChildren( LOGGER_TAG );
     }
 
-    /** @see Initializable#initialize */
     public void initialize()
         throws Exception
     {
@@ -146,14 +141,12 @@ public class Log4JLoggerManager
         }
     }
 
-    /** @see Startable#start */
     public void start()
         throws Exception
     {
         PropertyConfigurator.configure( log4JProperties );
     }
 
-    /** @see Startable#stop */
     public void stop()
         throws Exception
     {

@@ -4,24 +4,18 @@
 
 package org.codehaus.plexus;
 
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.ConfigurationException;
+import org.codehaus.plexus.configuration.ConfigurationResourceException;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
-
-import org.apache.avalon.framework.activity.Initializable;
-import org.apache.avalon.framework.activity.Startable;
-import org.apache.avalon.framework.configuration.Configurable;
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.context.Context;
-import org.apache.avalon.framework.context.ContextException;
-import org.apache.avalon.framework.context.Contextualizable;
-
-import org.codehaus.classworlds.ClassWorld;
-
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.ConfigurationResourceException;
 
 /**
  * Implementation of the <code>PlexusContainer</code> interface that can
@@ -32,8 +26,10 @@ import org.codehaus.plexus.configuration.ConfigurationResourceException;
  * @version $Revision$
  */
 public final class ComponentPlexusContainer
-    implements PlexusContainer, Contextualizable, Configurable,
-    Initializable, Startable
+    implements PlexusContainer
+
+    //, Contextualizable, Configurable,
+    // Initializable, Startable
 {
     /**
      * <code>Configuration</code> element name: Plexus configuration resource.

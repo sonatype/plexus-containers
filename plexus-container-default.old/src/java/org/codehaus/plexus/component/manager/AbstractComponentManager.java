@@ -1,8 +1,9 @@
 package org.codehaus.plexus.component.manager;
 
-import org.apache.avalon.framework.logger.Logger;
+
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
+import org.codehaus.plexus.logging.Logger;
 
 /**
  * Base InstanceManager

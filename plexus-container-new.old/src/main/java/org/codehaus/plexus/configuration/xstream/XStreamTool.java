@@ -1,10 +1,10 @@
 package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.alias.CannotResolveClassException;
 import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.alias.ElementMapper;
+import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.objecttree.reflection.JavaReflectionObjectFactory;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;

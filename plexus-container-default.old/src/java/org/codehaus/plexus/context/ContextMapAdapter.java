@@ -1,7 +1,5 @@
 package org.codehaus.plexus.context;
 
-import org.apache.avalon.framework.context.Context;
-import org.apache.avalon.framework.context.ContextException;
 
 import java.util.HashMap;
 

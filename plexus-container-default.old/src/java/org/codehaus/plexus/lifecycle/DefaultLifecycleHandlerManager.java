@@ -1,11 +1,11 @@
 package org.codehaus.plexus.lifecycle;
 
-import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.apache.avalon.framework.context.Context;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.logging.LoggerManager;
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *

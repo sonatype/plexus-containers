@@ -1,10 +1,10 @@
 package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.configuration.xstream.XStreamTool;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
-import org.apache.avalon.framework.configuration.Configuration;
+import org.codehaus.plexus.configuration.xstream.XStreamTool;
 
 import java.io.StringReader;
 

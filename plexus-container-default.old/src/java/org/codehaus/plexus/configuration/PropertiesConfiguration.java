@@ -1,6 +1,5 @@
 package org.codehaus.plexus.configuration;
 
-import org.apache.avalon.framework.configuration.Configuration;
 
 import java.util.Properties;
 

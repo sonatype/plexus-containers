@@ -9,7 +9,6 @@ import java.net.URL;
 
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.logging.ConsoleLogger;
-import org.apache.avalon.framework.configuration.Configuration;
 
 /**
  *
@@ -85,7 +84,7 @@ public class DefaultResourceManagerTest
                        "<nothing>nothing</nothing>" +
                      "</resources>";
 
-        Configuration configuration = builder.parse( new StringReader( xml ) );
+        org.codehaus.plexus.configuration.Configuration configuration = builder.parse( new StringReader( xml ) );
 
         rm.configure( configuration );
 

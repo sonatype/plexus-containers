@@ -86,8 +86,6 @@
  */
 package org.codehaus.plexus.configuration;
 
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.configuration.Configuration;
 
 import java.util.ArrayList;
 import java.util.HashSet;

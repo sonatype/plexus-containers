@@ -1,8 +1,9 @@
 package org.codehaus.plexus.component.repository;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.context.Context;
+
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.factory.AbstractPlexusFactory;
 import org.codehaus.plexus.logging.LoggerManager;
 

@@ -1,6 +1,7 @@
 package org.codehaus.plexus.component.repository;
 
-import org.apache.avalon.framework.configuration.Configuration;
+
+import org.codehaus.plexus.configuration.Configuration;
 
 import java.util.HashSet;
 import java.util.Set;

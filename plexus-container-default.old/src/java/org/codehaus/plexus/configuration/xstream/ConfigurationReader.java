@@ -1,7 +1,7 @@
 package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.xml.XMLReader;
-import org.apache.avalon.framework.configuration.ConfigurationException;
+import org.codehaus.plexus.configuration.ConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.LinkedList;

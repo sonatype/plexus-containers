@@ -5,7 +5,7 @@ import com.thoughtworks.xstream.converters.ConverterLookup;
 import com.thoughtworks.xstream.objecttree.ObjectTree;
 import com.thoughtworks.xstream.xml.XMLReader;
 import com.thoughtworks.xstream.xml.XMLWriter;
-import org.apache.avalon.framework.configuration.Configuration;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 public class ConfigurationConverter

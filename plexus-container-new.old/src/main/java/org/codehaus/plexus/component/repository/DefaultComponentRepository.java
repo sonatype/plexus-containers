@@ -1,7 +1,6 @@
 package org.codehaus.plexus.component.repository;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.context.Context;
+
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.manager.ComponentManager;
@@ -10,8 +9,10 @@ import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
+import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
@@ -128,9 +129,6 @@ public class DefaultComponentRepository
         return configuration;
     }
 
-    /**
-     * @see org.apache.avalon.framework.service.ServiceManager#hasService(java.lang.String)
-     */
     public synchronized boolean hasService( String role )
     {
         return getComponentDescriptors().containsKey( role );
@@ -160,9 +158,6 @@ public class DefaultComponentRepository
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    /**
-     * @see ComponentRepository#contextualize(org.apache.avalon.framework.context.Context)
-     */
     public void contextualize( Context context )
     {
         this.context = context;
