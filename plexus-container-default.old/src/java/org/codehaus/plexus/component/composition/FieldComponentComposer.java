@@ -1,9 +1,5 @@
 package org.codehaus.plexus.component.composition;
 
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentRequirement;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -13,21 +9,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
+
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
-public class FieldComponentComposer extends AbstractComponentComposer
+public class FieldComponentComposer
+    extends AbstractComponentComposer
 {
-    
-
     public List assembleComponent( final Object component,
                                    final ComponentDescriptor componentDescriptor,
                                    final PlexusContainer container )
             throws CompositionException
     {
-
         final List retValue = new LinkedList();
 
         final Set requirements = componentDescriptor.getRequirements();
@@ -55,16 +53,14 @@ public class FieldComponentComposer extends AbstractComponentComposer
         return retValue;
     }
 
-
     private List assignRequirementToField( final Object component,
-                                          final Field field,
-                                          final PlexusContainer container,
-                                          final ComponentRequirement requirement )
+                                           final Field field,
+                                           final PlexusContainer container,
+                                           final ComponentRequirement requirement )
             throws CompositionException
     {
         try
         {
-
             final List retValue;
 
             final String role = requirement.getRole();
@@ -124,7 +120,6 @@ public class FieldComponentComposer extends AbstractComponentComposer
         {
             throw new CompositionException( "Composition failed: " + e.getMessage() );
         }
-
     }
 
     protected Field findMatchingField( final Object component,
@@ -151,15 +146,15 @@ public class FieldComponentComposer extends AbstractComponentComposer
             catch ( ClassNotFoundException e )
             {
                 final StringBuffer msg = new StringBuffer( "Component Composition failed for component: ");
-                
+
                 msg.append( componentDescriptor.getHumanReadableKey() );
-                
-                msg.append( " Requirement class: '" );
+
+                msg.append( ": Requirement class: '" );
 
                 msg.append( requirement.getRole() );
 
                 msg.append( "' not found." );
-                
+
                 throw new CompositionException( msg.toString() );
             }
 
@@ -168,10 +163,8 @@ public class FieldComponentComposer extends AbstractComponentComposer
         return field;
     }
 
-
     protected Field getFieldByNameIncludingSuperclasses( final Class componentClass, final String fieldName )
     {
-
         if ( Object.class.equals( componentClass ) )
         {
             return null;
@@ -187,7 +180,6 @@ public class FieldComponentComposer extends AbstractComponentComposer
         {
             return getFieldByNameIncludingSuperclasses( componentClass.getSuperclass(), fieldName );
         }
-
     }
 
     protected Field getFieldByName( final Object component,
@@ -199,15 +191,14 @@ public class FieldComponentComposer extends AbstractComponentComposer
 
         if ( field == null )
         {
-
             final StringBuffer msg = new StringBuffer( "Component Composition failed. No field of name: '" );
 
             msg.append( fieldName );
 
             msg.append( "' exists in component: ");
-                
+
             msg.append( componentDescriptor.getHumanReadableKey() );
-                
+
             throw new CompositionException( msg.toString() );
         }
 
