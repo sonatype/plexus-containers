@@ -74,5 +74,25 @@ public final class XmlConfigurationTest
         assertEquals( value, configuration.getAttribute( key, defaultStr ) );
         assertEquals( defaultStr, configuration.getAttribute( "newKey", defaultStr ) );
     }
+
+    public void testGetChild()
+        throws Exception
+    {
+        XmlPlexusConfiguration child = (XmlPlexusConfiguration) configuration.getChild( "child" );
+
+        assertNotNull( child );
+
+        child.setValue( "child value" );
+
+        assertEquals( 1, configuration.getChildCount() );
+
+        child = (XmlPlexusConfiguration) configuration.getChild( "child" );
+
+        assertNotNull( child );
+
+        assertEquals( "child value", child.getValue() );
+
+        assertEquals( 1, configuration.getChildCount() );
+    }
 }
 
