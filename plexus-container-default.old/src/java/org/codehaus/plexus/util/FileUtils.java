@@ -1373,8 +1373,6 @@ public class FileUtils
 
        String sourcePath = sourceDirectory.getAbsolutePath();
 
-       System.err.println( "Copying from " + sourcePath + " to " + destinationDirectory.getAbsolutePath() );
-
        for ( int i = 0; i < files.length; i++ )
        {
            File file = files[i];
@@ -1385,11 +1383,8 @@ public class FileUtils
 
            File destination = new File( destinationDirectory, dest );
 
-           System.err.println( "destination: " + dest );
-
            if ( file.isFile() )
            {
-               System.out.println( "Copying file " + file.getAbsolutePath() + " to " + destination.getAbsolutePath() );
                destination = destination.getParentFile();
 
                FileUtils.copyFileToDirectory( file, destination );
