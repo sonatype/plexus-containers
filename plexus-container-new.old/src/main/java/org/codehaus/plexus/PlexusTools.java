@@ -1,6 +1,7 @@
 package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
@@ -33,7 +34,7 @@ public class PlexusTools
 
         xstreamTool.alias( "component", ComponentDescriptor.class );
 
-        xstreamTool.alias( "requirement", String.class );
+        xstreamTool.alias( "requirement", ComponentRequirement.class );
 
         ComponentDescriptor cd = (ComponentDescriptor) xstreamTool.build( (PlexusConfiguration) configuration, ComponentDescriptor.class );
 

@@ -29,7 +29,9 @@ So initially we are looking for
     <role>org.codehaus.plexus.component.composition.ComponentA</role>
     <implementation>org.codehaus.plexus.component.composition.DefaultComponentA</implementation>
     <requirements>
-      <requirement>org.codehaus.plexus.component.composition.ComponentB</requirement>
+      <requirement>
+          <role>org.codehaus.plexus.component.composition.ComponentB</role>
+      </requirement>
     </requirements>
     <configuration>
       <host>localhost</host>

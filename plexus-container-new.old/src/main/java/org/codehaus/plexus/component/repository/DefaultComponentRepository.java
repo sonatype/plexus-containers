@@ -5,6 +5,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentImplementatio
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
+import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
@@ -164,7 +165,16 @@ public class DefaultComponentRepository
             map.put( roleHint, componentDescriptor );
         }
 
-        compositionResolver.addComponentDescriptor( componentDescriptor );
+
+        try
+        {
+            compositionResolver.addComponentDescriptor( componentDescriptor );
+        }
+        catch ( CompositionException e )
+        {
+            throw new ComponentRepositoryException( e.getMessage() , e ); 
+        }
+
 
         componentDescriptors.put( componentDescriptor.getComponentKey(), componentDescriptor );
     }

@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.PlexusTools;
 
 import java.util.Set;
+import java.util.Iterator;
 
 /**
  *
@@ -24,8 +25,12 @@ public class ComponentDescriptorTest
             "  <role-hint>role-hint</role-hint>" +
             "  <component-profile>component-profile</component-profile>" +
             "  <requirements>" +
-            "    <requirement>c2</requirement>" +
-            "    <requirement>c3</requirement>" +
+            "    <requirement>" +
+            "      <role>c2</role>" +
+            "   </requirement>" +
+            "    <requirement>" +
+            "      <role>c3</role>" +
+            "   </requirement>" +
             "  </requirements>" +
             "</component>";
 
@@ -39,8 +44,28 @@ public class ComponentDescriptorTest
 
         Set requirements = c1.getRequirements();
 
-        assertTrue( requirements.contains( "c2" ) );
+        assertEquals( 2, requirements.size() );
 
-        assertTrue( requirements.contains( "c3" ) );
+        System.out.println( "req:" + requirements );
+
+        boolean containsC2 = false;
+        boolean containsC3 = false;
+        for ( Iterator iterator = requirements.iterator(); iterator.hasNext(); )
+        {
+            ComponentRequirement requirement = ( ComponentRequirement ) iterator.next();
+            if ( requirement.getRole().equals( "c2" ))
+            {
+                containsC2 = true;
+            }
+            else if ( requirement.getRole().equals( "c3" ))
+            {
+                containsC3 = true;
+            }
+
+        }
+
+        assertTrue( containsC2 );
+
+        assertTrue( containsC3 );
     }
 }

@@ -44,8 +44,12 @@ public abstract class AbstractCompositionResolverTest
             "<component>" +
             "  <role>c1</role>" +
             "  <requirements>" +
-            "    <requirement>c2</requirement>" +
-            "    <requirement>c3</requirement>" +
+            "    <requirement>" +
+            "      <role>c2</role>" +
+            "   </requirement>" +
+            "    <requirement>" +
+            "      <role>c3</role>" +
+            "   </requirement>" +
             "  </requirements>" +
             "</component>";
 
@@ -110,8 +114,12 @@ public abstract class AbstractCompositionResolverTest
             "<component>" +
             "  <role>c1</role>" +
             "  <requirements>" +
-            "    <requirement>c2</requirement>" +
-            "    <requirement>c3</requirement>" +
+            "    <requirement>" +
+            "      <role>c2</role>" +
+            "   </requirement>" +
+            "   <requirement>" +
+            "      <role>c3</role>" +
+            "   </requirement>" +
             "  </requirements>" +
             "</component>";
 
@@ -124,8 +132,12 @@ public abstract class AbstractCompositionResolverTest
             "<component>" +
             "  <role>c3</role>" +
             "  <requirements>" +
-            "    <requirement>c4</requirement>" +
-            "    <requirement>c5</requirement>" +
+            "    <requirement>" +
+            "      <role>c4</role>" +
+            "   </requirement>" +
+            "    <requirement>" +
+            "      <role>c5</role>" +
+            "   </requirement>" +
             "  </requirements>" +
             "</component>";
 

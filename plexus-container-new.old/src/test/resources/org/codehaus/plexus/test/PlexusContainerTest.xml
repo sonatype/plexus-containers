@@ -18,8 +18,12 @@
       <role>org.codehaus.plexus.test.ComponentA</role>
       <implementation>org.codehaus.plexus.test.DefaultComponentA</implementation>
       <requirements>
-        <requirement>org.codehaus.plexus.test.ComponentB</requirement>
-        <requirement>org.codehaus.plexus.test.ComponentC</requirement>
+        <requirement>
+            <role>org.codehaus.plexus.test.ComponentB</role> 
+         </requirement>
+        <requirement>
+           <role>org.codehaus.plexus.test.ComponentC</role>
+        </requirement>
       </requirements>
       <configuration>
         <host>localhost</host>
@@ -34,7 +38,9 @@
       <role>org.codehaus.plexus.test.ComponentC</role>
       <implementation>org.codehaus.plexus.test.DefaultComponentC</implementation>
       <requirements>
-        <requirement>org.codehaus.plexus.test.ComponentD</requirement>
+         <requirement>
+            <role>org.codehaus.plexus.test.ComponentD</role>
+         </requirement>
       </requirements>
     </component>
     <component>

@@ -129,7 +129,7 @@ public class ComponentDescriptor
         return componentProfile;
     }
 
-    public void addRequirement( String requirement )
+    public void addRequirement( final ComponentRequirement requirement )
     {
         getRequirements().add( requirement );
     }
@@ -140,7 +140,6 @@ public class ComponentDescriptor
         {
             requirements = new HashSet();
         }
-
         return requirements;
     }
 }
