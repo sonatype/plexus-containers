@@ -5,7 +5,6 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 
 public class PlexusTestCase
     extends TestCase
@@ -112,20 +111,6 @@ public class PlexusTestCase
         throws Exception
     {
         return getConfiguration( null );
-    }
-
-    /**
-     * Get the container configuration from an URL.
-     *
-     * @return The container configuration.
-     */
-    protected URL getConfigurationUrl()
-    {
-        String className = getClass().getName();
-        String base = className.substring( className.lastIndexOf( "." ) + 1 );
-        String config = base + ".xml";
-
-        return getClass().getResource( config );
     }
 
     /** Retrieve the default Plexus configuration.
