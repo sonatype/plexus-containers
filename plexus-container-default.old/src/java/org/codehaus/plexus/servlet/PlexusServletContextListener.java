@@ -20,7 +20,7 @@ import org.codehaus.plexus.lifecycle.avalon.AvalonServiceManager;
  * @author <a href="bwalding@apache.org">Ben Walding</a>
  * @version $Id$
  */
-public class PlexusAppContextListener implements ServletContextListener
+public class PlexusServletContextListener implements ServletContextListener
 {
     private PlexusContainer container = null;
     private static final String PLEXUSCONFIG = "/WEB-INF/plexus.xml";

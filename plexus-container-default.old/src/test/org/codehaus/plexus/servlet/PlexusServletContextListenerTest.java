@@ -12,27 +12,27 @@ import junit.framework.TestCase;
  * @author  Ben Walding
  * @version $Id$
  */
-public class PlexusAppContextListenerTest extends TestCase
+public class PlexusServletContextListenerTest extends TestCase
 {
     public void testSimple()
     {
         ServletContext sc = new MockServletContext();
 
-        PlexusAppContextListener pacl = new PlexusAppContextListener();
+        PlexusServletContextListener pacl = new PlexusServletContextListener();
         ServletContextEvent sce = new ServletContextEvent(sc);
         
         pacl.contextInitialized(sce);
         {
-            PlexusContainer pc = (PlexusContainer) sc.getAttribute(PlexusAppContextListener.PLEXUS_CONTAINER);
-            ServiceManager sm = (ServiceManager) sc.getAttribute(PlexusAppContextListener.PLEXUS_SERVICE_MANAGER);
+            PlexusContainer pc = (PlexusContainer) sc.getAttribute(PlexusServletContextListener.PLEXUS_CONTAINER);
+            ServiceManager sm = (ServiceManager) sc.getAttribute(PlexusServletContextListener.PLEXUS_SERVICE_MANAGER);
             assertNotNull("pc", pc);
             assertNotNull("sm", sm);
         }
 
         pacl.contextDestroyed(sce);
         {
-            PlexusContainer pc = (PlexusContainer) sc.getAttribute(PlexusAppContextListener.PLEXUS_CONTAINER);
-            ServiceManager sm = (ServiceManager) sc.getAttribute(PlexusAppContextListener.PLEXUS_SERVICE_MANAGER);
+            PlexusContainer pc = (PlexusContainer) sc.getAttribute(PlexusServletContextListener.PLEXUS_CONTAINER);
+            ServiceManager sm = (ServiceManager) sc.getAttribute(PlexusServletContextListener.PLEXUS_SERVICE_MANAGER);
             assertNull("pc", pc);
             assertNull("sm", sm);
         }
