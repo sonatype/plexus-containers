@@ -75,6 +75,7 @@ public class PlexusTestCase
     //    this would require a change to PlexusContainer in order to get
     //    hold of the context ...
     protected void customizeContext()
+        throws Exception
     {
     }
 
