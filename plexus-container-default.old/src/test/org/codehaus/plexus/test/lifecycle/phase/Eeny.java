@@ -1,4 +1,4 @@
-package org.codehaus.plexus.lifecycle.phase;
+package org.codehaus.plexus.test.lifecycle.phase;
 
 /**
  *

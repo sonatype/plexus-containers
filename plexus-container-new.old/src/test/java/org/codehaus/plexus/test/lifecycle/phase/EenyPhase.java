@@ -1,6 +1,8 @@
-package org.codehaus.plexus.lifecycle.phase;
+package org.codehaus.plexus.test.lifecycle.phase;
 
 import org.codehaus.plexus.component.manager.ComponentManager;
+import org.codehaus.plexus.test.lifecycle.phase.Eeny;
+import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 
 public class EenyPhase
     extends AbstractPhase
