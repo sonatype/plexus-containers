@@ -7,6 +7,7 @@ import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 
 import java.io.StringReader;
+import java.io.Reader;
 
 /**
  *
@@ -37,11 +38,17 @@ public class PlexusTools
         return cd;
     }
 
-    public static PlexusConfiguration buildConfiguration( String configuration )
+    public static PlexusConfiguration buildConfiguration( Reader configuration )
         throws Exception
     {
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
 
-        return builder.parse( new StringReader( configuration ) );
+        return builder.parse( configuration );
+    }
+
+    public static PlexusConfiguration buildConfiguration( String configuration )
+        throws Exception
+    {
+        return buildConfiguration( new StringReader( configuration ) );
     }
 }
