@@ -45,7 +45,7 @@ public class XStreamTool
 
     public Object build( Reader reader, Class clazz )
         throws Exception
-    {                 x
+    {
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
 
         return build( builder.parse( reader ), clazz );
