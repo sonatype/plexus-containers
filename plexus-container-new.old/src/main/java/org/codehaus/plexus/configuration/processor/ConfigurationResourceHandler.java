@@ -49,6 +49,6 @@ public interface ConfigurationResourceHandler
 
     String getId();
 
-    PlexusConfiguration handleRequest( Map parameters )
+    PlexusConfiguration[] handleRequest( Map parameters )
         throws ConfigurationResourceNotFoundException, ConfigurationProcessingException;
 }

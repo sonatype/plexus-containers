@@ -26,11 +26,15 @@ package org.codehaus.plexus.configuration.processor;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.util.FileUtils;
 
 import java.util.Map;
+import java.util.List;
+import java.util.Iterator;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -44,7 +48,7 @@ public class DirectoryConfigurationResourceHandler
         return "directory-configuration-resource";
     }
 
-    public PlexusConfiguration handleRequest( Map parameters )
+    public PlexusConfiguration[] handleRequest( Map parameters )
         throws ConfigurationResourceNotFoundException, ConfigurationProcessingException
     {
         File f = new File( getSource( parameters ) );
@@ -62,12 +66,35 @@ public class DirectoryConfigurationResourceHandler
         // ----------------------------------------------------------------------
         // Parameters
         //
-        // basedir
+        // source == basedir
         // includes
         // excludes
         // ----------------------------------------------------------------------
 
-        // going to eat lunch ... :-)
+        String includes = (String) parameters.get( "includes" );
+
+        String excludes = (String) parameters.get( "excludes" );
+
+        try
+        {
+            List files = FileUtils.getFiles( f, includes, excludes );
+
+            // ----------------------------------------------------------------------
+            // For each file we find we want to read it in and turn it into a
+            // PlexusConfiguration and insert it into the source configuration.
+            // ----------------------------------------------------------------------
+
+            for ( Iterator i = files.iterator(); i.hasNext(); )
+            {
+                File configurationFile = (File) i.next();
+
+                PlexusConfiguration configuration = PlexusTools.buildConfiguration( new FileReader( configurationFile ) );
+            }
+        }
+        catch ( Exception e )
+        {
+            throw new ConfigurationProcessingException( e );
+        }
 
         return null;
     }

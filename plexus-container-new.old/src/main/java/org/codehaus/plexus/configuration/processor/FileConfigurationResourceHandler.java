@@ -44,7 +44,7 @@ public class FileConfigurationResourceHandler
         return "file-configuration-resource";
     }
 
-    public PlexusConfiguration handleRequest( Map parameters )
+    public PlexusConfiguration[] handleRequest( Map parameters )
         throws ConfigurationResourceNotFoundException, ConfigurationProcessingException
     {
         File f = new File( getSource( parameters ) );
@@ -56,7 +56,7 @@ public class FileConfigurationResourceHandler
 
         try
         {
-            return PlexusTools.buildConfiguration( new FileReader( f ) );
+            return new PlexusConfiguration[]{ PlexusTools.buildConfiguration( new FileReader( f ) ) };
         }
         catch ( Exception e )
         {

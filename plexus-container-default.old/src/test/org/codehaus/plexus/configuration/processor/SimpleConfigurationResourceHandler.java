@@ -41,13 +41,13 @@ public class SimpleConfigurationResourceHandler
         return "simple-configuration-resource";
     }
 
-    public PlexusConfiguration handleRequest( Map parameters )
+    public PlexusConfiguration[] handleRequest( Map parameters )
         throws ConfigurationProcessingException
     {
         XmlPlexusConfiguration a = new XmlPlexusConfiguration( "name" );
 
         a.setValue( (String) parameters.get( ConfigurationResourceHandler.SOURCE ) );
 
-        return a;
+        return new PlexusConfiguration[]{ a };
     }
 }

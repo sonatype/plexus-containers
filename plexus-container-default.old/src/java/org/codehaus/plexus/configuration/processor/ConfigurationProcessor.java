@@ -78,10 +78,17 @@ public class ConfigurationProcessor
             {
                 ConfigurationResourceHandler handler = (ConfigurationResourceHandler) handlers.get( elementName );
 
-                child = handler.handleRequest( createHandlerParameters( child ) );
-            }
+                PlexusConfiguration[] configurations = handler.handleRequest( createHandlerParameters( child ) );
 
-            pc.addChild( child );
+                for ( int j = 0; j < configurations.length; j++ )
+                {
+                    pc.addChild( configurations[j] );
+                }
+            }
+            else
+            {
+                pc.addChild( child );
+            }
         }
 
         return pc;
