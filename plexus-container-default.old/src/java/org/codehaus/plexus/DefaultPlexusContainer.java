@@ -332,6 +332,8 @@ public class DefaultPlexusContainer
 
         initializeLoggerManager();
 
+        initializeResourceManager();
+        
         initializeComponentRepository();
 
         initializeComponentConfigurator();
@@ -341,8 +343,6 @@ public class DefaultPlexusContainer
         initializeLifecycleHandlerManager();
 
         initializeComponentManagerManager();
-
-        initializeResourceManager();
 
         initializeContext();
 
