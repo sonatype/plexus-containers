@@ -542,7 +542,7 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     protected void loadComponentsOnStart()
-        throws Exception
+        throws PlexusConfigurationException, ComponentLookupException
     {
         PlexusConfiguration[] loadOnStartComponents = configuration.getChild( "load-on-start" ).getChildren( "component" );
 
@@ -550,7 +550,7 @@ public class DefaultPlexusContainer
 
         for ( int i = 0; i < loadOnStartComponents.length; i++ )
         {
-            String role = loadOnStartComponents[i].getChild( "role" ).getValue();
+            String role = loadOnStartComponents[i].getChild( "role" ).getValue( null );
 
             String roleHint = loadOnStartComponents[i].getChild( "role-hint" ).getValue();
 
@@ -562,20 +562,13 @@ public class DefaultPlexusContainer
             else
                 getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
 
-            try
+            if ( roleHint == null )
             {
-                if ( roleHint == null )
-                {
-                    lookup( role );
-                }
-                else
-                {
-                    lookup( role, roleHint );
-                }
+                lookup( role );
             }
-            catch ( ComponentLookupException e )
+            else
             {
-                getLogger().error( "Cannot load-on-start " + role, e );
+                lookup( role, roleHint );
             }
         }
     }
