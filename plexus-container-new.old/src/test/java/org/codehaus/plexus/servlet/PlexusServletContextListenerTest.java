@@ -20,7 +20,7 @@ public class PlexusServletContextListenerTest extends TestCase
 
         PlexusServletContextListener pacl = new PlexusServletContextListener();
         ServletContextEvent sce = new ServletContextEvent(sc);
-        
+
         pacl.contextInitialized(sce);
         {
             PlexusContainer pc = (PlexusContainer) sc.getAttribute(PlexusServletContextListener.PLEXUS_CONTAINER);
@@ -36,5 +36,23 @@ public class PlexusServletContextListenerTest extends TestCase
             assertNull("pc", pc);
             assertNull("sm", sm);
         }
+    }
+
+    /**
+     * Test the static methods.
+     */
+    public void testStaticMethods()
+    {
+        ServletContext sc = new MockServletContext();
+        PlexusServletContextListener pacl = new PlexusServletContextListener();
+        ServletContextEvent sce = new ServletContextEvent(sc);
+
+        pacl.contextInitialized( sce );
+        assertNotNull( PlexusServletContextListener.getServiceManager( sc ) );
+        assertNotNull( PlexusServletContextListener.getPlexusContainer( sc ) );
+
+        pacl.contextDestroyed( sce );
+        assertNull( PlexusServletContextListener.getServiceManager( sc ) );
+        assertNull( PlexusServletContextListener.getPlexusContainer( sc ) );
     }
 }
