@@ -24,18 +24,14 @@ package org.codehaus.plexus.configuration;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
-
 import java.io.StringReader;
 
 import org.codehaus.plexus.component.repository.io.PlexusTools;
-import org.codehaus.plexus.component.repository.io.PlexusTools;
+
+import junit.framework.TestCase;
 
 /**
- *
- *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
  * @version $Id$
  */
 public class ConfigurationTestHelper
@@ -50,13 +46,14 @@ public class ConfigurationTestHelper
     public static String getXmlConfiguration()
     {
         return "<configuration>" +
-            "<string string='string'>string</string>" +
-            "<number number='0'>0</number>" +
-            "<not-a-number not-a-number='foo'>not-a-number</not-a-number>" +
-            "<boolean-true boolean-true='true'>true</boolean-true>" +
-            "<boolean-false boolean-false='false'>false</boolean-false>" +
-            "<not-a-boolean>not-a-boolean</not-a-boolean>" +
-            "</configuration>";
+               "<empty-element></empty-element>" +
+               "<string string='string'>string</string>" +
+               "<number number='0'>0</number>" +
+               "<not-a-number not-a-number='foo'>not-a-number</not-a-number>" +
+               "<boolean-true boolean-true='true'>true</boolean-true>" +
+               "<boolean-false boolean-false='false'>false</boolean-false>" +
+               "<not-a-boolean>not-a-boolean</not-a-boolean>" +
+               "</configuration>";
     }
 
     public static void testConfiguration( PlexusConfiguration c )
@@ -73,5 +70,11 @@ public class ConfigurationTestHelper
         assertEquals( "string", c.getChild( "string" ).getValue() );
 
         assertEquals( "string", c.getChild( "ne-string" ).getValue( "string" ) );
+
+        assertNull( c.getChild( "not-existing" ).getValue( null ) );
+
+        assertEquals( "''", "'" + c.getChild( "empty-element" ).getValue() + "'" );
+
+        assertEquals( "", c.getChild( "empty-element" ).getValue( null ) );
     }
 }
