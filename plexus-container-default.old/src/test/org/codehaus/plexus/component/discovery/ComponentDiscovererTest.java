@@ -16,7 +16,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 public class ComponentDiscovererTest
     extends TestCase
 {
-    public void testComponentDiscovery()
+    public void testDefaultComponentDiscoverer()
         throws Exception
     {
         ComponentDiscoverer componentDiscoverer = new DefaultComponentDiscoverer();
@@ -28,5 +28,18 @@ public class ComponentDiscovererTest
         assertEquals( "org.codehaus.plexus.discovery.DiscoveredComponent", cd.getRole() );
 
         assertEquals( "org.codehaus.plexus.discovery.DefaultDiscoveredComponent", cd.getImplementation() );
+    }
+
+    public void testMavenPluginDiscoverer()
+    {
+        ComponentDiscoverer componentDiscoverer = new MavenPluginDiscoverer();
+
+        List components = componentDiscoverer.findComponents( Thread.currentThread().getContextClassLoader() );
+
+        ComponentDescriptor cd = (ComponentDescriptor) components.get( 0 );
+
+        assertEquals( "org.apache.maven.plugin.Plugin", cd.getRole() );
+
+        assertEquals( "org.apache.maven.plugin.AntlrPlugin", cd.getImplementation() );
     }
 }

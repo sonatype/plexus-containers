@@ -1,7 +1,5 @@
 <plexus>
-
   <components>
-
     <component>
       <role>org.codehaus.plexus.ServiceF</role>
       <implementation>org.codehaus.plexus.DefaultServiceF</implementation>
@@ -9,7 +7,5 @@
         <plexus-home>${plexus.home}</plexus-home>
       </configuration>
     </component>
-
   </components>
-
 </plexus>
