@@ -1,5 +1,10 @@
 package org.codehaus.plexus.test;
 
+/**
+ * @component.role org.codehaus.plexus.test.ComponentA
+ * @component.requirement org.codehaus.plexus.test.ComponentB
+ * @component.requirement org.codehaus.plexus.test.ComponentC
+ */
 public class DefaultComponentA
     implements ComponentA
 {
