@@ -33,28 +33,27 @@ import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 import java.util.Properties;
 
-
 /**
- * Converter for <code>java.util.Properties</code>
+ * Converter for <code>java.util.Properties</code>.
  *
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
  */
-public class PropertiesConverter extends AbstractConfigurationConverter
+public class PropertiesConverter
+	extends AbstractConfigurationConverter
 {
     public boolean canConvert( Class type )
     {
         return Properties.class.isAssignableFrom( type );
     }
 
-
     public Object fromConfiguration( ConverterLookup converterLookup,
                                      PlexusConfiguration configuration,
                                      Class type,
                                      ClassLoader classLoader,
-                                     ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+                                     ComponentDescriptor componentDescriptor )
+    	throws ComponentConfigurationException
     {
-
         String element = configuration.getName();
 
         Properties retValue = new Properties();
@@ -74,25 +73,33 @@ public class PropertiesConverter extends AbstractConfigurationConverter
         return retValue;
     }
 
-    private void addEntry( Properties properties, String element, PlexusConfiguration child, ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+    private void addEntry( Properties properties, String element, PlexusConfiguration child, ComponentDescriptor componentDescriptor )
+    	throws ComponentConfigurationException
     {
+        String name;
+
         try
         {
-            String name =  child.getChild( "name" ).getValue();
-
-            String value =  child.getChild( "value" ).getValue( null );
-
-            properties.put( name, value );
+            name = child.getChild( "name" ).getValue();
         }
         catch ( PlexusConfigurationException e )
         {
-            String msg = "Error occured while configuring component " +
-                    componentDescriptor.getHumanReadableKey() +
-                    ". An attempt to convert configuration entry "+
-                    element +
-                    "' into Java Properties object failed - name element does not exit in the configuration.";
+            String msg = "Error occured while configuring component: " + componentDescriptor.getHumanReadableKey() + ". " +
+            "Converter: java.util.Properties. Trying to convert the configuration element: '" + element + "', missing child element 'name'.";
 
             throw new ComponentConfigurationException( msg );
         }
+
+        String value = child.getChild( "value" ).getValue( null );
+
+        if ( key == null )
+        {
+            String msg = "Error occured while configuring component: " + componentDescriptor.getHumanReadableKey() + ". " +
+                         "Converter: java.util.Properties. Trying to convert the configuration element: '" + element + "', missing child element 'name'.";
+
+            throw new ComponentConfigurationException( msg );
+        }
+
+        properties.put( key, value );
     }
 }
