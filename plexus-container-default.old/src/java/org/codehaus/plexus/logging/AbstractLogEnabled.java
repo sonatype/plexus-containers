@@ -65,12 +65,7 @@ public abstract class AbstractLogEnabled
             throw new IllegalStateException( "Logging category must be defined." );
         }
 
-        Logger logger = this.logger;
-
-        if ( null != subCategory )
-        {
-            logger = this.logger.getChildLogger( subCategory );
-        }
+        Logger logger = this.logger.getChildLogger( subCategory );
 
         setupLogger( component, logger );
     }

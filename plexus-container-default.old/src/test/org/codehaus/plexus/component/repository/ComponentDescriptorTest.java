@@ -12,41 +12,39 @@ public class ComponentDescriptorTest
         super(name);
     }
 
-    /**
-     * The JUnit setup method
-     */
-    protected void setUp()
-        throws Exception
-    {
-    }
-
-    /**
-     * The teardown method for JUnit
-     */
-    protected void tearDown()
-        throws Exception
-    {
-    }
-
     public void testComponentDescriptor()
         throws Exception
     {
         ComponentDescriptor componentDescriptor = new ComponentDescriptor();
 
         String role = "org.codehaus.plexus.Foo";
+
         String roleHint = "role-hint";
+
         String instantiation = "singleton";
 
+
         componentDescriptor.setRole( role );
+
         componentDescriptor.setRoleHint( roleHint );
+
         componentDescriptor.setInstantiationStrategy( instantiation );
+
         componentDescriptor.addRequirement( "foo" );
 
-        assertEquals( role, componentDescriptor.getRole() );
-        assertEquals( roleHint, componentDescriptor.getRoleHint() );
-        assertEquals( instantiation, componentDescriptor.getInstantiationStrategy() );
-        assertEquals( role + roleHint, componentDescriptor.getComponentKey() );
-        assertTrue( componentDescriptor.getRequirements().contains( "foo" ) );
-    }
+        componentDescriptor.setComponentProfile( "profile" );
 
+
+        assertEquals( role, componentDescriptor.getRole() );
+
+        assertEquals( roleHint, componentDescriptor.getRoleHint() );
+
+        assertEquals( instantiation, componentDescriptor.getInstantiationStrategy() );
+
+        assertEquals( role + roleHint, componentDescriptor.getComponentKey() );
+
+        assertTrue( componentDescriptor.getRequirements().contains( "foo" ) );
+
+        assertEquals( "profile", componentDescriptor.getComponentProfile() );
+    }
 }
