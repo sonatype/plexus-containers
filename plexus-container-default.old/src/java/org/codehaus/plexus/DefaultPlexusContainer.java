@@ -933,7 +933,7 @@ public class DefaultPlexusContainer
             componentFactory = componentFactoryManager.getDefaultComponentFactory();
         }
 
-        return componentFactory.newInstance( componentDescriptor, coreRealm );
+         return componentFactory.newInstance( componentDescriptor, coreRealm, this );
     }
 
     public void composeComponent( Object component, ComponentDescriptor componentDescriptor )

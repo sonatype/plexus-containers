@@ -28,7 +28,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ) );
+        Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), null );
 
         assertNotNull( component );
     }
@@ -51,6 +51,6 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ) );
+        factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), null );
     }
 }
