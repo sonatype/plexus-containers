@@ -245,17 +245,18 @@ public class FileUtils
         return file.exists();
     }
 
-    /**
-     * Reads the contents of a file.
-     *
-     * @param fileName The name of the file to read.
-     * @return The file contents or null if read failed.
-     */
-    public static String fileRead( String fileName ) throws IOException
+    public static String fileRead( String file )
+        throws IOException
+    {
+        return fileRead( new File( file ) );
+    }
+
+    public static String fileRead( File file )
+        throws IOException
     {
         StringBuffer buf = new StringBuffer();
 
-        FileInputStream in = new FileInputStream( fileName );
+        FileInputStream in = new FileInputStream( file );
 
         int count;
         byte[] b = new byte[512];
