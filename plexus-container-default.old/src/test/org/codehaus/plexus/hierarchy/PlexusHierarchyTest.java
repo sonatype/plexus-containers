@@ -29,6 +29,9 @@ public final class PlexusHierarchyTest extends PlexusTestCase
         service = plexus.lookup( TestService.ROLE );
         assertNotNull( service );
         testService = (TestService) service;
+
+        assertEquals( "ChildPlexusOne", testService.getPlexusName() );
+
         assertEquals( "three blind mice", testService.getKnownValue() );
     }
 
@@ -46,6 +49,9 @@ public final class PlexusHierarchyTest extends PlexusTestCase
         service = plexus.lookup( TestService.ROLE );
         assertNotNull( service );
         testService = (TestService) service;
+
+        assertEquals( "ChildPlexusTwo", testService.getPlexusName() );
+
         assertEquals( "see how they run", testService.getKnownValue() );
     }
 

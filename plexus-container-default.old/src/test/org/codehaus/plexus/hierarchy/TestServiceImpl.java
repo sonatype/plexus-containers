@@ -21,18 +21,27 @@ public class TestServiceImpl
 {
     private PlexusContainer parentPlexus;
 
+    private String plexusName;
+
     private String knownValue;
 
     public void contextualize( Context context )
         throws ContextException
     {
         parentPlexus = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
+
+        plexusName = (String) context.get( "plexus-name" );
     }
 
     public void configure(Configuration config)
         throws ConfigurationException
     {
         knownValue = config.getChild( "known-value" ).getValue();
+    }
+
+    public String getPlexusName()
+    {
+        return plexusName;
     }
 
     public String getKnownValue()

@@ -11,6 +11,8 @@ public interface TestService {
     /** Component role. */
     String ROLE = TestService.class.getName();
 
+    String getPlexusName();
+
     String getKnownValue();
 
     /**

@@ -35,6 +35,26 @@ public final class ComponentPlexusContainer
                Initializable, Startable
 {
     /**
+     * <code>Configuration</code> element name: Plexus configuration resource.
+     */
+    public static final String PLEXUS_CONFIG = "plexus-config";
+
+    /**
+     * <code>Configuration</code> element name: Plexus context setting.
+     */
+    public static final String CONTEXT_VALUE = "context-value";
+
+    /**
+     * <code>Configuration</code> element name: Plexus context setting name.
+     */
+    public static final String CONTEXT_VALUE_NAME = "name";
+
+    /**
+     * <code>Configuration</code> element name: Plexus context setting value.
+     */
+    public static final String CONTEXT_VALUE_VALUE = "value";
+
+    /**
      * Parent <code>PlexusContainer</code>. That is, the
      * <code>PlexusContainer</code> that this component is in.
      */
@@ -161,7 +181,20 @@ public final class ComponentPlexusContainer
     public void configure( Configuration configuration )
         throws ConfigurationException
     {
-        configurationName = configuration.getChild( "configuration-name" ).getValue();
+        configurationName = configuration.getChild( PLEXUS_CONFIG ).getValue();
+
+        Configuration[] contextValues = configuration.getChildren( CONTEXT_VALUE );
+
+        for ( int i = 0; i < contextValues.length; i++ )
+        {
+            Configuration c = contextValues[i];
+
+            String name = c.getChild( CONTEXT_VALUE_NAME ).getValue();
+
+            String value = c.getChild( CONTEXT_VALUE_VALUE ).getValue();
+
+            addContextValue( name, value );
+        }
     }
 
     public void initialize()
