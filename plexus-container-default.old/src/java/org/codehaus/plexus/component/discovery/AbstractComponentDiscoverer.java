@@ -1,11 +1,10 @@
 package org.codehaus.plexus.component.discovery;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -61,9 +60,7 @@ public abstract class AbstractComponentDiscoverer
 
                 String s = os.toString();
 
-                PlexusConfiguration configuration = PlexusTools.buildConfiguration( s );
-
-                for ( Iterator i = createComponentDescriptors( configuration ).iterator(); i.hasNext(); )
+                for ( Iterator i = createComponentDescriptors( new StringReader( s ) ).iterator(); i.hasNext(); )
                 {
                     ComponentDescriptor componentDescriptor = (ComponentDescriptor) i.next();
 

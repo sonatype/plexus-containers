@@ -152,9 +152,13 @@ public class ConsoleLoggerManager
         obj = loggers.remove( name );
 
         if ( obj == null )
-            System.err.println( "There was no such logger '" + name + "' " + this.hashCode() + ".");
+        {
+            debug( "There was no such logger '" + name + "' " + this.hashCode() + ".");
+        }
         else
+        {
             debug( "Removed logger '" + name + "' " + this.hashCode() + ".");
+        }
     }
 
     public int getActiveLoggerCount()

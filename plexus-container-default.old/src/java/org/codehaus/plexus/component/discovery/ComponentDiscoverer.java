@@ -3,6 +3,7 @@ package org.codehaus.plexus.component.discovery;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.List;
+import java.io.Reader;
 
 /**
  *
@@ -21,7 +22,7 @@ public interface ComponentDiscoverer
 
     String getComponentType();
 
-    List createComponentDescriptors( PlexusConfiguration componentDescriptorConfiguration )
+    List createComponentDescriptors( Reader reader )
         throws Exception;
 
     void setManager( ComponentDiscovererManager manager );

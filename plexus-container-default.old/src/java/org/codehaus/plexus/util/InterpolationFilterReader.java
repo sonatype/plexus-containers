@@ -98,13 +98,6 @@ public class InterpolationFilterReader
     /** Default end token. */
     private static String DEFAULT_END_TOKEN = "}";
 
-    /**
-     *
-     * @param in
-     * @param variables
-     * @param beginToken
-     * @param endToken
-     */
     public InterpolationFilterReader( Reader in, Map variables, String beginToken, String endToken )
     {
         super( in );
@@ -117,21 +110,11 @@ public class InterpolationFilterReader
         endTokenLength = endToken.length();
     }
 
-    /**
-     *
-     * @param in
-     * @param variables
-     */
     public InterpolationFilterReader( Reader in, Map variables )
     {
         this( in, variables, DEFAULT_BEGIN_TOKEN, DEFAULT_END_TOKEN );
     }
 
-    /**
-     *
-     * @return
-     * @throws IOException
-     */
     private int getNextChar() throws IOException
     {
         if ( queueIndex != -1 )

@@ -5,6 +5,7 @@ import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Reader;
 
 /**
  *
@@ -26,9 +27,11 @@ public class DefaultComponentDiscoverer
         return "plexus";
     }
 
-    public List createComponentDescriptors( PlexusConfiguration componentDescriptorConfiguration )
+    public List createComponentDescriptors( Reader componentDescriptorReader )
         throws Exception
     {
+        PlexusConfiguration componentDescriptorConfiguration = PlexusTools.buildConfiguration( componentDescriptorReader );
+
         List componentDescriptors = new ArrayList();
 
         PlexusConfiguration[] componentConfigurations =
