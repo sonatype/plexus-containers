@@ -17,7 +17,16 @@ public class ContextMapAdapter
     {
         try
         {
-            return context.get( key );
+            Object value = context.get( key );
+            
+            if ( value instanceof String )
+            {
+                return value;
+            }
+            else
+            {
+                return null;
+            }
         }
         catch ( ContextException e )
         {
