@@ -1,0 +1,12 @@
+<plexus>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.ServiceA</role>
+      <implementation>org.codehaus.plexus.lifecycle.avalon.phase.AllPhaseService</implementation>
+      <configuration>
+        <host>localhost</host>
+        <port>10000</port>
+      </configuration>
+    </component>
+  </components>
+</plexus>
