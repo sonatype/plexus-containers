@@ -47,7 +47,7 @@ public class FieldComponentComposer extends AbstractComponentComposer
             // We have a field to which we should assigning component(s).
             // Cardinality is determined by field.getType() method
             // It can be array, map, collection or "ordinary" field
-            final List descriptors = assignRequirmentToField( component, field, container, requirement );
+            final List descriptors = assignRequirementToField( component, field, container, requirement );
 
             retValue.addAll( descriptors );
         }
@@ -56,7 +56,7 @@ public class FieldComponentComposer extends AbstractComponentComposer
     }
 
 
-    private List assignRequirmentToField( final Object component,
+    private List assignRequirementToField( final Object component,
                                           final Field field,
                                           final PlexusContainer container,
                                           final ComponentRequirement requirement )
