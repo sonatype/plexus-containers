@@ -141,7 +141,7 @@ public class DefaultPlexusContainer
                     return parentContainer.lookup( componentKey );
                 }
 
-                getLogger().error( "Non existant component: " + componentKey );
+                getLogger().error( "Nonexistent component: " + componentKey );
 
                 String message = "Component descriptor cannot be found in the component repository: " + componentKey + ".";
 
