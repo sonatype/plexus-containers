@@ -191,7 +191,7 @@ public class DefaultPlexusContainer
     {
         Map components = new HashMap();
 
-        Map componentDescriptors = componentRepository.getComponentDescriptorMap( role );
+        Map componentDescriptors = getComponentDescriptorMap( role );
 
         if ( componentDescriptors != null )
         {
@@ -215,17 +215,28 @@ public class DefaultPlexusContainer
     {
         List components = new ArrayList();
 
-        Map componentDescriptors = componentRepository.getComponentDescriptorMap( role );
+        List componentDescriptors = getComponentDescriptorList( role );
 
         if ( componentDescriptors != null )
         {
-            // Now we have a map of component descriptors keyed by role hint.
+            // Now we have a list of component descriptors.
 
-            for ( Iterator i = componentDescriptors.keySet().iterator(); i.hasNext(); )
+            for ( Iterator i = componentDescriptors.iterator(); i.hasNext(); )
             {
-                String roleHint = (String) i.next();
+                ComponentDescriptor descriptor = (ComponentDescriptor) i.next();
 
-                Object component = lookup( role, roleHint );
+                String roleHint =  descriptor.getRoleHint();
+
+                Object component;
+
+                if ( roleHint != null )
+                {
+                    component = lookup( role, roleHint );
+                }
+                else
+                {
+                    component = lookup( role );
+                }
 
                 components.add( component );
             }
@@ -245,14 +256,67 @@ public class DefaultPlexusContainer
     // Component Descriptor Lookup
     // ----------------------------------------------------------------------
 
-    public Map getComponentDescriptorMap( String role )
-    {
-        return componentRepository.getComponentDescriptorMap( role );
-    }
-
     public ComponentDescriptor getComponentDescriptor( String role )
     {
-        return componentRepository.getComponentDescriptor( role );
+        ComponentDescriptor result = componentRepository.getComponentDescriptor( role );
+
+        if ( result == null && parentContainer != null )
+        {
+            result = parentContainer.getComponentDescriptor( role );
+        }
+
+        return result;
+    }
+
+    public Map getComponentDescriptorMap( String role )
+    {
+        Map result = null;
+
+        if ( parentContainer != null )
+        {
+            result = parentContainer.getComponentDescriptorMap( role );
+        }
+
+        Map componentDescriptors = componentRepository.getComponentDescriptorMap( role );
+
+        if ( componentDescriptors != null )
+        {
+            if ( result != null )
+            {
+                result.putAll( componentDescriptors );
+            }
+            else
+            {
+                result = componentDescriptors;
+            }
+        }
+
+        return result;
+    }
+
+    public List getComponentDescriptorList( String role )
+    {
+        List result = null;
+
+        Map componentDescriptorsByHint = getComponentDescriptorMap( role );
+
+        if ( componentDescriptorsByHint != null )
+        {
+            result = new ArrayList( componentDescriptorsByHint.values() );
+        }
+        else
+        {
+            result = new ArrayList();
+        }
+
+        ComponentDescriptor unhintedDescriptor = getComponentDescriptor( role );
+
+        if ( unhintedDescriptor != null )
+        {
+            result.add( unhintedDescriptor );
+        }
+
+        return result;
     }
 
     // ----------------------------------------------------------------------
@@ -289,7 +353,7 @@ public class DefaultPlexusContainer
         else
         {
             if ( componentManager.release( component ) )
-            {    
+            {
                 instanceManager.release( component );
             }
         }
@@ -501,7 +565,7 @@ public class DefaultPlexusContainer
         }
         catch ( NoSuchRealmException e )
         {
-            if ( classLoader != null && 
+            if ( classLoader != null &&
                  classRealm != null )
             {
                 classRealm = classWorld.newRealm( "core", classLoader );
@@ -511,7 +575,7 @@ public class DefaultPlexusContainer
                 classRealm = classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
             }
         }
-        
+
         classLoader = classRealm.getClassLoader();
 
         Thread.currentThread().setContextClassLoader( classLoader );
