@@ -9,7 +9,7 @@
   </parent>
   <groupId>plexus</groupId>
   <artifactId>plexus</artifactId>
-  <version>0.15</version>
+  <version>0.16-SNAPSHOT</version>
   <name>plexus</name>
 
   <developers>
