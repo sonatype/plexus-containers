@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.factory;
+package org.codehaus.plexus.component.factory.java;
 
 /*
  * The MIT License
@@ -24,10 +24,15 @@ package org.codehaus.plexus.component.factory;
  * SOFTWARE.
  */
 
-import junit.framework.TestCase;
-import org.codehaus.plexus.component.factory.java.JavaComponentFactory;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.component.factory.Component;
+import org.codehaus.plexus.component.factory.ComponentImplA;
+import org.codehaus.plexus.component.factory.ComponentImplB;
+import org.codehaus.plexus.component.factory.ComponentInstantiationException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+
+import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -62,8 +67,6 @@ public class JavaComponentFactoryTest
     {
         JavaComponentFactory factory = new JavaComponentFactory();
 
-//        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-
         ComponentDescriptor componentDescriptor = new ComponentDescriptor();
 
         componentDescriptor.setRole( Component.class.getName() );
@@ -75,5 +78,36 @@ public class JavaComponentFactoryTest
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
         factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), null );
+    }
+
+    public void testInstanciationOfAAbstractComponent()
+        throws Exception
+    {
+        JavaComponentFactory factory = new JavaComponentFactory();
+
+        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
+
+        componentDescriptor.setRole( Component.class.getName() );
+
+        componentDescriptor.setImplementation( ComponentImplB.class.getName() );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+
+        DefaultPlexusContainer container = new DefaultPlexusContainer();
+
+//        container.
+
+        try
+        {
+            factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), container );
+
+            fail( "Expected ComponentInstantiationException when instanciating a abstract class." );
+        }
+        catch( ComponentInstantiationException ex )
+        {
+            // expected
+        }
     }
 }
