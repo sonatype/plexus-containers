@@ -32,11 +32,6 @@ public class ClassicSingletonInstanceManager
      */
     public void release( Object component )
     {
-        //Only accept it if it is the same instance.
-
-        System.out.println( "singleton = " + singleton );
-        System.out.println( "connections = " + connections );
-
         if ( singleton.getComponent() == component )
         {
             connections--;
