@@ -11,6 +11,8 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.configurator.ComponentConfigurator;
+import org.codehaus.plexus.component.configurator.DefaultComponentConfigurator;
 import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.ConfigurationMerger;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
@@ -86,6 +88,8 @@ public class DefaultPlexusContainer
     /** XML element used to start the logging configuration block. */
     public static final String LOGGING_TAG = "logging";
 
+    private ComponentConfigurator componentConfigurator;
+
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -98,6 +102,8 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     // Container Contract
     // ----------------------------------------------------------------------
+
+    // This needs to be clarified in order to incorporate the auto configuration.
 
     public Object lookup( String key )
         throws ComponentLookupException
@@ -217,12 +223,12 @@ public class DefaultPlexusContainer
 
     public boolean hasService( String componentKey )
     {
-        return componentRepository.hasService( componentKey );
+        return componentRepository.hasComponent( componentKey );
     }
 
     public boolean hasService( String role, String id )
     {
-        return componentRepository.hasService( role, id );
+        return componentRepository.hasComponent( role, id );
     }
 
     public void suspend( Object component )
@@ -281,6 +287,8 @@ public class DefaultPlexusContainer
         initializeLifecycleHandlerManager();
 
         initializeComponentManagerManager();
+
+        initializeComponentConfigurator();
 
         initializeResourceManager();
 
@@ -422,9 +430,6 @@ public class DefaultPlexusContainer
         }
     }
 
-    /**
-     * Initialize the context.
-     */
     private void initializeContext()
     {
         addContextValue( PlexusConstants.PLEXUS_KEY, this );
@@ -434,11 +439,6 @@ public class DefaultPlexusContainer
         addContextValue( PlexusConstants.COMMON_CLASSLOADER, getClassLoader() );
     }
 
-    /**
-     * Initialize the configuration.
-     *
-     * @throws Exception
-     */
     private void initializeDefaultConfiguration()
         throws Exception
     {
@@ -454,11 +454,6 @@ public class DefaultPlexusContainer
         setDefaultConfiguration( builder.parse( new InputStreamReader( is ) ) );
     }
 
-    /**
-     * Initialize the configuration.
-     *
-     * @throws Exception
-     */
     private void initializeConfiguration()
         throws Exception
     {
@@ -544,11 +539,6 @@ public class DefaultPlexusContainer
         return mergedConfiguration;
     }
 
-    /**
-     * Initialize Logging.
-     *
-     * @throws Exception
-     */
     private void initializeLoggerManager()
         throws Exception
     {
@@ -559,11 +549,6 @@ public class DefaultPlexusContainer
         setLoggerManager( loggerManager );
     }
 
-    /**
-     * Intialize the component repository.
-     *
-     * @throws Exception
-     */
     private void initializeComponentRepository()
         throws Exception
     {
@@ -572,11 +557,6 @@ public class DefaultPlexusContainer
         setComponentRepository( componentRepository );
     }
 
-    /**
-     * Initialize the resource manager.
-     *
-     * @throws Exception
-     */
     private void initializeResourceManager()
         throws Exception
     {
@@ -627,30 +607,16 @@ public class DefaultPlexusContainer
     // Internal Accessors
     // ----------------------------------------------------------------------
 
-    /**
-     * Set the logger manager.
-     *
-     * @param loggerManager
-     */
     private void setLoggerManager( LoggerManager loggerManager )
     {
         this.loggerManager = loggerManager;
     }
 
-    /**
-     * Get the logger manager.
-     *
-     * @return The logger manager.
-     */
     private LoggerManager getLoggerManager()
     {
         return loggerManager;
     }
 
-    /**
-     *
-     * @return
-     */
     private Configuration getConfiguration()
     {
         return configuration;
@@ -666,19 +632,11 @@ public class DefaultPlexusContainer
         return configurationReader;
     }
 
-    /**
-     *
-     * @param resourceManager
-     */
     private void setResourceManager( DefaultResourceManager resourceManager )
     {
         this.resourceManager = resourceManager;
     }
 
-    /**
-     *
-     * @return
-     */
     private DefaultContext getContext()
     {
         if ( context == null )
@@ -689,40 +647,34 @@ public class DefaultPlexusContainer
         return context;
     }
 
-    /**
-     *
-     * @param componentRepository
-     */
     private void setComponentRepository( ComponentRepository componentRepository )
     {
         this.componentRepository = componentRepository;
     }
 
-    /**
-     *
-     * @return
-     */
     private Configuration getDefaultConfiguration()
     {
         return defaultConfiguration;
     }
 
-    /**
-     *
-     * @param defaultConfiguration
-     */
     private void setDefaultConfiguration( Configuration defaultConfiguration )
     {
         this.defaultConfiguration = defaultConfiguration;
     }
 
-    /**
-     *
-     * @return
-     */
     private ClassWorld getClassWorld()
     {
         return classWorld;
+    }
+
+    // ----------------------------------------------------------------------
+    // Component Configurator
+    // ----------------------------------------------------------------------
+
+    private void initializeComponentConfigurator()
+        throws Exception
+    {
+        componentConfigurator = new DefaultComponentConfigurator();
     }
 
     // ----------------------------------------------------------------------
