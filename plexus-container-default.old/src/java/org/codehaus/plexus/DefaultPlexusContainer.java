@@ -103,42 +103,35 @@ public class DefaultPlexusContainer
     // Container Contract
     // ----------------------------------------------------------------------
 
-    // This needs to be clarified in order to incorporate the auto configuration.
+    // ----------------------------------------------------------------------
+    // Try to lookup the component manager for the requested component.
+    //
+    // component manager exists:
+    //   -> return a component from the component manager.
+    //
+    // component manager doesn't exist;
+    //   -> lookup component descriptor for the requested component.
+    //   -> instantiate component manager for this component.
+    //   -> track the component manager for this component by the component class name.
+    //   -> return a component from the component manager.
+    // ----------------------------------------------------------------------
 
-    public Object lookup( String key )
+    public Object lookup( String componentKey )
         throws ComponentLookupException
     {
-        // Attempt to lookup the componentManager by key.
-        ComponentManager componentManager = getComponentManager( key );
-
         Object component = null;
+
+        ComponentManager componentManager = getComponentManager( componentKey );
 
         if ( componentManager == null )
         {
-            componentManager = getComponentManager( key );
-
-            if ( componentManager != null )
-            {
-                try
-                {
-                    return componentManager.getComponent();
-                }
-                catch ( Exception e )
-                {
-                    throw new ComponentLookupException( "Error retrieving component from ComponentManager: " + key );
-                }
-            }
-
-            // We need to create an manager of this componentManager.
-            getLogger().debug( "Creating new ComponentDescriptor for role: " + key );
-
-            ComponentDescriptor descriptor = componentRepository.getComponentDescriptor( key );
+            ComponentDescriptor descriptor = componentRepository.getComponentDescriptor( componentKey );
 
             if ( descriptor == null )
             {
-                getLogger().error( "Non existant component: " + key );
+                getLogger().error( "Non existant component: " + componentKey );
 
-                throw new ComponentLookupException( "Non existant component: " + key );
+                throw new ComponentLookupException( "Non existant component: " + componentKey );
             }
 
             try
@@ -147,9 +140,9 @@ public class DefaultPlexusContainer
             }
             catch ( Exception e )
             {
-                getLogger().error( "Could not create component: " + key, e );
+                getLogger().error( "Could not create component: " + componentKey, e );
 
-                throw new ComponentLookupException( "Could not create component for key " + key + "!", e );
+                throw new ComponentLookupException( "Could not create component for componentKey " + componentKey + "!", e );
             }
             try
             {
@@ -157,13 +150,11 @@ public class DefaultPlexusContainer
             }
             catch ( Exception e )
             {
-                getLogger().error( "Could not create component: " + key, e );
+                getLogger().error( "Could not create component: " + componentKey, e );
 
-                throw new ComponentLookupException( "Could not create component for key " + key + "!", e );
+                throw new ComponentLookupException( "Could not create component for component " + componentKey + "!", e );
             }
 
-            // We do this so we know what to do when releasing. Only have to do it once
-            //per component class
             componentManagersByComponentClass.put( component.getClass().getName(), componentManager );
         }
         else
@@ -221,12 +212,12 @@ public class DefaultPlexusContainer
         }
     }
 
-    public boolean hasService( String componentKey )
+    public boolean hasComponent( String componentKey )
     {
         return componentRepository.hasComponent( componentKey );
     }
 
-    public boolean hasService( String role, String id )
+    public boolean hasComponent( String role, String id )
     {
         return componentRepository.hasComponent( role, id );
     }
