@@ -611,6 +611,10 @@ public class DefaultPlexusContainer
             {
                 lookup( role );
             }
+            else if ( roleHint.equals("*") )
+            {
+                lookupList( role );
+            }
             else
             {
                 lookup( role, roleHint );
