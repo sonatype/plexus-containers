@@ -98,6 +98,11 @@ public class PlexusTools
             cd.setIsolatedRealm( s.equals( "true" ) ? true : false );
         }
 
+        // ----------------------------------------------------------------------
+        // Here we want to look for directives for inlining external
+        // configurations. we probably want to take them from files or URLs.
+        // ----------------------------------------------------------------------
+
         cd.setConfiguration( configuration.getChild( "configuration" ) );
 
         // ----------------------------------------------------------------------
