@@ -4,6 +4,7 @@ import org.apache.avalon.framework.service.ServiceException;
 import org.apache.avalon.framework.service.ServiceManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.ComponentLookupException;
 
 /**
  * Extended <code>ServiceManager</code> implementation.
@@ -51,8 +52,14 @@ public class AvalonServiceManager
     public Object lookup( String role )
         throws ServiceException
     {
-        // We have to add some magic here to deal with Selectors.
-        return componentRepository.lookup( role );
+        try
+        {
+            return componentRepository.lookup( role );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new ServiceException( role, "Cannot find component: " + role, e);
+        }
     }
 
     /**

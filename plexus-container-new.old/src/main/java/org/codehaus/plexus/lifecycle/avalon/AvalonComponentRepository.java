@@ -1,7 +1,7 @@
 package org.codehaus.plexus.lifecycle.avalon;
 
-import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentLookupException;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
 
@@ -10,30 +10,14 @@ import org.codehaus.plexus.configuration.DefaultConfiguration;
  * for id'd components.
  *
  * @author <a href="mailto:dan@envoisolutions.com">Dan Diephouse</a>
+ * @author <a href="mailto:jvanzyl@maven.org">Jason van Zyl</a>
  * @since May 10, 2003
  */
 public class AvalonComponentRepository
     extends DefaultComponentRepository
 {
-    private String selector =
-        "<component>" +
-        "  <role>org.codehaus.plexus.ServiceSelectorr</role>" +
-        "  <implementation>org.codehaus.plexus.lifecycle.avalon.AvalonServiceSelector</implementation>" +
-        "  <configuration>" +
-        "    <selectable-role>org.codehaus.plexus.ServiceC</selectable-role>" +
-        "  </configuration>" +
-        "</component>";
-
-    public void initialize()
-        throws Exception
-    {
-        super.initialize();
-
-
-    }
-
     public Object lookup( String componentKey )
-        throws ServiceException
+        throws ComponentLookupException
     {
         int i = componentKey.indexOf( "Selector" );
 

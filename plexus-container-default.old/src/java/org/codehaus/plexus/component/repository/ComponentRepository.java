@@ -18,42 +18,17 @@ public interface ComponentRepository
 
     void contextualize( Context context );
 
-    /**
-     * Initialize this repository
-     * @throws Exception
-     */
     void initialize()
         throws Exception;
 
-    /**
-     * Lookup the component with the given role
-     *
-     * @param role
-     * @return
-     * @throws ServiceException if no component with the given role exists, or there was an
-     * error taking the component through a lifecycle
-     */
     Object lookup( String role )
-        throws ServiceException;
+        throws ComponentLookupException;
 
     Object lookup( String role, String id )
-        throws ServiceException;
+        throws ComponentLookupException;
 
-    /**
-     * Test if this repository manages the component with the given role
-     *
-     * @param role
-     * @return
-     */
     boolean hasService( String role );
 
-    /**
-     * Test if this repository manages the component with the given role
-     * and id
-     *
-     * @param role
-     * @return
-     */
     boolean hasService( String role, String id );
 
     void suspend( Object component );
@@ -68,10 +43,8 @@ public interface ComponentRepository
 
     ClassLoader getClassLoader();
 
-    /** Set this repositories logger */
     void enableLogging( Logger logger );
 
-    /** Set the logManager to be used for components */
     void setComponentLogManager( LoggerManager logManager );
 
     void addComponentDescriptor( ComponentDescriptor componentDescriptor );

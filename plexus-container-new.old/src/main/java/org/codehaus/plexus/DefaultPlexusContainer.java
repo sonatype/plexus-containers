@@ -1,25 +1,25 @@
 package org.codehaus.plexus;
 
 import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.service.ServiceException;
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.classloader.DefaultResourceManager;
 import org.codehaus.plexus.classloader.ResourceManagerFactory;
+import org.codehaus.plexus.component.repository.ComponentLookupException;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
+import org.codehaus.plexus.configuration.ConfigurationMerger;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.ConfigurationMerger;
+import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.LoggerManagerFactory;
-import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.InterpolationFilterReader;
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.NoSuchRealmException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -106,13 +106,13 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     public Object lookup( String componentKey )
-        throws ServiceException
+        throws ComponentLookupException
     {
         return componentRepository.lookup( componentKey );
     }
 
     public Object lookup( String role, String id )
-        throws ServiceException
+        throws ComponentLookupException
     {
         return componentRepository.lookup( role, id );
     }
@@ -255,7 +255,7 @@ public class DefaultPlexusContainer
                     componentRepository.lookup( role, id );
                 }
             }
-            catch ( ServiceException e )
+            catch ( ComponentLookupException e )
             {
                 getLogger().error( "Cannot load-on-start " + role, e );
             }

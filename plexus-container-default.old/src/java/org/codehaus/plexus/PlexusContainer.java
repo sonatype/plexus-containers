@@ -1,7 +1,7 @@
 package org.codehaus.plexus;
 
-import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.component.repository.ComponentLookupException;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 
 import java.io.Reader;
@@ -9,10 +9,10 @@ import java.io.Reader;
 public interface PlexusContainer
 {
     Object lookup( String componentKey )
-        throws ServiceException;
+        throws ComponentLookupException;
 
     Object lookup( String role, String id )
-        throws ServiceException;
+        throws ComponentLookupException;
 
     boolean hasService( String componentKey );
 

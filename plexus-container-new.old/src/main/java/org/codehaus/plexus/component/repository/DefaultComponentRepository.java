@@ -2,7 +2,6 @@ package org.codehaus.plexus.component.repository;
 
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.context.Context;
-import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusTools;
 import org.codehaus.plexus.component.manager.ComponentManager;
@@ -310,7 +309,7 @@ public class DefaultComponentRepository
     // ----------------------------------------------------------------------
 
     public synchronized Object lookup( String key )
-        throws ServiceException
+        throws ComponentLookupException
     {
         // Attempt to lookup the componentManager by key.
         ComponentManager componentManager = getComponentManager( key );
@@ -337,7 +336,7 @@ public class DefaultComponentRepository
                     }
                     catch ( Exception e )
                     {
-                        throw new ServiceException( key, "Error retrieving component from ComponentManager" );
+                        throw new ComponentLookupException( "Error retrieving component from ComponentManager: " + key );
                     }
                 }
 
@@ -350,7 +349,7 @@ public class DefaultComponentRepository
                 {
                     getLogger().error( "Non existant component: " + key );
 
-                    throw new ServiceException( key, "Non existant component for key " + key + "." );
+                    throw new ComponentLookupException( "Non existant component:  " );
                 }
 
                 try
@@ -361,7 +360,7 @@ public class DefaultComponentRepository
                 {
                     getLogger().error( "Could not create component: " + key, e );
 
-                    throw new ServiceException( key, "Could not create component for key " + key + "!", e );
+                    throw new ComponentLookupException( "Could not create component for key " + key + "!", e );
                 }
                 try
                 {
@@ -371,7 +370,7 @@ public class DefaultComponentRepository
                 {
                     getLogger().error( "Could not create component: " + key, e );
 
-                    throw new ServiceException( key, "Could not create component for key " + key + "!", e );
+                    throw new ComponentLookupException( "Could not create component for key " + key + "!", e );
                 }
 
                 // We do this so we know what to do when releasing. Only have to do it once
@@ -389,7 +388,7 @@ public class DefaultComponentRepository
             }
             catch ( Exception e )
             {
-                throw new ServiceException( key, "Error retrieving component from ComponentManager" );
+                throw new ComponentLookupException( "Error retrieving component from ComponentManager" );
             }
         }
 
@@ -397,7 +396,7 @@ public class DefaultComponentRepository
     }
 
     public synchronized Object lookup( String role, String id )
-        throws ServiceException
+        throws ComponentLookupException
     {
         return lookup( role + id );
     }

@@ -1,8 +1,8 @@
 package org.codehaus.plexus.embed;
 
-import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.ComponentLookupException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -77,12 +77,13 @@ public class Embedder
     }
 
     public Object lookup( String role )
-        throws ServiceException
+        throws ComponentLookupException
     {
         return getContainer().lookup( role );
     }
 
-    public Object lookup( String role, String id ) throws ServiceException
+    public Object lookup( String role, String id )
+        throws ComponentLookupException
     {
         return getContainer().lookup( role, id );
     }
