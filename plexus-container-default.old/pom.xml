@@ -10,7 +10,7 @@
   <groupId>plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
-  <name>Plexus Container</name>
+  <name>Default Plexus Container</name>
 
   <dependencies>
     <dependency>
