@@ -23,4 +23,8 @@ public class DefaultActivityManager
     {
         return (Activity) activities.get( id );
     }
+    
+    public int getActivityCount() {
+    	return activities.size();
+    }
 }

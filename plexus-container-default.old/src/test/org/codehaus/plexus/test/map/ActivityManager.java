@@ -14,4 +14,6 @@ public interface ActivityManager
     void execute( String id );
 
     Activity getActivity( String id );
+    
+    int getActivityCount();
 }
