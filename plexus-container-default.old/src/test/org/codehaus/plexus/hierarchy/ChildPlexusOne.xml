@@ -15,6 +15,24 @@
         <known-value>three blind mice</known-value>
       </configuration>
     </component>
+
+    <component>
+      <role>org.codehaus.plexus.hierarchy.TestService</role>
+      <role-hint>hinted</role-hint>
+      <implementation>org.codehaus.plexus.hierarchy.TestServiceImpl</implementation>
+      <configuration>
+        <known-value>plexus one overriding hinted service</known-value>
+      </configuration>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.hierarchy.TestService</role>
+      <role-hint>local</role-hint>
+      <implementation>org.codehaus.plexus.hierarchy.TestServiceImpl</implementation>
+      <configuration>
+        <known-value>plexus one local service</known-value>
+      </configuration>
+    </component>
   </components>
 
 </configuration>
