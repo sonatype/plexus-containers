@@ -214,6 +214,33 @@ public class DefaultPlexusContainerTest
         assertNotSame( serviceD1, serviceD2 );
         assertNotSame( serviceD2, serviceD3 );
         assertNotSame( serviceD1, serviceD3 );
+
+        // Now let's release all the components.
+
+        container.getComponentRepository().release( serviceD1 );
+        container.getComponentRepository().release( serviceD2 );
+        container.getComponentRepository().release( serviceD3 );
+
+        ServiceD[] ds = new DefaultServiceD[30];
+
+        for ( int h = 0; h < 5; h++ )
+        {
+            System.out.println( "Consume/Release iteration[ " + h + " ]" );
+
+            // Consume all available components in the pool.
+
+            for ( int i = 0; i < 30; i++ )
+            {
+                ds[i] = (ServiceD) container.getComponentRepository().lookup( ServiceD.ROLE );
+            }
+
+            // Release them all.
+
+            for ( int i = 0; i < 30; i++ )
+            {
+                container.getComponentRepository().release( ds[i] );
+            }
+        }
     }
 
     /**
