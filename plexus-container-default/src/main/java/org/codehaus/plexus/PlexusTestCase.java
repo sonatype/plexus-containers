@@ -35,6 +35,7 @@ import org.codehaus.plexus.context.Context;
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
  */
 public class PlexusTestCase
@@ -88,11 +89,14 @@ public class PlexusTestCase
 
         basedir = getBasedir();
 
-        container = getContainerInstance();
+        container = createContainerInstance();
 
         container.addContextValue( "basedir", getBasedir() );
 
+        // this method was deprecated
         customizeContext();
+
+        customizeContext( getContext() );
 
         boolean hasPlexusHome = getContext().contains( "plexus.home" );
 
@@ -118,7 +122,7 @@ public class PlexusTestCase
         container.start();
     }
 
-    protected PlexusContainer getContainerInstance()
+    protected PlexusContainer createContainerInstance()
     {
         return new DefaultPlexusContainer();
     }
@@ -132,10 +136,18 @@ public class PlexusTestCase
     //    user is not forced to do getContainer().addContextValue(..)
     //    this would require a change to PlexusContainer in order to get
     //    hold of the context ...
+    // @deprecated use void customizeContext( Context context )
     protected void customizeContext()
         throws Exception
     {
     }
+
+
+    protected void customizeContext( Context context )
+        throws Exception
+    {
+    }
+
 
     protected InputStream getCustomConfiguration()
         throws Exception
