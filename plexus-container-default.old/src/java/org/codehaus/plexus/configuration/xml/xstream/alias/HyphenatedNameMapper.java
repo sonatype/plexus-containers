@@ -14,13 +14,13 @@ public class HyphenatedNameMapper
     implements NameMapper
 {
     // first-name --> firstName
-    public String fromXml( String elementName )
+    public String fromXML( String elementName )
     {
         return StringUtils.lowercaseFirstLetter( StringUtils.removeAndHump( elementName, "-" ) );
     }
 
     // firstName --> first-name
-    public String toXml( String fieldName )
+    public String toXML( String fieldName )
     {
         return StringUtils.addAndDeHump( fieldName );
     }
