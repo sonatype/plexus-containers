@@ -3,6 +3,7 @@ package org.codehaus.plexus.component.configurator.converters;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -24,7 +25,7 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
                                                    ClassLoader classLoader,
                                                    ComponentDescriptor componentDescriptor )
             throws ComponentConfigurationException
-    {
+    {        
         Class retValue = type;
 
         String implementation = null;

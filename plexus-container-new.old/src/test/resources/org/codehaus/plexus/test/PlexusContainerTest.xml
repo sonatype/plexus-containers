@@ -20,7 +20,7 @@
 
   <component-discoverer-manager implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager">
     <listeners>
-      <listener>
+      <listener implementation="org.codehaus.plexus.component.discovery.DiscoveryListenerDescriptor">
         <role>org.codehaus.plexus.test.discovery.PluginManager</role>
       </listener>
     </listeners>

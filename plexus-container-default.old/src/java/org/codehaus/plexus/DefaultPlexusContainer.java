@@ -28,12 +28,15 @@ import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
+import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
@@ -641,13 +644,17 @@ public class DefaultPlexusContainer
             String roleHint = loadOnStartComponents[i].getChild( "role-hint" ).getValue();
 
             if ( role == null )
+            {
                 throw new PlexusConfigurationException( "Missing 'role' element from load-on-start." );
-
+            }
             if ( roleHint == null )
+            {
                 getLogger().info( "Loading on start [role]: " + "[" + role + "]" );
+            }
             else
+            {
                 getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
-
+            }
             if ( roleHint == null )
             {
                 lookup( role );
@@ -967,7 +974,7 @@ public class DefaultPlexusContainer
         enableLogging( loggerManager.getLoggerForComponent( PlexusContainer.class.getName() ) );
     }
 
-    private void initializeCoreComponents()
+    private void initializeCoreComponentsOld()
         throws Exception
     {
         // Component repository
@@ -1024,6 +1031,77 @@ public class DefaultPlexusContainer
         componentComposerManager = (ComponentComposerManager) builder.build( c );
 
     }
+
+
+    private void initializeCoreComponents()
+        throws Exception
+    {
+        BasicComponentConfigurator configurator = new BasicComponentConfigurator();
+
+        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
+
+        componentDescriptor.setRole( "plexus-container" );
+
+        componentDescriptor.setImplementation( getClass().getName() );
+
+        PlexusConfiguration c = configuration.getChild( "component-repository" );
+
+        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+
+        componentRepository.configure( configuration );
+
+        componentRepository.setClassRealm( plexusRealm );
+
+        componentRepository.initialize();
+
+        // Lifecycle handler manager
+
+        c = configuration.getChild( "lifecycle-handler-manager" );
+
+        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+
+        lifecycleHandlerManager.initialize();
+
+        // Component manager manager
+
+        c = configuration.getChild( "component-manager-manager" );
+
+        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+
+        componentManagerManager.setLifecycleHandlerManager( lifecycleHandlerManager );
+
+        // Component discoverer manager
+
+        c = configuration.getChild( "component-discoverer-manager" );
+
+        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+
+        componentDiscovererManager.initialize();
+
+        // Component factory manager
+
+        c = configuration.getChild( "component-factory-manager" );
+
+        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+
+
+        // Component factory manager
+
+        c = configuration.getChild( "component-composer-manager" );
+
+        processCoreComponentConfiguration( configurator, componentDescriptor, c );
+    }
+
+    private void processCoreComponentConfiguration( BasicComponentConfigurator configurator, ComponentDescriptor componentDescriptor, PlexusConfiguration c )
+            throws ComponentConfigurationException
+    {
+        PlexusConfiguration configuration = new XmlPlexusConfiguration( "configuration" );
+
+        configuration.addChild( c );
+
+        configurator.configureComponent( this, componentDescriptor, configuration );
+    }
+
 
     private void initializeSystemProperties()
         throws PlexusConfigurationException

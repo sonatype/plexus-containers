@@ -87,9 +87,12 @@ public class CollectionConverter extends AbstractConfigurationConverter
 
             String classname = basePackage + "." + name;
 
-            Class childType = loadClass( classname, classLoader, componentDescriptor );
+            Class childType = getClassForImplementationHint( null, c, classLoader, componentDescriptor );
 
-            childType = getClassForImplementationHint( childType, c, classLoader, componentDescriptor );
+            if ( childType == null )
+            {
+                childType = loadClass( classname, classLoader, componentDescriptor );
+            }
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
