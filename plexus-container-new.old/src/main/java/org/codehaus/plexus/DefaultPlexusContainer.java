@@ -19,7 +19,6 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.configuration.xstream.XStreamTool;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
@@ -72,8 +71,6 @@ public class DefaultPlexusContainer
 
     private ClassLoader classLoader;
 
-    private XmlPullConfigurationBuilder builder;
-
     private ComponentConfigurator componentConfigurator;
 
     private ComponentComposer componentComposer;
@@ -92,8 +89,6 @@ public class DefaultPlexusContainer
 
     public DefaultPlexusContainer()
     {
-        builder = new XmlPullConfigurationBuilder();
-
         context = new DefaultContext();
     }
 
@@ -606,13 +601,15 @@ public class DefaultPlexusContainer
                                              "most likely corrupt." );
         }
 
-        PlexusConfiguration systemConfiguration = builder.parse( new InputStreamReader( is ) );
+        PlexusConfiguration systemConfiguration =
+            PlexusTools.buildConfiguration( new InputStreamReader( is ) );
 
         if ( configurationReader != null )
         {
             // User userConfiguration
 
-            PlexusConfiguration userConfiguration = builder.parse( getInterpolationConfigurationReader( configurationReader ) );
+            PlexusConfiguration userConfiguration =
+                PlexusTools.buildConfiguration( getInterpolationConfigurationReader( configurationReader ) );
 
             // Merger of systemConfiguration and user userConfiguration
 
@@ -662,7 +659,7 @@ public class DefaultPlexusContainer
                     File componentConfigurationFile = (File) i.next();
 
                     PlexusConfiguration componentConfiguration =
-                        builder.parse( getInterpolationConfigurationReader( new FileReader( componentConfigurationFile ) ) );
+                        PlexusTools.buildConfiguration( getInterpolationConfigurationReader( new FileReader( componentConfigurationFile ) ) );
 
                     componentsConfiguration.addAllChildren( componentConfiguration.getChild( "components" ) );
                 }
@@ -907,8 +904,6 @@ public class DefaultPlexusContainer
             {
                 if ( jars[j].getAbsolutePath().endsWith( ".jar" ) )
                 {
-                    System.out.println( "jars[j] = " + jars[j] );
-
                     addJarResource( jars[j] );
                 }
             }
