@@ -32,7 +32,7 @@ public final class ConsoleLogger
     /** Typecode for disabled log levels. */
     public static final int LEVEL_DISABLED = 5;
 
-    private final int logLevel;
+    private int logLevel;
 
     public ConsoleLogger()
     {
@@ -162,6 +162,11 @@ public final class ConsoleLogger
     public boolean isFatalErrorEnabled()
     {
         return logLevel <= LEVEL_FATAL;
+    }
+
+    public void setLogLevel( int logLevel )
+    {
+        this.logLevel = logLevel;
     }
 
     public Logger getChildLogger( String name )
