@@ -1,6 +1,5 @@
 package org.codehaus.plexus;
 
-import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 
@@ -73,12 +72,6 @@ public interface PlexusContainer
 
     void addContextValue( Object key, Object value );
 
-    void setClassWorld( ClassWorld classWorld );
-
     void setConfigurationResource( Reader configuration )
         throws PlexusConfigurationResourceException;
-
-    void setClassLoader( ClassLoader classLoader );
-
-    ClassLoader getClassLoader();
 }

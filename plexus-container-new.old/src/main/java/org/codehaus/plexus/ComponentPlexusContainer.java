@@ -4,7 +4,6 @@
 
 package org.codehaus.plexus;
 
-import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
@@ -15,8 +14,8 @@ import org.codehaus.plexus.context.ContextException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of the <code>PlexusContainer</code> interface that can
@@ -198,16 +197,6 @@ public final class ComponentPlexusContainer
     public void addContextValue( Object key, Object value )
     {
         myPlexus.addContextValue( key, value );
-    }
-
-    public void setClassWorld( ClassWorld classWorld )
-    {
-        throw new UnsupportedOperationException( "setClassWorld is not supported for ComponentPlexusContainer" );
-    }
-
-    public void setClassLoader( ClassLoader classLoader )
-    {
-        throw new UnsupportedOperationException( "setClassLoader is not supported for ComponentPlexusContainer" );
     }
 
     public void setConfigurationResource( Reader configuration )

@@ -35,37 +35,21 @@ import java.net.URL;
  */
 public class Embedder
 {
-    /** Configuration resource or file. (Deprecated)*/
     private String configuration;
 
-    /** Configuration resource URL */
     private volatile URL configurationURL;
 
-    /** Plexus Container. */
     private final PlexusContainer container;
 
-    /** Flag to indicate embedder has been started. */
     private volatile boolean embedderStarted = false;
 
-    /** Flag to indicate embedder has been stopped. */
     private volatile boolean embedderStopped = false;
 
-    /**
-     * Default constructor.
-     */
     public Embedder()
     {
         container = new DefaultPlexusContainer();
     }
 
-    /**
-     * Gets the <tt>PlexusContainer</tt> that was started by the
-     * embedder.
-     *
-     * @return The <tt>PlexusContainer</tt> that was started.
-     * @throws IllegalStateException If the embedder has not already
-     * been started.
-     */
     public PlexusContainer getContainer()
     {
         if ( !embedderStarted )
@@ -74,11 +58,6 @@ public class Embedder
         }
 
         return container;
-    }
-
-    public void setClassLoader( ClassLoader classLoader )
-    {
-        container.setClassLoader( classLoader );
     }
 
     public Object lookup( String role )
@@ -108,57 +87,26 @@ public class Embedder
         getContainer().release( service );
     }
 
-    /**
-     * Set the configuration for the <tt>PlexusContainer</tt>.  This
-     * configuration can either be a file or a resource in the
-     * classpath.
-     *
-     * @deprecated avoid this function - use @see setConfiguration(URL) instead
-     *
-     * @param configuration A file or resource in the classpath that
-     * contains the configuration for the <tt>PlexusContainer</tt>.
-     * @throws IllegalStateException If the embedder has already been
-     * started or stopped.
-     */
     public void setConfiguration( String configuration )
     {
         if ( embedderStarted || embedderStopped )
         {
-            throw new IllegalStateException(
-                "Embedder has already been started" );
+            throw new IllegalStateException( "Embedder has already been started" );
         }
 
         this.configuration = configuration;
     }
 
-    /**
-     * Set the configuration for the <tt>PlexusContainer</tt>.
-     *
-     * @param configuration A URL that contains the configuration
-     * for the <tt>PlexusContainer</tt>.
-     * @throws IllegalStateException If the embedder has already been
-     * started or stopped.
-     */
     public void setConfiguration( URL configuration )
     {
         if ( embedderStarted || embedderStopped )
         {
-            throw new IllegalStateException(
-                "Embedder has already been started" );
+            throw new IllegalStateException( "Embedder has already been started" );
         }
 
         this.configurationURL = configuration;
     }
 
-
-    /**
-     * Add a value to the <tt>PlexusContainer</tt>'s context.
-     *
-     * @param key The key for the context value.
-     * @param value The value to be inserted.
-     * @throws IllegalStateException If the embedder has already been
-     * started or stopped.
-     */
     public void addContextValue( Object key, Object value )
     {
         if ( embedderStarted || embedderStopped )
@@ -170,15 +118,6 @@ public class Embedder
         container.addContextValue( key, value );
     }
 
-    /**
-     * Start the <tt>PlexusContainer<tt>.  This container can then be
-     * fetched via <tt>getContainer</tt> for use by clients.
-     *
-     * @throws Exception If there was an error starting the container.
-     * @throws IllegalStateException If the embedder has already been
-     * started, or if its already been stopped.  The embedder cannot
-     * be restarted.
-     */
     public synchronized void start()
         throws Exception
     {
@@ -201,14 +140,6 @@ public class Embedder
         container.start();
     }
 
-    /**
-     * Stop the <tt>PlexusContainer</tt>.  Once the container has been
-     * stopped, it cannot be restarted.
-     *
-     * @throws Exception If there was a problem stopping the container.
-     * @throws IllegalStateException If the embedder has not been
-     * started, or if its already been stopped.
-     */
     public synchronized void stop()
         throws Exception
     {
