@@ -11,6 +11,10 @@ import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.Property;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.component.repository.ComponentSet;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 
 import java.io.Reader;
 import java.util.HashMap;
@@ -35,6 +39,18 @@ public class XStreamTool
         xstream = new XStream( new JavaReflectionObjectFactory(), classMapper, elementMapper, new Xpp3DomXMLReaderDriver() );
 
         xstream.alias( "property", Property.class );
+
+        xstream.alias( "configuration", PlexusConfiguration.class, DefaultPlexusConfiguration.class );
+
+        // Requirements for reading the component set descriptor.
+
+        xstream.alias( "component-set", ComponentSet.class );
+
+        xstream.alias( "component", ComponentDescriptor.class );
+
+        xstream.alias( "requirement", ComponentRequirement.class );
+
+        xstream.alias( "dependency", ComponentDependency.class );
 
         xstream.registerConverter( new CollectionConverter( classMapper ) );
 
