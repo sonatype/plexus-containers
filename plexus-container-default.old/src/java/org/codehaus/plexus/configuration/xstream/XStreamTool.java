@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.objecttree.reflection.JavaReflectionObjectFactory;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
+import org.codehaus.plexus.configuration.Property;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
 import java.io.Reader;
@@ -33,6 +34,8 @@ public class XStreamTool
         xstream = new XStream( new JavaReflectionObjectFactory(),
                                classMapper,
                                elementMapper );
+
+        xstream.alias( "property", Property.class );
 
         xstream.registerConverter( new CollectionConverter( classMapper ) );
 
