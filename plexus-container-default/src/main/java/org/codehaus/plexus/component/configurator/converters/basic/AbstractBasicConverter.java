@@ -54,7 +54,7 @@ public abstract class AbstractBasicConverter
         // is a <tag> in the configuration and then it will always have a value -- trygvis
         if ( value == null )
         {
-            String msg = "Could not find a value for configuration element: '" + configuration.getName() + ".";
+            String msg = "Could not find a value for configuration element: '" + configuration.getName() + "'.";
 
             throw new ComponentConfigurationException( msg );
         }
