@@ -68,8 +68,3 @@ are very detailed and specific, while others are more general.  -pete
   plexus conf file:  I'm not sure if this is a great idea as it leads
   the user to believe that these are _real_ components when in fact
   they aren't. ??
-
-- More than one lifecycle handler should be possible.  Each lifecycle
-  could have an id that a component would reference to indicate the
-  lifecycle handler that should be used.  I see after reading all of
-  the code that this is the intention.
