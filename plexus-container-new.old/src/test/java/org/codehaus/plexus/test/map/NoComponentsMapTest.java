@@ -1,7 +1,7 @@
 package org.codehaus.plexus.test.map;
 
 /*
- * LISENCE
+ * LICENSE
  */
 
 import org.codehaus.plexus.PlexusTestCase;

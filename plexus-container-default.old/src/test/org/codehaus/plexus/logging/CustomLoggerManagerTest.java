@@ -1,7 +1,7 @@
 package org.codehaus.plexus.logging;
 
 /*
- * LISENCE
+ * LICENSE
  */
 
 import org.codehaus.plexus.PlexusTestCase;
