@@ -18,30 +18,17 @@ public class XmlPullConfigurationBuilderTest
         super( name );
     }
 
-    /**
-     * The JUnit setup method
-     */
-    protected void setUp()
-        throws Exception
-    {
-    }
-
-    /**
-     * The teardown method for JUnit
-     */
-    protected void tearDown()
-        throws Exception
-    {
-    }
-
     public void testSimpleConfigurationBuilding()
         throws Exception
     {
         String s = "<conf><name>jason</name></conf>";
+
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
+
         Configuration c = cb.parse( new StringReader( s ) );
 
         assertNotNull( c );
+
         assertEquals( "jason", c.getChild( "name" ).getValue() );
     }
 
@@ -49,6 +36,7 @@ public class XmlPullConfigurationBuilderTest
         throws Exception
     {
         String s = "<conf>mixed<name>jason</name></conf>";
+
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
         try
@@ -67,25 +55,41 @@ public class XmlPullConfigurationBuilderTest
         throws Exception
     {
         String s = "<conf><name>jason</name></conf>";
+
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
+
         Configuration c = cb.parse( new StringReader( s ) );
+
         assertNotNull( c );
+
         assertEquals( "jason", c.getChild( "name" ).getValue() );
 
+
         s = "<conf><name>bob</name></conf>";
+
         c = cb.parse( new StringReader( s ) );
+
         assertNotNull( c );
+
         assertEquals( "bob", c.getChild( "name" ).getValue() );
 
+
         s = "<conf><name>pete</name></conf>";
+
         c = cb.parse( new StringReader( s ) );
+
         assertNotNull( c );
+
         assertEquals( "pete", c.getChild( "name" ).getValue() );
 
+
         s = "<conf><name>melissa</name></conf>";
+
         c = cb.parse( new StringReader( s ) );
+
         assertNotNull( c );
+
         assertEquals( "melissa", c.getChild( "name" ).getValue() );
     }
 
@@ -93,7 +97,9 @@ public class XmlPullConfigurationBuilderTest
         throws Exception
     {
         String s = "<conf><name>jason</name></conf>";
+
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
+
         CloseCheckStringReader reader = new CloseCheckStringReader( s );
 
         assertFalse( "reader closed before parsing", reader.isClosed() );
