@@ -1,6 +1,7 @@
 package org.codehaus.plexus.component.factory;
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.component.factory.java.JavaComponentFactory;
 
 /**
  *

@@ -10,6 +10,7 @@ import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
+import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
@@ -75,6 +76,8 @@ public class DefaultPlexusContainer
     private LifecycleHandlerManager lifecycleHandlerManager;
 
     private ComponentDiscovererManager componentDiscovererManager;
+
+    private ComponentFactoryManager componentFactoryManager;
 
     // ----------------------------------------------------------------------
     //  Constructors
@@ -712,6 +715,12 @@ public class DefaultPlexusContainer
         c = configuration.getChild( "component-discoverer-manager" );
 
         componentDiscovererManager = (ComponentDiscovererManager) builder.build( c );
+
+        // Component factory manager
+
+        c = configuration.getChild( "component-factory-manager" );
+
+        componentFactoryManager = (ComponentFactoryManager) builder.build( c );
     }
 
     private void initializeSystemProperties()

@@ -131,6 +131,23 @@ public class PlexusConfigurationMerger
         }
 
         // ----------------------------------------------------------------------
+        // Component factory manager
+        // ----------------------------------------------------------------------
+
+        PlexusConfiguration componentFactoryManager =  user.getChild( "component-factory-manager" );
+
+        if ( componentFactoryManager.getChildCount() != 0 )
+        {
+            mergedConfiguration.addChild( componentFactoryManager );
+
+            copyComponentFactories( system.getChild( "component-factory-manager" ), componentFactoryManager );
+        }
+        else
+        {
+            mergedConfiguration.addChild( system.getChild( "component-factory-manager" ) );
+        }
+
+        // ----------------------------------------------------------------------
         // Lifecycle handler managers
         // ----------------------------------------------------------------------
 
@@ -170,6 +187,18 @@ public class PlexusConfigurationMerger
         PlexusConfiguration handlers[] = source.getChild( "component-discoverers" ).getChildren( "component-discoverer" );
 
         XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-discoverers" );
+
+        for ( int i = 0; i < handlers.length; i++ )
+        {
+            dest.addChild( handlers[i] );
+        }
+    }
+
+    private static void copyComponentFactories( PlexusConfiguration source, PlexusConfiguration destination )
+    {
+        PlexusConfiguration handlers[] = source.getChild( "component-factories" ).getChildren( "component-factory" );
+
+        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-factories" );
 
         for ( int i = 0; i < handlers.length; i++ )
         {
