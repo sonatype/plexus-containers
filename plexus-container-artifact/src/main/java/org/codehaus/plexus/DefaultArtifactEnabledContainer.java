@@ -60,7 +60,8 @@ public class DefaultArtifactEnabledContainer
 
     private Artifact createArtifact( ComponentDependency cd )
     {
-        return artifactConstructionSupport.createArtifact( cd.getGroupId(), cd.getArtifactId(), cd.getVersion(), Artifact.SCOPE_RUNTIME, cd.getType() );
+        return artifactConstructionSupport.createArtifact( cd.getGroupId(), cd.getArtifactId(), cd.getVersion(),
+                                                           Artifact.SCOPE_RUNTIME, cd.getType() );
     }
 
     // ----------------------------------------------------------------------
@@ -71,11 +72,8 @@ public class DefaultArtifactEnabledContainer
 
     int realmTmpId = 0;
 
-    public void addComponent( Artifact component,
-                              ArtifactResolver artifactResolver,
-                              List remoteRepositories,
-                              ArtifactRepository localRepository,
-                              ArtifactMetadataSource sourceReader,
+    public void addComponent( Artifact component, ArtifactResolver artifactResolver, List remoteRepositories,
+                              ArtifactRepository localRepository, ArtifactMetadataSource sourceReader,
                               ArtifactFilter filter )
         throws Exception
     {
@@ -92,7 +90,7 @@ public class DefaultArtifactEnabledContainer
         // First we need to see if the artifact is present
         // ----------------------------------------------------------------------
 
-        component = artifactResolver.resolve( component, remoteRepositories, localRepository );
+        artifactResolver.resolve( component, remoteRepositories, localRepository );
 
         realmTmpId++;
 
@@ -147,7 +145,8 @@ public class DefaultArtifactEnabledContainer
             {
                 Set artifactsToResolve = new HashSet();
 
-                for ( Iterator j = componentDescriptor.getComponentSetDescriptor().getDependencies().iterator(); j.hasNext(); )
+                for ( Iterator j = componentDescriptor.getComponentSetDescriptor().getDependencies().iterator();
+                      j.hasNext(); )
                 {
                     ComponentDependency cd = (ComponentDependency) j.next();
 
@@ -156,7 +155,7 @@ public class DefaultArtifactEnabledContainer
                     // ----------------------------------------------------------------------
 
                     Artifact componentArtifact = createArtifact( cd );
-                    
+
                     if ( filter.include( componentArtifact ) )
                     {
                         artifactsToResolve.add( componentArtifact );
@@ -181,12 +180,10 @@ public class DefaultArtifactEnabledContainer
                 // phase to prevent duplication entries.
                 // ----------------------------------------------------------------------
 
-                ArtifactResolutionResult result =
-                    artifactResolver.resolveTransitively( artifactsToResolve,
-                                                          remoteRepositories,
-                                                          localRepository,
-                                                          sourceReader,
-                                                          filter );
+                ArtifactResolutionResult result = artifactResolver.resolveTransitively( artifactsToResolve,
+                                                                                        remoteRepositories,
+                                                                                        localRepository, sourceReader,
+                                                                                        filter );
 
                 for ( Iterator k = result.getArtifacts().values().iterator(); k.hasNext(); )
                 {
