@@ -1,18 +1,17 @@
 package org.codehaus.plexus.component.repository;
 
 import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.context.Context;
 import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.manager.ComponentManager;
-import org.codehaus.plexus.component.manager.ComponentManagerFactory;
+import org.codehaus.plexus.component.manager.ComponentManagerManager;
+import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.configuration.ObjectBuilder;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
-import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 
@@ -40,12 +39,6 @@ public class DefaultComponentRepository
 
     /** Component tag. */
     private static String COMPONENT = "component";
-
-       /** Instance manager tag. */
-    private static String INSTANCE_MANAGER = "instance-manager";
-
-    /** Instance managers tag. */
-    private static String INSTANCE_MANAGERS = "instance-managers";
 
     // ----------------------------------------------------------------------
     //  Instance Members
@@ -78,14 +71,6 @@ public class DefaultComponentRepository
     /** Logger manager. */
     private LoggerManager loggerManager;
 
-    /** The manager manager descriptors. Seperate from the other
-     * components as they shouldn't have access to them. Keyed
-     * by instantiation strategy*/
-    private Map componentManagerDescriptors;
-
-    /** Default instantiation strategy. */
-    private String defaultInstantiationStrategy;
-
     /**
      * Object to lock when creating a new component manager during
      * component lookup. Separate from enclosing class as we have no control
@@ -97,12 +82,12 @@ public class DefaultComponentRepository
 
     private LifecycleHandlerManager lifecycleHandlerManager = null;
 
+    private ComponentManagerManager componentManagerManager = null;
+
     /** Constructor. */
     public DefaultComponentRepository()
     {
         componentDescriptors = new HashMap();
-
-        componentManagerDescriptors = new HashMap();
 
         componentManagers = Collections.synchronizedMap( new HashMap() );
 
@@ -130,23 +115,9 @@ public class DefaultComponentRepository
         return getPlexusContainer().getClassLoader();
     }
 
-    /**
-     * @return
-     */
-    public LoggerManager getComponentLogManager()
-    {
-        return loggerManager;
-    }
-
     public void setComponentLogManager( LoggerManager manager )
     {
         loggerManager = manager;
-    }
-
-    public LifecycleHandler getLifecycleHandler( String id )
-        throws UndefinedLifecycleHandlerException
-    {
-        return lifecycleHandlerManager.getLifecycleHandler( id );
     }
 
     protected Configuration getConfiguration()
@@ -180,11 +151,6 @@ public class DefaultComponentRepository
     ComponentManager getComponentManager( String componentKey )
     {
         return (ComponentManager) getComponentManagers().get( componentKey );
-    }
-
-    Map getComponentManagerDescriptors()
-    {
-        return componentManagerDescriptors;
     }
 
     /**
@@ -230,7 +196,7 @@ public class DefaultComponentRepository
     {
         initializeLifecycleHandlerManager();
 
-        initializeComponentManagers();
+        initializeComponentManagerManager();
 
         initializeComponentDescriptors();
     }
@@ -258,37 +224,16 @@ public class DefaultComponentRepository
      *
      * @throws Exception
      */
-    private void initializeComponentManagers()
+    private void initializeComponentManagerManager()
         throws Exception
     {
-        Configuration[] componentConfigurations =
-            configuration.getChild( INSTANCE_MANAGERS ).getChildren( INSTANCE_MANAGER );
+        ObjectBuilder builder = new ObjectBuilder();
 
-        for ( int i = 0; i < componentConfigurations.length; i++ )
-        {
-            addComponentManagerDescriptor( componentDescriptorBuilder.build( componentConfigurations[i] ) );
-        }
+        builder.alias( "component-manager-manager", DefaultComponentManagerManager.class );
 
-        defaultInstantiationStrategy = getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute(
-            "default", getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute( "default", null ) );
+        Configuration c = getConfiguration().getChild( "component-manager-manager" );
 
-        getLogger().info( "Default instantiation strategy set to: '" + defaultInstantiationStrategy + "'" );
-    }
-
-    /**
-     * Adds a InstanceManager to this repository.
-     *
-     * @param descriptor
-     */
-    protected void addComponentManagerDescriptor( ComponentDescriptor descriptor )
-    {
-        getLogger().info(
-            "Adding manager manager descriptor. strategy="
-            + descriptor.getInstantiationStrategy()
-            + ", impl="
-            + descriptor.getImplementation() );
-
-        getComponentManagerDescriptors().put( descriptor.getInstantiationStrategy(), descriptor );
+        componentManagerManager = (ComponentManagerManager) builder.build( (PlexusConfiguration) c, DefaultComponentManagerManager.class );
     }
 
     /**
@@ -304,47 +249,38 @@ public class DefaultComponentRepository
     public ComponentManager instantiateComponentManager( ComponentDescriptor descriptor )
         throws Exception
     {
-        ComponentDescriptor componentManagerDescriptor;
+        String lifecycleHandlerId = descriptor.getLifecycleHandler();
 
-        String strategy = descriptor.getInstantiationStrategy();
+        LifecycleHandler lifecycleHandler;
 
-        //donˈt want a 'ROLE#null' lookup
-        if ( strategy == null )
+        if ( lifecycleHandlerId == null )
         {
-            strategy = defaultInstantiationStrategy;
-        }
-
-        componentManagerDescriptor = (ComponentDescriptor) getComponentManagerDescriptors().get( strategy );
-
-        if ( componentManagerDescriptor == null )
-        {
-            throw new ConfigurationException(
-                "No instance manager configured with strategy: "
-                + strategy
-                + " for component with role: "
-                + descriptor.getRole() );
-        }
-
-        String id = descriptor.getLifecycleHandler();
-
-        LifecycleHandler h;
-
-        System.out.println( "lifecycleHandlerManager = " + lifecycleHandlerManager );
-
-        if ( id == null )
-        {
-            h = lifecycleHandlerManager.getDefaultLifecycleHandler();
+            lifecycleHandler = lifecycleHandlerManager.getDefaultLifecycleHandler();
         }
         else
         {
-            h = lifecycleHandlerManager.getLifecycleHandler( id );
+            lifecycleHandler = lifecycleHandlerManager.getLifecycleHandler( lifecycleHandlerId );
         }
 
-        ComponentManager componentManager = ComponentManagerFactory.create( componentManagerDescriptor,
-                                                                            getComponentLogManager(),
-                                                                            getClassLoader(),
-                                                                            h,
-                                                                            descriptor );
+        String instantiationId = descriptor.getInstantiationStrategy();
+
+        ComponentManager componentManager;
+
+        if ( instantiationId == null )
+        {
+            componentManager = componentManagerManager.getDefaultComponentManager();
+        }
+        else
+        {
+            componentManager = componentManagerManager.getComponentManager( instantiationId );
+        }
+
+        componentManager.setup( loggerManager.getLogger( "component-manager" ),
+                                getClassLoader(),
+                                lifecycleHandler,
+                                descriptor );
+
+        componentManager.initialize();
 
         //make the ComponentManager available for future requests
         getComponentManagers().put( descriptor.getComponentKey(), componentManager );

@@ -1,11 +1,9 @@
 package org.codehaus.plexus.component.manager;
 
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.logger.Logger;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
 
 /**
  * Manages a component manager.
@@ -19,28 +17,21 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
  */
 public interface ComponentManager
 {
+    ComponentManager copy();
+
     static String ROLE = ComponentManager.class.getName();
 
-    void configure( Configuration configuration )
-        throws ConfigurationException;
+    String getId();
 
-    Configuration getConfiguration();
+    void setup( Logger logger, ClassLoader cl, LifecycleHandler h, ComponentDescriptor d )
+        throws Exception;
 
     void initialize()
         throws Exception;
 
-    void setClassLoader( ClassLoader classLoader );
-
     int getConnections();
 
-    void setComponentDescriptor( ComponentDescriptor descriptor );
-
     ComponentDescriptor getComponentDescriptor();
-
-    /**
-     * Set the lifecycle handler to use. This is determined by the component.
-     */
-    void setLifecycleHandler( LifecycleHandler handler );
 
     LifecycleHandler getLifecycleHandler();
 
@@ -63,13 +54,6 @@ public interface ComponentManager
     void suspend( Object component );
 
     void resume( Object component );
-
-    /**
-     * Set this managers logger
-     *
-     * @param logger
-     */
-    void enableLogging( Logger logger );
 
     /**
      * Retrieve a component manager

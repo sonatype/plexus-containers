@@ -144,7 +144,6 @@
       <role>org.codehaus.plexus.ServiceH</role>
       <implementation>org.codehaus.plexus.DefaultServiceH</implementation>
       <lifecycle-handler>arbitrary</lifecycle-handler>
-      <configuration/>
     </component>
 
     <component>
@@ -157,7 +156,6 @@
       <role>org.codehaus.plexus.LoadOnStartServiceWithRoleHint</role>
       <role-hint>role-hint</role-hint>
       <implementation>org.codehaus.plexus.DefaultLoadOnStartServiceWithRoleHint</implementation>
-      <configuration/>
     </component>
 
   </components>

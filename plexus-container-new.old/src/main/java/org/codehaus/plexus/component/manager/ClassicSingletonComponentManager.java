@@ -14,12 +14,8 @@ public class ClassicSingletonComponentManager
 {
     private Object singleton;
 
-    /**
-     *
-     */
     public ClassicSingletonComponentManager()
     {
-        super();
     }
 
     /**

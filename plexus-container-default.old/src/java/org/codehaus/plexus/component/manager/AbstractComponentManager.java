@@ -1,10 +1,8 @@
 package org.codehaus.plexus.component.manager;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.logger.Logger;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
 
 /**
  * Base InstanceManager
@@ -14,16 +12,13 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
  * @version $Id$
  */
 public abstract class AbstractComponentManager
-    implements ComponentManager
+    implements ComponentManager, Cloneable
 {
     /** Component Descriptor. */
     private ComponentDescriptor componentDescriptor;
 
     /** ClassLoader used to load the component */
     private ClassLoader classLoader;
-
-    /** Component configuration */
-    private Configuration configuration;
 
     /** Component implementation */
     private String implementation;
@@ -37,27 +32,39 @@ public abstract class AbstractComponentManager
     /** Client connections. */
     private int connections;
 
+    private String id = null;
+
+    private String description = null;
+
     public AbstractComponentManager()
     {
+    }
+
+    public ComponentManager copy()
+    {
+        try
+        {
+            return (ComponentManager) this.clone();
+        }
+        catch ( CloneNotSupportedException e )
+        {
+        }
+
+        return null;
     }
 
     // ----------------------------------------------------------------------
     // Accessors
     // ----------------------------------------------------------------------
 
+    public String getId()
+    {
+        return id;
+    }
+
     public ComponentDescriptor getComponentDescriptor()
     {
         return componentDescriptor;
-    }
-
-    public void setComponentDescriptor( ComponentDescriptor componentDescriptor )
-    {
-        this.componentDescriptor = componentDescriptor;
-    }
-
-    public Configuration getConfiguration()
-    {
-        return configuration;
     }
 
     public String getImplementation()
@@ -70,22 +77,9 @@ public abstract class AbstractComponentManager
         return lifecycleHandler;
     }
 
-    /**
-     * @see ComponentManager#setLifecycleHandler(org.codehaus.plexus.lifecycle.LifecycleHandler)
-     */
-    public void setLifecycleHandler( LifecycleHandler handler )
-    {
-        this.lifecycleHandler = handler;
-    }
-
     public ClassLoader getClassLoader()
     {
         return classLoader;
-    }
-
-    public void setClassLoader( ClassLoader classLoader )
-    {
-        this.classLoader = classLoader;
     }
 
     /**
@@ -120,34 +114,24 @@ public abstract class AbstractComponentManager
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    /**
-     * This currently does nothing. Subclasses should still call this if they override this method
-     * as it may doing something useful in future.
-     *
-     * @see org.codehaus.plexus.component.manager.ComponentManager#initialize()
-     */
+    public void setup( Logger logger,
+                       ClassLoader classLoader,
+                       LifecycleHandler lifecycleHandler,
+                       ComponentDescriptor componentDescriptor )
+        throws Exception
+    {
+        this.logger = logger;
+        this.classLoader = classLoader;
+        this.lifecycleHandler = lifecycleHandler;
+        this.componentDescriptor = componentDescriptor;
+    }
+
     public void initialize()
         throws Exception
     {
         implementation = getComponentDescriptor().getImplementation();
-    }
 
-    /**
-     * make sure to call this if overriding
-     */
-    public void configure( Configuration configuration )
-        throws ConfigurationException
-    {
-        this.configuration = configuration;
-    }
-
-
-    /**
-     * @see org.codehaus.plexus.component.manager.ComponentManager#enableLogging(org.apache.avalon.framework.logger.Logger)
-     */
-    public void enableLogging( Logger logger )
-    {
-        this.logger = logger;
+        System.out.println( "implementation = " + implementation );
     }
 
     // ----------------------------------------------------------------------
