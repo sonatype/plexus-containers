@@ -1,8 +1,8 @@
 <component-set>
   <components>
     <component>
-      <role>org.codehaus.plexus.discovery.DiscoveredComponent</role>
-      <implementation>org.codehaus.plexus.discovery.DefaultDiscoveredComponent</implementation>
+      <role>org.codehaus.plexus.component.discovery.DiscoveredComponent</role>
+      <implementation>org.codehaus.plexus.component.discovery.DefaultDiscoveredComponent</implementation>
     </component>
   </components>
   <dependencies>
