@@ -1,12 +1,14 @@
 package org.codehaus.plexus.component.discovery;
 
 import java.util.List;
+import java.io.File;
 
 import junit.framework.TestCase;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.ClassRealm;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -25,9 +27,13 @@ public class ComponentDiscovererTest
 
         ClassWorld classWorld = new ClassWorld();
 
-        classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+        ClassRealm core = classWorld.newRealm( "core" );
 
-        List componentSetDescriptors = componentDiscoverer.findComponents( classWorld.getRealm( "core" ) );
+        core.addConstituent( new File( System.getProperty( "basedir"), "target/test-classes").toURL() );
+
+        List componentSetDescriptors = componentDiscoverer.findComponents( core );
+
+        System.out.println( componentSetDescriptors.get( 0 ) );
 
         assertEquals( 1, componentSetDescriptors.size() );
 
