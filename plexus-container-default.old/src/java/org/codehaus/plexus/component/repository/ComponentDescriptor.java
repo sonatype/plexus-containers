@@ -15,28 +15,22 @@ import java.util.Set;
  */
 public class ComponentDescriptor
 {
-    /** Component role name. */
     private String role = null;
 
-    /** Role hint. */
     private String roleHint = null;
 
-    /** Name of the component class. */
     private String implementation = null;
 
-    /** Configuration for the component. */
+    private String version = null;
+
     private Configuration configuration = null;
 
-    /** Instantiation strategy. */
     private String instantiationStrategy = null;
 
-    /** Which lifecyclehandler to use. If null, use the containers default one. */
     private String lifecycleHandler = null;
 
-    /** Component profile id. */
     private String componentProfile = null;
 
-    /** List of required component interfaces. */
     private Set requirements;
 
     // ----------------------------------------------------------------------
@@ -53,10 +47,6 @@ public class ComponentDescriptor
         return getRole();
     }
 
-    /** Retrieve the role name of the component.
-     *
-     *  @return THe role name.
-     */
     public String getRole()
     {
         return role;
@@ -72,10 +62,6 @@ public class ComponentDescriptor
         return roleHint;
     }
 
-    /** Retrieve the class name of the component.
-     *
-     *  @return The class name.
-     */
     public String getImplementation()
     {
         return implementation;
@@ -86,19 +72,16 @@ public class ComponentDescriptor
         this.implementation = implementation;
     }
 
-    /**
-     *
-     * @return
-     */
+    public String getVersion()
+    {
+        return version;
+    }
+
     public String getInstantiationStrategy()
     {
         return instantiationStrategy;
     }
 
-    /** Retrieve the <code>Configuration</code> for the component.
-     *
-     *  @return The configuration.
-     */
     public Configuration getConfiguration()
     {
         return configuration;
@@ -109,9 +92,6 @@ public class ComponentDescriptor
         this.configuration = configuration;
     }
 
-    /**
-     * @return
-     */
     public String getLifecycleHandler()
     {
         return lifecycleHandler;
