@@ -81,10 +81,11 @@ public class ConsoleLoggerManager
     /**
      * @return Returns the threshold.
      */
-    public int getThreshold() {
+    public int getThreshold()
+    {
         return currentThreshold;
     }
-    
+
     // new stuff
 
     public void setThreshold( String role, String roleHint, int threshold ) {
@@ -129,7 +130,7 @@ public class ConsoleLoggerManager
             return logger;
 
         debug( "Creating logger '" + name + "' " + this.hashCode() + "." );
-        logger = new ConsoleLogger( getThreshold(), name);
+        logger = new ConsoleLogger( getThreshold(), name );
         loggers.put( name, logger );
 
         return logger;
