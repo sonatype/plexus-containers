@@ -59,16 +59,17 @@ import org.apache.avalon.framework.configuration.Configuration;
  *
  * @author <a href="mailto:rantene@hotmail.com">Ran Tene</a>
  */
-public final class DefaultConfigurationTestCase extends TestCase
+public final class DefaultConfigurationTest
+    extends TestCase
 {
     private DefaultConfiguration m_configuration;
 
-    public DefaultConfigurationTestCase()
+    public DefaultConfigurationTest()
     {
         this( "DefaultConfiguration Test Case" );
     }
 
-    public DefaultConfigurationTestCase( String name )
+    public DefaultConfigurationTest( String name )
     {
         super( name );
     }
