@@ -276,7 +276,8 @@ public class FileUtils
      * @param fileName The name of the file to write.
      * @param data The content to write to the file.
      */
-    public static void fileWrite( String fileName, String data ) throws Exception
+    public static void fileWrite( String fileName, String data )
+        throws IOException
     {
         FileOutputStream out = new FileOutputStream( fileName );
         out.write( data.getBytes() );
