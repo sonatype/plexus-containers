@@ -570,7 +570,7 @@ public class DefaultPlexusContainer
             }
         }
 
-        classLoader = classRealm.getClassLoader();
+        setClassLoader( classRealm.getClassLoader() );
 
         Thread.currentThread().setContextClassLoader( classLoader );
     }
