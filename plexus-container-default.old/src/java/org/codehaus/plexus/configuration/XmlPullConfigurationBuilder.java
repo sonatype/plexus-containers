@@ -9,19 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Jason van Zyl
+ * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ *
  * @version $Id$
  */
 public class XmlPullConfigurationBuilder
 {
-
     /**
-     * Parse input from a character stream, building configuration items
-     * from it. Close the stream when finished.
      *
-     * @param reader Character stream to parse. Will be closed when parse
-     * returns.
-     * @return Configuration items.
+     * @param reader
+     * @return
+     * @throws Exception
      */
     public Configuration parse( Reader reader )
         throws Exception
