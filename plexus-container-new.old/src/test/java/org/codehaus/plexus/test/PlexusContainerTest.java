@@ -4,9 +4,12 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.test.map.ActivityManager;
 import org.codehaus.plexus.test.map.Activity;
+import org.codehaus.plexus.test.list.Pipeline;
+import org.codehaus.plexus.test.list.Valve;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 /**
  *  @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -122,5 +125,23 @@ public class PlexusContainerTest
         am.execute( "two" );
 
         assertTrue( two.getState() );
+    }
+
+    public void testComponentCompositionWhereTargetFieldIsAList()
+        throws Exception
+    {
+        Pipeline pipeline = (Pipeline) container.lookup( Pipeline.ROLE );
+
+        List valves = pipeline.getValves();
+
+        assertFalse( ( (Valve) valves.get( 0 ) ).getState() );
+
+        assertFalse( ( (Valve) valves.get( 1 ) ).getState() );
+
+        pipeline.execute();
+
+        assertTrue( ( (Valve) valves.get( 0 ) ).getState() );
+
+        assertTrue( ( (Valve) valves.get( 1 ) ).getState() );
     }
 }

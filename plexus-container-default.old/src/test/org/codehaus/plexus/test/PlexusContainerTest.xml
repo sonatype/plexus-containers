@@ -72,5 +72,28 @@
       <role-hint>two</role-hint>
       <implementation>org.codehaus.plexus.test.map.ActivityTwo</implementation>
     </component>
-  </components>
+
+    <!-- List -->
+    <component>
+      <role>org.codehaus.plexus.test.list.Pipeline</role>
+      <implementation>org.codehaus.plexus.test.list.DefaultPipeline</implementation>
+      <requirements>
+        <requirement>
+        <role>org.codehaus.plexus.test.list.Valve</role>
+        <field-name>valves</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.test.list.Valve</role>
+      <role-hint>one</role-hint>
+      <implementation>org.codehaus.plexus.test.list.ValveOne</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.test.list.Valve</role>
+      <role-hint>two</role-hint>
+      <implementation>org.codehaus.plexus.test.list.ValveTwo</implementation>
+    </component>
+ </components>
+
 </plexus>
