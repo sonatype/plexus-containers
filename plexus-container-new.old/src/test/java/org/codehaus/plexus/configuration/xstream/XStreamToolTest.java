@@ -149,10 +149,6 @@ public class XStreamToolTest
 
         assertEquals( "bar", c.getChild( "foo" ).getValue() );
 
-        assertEquals( 1, c.getChild( "handlers" ).getChild( "one" ).getValueAsInteger() );
-
-        assertEquals( 2, c.getChild( "handlers" ).getChild( "two" ).getValueAsInteger() );
-
         assertEquals( "muckraker", person.getOccupation() );
     }
 }

@@ -15,7 +15,7 @@
   <logging>
     <implementation>org.codehaus.plexus.logging.ConsoleLoggerManager</implementation>
     <logger>
-      <threshold>ERROR</threshold>
+      <threshold>INFO</threshold>
     </logger>
   </logging>
 

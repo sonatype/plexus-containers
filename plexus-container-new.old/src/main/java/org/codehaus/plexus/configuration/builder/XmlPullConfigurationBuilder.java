@@ -115,8 +115,7 @@ public class XmlPullConfigurationBuilder
                     if ( trimmedValue.length() > 0 )
                     {
                         throw new Exception( "Not allowed to define mixed content in the "
-                                             + "element " + finishedConfiguration.getName() + " at "
-                                             + finishedConfiguration.getLocation() );
+                                             + "element " + finishedConfiguration.getName() );
                     }
                 }
 
@@ -145,7 +144,7 @@ public class XmlPullConfigurationBuilder
     protected DefaultConfiguration createConfiguration( String localName,
                                                         String location )
     {
-        return new DefaultConfiguration( localName, location );
+        return new DefaultConfiguration( localName );
     }
 
     /**

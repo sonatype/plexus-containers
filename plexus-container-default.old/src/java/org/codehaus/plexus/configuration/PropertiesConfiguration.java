@@ -11,16 +11,19 @@ import java.util.Properties;
  * @version $Id$
  */
 public class PropertiesConfiguration
-    extends AbstractConfiguration
+    extends DefaultConfiguration
 {
     private Properties properties;
 
     public PropertiesConfiguration()
     {
+        super( "" );
     }
 
     public PropertiesConfiguration( Properties properties )
     {
+        super( "" );
+
         this.properties = properties;
     }
 
@@ -107,7 +110,7 @@ public class PropertiesConfiguration
     }
 
     static class ValueConfiguration
-        extends AbstractConfiguration
+        extends DefaultConfiguration
     {
         private String name;
 
@@ -115,6 +118,8 @@ public class PropertiesConfiguration
 
         public ValueConfiguration( String name, String value )
         {
+            super( "" );
+
             this.name = name;
 
             this.value = value;

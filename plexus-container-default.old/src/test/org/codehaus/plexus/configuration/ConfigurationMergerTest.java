@@ -93,16 +93,6 @@ public class ConfigurationMergerTest
 
         assertEquals( "layer", cc.getChild( "logging" ).getChild( "implementation" ).getValue() );
 
-        assertEquals( 0, cc.getChild( "number" ).getValueAsInteger() );
-
-        assertEquals( 0, cc.getChild( "number" ).getValueAsLong() );
-
-        assertEquals( new Float( 0 ), new Float( cc.getChild( "number" ).getValueAsFloat() ) );
-
-        assertTrue( cc.getChild( "boolean" ).getValueAsBoolean() );
-
-        assertTrue( cc.getChild( "non-existent-boolean" ).getValueAsBoolean( true ) );
-
         assertNotNull( cc.getChild( "foo" ).getAttributeNames() );
 
         assertEquals( 3, cc.getChild( "foo" ).getAttributeNames().length );
@@ -111,11 +101,5 @@ public class ConfigurationMergerTest
         Configuration c = cc.getChild( "new", true );
 
         assertNotNull( c );
-
-        assertEquals( 0, cc.getChild( "foo" ).getAttributeAsInteger( "number" ) );
-
-        assertEquals( 0, cc.getChild( "foo" ).getAttributeAsLong( "number" ) );
-
-        assertEquals( new Float( 0 ), new Float( cc.getChild( "foo" ).getAttributeAsFloat( "number" ) ) );
     }
 }

@@ -74,7 +74,7 @@ public final class DefaultConfigurationTest
 
     public void setUp()
     {
-        configuration = new DefaultConfiguration( "a", "b" );
+        configuration = new DefaultConfiguration( "a" );
     }
 
     public void tearDowm()
@@ -93,9 +93,7 @@ public final class DefaultConfigurationTest
     public void testDynamicConfigurationCreation()
         throws Exception
     {
-        DefaultConfiguration a = new DefaultConfiguration( "a", "a" );
-
-        assertNotNull( a.getPrefix() );
+        DefaultConfiguration a = new DefaultConfiguration( "a" );
 
         Configuration b = ConfigurationTestHelper.getTestConfiguration();
 
@@ -110,14 +108,6 @@ public final class DefaultConfigurationTest
         String orgValue = "Original String";
         configuration.setValue( orgValue );
         assertEquals( orgValue, configuration.getValue() );
-    }
-
-    public void testGetValueAsBoolen()
-        throws Exception
-    {
-        boolean b = true;
-        configuration.setValue( "TrUe" );
-        assertEquals( b, configuration.getValueAsBoolean() );
     }
 
     public void testGetAttribute()
@@ -154,7 +144,7 @@ public final class DefaultConfigurationTest
     public void testAddRemoveChild()
     {
         String childName = "child";
-        Configuration child = new DefaultConfiguration( childName, "child location" );
+        Configuration child = new DefaultConfiguration( childName );
 
         configuration.addChild( child );
         assertEquals( child, configuration.getChild( childName ) );

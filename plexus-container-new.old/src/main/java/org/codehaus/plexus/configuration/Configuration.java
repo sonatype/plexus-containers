@@ -1,3 +1,5 @@
+package org.codehaus.plexus.configuration;
+
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -52,15 +54,10 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.codehaus.plexus.configuration;
 
 public interface Configuration
 {
     String getName();
-
-    String getLocation();
-
-    String getNamespace() throws ConfigurationException;
 
     Configuration getChild( String child );
 
@@ -72,45 +69,15 @@ public interface Configuration
 
     String[] getAttributeNames();
 
-    String getAttribute( String paramName ) throws ConfigurationException;
+    String getAttribute( String paramName )
+        throws ConfigurationException;
 
-    int getAttributeAsInteger( String paramName ) throws ConfigurationException;
-
-    long getAttributeAsLong( String name ) throws ConfigurationException;
-
-    float getAttributeAsFloat( String paramName ) throws ConfigurationException;
-
-    boolean getAttributeAsBoolean( String paramName ) throws ConfigurationException;
-
-    String getValue() throws ConfigurationException;
-
-    int getValueAsInteger() throws ConfigurationException;
-
-    float getValueAsFloat() throws ConfigurationException;
-
-    boolean getValueAsBoolean() throws ConfigurationException;
-
-    long getValueAsLong() throws ConfigurationException;
+    String getValue()
+        throws ConfigurationException;
 
     String getValue( String defaultValue );
 
-    int getValueAsInteger( int defaultValue );
-
-    long getValueAsLong( long defaultValue );
-
-    float getValueAsFloat( float defaultValue );
-
-    boolean getValueAsBoolean( boolean defaultValue );
-
     String getAttribute( String name, String defaultValue );
-
-    int getAttributeAsInteger( String name, int defaultValue );
-
-    long getAttributeAsLong( String name, long defaultValue );
-
-    float getAttributeAsFloat( String name, float defaultValue );
-
-    boolean getAttributeAsBoolean( String name, boolean defaultValue );
 
     // Additional stuff for hierarchy
 

@@ -29,22 +29,6 @@ public class PropertiesConfigurationTest
 
         PropertiesConfiguration c = new PropertiesConfiguration( properties );
 
-        assertEquals( 31, c.getChild( "age" ).getValueAsInteger() );
-
-        assertEquals( 40, c.getChild( "time" ).getValueAsInteger( 40 ) );
-
-        assertEquals( 31, c.getChild( "age" ).getValueAsLong() );
-
-        assertEquals( 40, c.getChild( "time" ).getValueAsLong( 40 ) );
-
-        assertEquals( new Float( 31 ), new Float( c.getChild( "age" ).getValueAsFloat() ) );
-
-        assertEquals( new Float( 40 ), new Float( c.getChild( "time" ).getValueAsFloat( 40 ) ) );
-
-        assertTrue( c.getChild( "crazy" ).getValueAsBoolean() );
-
-        assertFalse( c.getChild( "lazy" ).getValueAsBoolean() );
-
         assertEquals( "jason", c.getChild( "name" ).getValue() );
 
         c.setProperty( "project", "plexus" );
