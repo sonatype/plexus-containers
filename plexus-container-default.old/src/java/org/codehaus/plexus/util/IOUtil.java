@@ -719,16 +719,22 @@ public final class IOUtil
         }
     }
 
-    ///////////////////////////////////////////////////////////////
-    // close()
+    // ----------------------------------------------------------------------
+    // closeXXX()
+    // ----------------------------------------------------------------------
 
     /**
-     * A IOException ignoring method that simply closes the stream.
+     * Closes the input stream. The input stream can be null and any IOException's will be swallowed.
      * 
      * @param inputStream The stream to close.
      */
     public static void close( InputStream inputStream )
     {
+        if ( inputStream == null )
+        {
+            return;
+        }
+
         try
         {
             inputStream.close();
@@ -740,12 +746,17 @@ public final class IOUtil
     }
 
     /**
-     * A IOException ignoring method that simply closes the stream.
+     * Closes the output stream. The output stream can be null and any IOException's will be swallowed.
      * 
      * @param outputStream The stream to close.
      */
     public static void close( OutputStream outputStream )
     {
+        if ( outputStream == null )
+        {
+            return;
+        }
+
         try
         {
             outputStream.close();
@@ -757,12 +768,17 @@ public final class IOUtil
     }
 
     /**
-     * A IOException ignoring method that simply closes the reader.
+     * Closes the reader. The reader can be null and any IOException's will be swallowed.
      * 
      * @param reader The reader to close.
      */
     public static void close( Reader reader )
     {
+        if ( reader == null )
+        {
+            return;
+        }
+
         try
         {
             reader.close();
@@ -774,12 +790,17 @@ public final class IOUtil
     }
 
     /**
-     * A IOException ignoring method that simply closes the stream.
+     * Closes the writer. The writer can be null and any IOException's will be swallowed.
      * 
      * @param wrtier The writer to close.
      */
     public static void close( Writer writer )
     {
+        if ( writer == null )
+        {
+            return;
+        }
+
         try
         {
             writer.close();
