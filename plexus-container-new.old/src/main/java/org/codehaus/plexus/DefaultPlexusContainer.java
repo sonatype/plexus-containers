@@ -419,9 +419,9 @@ public class DefaultPlexusContainer
 
         initializeComponentRepository();
 
-        initializeLifecycleHandlerManager();
-
         initializeComponentManagerManager();
+
+        initializeLifecycleHandlerManager();
 
         // Should be safe now to lookup any component aside from the cmm and lhm
 
