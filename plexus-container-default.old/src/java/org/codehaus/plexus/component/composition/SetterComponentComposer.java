@@ -30,7 +30,7 @@ public class SetterComponentComposer extends AbstractComponentComposer
                                    final PlexusContainer container )
         throws CompositionException, UndefinedComponentComposerException
     {
-        final Set requirements = descriptor.getRequirements();
+        final List requirements = descriptor.getRequirements();
 
         BeanInfo beanInfo = null;
 

@@ -4,9 +4,8 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.dag.DAG;
 
-import java.util.List;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.List;
 
 
 
@@ -26,7 +25,7 @@ public class DefaultCompositionResolver implements CompositionResolver
     {
         final String componentKey = componentDescriptor.getComponentKey();
 
-        final Set requirements = componentDescriptor.getRequirements();
+        final List requirements = componentDescriptor.getRequirements();
 
         for ( final Iterator iterator = requirements.iterator(); iterator.hasNext(); )
         {

@@ -28,7 +28,7 @@ public class FieldComponentComposer
     {
         List retValue = new LinkedList();
 
-        Set requirements = componentDescriptor.getRequirements();
+        List requirements = componentDescriptor.getRequirements();
 
         for ( Iterator i = requirements.iterator(); i.hasNext(); )
         {
