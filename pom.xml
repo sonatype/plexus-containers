@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>plexus</groupId>
+    <artifactId>plexus-containers</artifactId>
+    <version>1.0</version>
+  </parent>
+  <groupId>plexus</groupId>
+  <artifactId>plexus-container-default</artifactId>
+  <version>1.0-alpha-2-SNAPSHOT</version>
+  <name>New Default Plexus Container</name>
+
+  <!-- Look! I'm dependency free! -->
+  <dependencies>
+  </dependencies>
+
+  <build>
+    <unitTest>
+      <excludes>
+        <exclude>**/BasicComponentConfiguratorTest.java</exclude>
+        <exclude>**/*Abstract*.java</exclude>
+        <exclude>**/JavaComponentFactoryTest.java</exclude>
+      </excludes>
+    </unitTest>
+  </build>
+</project>
