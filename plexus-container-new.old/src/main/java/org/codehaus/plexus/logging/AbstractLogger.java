@@ -9,15 +9,18 @@ package org.codehaus.plexus.logging;
  * @version $Id$
  */
 public abstract class AbstractLogger
-    implements Logger
+        implements Logger
 {
     private int threshold;
+
     private String name;
 
     public AbstractLogger( int threshold, String name )
     {
-        if( !isValidThreshold( threshold ) )
+        if ( !isValidThreshold( threshold ) )
+        {
             throw new RuntimeException( "threshold" );
+        }
 
         this.threshold = threshold;
         this.name = name;
@@ -90,18 +93,30 @@ public abstract class AbstractLogger
 
     protected boolean isValidThreshold( int threshold )
     {
-        if( threshold == LEVEL_DEBUG )
+        if ( threshold == LEVEL_DEBUG )
+        {
             return true;
-        if( threshold == LEVEL_INFO )
+        }
+        if ( threshold == LEVEL_INFO )
+        {
             return true;
-        if( threshold == LEVEL_WARN )
+        }
+        if ( threshold == LEVEL_WARN )
+        {
             return true;
-        if( threshold == LEVEL_ERROR )
+        }
+        if ( threshold == LEVEL_ERROR )
+        {
             return true;
-        if( threshold == LEVEL_FATAL )
+        }
+        if ( threshold == LEVEL_FATAL )
+        {
             return true;
-        if( threshold == LEVEL_DISABLED )
+        }
+        if ( threshold == LEVEL_DISABLED )
+        {
             return true;
+        }
 
         return false;
     }
