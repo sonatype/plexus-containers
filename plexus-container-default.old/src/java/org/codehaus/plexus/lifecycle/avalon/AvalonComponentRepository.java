@@ -1,5 +1,7 @@
 package org.codehaus.plexus.lifecycle.avalon;
 
+import org.apache.avalon.framework.configuration.Configuration;
+import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
@@ -11,8 +13,19 @@ import org.codehaus.plexus.component.repository.DefaultComponentRepository;
  * @author <a href="mailto:dan@envoisolutions.com">Dan Diephouse</a>
  * @since May 10, 2003
  */
-public class AvalonComponentRepository extends DefaultComponentRepository
+public class AvalonComponentRepository
+    extends DefaultComponentRepository
 {
+    final private static String SELECTORS = "selectors";
+    
+    final private static String SELECTOR = "selector";
+    
+    /** Role tag. */
+    private static String ROLE = "role";
+
+    /** Implementation tag. */
+    private static String IMPLEMENTATION = "implementation";
+
     /**
      * Adds a ComponentDescriptor.  If the descriptor has an Id or a RoleHint
      * a ServiceSelector is created also.
@@ -65,4 +78,51 @@ public class AvalonComponentRepository extends DefaultComponentRepository
         selector.setConfiguration( config );
         return selector;
     }
+
+    /**
+     * @see org.codehaus.plexus.component.repository.ComponentRepository#initialize()
+     */
+    public void initialize() throws Exception
+    {
+        super.initialize();
+        initializeSelectors();
+    }
+
+    /**
+     * 
+     */
+    private void initializeSelectors()
+        throws ConfigurationException
+    {
+        Configuration[] configuration = getConfiguration().getChild( SELECTORS ).getChildren( SELECTOR );
+        
+        for ( int i = 0; i < configuration.length; i++ )
+        {
+            ComponentDescriptor descriptor = createSelectorComponentDescriptor( configuration[i] );
+            super.addComponentDescriptor( descriptor );
+        }
+    }
+
+    /**
+     * Create a ComponentDescriptor for the custom ServiceSelector;
+     * @param configuration
+     */
+    private ComponentDescriptor createSelectorComponentDescriptor(Configuration configuration)
+        throws ConfigurationException
+    {
+        ComponentDescriptor selector = new ComponentDescriptor();
+        
+        String role = configuration.getChild( ROLE ).getValue();
+        
+        selector.setRole( role + "Selector" );
+        selector.setImplementation( configuration.getChild( IMPLEMENTATION ).getValue() );
+        selector.setInstantiationStrategy( DEFAULT_INSTANTIATION_STRATEGY );
+
+        DefaultConfiguration config = new DefaultConfiguration( selector.getRole() );
+        config.setAttribute( AvalonServiceSelector.SELECTABLE_ROLE_KEY, role );
+
+        selector.setConfiguration( config );
+        return selector;
+    }
+
 }

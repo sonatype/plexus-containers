@@ -2,6 +2,7 @@ package org.codehaus.plexus.lifecycle.avalon;
 
 import org.apache.avalon.framework.service.ServiceSelector;
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.ServiceA;
 import org.codehaus.plexus.ServiceC;
 
 /**
@@ -20,14 +21,31 @@ public class AvalonServiceSelectorTest
         super(testName);
     }
 
-    public void testSelector()
+    public void testDefaultSelector()
+        throws Exception
+    {
+        ServiceSelector selector = (ServiceSelector) lookup( ServiceA.ROLE + "Selector" );
+        
+        assertTrue( selector != null );
+        assertTrue( selector.isSelectable( "only-instance" ) );
+        assertTrue( selector instanceof AvalonServiceSelector );
+        
+        ServiceA serviceA = (ServiceA) selector.select( "only-instance" );
+        assertTrue( serviceA != null );
+
+        release( selector );
+        release( serviceA );
+    }
+
+    public void testCustomSelector()
         throws Exception
     {
         ServiceSelector selector = (ServiceSelector) lookup( ServiceC.ROLE + "Selector" );
         
         assertTrue( selector != null );
         assertTrue( selector.isSelectable( "only-instance" ) );
-
+        assertTrue( selector instanceof CustomServiceSelector );
+        
         ServiceC serviceC = (ServiceC) selector.select( "only-instance" );
         assertTrue( serviceC != null );
 

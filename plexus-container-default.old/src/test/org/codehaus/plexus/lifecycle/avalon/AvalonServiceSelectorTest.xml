@@ -1,5 +1,12 @@
 <plexus>
 
+  <selectors>
+    <selector>
+      <role>org.codehaus.plexus.ServiceC</role>
+      <implementation>org.codehaus.plexus.lifecycle.avalon.CustomServiceSelector</implementation>
+    </selector>
+  </selectors>
+  
   <components>
 
     <!--
@@ -10,6 +17,7 @@
      |
      -->
     <component>
+      <id>only-instance</id>
       <role>org.codehaus.plexus.ServiceA</role>
       <implementation>org.codehaus.plexus.DefaultServiceA</implementation>
       <configuration>
