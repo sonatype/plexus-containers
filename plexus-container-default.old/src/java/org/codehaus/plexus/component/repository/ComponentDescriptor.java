@@ -206,4 +206,9 @@ public class ComponentDescriptor
     {
         this.description = description;
     }
+
+    public void setInstantiationStrategy( String instantiationStrategy )
+    {
+        this.instantiationStrategy = instantiationStrategy;
+    }
 }
