@@ -9,8 +9,8 @@ import org.apache.avalon.framework.service.ServiceSelector;
 import org.apache.avalon.framework.service.Serviceable;
 
 /**
- * PlexusServiceSelector selects components from the PlexusServiceBroker based
- * on their id.
+ * AvalonServiceSelector selects components from the ComponentRepository based
+ * on their role hint.
  *
  * @author <a href="dan@envoisolutions.com">Dan Diephouse</a>
  * @since Feb 11, 2003
@@ -28,7 +28,7 @@ public class AvalonServiceSelector
     public final static String SELECTABLE_ROLE_KEY = "selectable-role";
 
     /**
-     * @see org.apache.avalon.framework.service.ServiceSelector#select(java.lang.Object)
+     * @see ServiceSelector#select(Object)
      */
     public Object select( Object hint )
         throws ServiceException
@@ -37,7 +37,7 @@ public class AvalonServiceSelector
     }
 
     /**
-     * @see org.apache.avalon.framework.service.ServiceSelector#isSelectable(java.lang.Object)
+     * @see ServiceSelector#isSelectable(Object)
      */
     public boolean isSelectable( Object hint )
     {
@@ -45,7 +45,7 @@ public class AvalonServiceSelector
     }
 
     /**
-     * @see org.apache.avalon.framework.service.ServiceSelector#release(java.lang.Object)
+     * @see ServiceSelector#release(Object)
      */
     public void release( Object component )
     {
@@ -62,7 +62,7 @@ public class AvalonServiceSelector
     }
 
     /**
-     * @see org.apache.avalon.framework.configuration.Configurable#configure(org.apache.avalon.framework.configuration.Configuration)
+     * @see Configurable#configure(Configuration)
      */
     public void configure( Configuration configuration )
         throws ConfigurationException
