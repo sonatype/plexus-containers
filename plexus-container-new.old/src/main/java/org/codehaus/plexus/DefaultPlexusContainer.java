@@ -197,7 +197,7 @@ public class DefaultPlexusContainer
     protected void loadOnStart()
         throws Exception
     {
-        Configuration[] loadOnStartServices = configuration.getChild( "load-on-start" ).getChildren( "component" );
+        Configuration[] loadOnStartServices = configuration.getChild( "load-on-start" ).getChildren( "service" );
 
         for ( int i = 0; i < loadOnStartServices.length; i++ )
         {
