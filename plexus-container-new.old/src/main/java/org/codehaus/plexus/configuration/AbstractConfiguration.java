@@ -45,22 +45,7 @@ public abstract class AbstractConfiguration
 
         try
         {
-            if ( value.startsWith( "0x" ) )
-            {
-                return Integer.parseInt( value.substring( 2 ), 16 );
-            }
-            else if ( value.startsWith( "0o" ) )
-            {
-                return Integer.parseInt( value.substring( 2 ), 8 );
-            }
-            else if ( value.startsWith( "0b" ) )
-            {
-                return Integer.parseInt( value.substring( 2 ), 2 );
-            }
-            else
-            {
-                return Integer.parseInt( value );
-            }
+            return Integer.parseInt( value );
         }
         catch ( Exception nfe )
         {
@@ -108,22 +93,7 @@ public abstract class AbstractConfiguration
         String value = getValue().trim();
         try
         {
-            if ( value.startsWith( "0x" ) )
-            {
-                return Long.parseLong( value.substring( 2 ), 16 );
-            }
-            else if ( value.startsWith( "0o" ) )
-            {
-                return Long.parseLong( value.substring( 2 ), 8 );
-            }
-            else if ( value.startsWith( "0b" ) )
-            {
-                return Long.parseLong( value.substring( 2 ), 2 );
-            }
-            else
-            {
-                return Long.parseLong( value );
-            }
+            return Long.parseLong( value );
         }
         catch ( Exception nfe )
         {
@@ -280,22 +250,7 @@ public abstract class AbstractConfiguration
         String value = getAttribute( name ).trim();
         try
         {
-            if ( value.startsWith( "0x" ) )
-            {
-                return Integer.parseInt( value.substring( 2 ), 16 );
-            }
-            else if ( value.startsWith( "0o" ) )
-            {
-                return Integer.parseInt( value.substring( 2 ), 8 );
-            }
-            else if ( value.startsWith( "0b" ) )
-            {
-                return Integer.parseInt( value.substring( 2 ), 2 );
-            }
-            else
-            {
-                return Integer.parseInt( value );
-            }
+            return Integer.parseInt( value );
         }
         catch ( Exception nfe )
         {
@@ -348,22 +303,7 @@ public abstract class AbstractConfiguration
 
         try
         {
-            if ( value.startsWith( "0x" ) )
-            {
-                return Long.parseLong( value.substring( 2 ), 16 );
-            }
-            else if ( value.startsWith( "0o" ) )
-            {
-                return Long.parseLong( value.substring( 2 ), 8 );
-            }
-            else if ( value.startsWith( "0b" ) )
-            {
-                return Long.parseLong( value.substring( 2 ), 2 );
-            }
-            else
-            {
-                return Long.parseLong( value );
-            }
+            return Long.parseLong( value );
         }
         catch ( Exception nfe )
         {

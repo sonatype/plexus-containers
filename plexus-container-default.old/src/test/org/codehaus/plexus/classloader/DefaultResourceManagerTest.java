@@ -13,7 +13,7 @@ import org.apache.avalon.framework.configuration.Configuration;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
@@ -82,6 +82,7 @@ public class DefaultResourceManagerTest
         String xml = "<resources>" +
                        "<jar-repository>" + repo.getPath() + "</jar-repository>" +
                        "<jar-repository>non-existent-repo</jar-repository>" +
+                       "<nothing>nothing</nothing>" +
                      "</resources>";
 
         Configuration configuration = builder.parse( new StringReader( xml ) );

@@ -298,26 +298,6 @@ public class DefaultConfiguration
     }
 
     /**
-     * Append data to the value of this configuration element.
-     *
-     * @param value a <code>String</code> value
-     * @deprecated Use setValue() instead
-     */
-    public void appendValueData( String value )
-    {
-        checkWriteable();
-
-        if ( null == this.value )
-        {
-            this.value = value;
-        }
-        else
-        {
-            this.value += value;
-        }
-    }
-
-    /**
      * Set the value of this <code>Configuration</code> object to the specified string.
      *
      * @param value a <code>String</code> value
@@ -344,27 +324,6 @@ public class DefaultConfiguration
             attributes = new HashMap();
         }
         attributes.put( name, value );
-    }
-
-    /**
-     * Add an attribute to this configuration element, returning its old
-     * value or <b>null</b>.
-     *
-     * @param name a <code>String</code> value
-     * @param value a <code>String</code> value
-     * @return a <code>String</code> value
-     * @deprecated Use setAttribute() instead
-     */
-    public String addAttribute( String name, String value )
-    {
-        checkWriteable();
-
-        if ( null == attributes )
-        {
-            attributes = new HashMap();
-        }
-
-        return (String) attributes.put( name, value );
     }
 
     /**

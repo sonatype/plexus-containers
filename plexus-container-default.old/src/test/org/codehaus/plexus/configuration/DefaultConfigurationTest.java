@@ -62,7 +62,7 @@ import org.apache.avalon.framework.configuration.Configuration;
 public final class DefaultConfigurationTest
     extends TestCase
 {
-    private DefaultConfiguration m_configuration;
+    private DefaultConfiguration configuration;
 
     public DefaultConfigurationTest()
     {
@@ -76,63 +76,68 @@ public final class DefaultConfigurationTest
 
     public void setUp()
     {
-        m_configuration = new DefaultConfiguration( "a", "b" );
+        configuration = new DefaultConfiguration( "a", "b" );
     }
 
     public void tearDowm()
     {
-        m_configuration = null;
+        configuration = null;
+    }
+
+    public void testDynamicConfigurationCreation()
+        throws Exception
+    {
+        DefaultConfiguration a = new DefaultConfiguration( "a", "a" );
+
+        DefaultConfiguration b = new DefaultConfiguration( "b", "b" );
+
+        a.addAll( b );
+
+        assertNotNull( b.getPrefix() );
+
+        System.out.println( "a.getChildCount() = " + a.getChildCount() );
     }
 
     public void testGetValue()
         throws Exception
     {
-        final String orgValue = "Original String";
-        m_configuration.setValue( orgValue );
-        assertEquals( orgValue, m_configuration.getValue() );
-    }
-
-    public void testGetValueAsInteger()
-        throws Exception
-    {
-        final int orgValue = 55;
-        final String strValue = Integer.toHexString( orgValue );
-        m_configuration.setValue( "0x" + strValue );
-        assertEquals( orgValue, m_configuration.getValueAsInteger() );
+        String orgValue = "Original String";
+        configuration.setValue( orgValue );
+        assertEquals( orgValue, configuration.getValue() );
     }
 
     public void testGetValueAsBoolen()
         throws Exception
     {
-        final boolean b = true;
-        m_configuration.setValue( "TrUe" );
-        assertEquals( b, m_configuration.getValueAsBoolean() );
+        boolean b = true;
+        configuration.setValue( "TrUe" );
+        assertEquals( b, configuration.getValueAsBoolean() );
     }
 
     public void testGetAttribute()
         throws Exception
     {
-        final String key = "key";
-        final String value = "original value";
-        final String defaultStr = "default";
-        m_configuration.setAttribute( key, value );
-        assertEquals( value, m_configuration.getAttribute( key, defaultStr ) );
-        assertEquals( defaultStr, m_configuration.getAttribute( "newKey", defaultStr ) );
+        String key = "key";
+        String value = "original value";
+        String defaultStr = "default";
+        configuration.setAttribute( key, value );
+        assertEquals( value, configuration.getAttribute( key, defaultStr ) );
+        assertEquals( defaultStr, configuration.getAttribute( "newKey", defaultStr ) );
     }
 
     public void testMakeReadOnly()
     {
-        final String key = "key";
-        final String value = "original value";
+        String key = "key";
+        String value = "original value";
         String exception = "exception not thrown";
-        final String exceptionStr = "Configuration is read only";
-        m_configuration.makeReadOnly();
+        String exceptionStr = "Configuration is read only";
+        configuration.makeReadOnly();
 
         try
         {
-            m_configuration.setAttribute( key, value );
+            configuration.setAttribute( key, value );
         }
-        catch ( final IllegalStateException ise )
+        catch ( IllegalStateException ise )
         {
             exception = exceptionStr;
         }
@@ -142,14 +147,14 @@ public final class DefaultConfigurationTest
 
     public void testAddRemoveChild()
     {
-        final String childName = "child";
-        final Configuration child = new DefaultConfiguration( childName, "child location" );
+        String childName = "child";
+        Configuration child = new DefaultConfiguration( childName, "child location" );
 
-        m_configuration.addChild( child );
-        assertEquals( child, m_configuration.getChild( childName ) );
+        configuration.addChild( child );
+        assertEquals( child, configuration.getChild( childName ) );
 
-        m_configuration.removeChild( child );
-        assertEquals( null, m_configuration.getChild( childName, false ) );
+        configuration.removeChild( child );
+        assertEquals( null, configuration.getChild( childName, false ) );
     }
 }
 

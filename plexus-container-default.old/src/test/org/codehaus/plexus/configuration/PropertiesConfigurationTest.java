@@ -131,4 +131,95 @@ public class PropertiesConfigurationTest
         {
         }
     }
+
+    public void testPublicConstructorPropertiesConfiguration()
+        throws Exception
+    {
+        PropertiesConfiguration configuration = new PropertiesConfiguration();
+
+        configuration.setProperty( "foo", "bar" );
+
+        assertEquals( "bar", configuration.getChild( "foo" ).getValue() );
+
+        try
+        {
+            configuration.getValue();
+        }
+        catch( UnsupportedOperationException e )
+        {
+            // do nothing
+        }
+    }
+
+    public void testValueConfiguration()
+        throws Exception
+    {
+        PropertiesConfiguration.ValueConfiguration c = new PropertiesConfiguration.ValueConfiguration( "foo", "bar" );
+
+        assertEquals( "foo", c.getName() );
+
+        assertEquals( "bar", c.getValue() );
+
+        assertEquals( "unknown", c.getLocation() );
+
+        try
+        {
+            c.getAttribute( "foo" );
+
+            fail( "UnsupportedOperationException should be thrown." );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+        }
+
+        try
+        {
+            c.getAttributeNames();
+
+            fail( "UnsupportedOperationException should be thrown." );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+        }
+
+        try
+        {
+            c.getChildren();
+
+            fail( "UnsupportedOperationException should be thrown." );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+        }
+
+        try
+        {
+            c.getChildren( "foo" );
+
+            fail( "UnsupportedOperationException should be thrown." );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+        }
+
+        try
+        {
+            c.getNamespace();
+
+            fail( "UnsupportedOperationException should be thrown." );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+        }
+
+        try
+        {
+            c.getPrefix();
+
+            fail( "UnsupportedOperationException should be thrown." );
+        }
+        catch ( UnsupportedOperationException e )
+        {
+        }
+    }
 }
