@@ -1,14 +1,13 @@
 package org.codehaus.plexus.configuration.xml.xstream.converters;
 
-import com.thoughtworks.xstream.converters.ConverterLookup;
 import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.ConverterLookup;
 import com.thoughtworks.xstream.objecttree.ObjectTree;
-import com.thoughtworks.xstream.xml.XMLWriter;
 import com.thoughtworks.xstream.xml.XMLReader;
-import com.thoughtworks.xstream.alias.ClassMapper;
+import com.thoughtworks.xstream.xml.XMLWriter;
 
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 public class PropertiesConverter

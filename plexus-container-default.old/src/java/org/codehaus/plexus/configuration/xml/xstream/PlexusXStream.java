@@ -40,8 +40,6 @@ public class PlexusXStream
 
         alias( "dependency", ComponentDependency.class );
 
-        //registerConverter( new CollectionConverter( classMapper ) );
-
         registerConverter( new PlexusConfigurationConverter() );
 
         registerConverter( new PropertiesConverter() );
