@@ -39,7 +39,7 @@ public class PlexusTestCase
         // values can retrieved without error.
         if ( basedir == null )
         {
-            basedir = new File( "" ).getPath();
+            basedir = new File( "" ).getCanonicalPath();
         }
 
         File f = new File( basedir, "target/plexus-home" );
