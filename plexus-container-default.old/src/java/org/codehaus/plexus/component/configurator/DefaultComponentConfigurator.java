@@ -9,6 +9,8 @@ import org.codehaus.plexus.configuration.xstream.XStreamTool;
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
+ *
+ * @todo determine whether xstream will look in super classes for fields to set.
  */
 public class DefaultComponentConfigurator
     implements ComponentConfigurator
