@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.codehaus.plexus.context.Context;
+
 public class PlexusTestCase
     extends TestCase
 {
@@ -25,15 +27,7 @@ public class PlexusTestCase
     protected void setUp()
         throws Exception
     {
-        File f = new File( basedir, "target/plexus-home" );
-
-        System.setProperty( "plexus.home", f.getAbsolutePath() );
-
-        if ( !f.isDirectory() )
-        {
-            f.mkdir();
-        }
-
+        
         InputStream configuration = null;
 
         try
@@ -58,10 +52,26 @@ public class PlexusTestCase
 
         container.addContextValue( "basedir", basedir );
 
-        container.addContextValue( "plexus.home", System.getProperty( "plexus.home" ) );
-
         customizeContext();
+        
+        //container.addContextValue( "plexus.home", System.getProperty( "plexus.home" ) );
+        
+        String plexusHome = ( String ) getContext().get( "plexus.home" );
+                       
+        if ( plexusHome == null )
+        {
+        
+            File f = new File( basedir, "target/plexus-home" );
+            
+            if ( !f.isDirectory() )
+            {
+                f.mkdir();
+            }
+            
+            getContext().put( "plexus.home", f.getAbsolutePath() );
 
+        }
+        
         if ( configuration != null )
         {
             container.setConfigurationResource( new InputStreamReader( configuration ) );
@@ -70,6 +80,14 @@ public class PlexusTestCase
         container.initialize();
 
         container.start();
+    }
+
+    /**
+     * @return
+     */
+    private Context getContext()
+    {     
+        return container.getContext();
     }
 
     //!!! this should probably take a context as a parameter so that the
