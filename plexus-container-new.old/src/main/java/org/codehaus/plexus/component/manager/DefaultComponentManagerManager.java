@@ -51,7 +51,7 @@ public class DefaultComponentManagerManager
             }
         }
 
-        throw new UndefinedComponentManagerException( "Specified lifecycle handler cannot be found: " + id );
+        throw new UndefinedComponentManagerException( "Specified component manager cannot be found: " + id );
     }
 
     public ComponentManager createComponentManager( ComponentDescriptor descriptor, PlexusContainer container )
