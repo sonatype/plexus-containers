@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component.discovery;
 
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,10 @@ public interface ComponentDiscoverer
 {
     static String ROLE = ComponentDiscoverer.class.getName();
 
-    static String COMPONENT_RESOURCES = "META-INF/plexus/components.xml";
-
     List findComponents( ClassLoader classLoader );
+
+    String getComponentDescriptorLocation();
+
+    List createComponentDescriptors( PlexusConfiguration componentDescriptorConfiguration )
+        throws Exception;
 }
