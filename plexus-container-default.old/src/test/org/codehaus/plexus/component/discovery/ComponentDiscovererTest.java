@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import java.util.List;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
  *
@@ -31,15 +32,26 @@ public class ComponentDiscovererTest
     }
 
     public void testMavenPluginDiscoverer()
+        throws Exception
     {
         ComponentDiscoverer componentDiscoverer = new MavenPluginDiscoverer();
 
         List components = componentDiscoverer.findComponents( Thread.currentThread().getContextClassLoader() );
 
-        ComponentDescriptor cd = (ComponentDescriptor) components.get( 0 );
+        MavenPluginDescriptor pluginDescriptor = (MavenPluginDescriptor) components.get( 0 );
 
-        assertEquals( "org.apache.maven.plugin.Plugin", cd.getRole() );
+        assertEquals( "org.apache.maven.plugin.Plugin", pluginDescriptor.getRole() );
 
-        assertEquals( "org.apache.maven.plugin.AntlrPlugin", cd.getImplementation() );
+        assertEquals( "org.apache.maven.plugin.AntlrPlugin", pluginDescriptor.getImplementation() );
+
+        assertEquals( 1, pluginDescriptor.getGoals().size() );
+
+        GoalDescriptor goalDescriptor = (GoalDescriptor) pluginDescriptor.getGoals().get( 0 );
+
+        assertEquals( "antlr", goalDescriptor.getName() );
+
+        PlexusConfiguration c = goalDescriptor.getConfiguration();
+
+        assertEquals( "#maven.build.dest", c.getChild( "outputDirectory" ).getValue() );
     }
 }
