@@ -424,6 +424,29 @@ public class DefaultPlexusContainerTest
         container.getComponentRepository().release( g2 );
     }
 
+
+    // ----------------------------------------------------------------------
+    // Test using an arbitrary component lifecycle handler
+    // ----------------------------------------------------------------------
+
+    public void testArbitraryLifecyclePassageUsingFourArbitraryPhases()
+        throws Exception
+    {
+        // Retrieve an instance of service G.
+        DefaultServiceH serviceH = (DefaultServiceH) container.getComponentRepository().lookup( ServiceH.ROLE );
+
+        // Make sure the service is alive.
+        assertNotNull( serviceH );
+
+        // Make sure the component went through all the lifecycle phases
+        assertEquals( true, serviceH.eeny );
+        assertEquals( true, serviceH.meeny );
+        assertEquals( true, serviceH.miny );
+        assertEquals( true, serviceH.mo );
+
+        container.getComponentRepository().release( serviceH );
+    }
+
     class SingletonComponentTestThread extends AbstractTestThread
     {
         private Object expectedComponent;

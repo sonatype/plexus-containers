@@ -1,12 +1,14 @@
 <plexus>
 
   <configurations-directory>${basedir}/src/test-input/configurations-directory</configurations-directory>
+
   <logging>
     <implementation>org.codehaus.plexus.logging.ConsoleLoggerManager</implementation>
     <logger>
       <threshold>ERROR</threshold>
     </logger>
   </logging>
+
   <service-repository>
     <implementation>org.codehaus.plexus.service.repository.DefaultComponentRepository</implementation>
   </service-repository>
@@ -22,16 +24,16 @@
       <name>Arbitrary Lifecycle Handler</name>
       <implementation>org.codehaus.plexus.lifecycle.SimpleLifecycleHandler</implementation>
       <start-segment>
-        <phase implementation="org.codehaus.plexus.lifecycle.phase.LogEnablePhase"/>
+        <phase implementation="org.codehaus.plexus.lifecycle.phase.EenyPhase"/>
+        <phase implementation="org.codehaus.plexus.lifecycle.phase.MeenyPhase"/>
+        <phase implementation="org.codehaus.plexus.lifecycle.phase.MinyPhase"/>
+        <phase implementation="org.codehaus.plexus.lifecycle.phase.MoPhase"/>
       </start-segment>
       <suspend-segment>
-        <phase implementation="org.codehaus.plexus.lifecycle.phase.SuspendPhase"/>
       </suspend-segment>
       <resume-segment>
-        <phase implementation="org.codehaus.plexus.lifecycle.phase.ResumePhase"/>
       </resume-segment>
       <end-segment>
-        <phase implementation="org.codehaus.plexus.lifecycle.phase.DisposePhase"/>
       </end-segment>
     </lifecycle-handler>
   </lifecycle-handlers>
@@ -112,14 +114,27 @@
 
 
     <!--
-    |
-    | G Service
-    |
-    -->
+     |
+     | G Service
+     |
+     -->
     <component>
       <role>org.codehaus.plexus.ServiceG</role>
       <implementation>org.codehaus.plexus.DefaultServiceG</implementation>
       <instantiation-strategy>singleton-keep-alive</instantiation-strategy>
+      <configuration/>
+    </component>
+
+    <!--
+     |
+     | H Service
+     |
+     -->
+
+    <component>
+      <role>org.codehaus.plexus.ServiceH</role>
+      <implementation>org.codehaus.plexus.DefaultServiceH</implementation>
+      <lifecycle-handler>arbitrary</lifecycle-handler>
       <configuration/>
     </component>
 

@@ -33,6 +33,7 @@ public class ComponentRepositoryFactory
 
         ComponentRepository sr =
             (ComponentRepository) getInstance( implementation, classLoader );
+
         sr.setComponentLogManager( loggerManager );
         sr.enableLogging( loggerManager.getLogger( "service-repository" ) );
         sr.contextualize( context );

@@ -83,7 +83,7 @@ public class LifecycleHandlerHousing
     }
 
     /**
-     * @param string
+     * @param id
      */
     public void setId( String id )
     {
@@ -91,11 +91,11 @@ public class LifecycleHandlerHousing
     }
 
     /**
-     * @param string
+     * @param implementation
      */
-    public void setImplementation( String impl )
+    public void setImplementation( String implementation )
     {
-        implementation = impl;
+        this.implementation = implementation;
     }
 
     /**
@@ -107,7 +107,7 @@ public class LifecycleHandlerHousing
     }
 
     /**
-     * @param string
+     * @param name
      */
     public void setName( String name )
     {

@@ -195,8 +195,6 @@ public class DefaultComponentRepository
     private void initializeInstanceManagers()
         throws Exception
     {
-
-
         Configuration[] defaultComponentConfigurations =
             defaultConfiguration.getChild( INSTANCE_MANAGERS ).getChildren( INSTANCE_MANAGER );
 
@@ -223,7 +221,7 @@ public class DefaultComponentRepository
         }
 
 
-        if ( false == getInstanceManagerDescriptors().containsKey( defaultInstantiationStrategy ) )
+        if ( !getInstanceManagerDescriptors().containsKey( defaultInstantiationStrategy ) )
         {
             throw new ConfigurationException(
                 "The default instantiation strategy is specified as: '"
@@ -231,6 +229,7 @@ public class DefaultComponentRepository
                 + "' but no InstanceManager"
                 + " with this id is defined" );
         }
+
         getLogger().info( "Default instantiation strategy set to: '" + defaultInstantiationStrategy + "'" );
     }
     // ----------------------------------------------------------------------
@@ -288,26 +287,23 @@ public class DefaultComponentRepository
     private void initializeLifecycleHandlers()
         throws Exception
     {
-        String defaultHandlerId =
-            getConfiguration().getChild( LIFECYCLE_HANDLERS ).getAttribute(
-                "default",
-                getDefaultConfiguration().getChild( LIFECYCLE_HANDLERS ).getAttribute(
-                    "default",
-                    null ) );
+        String defaultHandlerId = getConfiguration().getChild( LIFECYCLE_HANDLERS )
+            .getAttribute( "default", getDefaultConfiguration().getChild( LIFECYCLE_HANDLERS ).getAttribute( "default", null ) );
 
         if ( defaultHandlerId == null )
         {
             throw new ConfigurationException( "No default lifecycle handler defined" );
         }
 
-        Configuration[] configs =
-            getConfiguration().getChild( LIFECYCLE_HANDLERS ).getChildren( LIFECYCLE_HANDLER );
-        Configuration[] defaults =
-            getDefaultConfiguration().getChild( LIFECYCLE_HANDLERS ).getChildren( LIFECYCLE_HANDLER );
+        Configuration[] configs = getConfiguration().getChild( LIFECYCLE_HANDLERS ).getChildren( LIFECYCLE_HANDLER );
+
+        Configuration[] defaults = getDefaultConfiguration().getChild( LIFECYCLE_HANDLERS ).getChildren( LIFECYCLE_HANDLER );
+
         for ( int i = 0; i < configs.length; i++ )
         {
             addLifecycleHandlerHousing( configs[i], false );
         }
+
         for ( int i = 0; i < defaults.length; i++ )
         {
             //ignore duplicates as we allow the custom configuration
@@ -317,8 +313,8 @@ public class DefaultComponentRepository
 
         //grab the default LifecycleHandler. This is the one used when components don't specify
         //one
-        LifecycleHandlerHousing housing =
-            (LifecycleHandlerHousing) lifecycleHandlers.get( defaultHandlerId );
+        LifecycleHandlerHousing housing = (LifecycleHandlerHousing) lifecycleHandlers.get( defaultHandlerId );
+
         if ( housing == null )
         {
             throw new ConfigurationException(
@@ -328,7 +324,9 @@ public class DefaultComponentRepository
                 + " of this id is defined" );
 
         }
+
         defaultLifecycleHandler = housing.getHandler();
+
         getLogger().info( "Default LifecycleHandler id is set to: '" + defaultHandlerId + "'" );
     }
 
@@ -343,19 +341,20 @@ public class DefaultComponentRepository
         throws Exception
     {
         LifecycleHandlerHousing housing =
-            LifecycleHandlerFactory.createLifecycleHandlerHousing(
-                config,
-                getComponnetLogManager(),
-                getClassLoader(),
-                getContext(),
-                this );
-        if ( lifecycleHandlers.containsKey( housing.getId() ) == false )
+            LifecycleHandlerFactory.createLifecycleHandlerHousing( config,
+                                                                   getComponnetLogManager(),
+                                                                   getClassLoader(),
+                                                                   getContext(),
+                                                                   this );
+
+        if ( !lifecycleHandlers.containsKey( housing.getId() ) )
         {
             getLogger().info(
                 "Adding Lifecyclehandler. id="
                 + housing.getId()
                 + ", impl="
                 + housing.getImplementation() );
+
             lifecycleHandlers.put( housing.getId(), housing );
         }
         else
@@ -366,7 +365,6 @@ public class DefaultComponentRepository
                     "Duplicate Lifecycle handler. Duplicate id: " + housing.getId() );
             }
         }
-
     }
 
     // ----------------------------------------------------------------------
@@ -424,13 +422,14 @@ public class DefaultComponentRepository
     {
         ComponentDescriptor instantiationManagerDescriptor;
         String strategy = descriptor.getInstantiationStrategy();
+
         //donˈt want a 'ROLE#null' lookup
         if ( strategy == null )
         {
             strategy = defaultInstantiationStrategy;
         }
-        instantiationManagerDescriptor =
-            (ComponentDescriptor) getInstanceManagerDescriptors().get( strategy );
+
+        instantiationManagerDescriptor = (ComponentDescriptor) getInstanceManagerDescriptors().get( strategy );
 
         if ( instantiationManagerDescriptor == null )
         {
@@ -471,10 +470,8 @@ public class DefaultComponentRepository
         componentDescriptor.setImplementation( configuration.getChild( IMPLEMENTATION ).getValue() );
         componentDescriptor.setId( configuration.getChild( ID ).getValue( null ) );
 
-        componentDescriptor.setInstantiationStrategy(
-            configuration.getChild( INSTANTIATION_STRATEGY ).getValue( null ) );
-        componentDescriptor.setLifecycleHandler(
-            configuration.getChild( LIFECYCLE_HANDLER ).getValue( null ) );
+        componentDescriptor.setInstantiationStrategy( configuration.getChild( INSTANTIATION_STRATEGY ).getValue( null ) );
+        componentDescriptor.setLifecycleHandler( configuration.getChild( LIFECYCLE_HANDLER ).getValue( null ) );
         componentDescriptor.setConfiguration( configuration.getChild( CONFIGURATION ) );
 
         return componentDescriptor;
@@ -712,14 +709,15 @@ public class DefaultComponentRepository
         throws UndefinedLifecycleHandlerException
     {
         LifecycleHandlerHousing h = null;
+
         if ( id != null )
         {
             h = (LifecycleHandlerHousing) lifecycleHandlers.get( id );
         }
+
         if ( h == null )
         {
-            throw new UndefinedLifecycleHandlerException(
-                "No LifecycleHandler defined for id: " + id );
+            throw new UndefinedLifecycleHandlerException( "No LifecycleHandler defined for id: " + id );
         }
         return h.getHandler();
     }
