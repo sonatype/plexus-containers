@@ -387,8 +387,7 @@ public class DefaultPlexusContainer
         throws Exception
     {
         DefaultResourceManager rm =
-            ResourceManagerFactory.create( getDefaultConfiguration(),
-                                           getConfiguration(),
+            ResourceManagerFactory.create( getCascadingConfiguration(),
                                            getLoggerManager(),
                                            getClassLoader() );
 
