@@ -116,9 +116,9 @@
   <dependencies>
 
     <dependency>
-      <groupId>plexus</groupId>
+      <groupId>xstream</groupId>
       <artifactId>xstream</artifactId>
-      <version>0.1-jvz1</version>
+      <version>0.2</version>
     </dependency>
 
     <dependency>
