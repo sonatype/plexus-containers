@@ -66,12 +66,6 @@ public interface ComponentRepository
 
     void setPlexusContainer( PlexusContainer container );
 
-    /**
-     * Return the number of instantiated components
-     * @return
-     */
-    int getComponentCount();
-
     ClassLoader getClassLoader();
 
     /** Set this repositories logger */

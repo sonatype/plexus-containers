@@ -102,6 +102,47 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------
+    // Container Contract
+    // ----------------------------------------------------------------------
+
+    public Object lookup( String componentKey )
+        throws ServiceException
+    {
+        return componentRepository.lookup( componentKey );
+    }
+
+    public Object lookup( String role, String id )
+        throws ServiceException
+    {
+        return componentRepository.lookup( role, id );
+    }
+
+    public boolean hasService( String componentKey )
+    {
+        return componentRepository.hasService( componentKey );
+    }
+
+    public boolean hasService( String role, String id )
+    {
+        return componentRepository.hasService( role, id );
+    }
+
+    public void release( Object component )
+    {
+        componentRepository.release( component );
+    }
+
+    public void suspend( Object component )
+    {
+        componentRepository.suspend( component );
+    }
+
+    public void resume( Object component )
+    {
+        componentRepository.resume( component );
+    }
+
+    // ----------------------------------------------------------------------
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
@@ -183,11 +224,6 @@ public class DefaultPlexusContainer
         return classLoader;
     }
 
-    public ComponentRepository getComponentRepository()
-    {
-        return componentRepository;
-    }
-
     // ----------------------------------------------------------------------
     // Implementation
     // ----------------------------------------------------------------------
@@ -203,6 +239,7 @@ public class DefaultPlexusContainer
         for ( int i = 0; i < loadOnStartServices.length; i++ )
         {
             String role = loadOnStartServices[i].getAttribute( "role" );
+
             String id = loadOnStartServices[i].getAttribute( "id", "" );
 
             getLogger().info( "Loading on start [role,id]: " + "[" + role + "," + id + "]" );
@@ -211,11 +248,11 @@ public class DefaultPlexusContainer
             {
                 if ( id.length() == 0 )
                 {
-                    getComponentRepository().lookup( role );
+                    componentRepository.lookup( role );
                 }
                 else
                 {
-                    getComponentRepository().lookup( role, id );
+                    componentRepository.lookup( role, id );
                 }
             }
             catch ( ServiceException e )

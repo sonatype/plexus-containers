@@ -67,10 +67,15 @@ public class PlexusTestCase
         }
 
         container = new DefaultPlexusContainer();
+
         container.addContextValue( "basedir", basedir );
+
         container.addContextValue( "plexus.home", System.getProperty( "plexus.home" ) );
+
         container.setConfigurationResource( new InputStreamReader( configuration ) );
+
         container.initialize();
+
         container.start();
     }
 
@@ -171,19 +176,19 @@ public class PlexusTestCase
     protected Object lookup( String componentKey )
         throws Exception
     {
-        return getContainer().getComponentRepository().lookup( componentKey );
+        return getContainer().lookup( componentKey );
     }
 
     protected Object lookup( String role, String id )
         throws Exception
     {
-        return getContainer().getComponentRepository().lookup( role, id );
+        return getContainer().lookup( role, id );
     }
 
     protected void release( Object component )
         throws Exception
     {
-        container.getComponentRepository().release( component );
+        getContainer().release( component );
     }
 
     // Some convenience methods for retrieving files in tests.

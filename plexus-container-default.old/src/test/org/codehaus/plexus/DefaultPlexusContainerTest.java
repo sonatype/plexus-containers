@@ -73,21 +73,19 @@ public class DefaultPlexusContainerTest
     public void testDefaultPlexusContainerSetup()
         throws Exception
     {
-        assertTrue( container.getComponentRepository().getComponentCount() > 0 );
-
         assertEquals( "bar", System.getProperty( "foo" ) );
 
         // ----------------------------------------------------------------------
         //  ServiceDescriptors
         // ----------------------------------------------------------------------
 
-        assertEquals( true, container.getComponentRepository().hasService( ServiceA.ROLE ) );
+        assertEquals( true, container.hasService( ServiceA.ROLE ) );
 
-        assertEquals( true, container.getComponentRepository().hasService( ServiceB.ROLE ) );
+        assertEquals( true, container.hasService( ServiceB.ROLE ) );
 
-        assertEquals( true, container.getComponentRepository().hasService( ServiceC.ROLE + "only-instance" ) );
+        assertEquals( true, container.hasService( ServiceC.ROLE + "only-instance" ) );
 
-        assertEquals( true, container.getComponentRepository().hasService( ServiceG.ROLE ) );
+        assertEquals( true, container.hasService( ServiceG.ROLE ) );
     }
 
     /**
@@ -106,7 +104,7 @@ public class DefaultPlexusContainerTest
 
         // Retrieve an instance of component a.
 
-        DefaultServiceA serviceA = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
+        DefaultServiceA serviceA = (DefaultServiceA) container.lookup( ServiceA.ROLE );
 
         // Make sure the component is alive.
         assertNotNull( serviceA );
@@ -123,18 +121,18 @@ public class DefaultPlexusContainerTest
 
         assertEquals( true, serviceA.start );
 
-        container.getComponentRepository().release( serviceA );
+        container.release( serviceA );
 
         assertEquals( true, serviceA.stop );
 
         assertEquals( true, serviceA.dispose );
 
         // make sure we get the same manager back everytime
-        DefaultServiceA a0 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
+        DefaultServiceA a0 = (DefaultServiceA) container.lookup( ServiceA.ROLE );
 
-        DefaultServiceA a1 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
+        DefaultServiceA a1 = (DefaultServiceA) container.lookup( ServiceA.ROLE );
 
-        DefaultServiceA a2 = (DefaultServiceA) container.getComponentRepository().lookup( ServiceA.ROLE );
+        DefaultServiceA a2 = (DefaultServiceA) container.lookup( ServiceA.ROLE );
 
         assertTrue( a0.equals( a1 ) );
 
@@ -145,11 +143,11 @@ public class DefaultPlexusContainerTest
 	    // make sure that the component wasn't recycled
         assertFalse( serviceA.equals( a0 ) );
 
-        container.getComponentRepository().release( a0 );
+        container.release( a0 );
 
-        container.getComponentRepository().release( a1 );
+        container.release( a1 );
 
-        container.getComponentRepository().release( a2 );
+        container.release( a2 );
     }
 
     /**
@@ -168,7 +166,7 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
 
         // Retrieve an manager of component b.
-        DefaultServiceB serviceB1 = (DefaultServiceB) container.getComponentRepository().lookup( ServiceB.ROLE );
+        DefaultServiceB serviceB1 = (DefaultServiceB) container.lookup( ServiceB.ROLE );
 
         // Make sure the component is alive.
         assertNotNull( serviceB1 );
@@ -187,14 +185,14 @@ public class DefaultPlexusContainerTest
 
         assertNotNull( serviceB1.getClassLoader() );
 
-        container.getComponentRepository().release( serviceB1 );
+        container.release( serviceB1 );
 
         // Retrieve another
-        DefaultServiceB serviceB2 = (DefaultServiceB) container.getComponentRepository().lookup( ServiceB.ROLE );
+        DefaultServiceB serviceB2 = (DefaultServiceB) container.lookup( ServiceB.ROLE );
 
         assertNotNull( serviceB2 );
 
-        container.getComponentRepository().release( serviceB2 );
+        container.release( serviceB2 );
     }
 
     /**
@@ -210,13 +208,13 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
 
         // Retrieve an manager of component c.
-        DefaultServiceC serviceC1 = (DefaultServiceC) container.getComponentRepository().lookup( ServiceC.ROLE, "only-instance" );
+        DefaultServiceC serviceC1 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "only-instance" );
 
         // Make sure the component is alive.
         assertNotNull( serviceC1 );
 
         // Retrieve the only manager again from the component repository.
-        DefaultServiceC serviceC2 = (DefaultServiceC) container.getComponentRepository().lookup( ServiceC.ROLE, "only-instance" );
+        DefaultServiceC serviceC2 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "only-instance" );
 
         // Make sure component is alive.
         assertNotNull( serviceC2 );
@@ -224,9 +222,9 @@ public class DefaultPlexusContainerTest
         // Let's make sure it gave us back the same manager.
         assertSame( serviceC1, serviceC2 );
 
-        container.getComponentRepository().release( serviceC1 );
+        container.release( serviceC1 );
 
-        container.getComponentRepository().release( serviceC2 );
+        container.release( serviceC2 );
     }
 
     /**
@@ -242,15 +240,15 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
 
         // Retrieve an manager of component c.
-        ServiceD serviceD1 = (ServiceD) container.getComponentRepository().lookup( ServiceD.ROLE );
+        ServiceD serviceD1 = (ServiceD) container.lookup( ServiceD.ROLE );
 
         assertNotNull( serviceD1 );
 
-        ServiceD serviceD2 = (ServiceD) container.getComponentRepository().lookup( ServiceD.ROLE );
+        ServiceD serviceD2 = (ServiceD) container.lookup( ServiceD.ROLE );
 
         assertNotNull( serviceD2 );
 
-        ServiceD serviceD3 = (ServiceD) container.getComponentRepository().lookup( ServiceD.ROLE );
+        ServiceD serviceD3 = (ServiceD) container.lookup( ServiceD.ROLE );
 
         assertNotNull( serviceD3 );
 
@@ -262,11 +260,11 @@ public class DefaultPlexusContainerTest
 
         // Now let's release all the components.
 
-        container.getComponentRepository().release( serviceD1 );
+        container.release( serviceD1 );
 
-        container.getComponentRepository().release( serviceD2 );
+        container.release( serviceD2 );
 
-        container.getComponentRepository().release( serviceD3 );
+        container.release( serviceD3 );
 
         ServiceD[] ds = new DefaultServiceD[30];
 
@@ -276,14 +274,14 @@ public class DefaultPlexusContainerTest
 
             for ( int i = 0; i < 30; i++ )
             {
-                ds[i] = (ServiceD) container.getComponentRepository().lookup( ServiceD.ROLE );
+                ds[i] = (ServiceD) container.lookup( ServiceD.ROLE );
             }
 
             // Release them all.
 
             for ( int i = 0; i < 30; i++ )
             {
-                container.getComponentRepository().release( ds[i] );
+                container.release( ds[i] );
             }
         }
     }
@@ -301,7 +299,7 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
 
         // Retrieve an manager of component e.
-        DefaultServiceE serviceE1 = (DefaultServiceE) container.getComponentRepository().lookup( ServiceE.ROLE );
+        DefaultServiceE serviceE1 = (DefaultServiceE) container.lookup( ServiceE.ROLE );
 
         // Make sure the component is alive.
         assertNotNull( serviceE1 );
@@ -320,7 +318,7 @@ public class DefaultPlexusContainerTest
         assertEquals( true, serviceE1.start );
 
         // Retrieve another
-        DefaultServiceE serviceE2 = (DefaultServiceE) container.getComponentRepository().lookup( ServiceE.ROLE );
+        DefaultServiceE serviceE2 = (DefaultServiceE) container.lookup( ServiceE.ROLE );
 
         // Make sure the component is alive.
         assertNotNull( serviceE2 );
@@ -340,9 +338,9 @@ public class DefaultPlexusContainerTest
 
         assertNotSame( serviceE1, serviceE2 );
 
-        container.getComponentRepository().release( serviceE1 );
+        container.release( serviceE1 );
 
-        container.getComponentRepository().release( serviceE2 );
+        container.release( serviceE2 );
     }
 
     /**
@@ -360,7 +358,7 @@ public class DefaultPlexusContainerTest
 
         // The configuration for this component comes from a configuration using
         // the 'configurations-directory' directive in plexus.conf.
-        ServiceF serviceF = (ServiceF) container.getComponentRepository().lookup( ServiceF.ROLE );
+        ServiceF serviceF = (ServiceF) container.lookup( ServiceF.ROLE );
 
         assertNotNull( serviceF );
 
@@ -370,7 +368,7 @@ public class DefaultPlexusContainerTest
         // interpolated so no "${" sequence should be present.
         assertFalse( serviceF.getPlexusHome().indexOf( "${" ) > 0 );
 
-        container.getComponentRepository().release( serviceF );
+        container.release( serviceF );
     }
 
     /**
@@ -389,7 +387,7 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
 
         // Retrieve an manager of component G.
-        DefaultServiceG serviceG = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+        DefaultServiceG serviceG = (DefaultServiceG) container.lookup( ServiceG.ROLE );
 
         // Make sure the component is alive.
         assertNotNull( serviceG );
@@ -407,24 +405,24 @@ public class DefaultPlexusContainerTest
 
         assertTrue( serviceG.start );
 
-        container.getComponentRepository().suspend( serviceG );
+        container.suspend( serviceG );
 
         assertTrue( serviceG.suspend );
 
-        container.getComponentRepository().resume( serviceG );
+        container.resume( serviceG );
 
         assertTrue( serviceG.resume );
 
         // Now how do we make sure it has been released and decomissioned
         // properly.
-        container.getComponentRepository().release( serviceG );
+        container.release( serviceG );
 
         // make sure we get the same manager back everytime
-        DefaultServiceG g0 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+        DefaultServiceG g0 = (DefaultServiceG) container.lookup( ServiceG.ROLE );
 
-        DefaultServiceG g1 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+        DefaultServiceG g1 = (DefaultServiceG) container.lookup( ServiceG.ROLE );
 
-        DefaultServiceG g2 = (DefaultServiceG) container.getComponentRepository().lookup( ServiceG.ROLE );
+        DefaultServiceG g2 = (DefaultServiceG) container.lookup( ServiceG.ROLE );
 
         assertTrue( g0.equals( g1 ) );
 
@@ -482,11 +480,11 @@ public class DefaultPlexusContainerTest
                 + out );
         }
 
-        container.getComponentRepository().release( g0 );
+        container.release( g0 );
 
-        container.getComponentRepository().release( g1 );
+        container.release( g1 );
 
-        container.getComponentRepository().release( g2 );
+        container.release( g2 );
     }
 
     // ----------------------------------------------------------------------
@@ -497,7 +495,7 @@ public class DefaultPlexusContainerTest
         throws Exception
     {
         // Retrieve an manager of component G.
-        DefaultServiceH serviceH = (DefaultServiceH) container.getComponentRepository().lookup( ServiceH.ROLE );
+        DefaultServiceH serviceH = (DefaultServiceH) container.lookup( ServiceH.ROLE );
 
         // Make sure the component is alive.
         assertNotNull( serviceH );
@@ -511,7 +509,7 @@ public class DefaultPlexusContainerTest
 
         assertEquals( true, serviceH.mo );
 
-        container.getComponentRepository().release( serviceH );
+        container.release( serviceH );
     }
 
     class SingletonComponentTestThread
@@ -557,7 +555,7 @@ public class DefaultPlexusContainerTest
         {
             try
             {
-                returnedComponent = container.getComponentRepository().lookup( role );
+                returnedComponent = container.lookup( role );
 
                 if ( returnedComponent == null )
                 {
@@ -574,7 +572,7 @@ public class DefaultPlexusContainerTest
             }
             finally
             {
-                container.getComponentRepository().release( returnedComponent );
+                container.release( returnedComponent );
             }
         }
     }

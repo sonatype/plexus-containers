@@ -3,6 +3,7 @@ package org.codehaus.plexus.lifecycle.avalon.phase;
 import org.apache.avalon.framework.service.ServiceManager;
 import org.apache.avalon.framework.service.Serviceable;
 import org.codehaus.plexus.component.manager.ComponentManager;
+import org.codehaus.plexus.lifecycle.avalon.AvalonLifecycleHandler;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 
 public class ServicePhase
@@ -12,7 +13,8 @@ public class ServicePhase
                          )
         throws Exception
     {
-        ServiceManager serviceManager = (ServiceManager) manager.getLifecycleHandler().getEntities().get( "component.manager" );
+        ServiceManager serviceManager =
+            (ServiceManager) manager.getLifecycleHandler().getEntities().get( AvalonLifecycleHandler.SERVICE_MANAGER );
 
         if ( object instanceof Serviceable )
         {

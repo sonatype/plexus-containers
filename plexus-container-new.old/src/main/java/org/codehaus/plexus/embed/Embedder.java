@@ -76,29 +76,30 @@ public class Embedder
         return container;
     }
 
-    public Object lookup( String role ) throws ServiceException
+    public Object lookup( String role )
+        throws ServiceException
     {
-        return getContainer().getComponentRepository().lookup( role );
+        return getContainer().lookup( role );
     }
 
     public Object lookup( String role, String id ) throws ServiceException
     {
-        return getContainer().getComponentRepository().lookup( role, id );
+        return getContainer().lookup( role, id );
     }
 
     public boolean hasService( String role )
     {
-        return getContainer().getComponentRepository().hasService( role );
+        return getContainer().hasService( role );
     }
 
     public boolean hasService( String role, String id )
     {
-        return getContainer().getComponentRepository().hasService( role, id );
+        return getContainer().hasService( role, id );
     }
 
     public void release( Object service )
     {
-        getContainer().getComponentRepository().release( service );
+        getContainer().release( service );
     }
 
     /**

@@ -149,19 +149,6 @@ public class DefaultComponentRepository
         return (ComponentManager) getComponentManagers().get( componentKey );
     }
 
-    /**
-     * @todo correct this
-     * @see org.codehaus.plexus.component.repository.ComponentRepository#getComponentCount()
-     */
-    public int getComponentCount()
-    {
-        //this is no longer correct. Each manager could
-        //be managing multiple instances. Should sum
-        //the number of component managers active
-        //connections
-        return getComponentManagers().size();
-    }
-
     // ----------------------------------------------------------------------
     // Lifecylce Management
     // ----------------------------------------------------------------------

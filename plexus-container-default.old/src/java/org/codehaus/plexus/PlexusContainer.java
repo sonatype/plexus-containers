@@ -1,58 +1,58 @@
 package org.codehaus.plexus;
 
-import org.codehaus.plexus.configuration.ConfigurationResourceException;
-import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.configuration.ConfigurationResourceException;
 
 import java.io.Reader;
 
 public interface PlexusContainer
 {
-    // ----------------------------------------------------------------------
-    // Lifecylce Management
-    // ----------------------------------------------------------------------
+    Object lookup( String componentKey )
+        throws ServiceException;
 
-    /** */
-    public void initialize()
-        throws Exception;
+    Object lookup( String role, String id )
+        throws ServiceException;
 
-    /** */
-    public void start()
-        throws Exception;
+    boolean hasService( String componentKey );
 
-    /** */
-    public void dispose()
-        throws Exception;
+    boolean hasService( String role, String id );
+
+    void release( Object component );
+
+    void suspend( Object component );
+
+    void resume( Object component );
 
     // ----------------------------------------------------------------------
     // Pre-initialization - can only be called prior to initialization
     // ----------------------------------------------------------------------
 
-    /** */
-    public void addContextValue( Object key, Object value );
+     void addContextValue( Object key, Object value );
 
-    /** */
-    public void setClassWorld( ClassWorld classWorld );
+     void setClassWorld( ClassWorld classWorld );
 
-    /** */
-    public void setClassLoader( ClassLoader classLoader );
+     void setClassLoader( ClassLoader classLoader );
 
-    /** */
-    public void setConfigurationResource( Reader configuration )
+     void setConfigurationResource( Reader configuration )
         throws ConfigurationResourceException;
 
     // ----------------------------------------------------------------------
     // Post-initialization - can only be called post initialization
     // ----------------------------------------------------------------------
 
-    /** *//*
-    public LifecycleHandler getLifecycleHandler();
+     ClassLoader getClassLoader();
 
+    // ----------------------------------------------------------------------
+    // Lifecylce Management
+    // ----------------------------------------------------------------------
 
-	public LifecycleHandler getLifecycleHandler(String id);*/
-    /** */
-    public ClassLoader getClassLoader();
+     void initialize()
+        throws Exception;
 
-    /** */
-    public ComponentRepository getComponentRepository();
+     void start()
+        throws Exception;
+
+     void dispose()
+        throws Exception;
 }

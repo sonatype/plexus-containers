@@ -130,8 +130,6 @@ public abstract class AbstractComponentManager
         throws Exception
     {
         implementation = getComponentDescriptor().getImplementation();
-
-        System.out.println( "implementation = " + implementation );
     }
 
     // ----------------------------------------------------------------------

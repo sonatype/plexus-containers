@@ -7,5 +7,4 @@ package org.codehaus.plexus.lifecycle.avalon;
 public class CustomServiceSelector
     extends AvalonServiceSelector
 {
-
 }
