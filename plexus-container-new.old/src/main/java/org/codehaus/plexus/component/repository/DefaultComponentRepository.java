@@ -13,8 +13,8 @@ import org.codehaus.plexus.lifecycle.LifecycleHandlerHousing;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.util.ThreadSafeMap;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -119,9 +119,9 @@ public class DefaultComponentRepository
 
         componentManagerDescriptors = new HashMap();
 
-        componentManagers = new ThreadSafeMap();
+        componentManagers = Collections.synchronizedMap( new HashMap() );
 
-        compManagersByCompClass = new ThreadSafeMap();
+        compManagersByCompClass = Collections.synchronizedMap( new HashMap() );
 
         lifecycleHandlers = new HashMap();
 
