@@ -8,7 +8,7 @@
   </parent>
   <groupId>plexus</groupId>
   <artifactId>plexus-container-artifact</artifactId>
-  <version>1.0-alpha-1-SNAPSHOT</version>
+  <version>1.0-alpha-2-SNAPSHOT</version>
   <name>Plexus Artifact-Enabled Container</name>
   <dependencies>
     <dependency>
