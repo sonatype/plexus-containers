@@ -404,7 +404,7 @@ public class DefaultComponentRepository
                 {
                     getLogger().error( "Non existant component: " + key );
 
-                    throw new ComponentLookupException( "Non existant component:  " );
+                    throw new ComponentLookupException( "Non existant component: " + key );
                 }
 
                 try
