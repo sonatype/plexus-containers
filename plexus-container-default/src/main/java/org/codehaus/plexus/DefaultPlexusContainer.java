@@ -792,55 +792,6 @@ public class DefaultPlexusContainer
         return plexusRealm;
     }
 
-
-    private void initializeClassWorlds2()
-        throws Exception
-    {
-        if ( classWorld == null )
-        {
-            classWorld = new ClassWorld();
-        }
-
-        // Create a name for our application if one doesn't exist.
-        initializeName();
-
-        if ( coreRealm == null )
-        {
-            try
-            {
-                coreRealm = classWorld.getRealm( "plexus.core" );
-            }
-            catch ( NoSuchRealmException e )
-            {
-                /* We are being loaded with someone who hasn't
-                 * given us any classworlds realms.  In this case,
-                 * we want to use the classes already in the
-                 * ClassLoader for our realm.
-                 */
-                plexusRealm = classWorld.newRealm( "plexus.core", Thread.currentThread().getContextClassLoader() );
-            }
-        }
-
-        // We are in a non-embedded situation
-        if ( plexusRealm == null )
-        {
-            try
-            {
-                plexusRealm = coreRealm.getWorld().getRealm( "plexus." + getName() );
-            }
-            catch ( NoSuchRealmException e )
-            {
-                plexusRealm = coreRealm.getWorld().newRealm( "plexus." + getName() );
-            }
-
-            plexusRealm.importFrom( coreRealm.getId(), "" );
-
-            addContextValue( "common.classloader", plexusRealm.getClassLoader() );
-
-            Thread.currentThread().setContextClassLoader( plexusRealm.getClassLoader() );
-        }
-    }
-
     /**
      * Create a name for our application if one doesn't exist.
      */
@@ -895,7 +846,7 @@ public class DefaultPlexusContainer
 
         if ( is == null )
         {
-            throw new IllegalStateException( "The internal default plexus.conf is missing. " +
+            throw new IllegalStateException( "The internal default plexus-bootstrap.xml is missing. " +
                                              "This is highly irregular, your plexus JAR is " +
                                              "most likely corrupt." );
         }
