@@ -33,10 +33,6 @@ are very detailed and specific, while others are more general.  -pete
 - Not sure why PlexusContainer even exists ... why not just have a
   ComponentRepository? 
 
-- Comments in ComponentDescriptor refer that unidentified component as
-  having an 'id' of '*'.  This doesn't appear to be the case.
-  Instead, it appears they are null instead.
-
 - A component's Key should _not_ be the simple concatenation of Role
   and Hint (or Id) because this might clash with another valid Role.
   Perhaps it would be better to use a '/' as a separator, although
