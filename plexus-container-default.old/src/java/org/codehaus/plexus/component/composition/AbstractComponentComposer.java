@@ -35,6 +35,9 @@ public abstract class AbstractComponentComposer
                                    ComponentRepository componentRepository )
         throws Exception
     {
+        //!! We should check for cycles here before we attempt this. Look
+        //   for possible ways to short-circuit the cycles.
+
         if ( componentDescriptor.getRequirements().size() > 0 )
         {
             Set requirements = componentDescriptor.getRequirements();
