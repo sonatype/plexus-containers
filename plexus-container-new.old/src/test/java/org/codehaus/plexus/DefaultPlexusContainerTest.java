@@ -223,6 +223,17 @@ public class DefaultPlexusContainerTest
 
         assertNotSame( serviceE1, serviceE2 );
 
+    }
+
+    /**
+     * Test the loading of component configurations from ancillary configuration
+     * files.
+     *
+     * @throws Exception
+     */
+    public void testLoadingOfAdditionalConfigurations()
+        throws Exception
+    {
         // ----------------------------------------------------------------------
         // Service F
         // ----------------------------------------------------------------------
@@ -238,7 +249,6 @@ public class DefaultPlexusContainerTest
         // correctly. For the test we are using ${plexus.home} which should be
         // interpolated so no "${" sequence should be present.
         assertFalse( serviceF.getPlexusHome().indexOf( "${" ) > 0 );
-
     }
 
     /**
