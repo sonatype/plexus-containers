@@ -32,3 +32,7 @@ are very detailed and specific, while others are more general.  -pete
   Perhaps it would be better to use a '/' as a separator, although
   that doesn't resolve the issue completely either because role names
   can be anything.
+
+  Note: Pete and I have agreed we will use "/" and forbid that character
+  from being used in role names. I change this later this week as I've have
+  oodles of places where I use the concatenation instead of lookup(role,hint).
