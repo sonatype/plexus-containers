@@ -11,6 +11,9 @@ import java.util.List;
 
 public class DateConverter extends AbstractBasicConverter
 {
+    /***
+     * @todo DateFormat is not thread safe!
+     */
     private static final DateFormat[] formats = {
         new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.S a" ),
         new SimpleDateFormat( "yyyy-MM-dd HH:mm:ssa" )

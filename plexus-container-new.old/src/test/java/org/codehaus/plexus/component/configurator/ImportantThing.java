@@ -1,5 +1,6 @@
 package org.codehaus.plexus.component.configurator;
 
+
 /**
  *
  * 
@@ -7,7 +8,7 @@ package org.codehaus.plexus.component.configurator;
  *
  * @version $Id$
  */
-public class ImportantThing
+public class ImportantThing implements AbstractThing
 {
     private String name;
 

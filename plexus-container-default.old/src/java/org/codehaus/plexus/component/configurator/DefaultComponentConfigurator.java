@@ -2,9 +2,9 @@ package org.codehaus.plexus.component.configurator;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.xstream.PlexusXStream;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /**
- *
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
@@ -22,7 +22,9 @@ public class DefaultComponentConfigurator
         xstreamTool = new PlexusXStream();
     }
 
-    public void configureComponent( Object component, PlexusConfiguration configuration )
+    public void configureComponent( Object component,
+                                    ComponentDescriptor componentDescriptor,
+                                    PlexusConfiguration configuration )
         throws ComponentConfigurationException
     {
         PlexusConfiguration decoratedConfiguration = decorateConfiguration( configuration );
@@ -33,7 +35,10 @@ public class DefaultComponentConfigurator
         }
         catch ( Exception e )
         {
-            throw new ComponentConfigurationException( "Error configuring component: ", e );
+            String msg = "Error configuring component "
+                    + componentDescriptor.getHumanReadableKey() + ": ";
+
+            throw new ComponentConfigurationException( msg , e );
         }
     }
 }
