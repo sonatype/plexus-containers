@@ -1,9 +1,8 @@
 package org.codehaus.plexus.lifecycle;
 
-import org.apache.avalon.framework.configuration.Configuration;
+import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.phase.Phase;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.component.manager.ComponentManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ public abstract class AbstractLifecycleHandler
     private List suspendSegment;
     private List resumeSegment;
     private List endSegment;
-    private Configuration configuration;
 
     public AbstractLifecycleHandler()
     {
