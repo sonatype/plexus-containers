@@ -22,19 +22,9 @@ public class DefaultComponentRepository
     extends AbstractLogEnabled
     implements ComponentRepository
 {
-    // ----------------------------------------------------------------------
-    //  Constants
-    // ----------------------------------------------------------------------
-
-    /** Components tag. */
     private static String COMPONENTS = "components";
 
-    /** Component tag. */
     private static String COMPONENT = "component";
-
-    // ----------------------------------------------------------------------
-    //  Instance Members
-    // ----------------------------------------------------------------------
 
     private Configuration configuration;
 
@@ -100,13 +90,28 @@ public class DefaultComponentRepository
     public void initializeComponentDescriptors()
         throws Exception
     {
-        Configuration[] componentConfigurations =
-            configuration.getChild( COMPONENTS ).getChildren( COMPONENT );
+        initializeComponentDescriptorsFromComponents();
+
+        initializeComponentDescriptorsFromUserConfiguration();
+    }
+
+    private void initializeComponentDescriptorsFromUserConfiguration()
+        throws Exception
+    {
+        Configuration[] componentConfigurations = configuration.getChild( COMPONENTS ).getChildren( COMPONENT );
 
         for ( int i = 0; i < componentConfigurations.length; i++ )
         {
             addComponentDescriptor( componentConfigurations[i] );
         }
+    }
+
+    private void initializeComponentDescriptorsFromComponents()
+        throws Exception
+    {
+        // This will consist of using the classworlds realm and searching for all
+        // components.xml files and initializing the component descriptors
+        // described within.
     }
 
     // ----------------------------------------------------------------------
