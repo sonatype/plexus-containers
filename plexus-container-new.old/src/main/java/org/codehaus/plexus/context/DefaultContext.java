@@ -6,10 +6,13 @@ import java.util.Map;
 
 /**
  * Default implementation of Context.
- * This implementation is a static hierarchial store.
+ * 
+ * This implementation is a static hierarchial store. It has the normal <code>get()</code>
+ * and <code>put</code> methods. The <code>hide</code> method will hide a property. When
+ * a property has been hidden the context will not search in the parent context for the value.
  *
  * @author <a href="mailto:dev@avalon.codehaus.org">Avalon Development Team</a>
- * @version CVS $Revision$ $Date$
+ * @version $Id$
  */
 public class DefaultContext
     implements Context
@@ -40,7 +43,7 @@ public class DefaultContext
     }
 
     /**
-     * Create a Context with specified data.
+     * Create a empty Context with specified data.
      *
      * @param contextData the context data
      */
@@ -60,14 +63,19 @@ public class DefaultContext
     }
 
     /**
-     * Create a Context with no parent.
-     *
+     * Create a empty Context with no parent.
      */
     public DefaultContext()
     {
         this( (Context) null );
     }
 
+    /**
+     * Returns true if the map or the parent map contains the key.
+     * 
+     * @param key The key to search for.
+     * @return Returns true if the key was found.
+     */
     public boolean contains( Object key )
     {
 
@@ -92,31 +100,34 @@ public class DefaultContext
         return parent.contains( key );
     }
 
-
+    /**
+     * Returns the value of the key. If the key can't be found it will throw a exception.
+     * 
+     * @param key The key of the value to look up.
+     * @return Returns 
+     * @throws ContextException If the key doesn't exist.
+     */
     public Object get( Object key )
         throws ContextException
     {
         Object data = contextData.get( key );
 
-        if ( null != data )
+        if ( data != null )
         {
             if ( data instanceof Hidden )
             {
-                // Always fail.
-                String message = "Unable to locate " + key;
-                throw new ContextException( message );
+                // Always fail
+                throw new ContextException( "Unable to locate " + key );
             }
 
             return data;
         }
 
         // If data was null, check the parent
-        if ( null == parent )
+        if ( parent == null )
         {
             // There was no parent, and no data
-            String message =
-                "Unable to resolve context key: " + key;
-            throw new ContextException( message );
+            throw new ContextException( "Unable to resolve context key: " + key );
         }
 
         return parent.get( key );
@@ -146,6 +157,7 @@ public class DefaultContext
 
     /**
      * Hides the item in the context.
+     * 
      * After remove(key) has been called, a get(key)
      * will always fail, even if the parent context
      * has such a mapping.
@@ -200,15 +212,15 @@ public class DefaultContext
     {
         if ( readOnly )
         {
-            String message =
-                "Context is read only and can not be modified";
-            throw new IllegalStateException( message );
+            throw new IllegalStateException( "Context is read only and can not be modified" );
         }
     }
 
+    /**
+     * This class is only used as a marker in the map to indicate a hidden value.
+     */
     private static class Hidden
         implements Serializable
     {
     }
-
 }
