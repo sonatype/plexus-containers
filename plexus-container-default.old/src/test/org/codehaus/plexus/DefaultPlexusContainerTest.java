@@ -38,7 +38,7 @@ public class DefaultPlexusContainerTest
     {
         basedir = System.getProperty( "basedir" );
         classLoader = getClass().getClassLoader();
-        configurationStream = classLoader.getResourceAsStream( "/org/codehaus/plexus/configuration.xml" );
+        configurationStream = DefaultPlexusContainerTest.class.getResourceAsStream( "configuration.xml" );
     }
 
     public void testSetup()
@@ -61,30 +61,9 @@ public class DefaultPlexusContainerTest
         // These are some default components that we used internally. These components don't
         // usually need to be replaced but they can be if the user desires.
 
-        //NOTE: these have now been included through a differnet method
-        /*
-// Per-lookup instance manager.
-InstanceManager plim =
-(InstanceManager) container.getComponentRepository().lookup( InstanceManager.ROLE + "per-lookup" );
-assertNotNull( plim );
-defaultComponents++;
-
-// Poolable instance manager.
-InstanceManager pim =
-(InstanceManager) container.getComponentRepository().lookup( InstanceManager.ROLE + "poolable" );
-assertNotNull( pim );
-defaultComponents++;
-
-// Singleton instance manager.
-InstanceManager sim =
-(InstanceManager) container.getComponentRepository().lookup( InstanceManager.ROLE + "singleton" );
-assertNotNull( sim );
-defaultComponents++;
-*/
         // Java Component factory.
         // Singleton instance manager.
-        ComponentFactory jcf =
-            (ComponentFactory) container.getComponentRepository().lookup( ComponentFactory.ROLE + "java" );
+        ComponentFactory jcf = (ComponentFactory) container.getComponentRepository().lookup( ComponentFactory.ROLE + "java" );
         assertNotNull( jcf );
         defaultComponents++;
 
