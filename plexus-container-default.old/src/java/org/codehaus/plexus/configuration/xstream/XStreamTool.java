@@ -1,15 +1,14 @@
 package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.xml.xpp3.Xpp3DomXMLReaderDriver;
 import com.thoughtworks.xstream.alias.CannotResolveClassException;
 import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.alias.ElementMapper;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.objecttree.reflection.JavaReflectionObjectFactory;
-import com.thoughtworks.xstream.xml.dom.DomXMLReaderDriver;
-
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.Property;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
@@ -33,10 +32,7 @@ public class XStreamTool
 
         HyphenatedClassMapper classMapper = new HyphenatedClassMapper( elementMapper );
 
-        xstream = new XStream( new JavaReflectionObjectFactory(),
-                               classMapper,
-                               elementMapper,
-                               new DomXMLReaderDriver() );
+        xstream = new XStream( new JavaReflectionObjectFactory(), classMapper, elementMapper, new Xpp3DomXMLReaderDriver() );
 
         xstream.alias( "property", Property.class );
 
@@ -85,6 +81,11 @@ public class XStreamTool
         Object object = xstream.fromXML( reader, root );
 
         return object;
+    }
+
+    public String toXML( Object o )
+    {
+        return xstream.toXML( o );
     }
 
     public DefaultPlexusConfiguration write( Object o )
