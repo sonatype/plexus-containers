@@ -1,4 +1,4 @@
-package org.codehaus.plexus.configuration;
+package org.codehaus.plexus.configuration.xstream;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,5 @@
-package org.codehaus.plexus.configuration;
+package org.codehaus.plexus.configuration.xstream;
+
 
 /**
  *
