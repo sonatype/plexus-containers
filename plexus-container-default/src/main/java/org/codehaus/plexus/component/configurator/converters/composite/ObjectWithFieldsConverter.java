@@ -28,7 +28,6 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurationExceptio
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.ReflectionUtils;
 
@@ -72,18 +71,16 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
     public Object fromConfiguration( ConverterLookup converterLookup,
                                      PlexusConfiguration configuration,
                                      Class type,
-                                     ClassLoader classLoader,
-                                     ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+                                     Class baseType,
+                                     ClassLoader classLoader )
+        throws ComponentConfigurationException
     {
         // it is a "composite"
-        Class implementation = getClassForImplementationHint( type,
-                configuration,
-                classLoader,
-                componentDescriptor );
+        Class implementation = getClassForImplementationHint( type, configuration, classLoader );
 
-        Object retValue = instantiateObject( implementation, componentDescriptor );
+        Object retValue = instantiateObject( implementation );
 
-        processConfiguration( converterLookup, retValue, classLoader, configuration, componentDescriptor );
+        processConfiguration( converterLookup, retValue, classLoader, configuration );
 
         return retValue;
 
@@ -93,8 +90,7 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
     public void processConfiguration( ConverterLookup converterLookup,
                                       Object object,
                                       ClassLoader classLoader,
-                                      PlexusConfiguration configuration,
-                                      ComponentDescriptor componentDescriptor )
+                                      PlexusConfiguration configuration )
             throws ComponentConfigurationException
     {
         int items = configuration.getChildCount();
@@ -107,7 +103,7 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
 
             String fieldName = fromXML( elementName );
 
-            Field field = getFieldByName( fieldName, object, componentDescriptor );
+            Field field = getFieldByName( fieldName, object );
 
             Class fieldType = field.getType();
 
@@ -115,9 +111,7 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
 
             if ( converter == null )
             {
-                String msg = "Error occured while configuring component "
-                        + componentDescriptor.getHumanReadableKey()
-                        + ". No converter is capable to convert configuration entry <"
+                String msg = "No converter is capable to convert configuration entry <"
                         + elementName
                         + ">"
                         + " to instance of class: '"
@@ -131,16 +125,17 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
                 throw new ComponentConfigurationException( msg );
             }
 
-            Object value = converter.fromConfiguration( converterLookup, childConfiguration, fieldType, classLoader, componentDescriptor );
+            Object value = converter.fromConfiguration( converterLookup, childConfiguration, fieldType,
+                                                        object.getClass(), classLoader );
 
-            setFieldValue( field, object, value, componentDescriptor );
+            setFieldValue( field, object, value );
         }
 
 
     }
 
 
-    private void setFieldValue( Field field, Object object, Object value, ComponentDescriptor componentDescriptor )
+    private void setFieldValue( Field field, Object object, Object value )
             throws ComponentConfigurationException
     {
         try
@@ -161,9 +156,7 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
         }
         catch ( IllegalAccessException e )
         {
-            String msg = "Error configuring component: "
-                    + componentDescriptor.getHumanReadableKey()
-                    + ". Cannot access field: '"
+            String msg = "Cannot access field: '"
                     + field.getName() +
                     " in class: '"
                     + object.getClass().getName()
@@ -173,20 +166,16 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
         }
     }
 
-    private Field getFieldByName( String fieldName, Object object, ComponentDescriptor componentDescriptor )
+    private Field getFieldByName( String fieldName, Object object )
             throws ComponentConfigurationException
     {
 
-        Field retValue = ReflectionUtils.getFieldByNameIncludingSuperclasses( fieldName, object.getClass() );
+        Class clazz = object.getClass();
+        Field retValue = ReflectionUtils.getFieldByNameIncludingSuperclasses( fieldName, clazz );
 
         if ( retValue == null )
         {
-            String msg = "Error configuring component: "
-                    + componentDescriptor.getHumanReadableKey()
-                    + ". Class '"
-                    + object.getClass().getName()
-                    + "' does not contain a field named '"
-                    + fieldName + "'";
+            String msg = "Class '" + clazz.getName() + "' does not contain a field named '" + fieldName + "'";
 
             throw new ComponentConfigurationException( msg );
         }

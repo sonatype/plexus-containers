@@ -24,9 +24,9 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 
 public abstract class AbstractCompositeConverter implements CompositeConverter
@@ -57,10 +57,7 @@ public abstract class AbstractCompositeConverter implements CompositeConverter
             }
             catch ( ClassNotFoundException e )
             {
-                String msg = "Error configuring component: "
-                        + componentDescriptor.getHumanReadableKey()
-                        + ". Class name which was explicitly "
-                        + " given in configuration using 'implementation' attribute: '"
+                String msg = "Class name which was explicitly given in configuration using 'implementation' attribute: '"
                         + implementation + "' cannot be loaded: " + e.getMessage();
 
                 throw new ComponentConfigurationException( msg );
@@ -71,7 +68,8 @@ public abstract class AbstractCompositeConverter implements CompositeConverter
     }
 
 
-    protected Class loadClass( String classname, ClassLoader classLoader, ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+    protected Class loadClass( String classname, ClassLoader classLoader )
+        throws ComponentConfigurationException
     {
         Class retValue = null;
 
@@ -81,29 +79,24 @@ public abstract class AbstractCompositeConverter implements CompositeConverter
         }
         catch ( Exception e )
         {
-            String msg = "Error configuring component: "
-                    + componentDescriptor.getHumanReadableKey()
-                    + ". Class '"
-                    + classname
-                    + "' cannot be loaded";
-
-            throw new ComponentConfigurationException( msg );
+            throw new ComponentConfigurationException( "Class '" + classname + "' cannot be loaded" );
         }
 
         return retValue;
 
     }
 
-    protected Object instantiateObject( String classname, ClassLoader classLoader, ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+    protected Object instantiateObject( String classname, ClassLoader classLoader )
+        throws ComponentConfigurationException
     {
-        Class clazz = loadClass( classname, classLoader, componentDescriptor );
+        Class clazz = loadClass( classname, classLoader );
 
-        Object retValue = instantiateObject( clazz, componentDescriptor );
+        Object retValue = instantiateObject( clazz );
 
         return retValue;
     }
 
-    protected Object instantiateObject( Class clazz, ComponentDescriptor componentDescriptor ) throws ComponentConfigurationException
+    protected Object instantiateObject( Class clazz ) throws ComponentConfigurationException
     {
         Object retValue = null;
 
@@ -115,14 +108,7 @@ public abstract class AbstractCompositeConverter implements CompositeConverter
         }
         catch ( Exception e )
         {
-            String msg = "Error configuring component: "
-                    + componentDescriptor.getHumanReadableKey()
-                    + ". Class '"
-                    + clazz.getName()
-                    + "' cannot be instantiated";
-
-
-            throw new ComponentConfigurationException( msg );
+            throw new ComponentConfigurationException( "Class '" + clazz.getName() + "' cannot be instantiated" );
         }
     }
 }

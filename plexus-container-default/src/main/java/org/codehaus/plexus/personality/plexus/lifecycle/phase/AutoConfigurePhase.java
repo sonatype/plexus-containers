@@ -2,7 +2,6 @@ package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.manager.ComponentManager;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 
 /**
@@ -22,9 +21,7 @@ public class AutoConfigurePhase
 
         if ( manager.getComponentDescriptor().hasConfiguration() )
         {
-            ComponentDescriptor descriptor = manager.getComponentDescriptor();
-
-            componentConfigurator.configureComponent( object, descriptor, manager.getComponentDescriptor().getConfiguration() );
+            componentConfigurator.configureComponent( object, manager.getComponentDescriptor().getConfiguration() );
         }
     }
 }

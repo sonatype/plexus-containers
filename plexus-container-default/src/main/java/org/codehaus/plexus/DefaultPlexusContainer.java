@@ -24,17 +24,6 @@ package org.codehaus.plexus;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.NoSuchRealmException;
@@ -73,6 +62,17 @@ import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @todo clarify configuration handling vis-a-vis user vs default values
@@ -1048,7 +1048,16 @@ public class DefaultPlexusContainer
 
         configuration.addChild( c );
 
-        configurator.configureComponent( this, componentDescriptor, configuration );
+        try
+        {
+            configurator.configureComponent( this, configuration );
+        }
+        catch ( ComponentConfigurationException e )
+        {
+            // TODO: don't like rewrapping the same exception, but better than polluting this all through the config code
+            String message = "Error configuring component: " + componentDescriptor.getHumanReadableKey();
+            throw new ComponentConfigurationException( message, e );
+        }
     }
 
     private void initializeSystemProperties()

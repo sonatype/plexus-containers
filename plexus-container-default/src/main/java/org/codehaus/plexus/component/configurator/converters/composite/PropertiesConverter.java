@@ -27,7 +27,6 @@ package org.codehaus.plexus.component.configurator.converters.composite;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.Properties;
@@ -49,8 +48,8 @@ public class PropertiesConverter
     public Object fromConfiguration( ConverterLookup converterLookup,
                                      PlexusConfiguration configuration,
                                      Class type,
-                                     ClassLoader classLoader,
-                                     ComponentDescriptor componentDescriptor )
+                                     Class baseType,
+                                     ClassLoader classLoader )
     	throws ComponentConfigurationException
     {
         String element = configuration.getName();
@@ -65,14 +64,14 @@ public class PropertiesConverter
             {
                 PlexusConfiguration child = children[ i ];
 
-                addEntry( retValue, element, child, componentDescriptor );
+                addEntry( retValue, element, child );
             }
         }
 
         return retValue;
     }
 
-    private void addEntry( Properties properties, String element, PlexusConfiguration property, ComponentDescriptor componentDescriptor )
+    private void addEntry( Properties properties, String element, PlexusConfiguration property )
     	throws ComponentConfigurationException
     {
         String name;
@@ -81,8 +80,8 @@ public class PropertiesConverter
 
         if ( name == null )
         {
-            String msg = "Error occured while configuring component: " + componentDescriptor.getHumanReadableKey() + ". " +
-                         "Converter: java.util.Properties. Trying to convert the configuration element: '" + element + "', missing child element 'name'.";
+            String msg = "Converter: java.util.Properties. Trying to convert the configuration element: '" + element +
+                "', missing child element 'name'.";
 
             throw new ComponentConfigurationException( msg );
         }
