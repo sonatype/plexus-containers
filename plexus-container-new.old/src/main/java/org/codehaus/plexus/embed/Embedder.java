@@ -39,23 +39,23 @@ public class Embedder
 {
     private String configuration;
 
-    private volatile URL configurationURL;
+    private URL configurationURL;
     
     /** Context properties */
     private Properties properties;
 
     private final DefaultPlexusContainer container;
 
-    private volatile boolean embedderStarted = false;
+    private boolean embedderStarted = false;
 
-    private volatile boolean embedderStopped = false;
+    private boolean embedderStopped = false;
 
     public Embedder()
     {
         container = new DefaultPlexusContainer();
     }
 
-    public PlexusContainer getContainer()
+    public synchronized PlexusContainer getContainer()
     {
         if ( !embedderStarted )
         {
@@ -92,12 +92,12 @@ public class Embedder
         getContainer().release( service );
     }
 
-    public void setClassLoader( ClassLoader classLoader )
+    public synchronized void setClassLoader( ClassLoader classLoader )
     {
         container.setClassLoader( classLoader );
     }
 
-    public void setConfiguration( String configuration )
+    public synchronized void setConfiguration( String configuration )
     {
         if ( embedderStarted || embedderStopped )
         {
@@ -107,7 +107,7 @@ public class Embedder
         this.configuration = configuration;
     }
 
-    public void setConfiguration( URL configuration )
+    public synchronized void setConfiguration( URL configuration )
     {
         if ( embedderStarted || embedderStopped )
         {
@@ -117,7 +117,7 @@ public class Embedder
         this.configurationURL = configuration;
     }
 
-    public void addContextValue( Object key, Object value )
+    public synchronized void addContextValue( Object key, Object value )
     {
         if ( embedderStarted || embedderStopped )
         {
@@ -128,17 +128,17 @@ public class Embedder
     }
 
     
-    public void setProperties( Properties properties )
+    public synchronized void setProperties( Properties properties )
     {
          this.properties = properties;
     }
     
-    public void setProperties( File file ) 
+    public synchronized void setProperties( File file ) 
     {
         properties = PropertyUtils.loadProperties( file );        
     }
     
-    protected void initializeContext()
+    protected synchronized void initializeContext()
     {
         Set keys = properties.keySet();
         for ( Iterator iter = keys.iterator(); iter.hasNext(); )
