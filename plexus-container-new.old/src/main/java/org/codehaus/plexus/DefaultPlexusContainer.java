@@ -26,6 +26,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Map;
 
 /** The main Plexus container component.
  *
@@ -109,6 +110,12 @@ public class DefaultPlexusContainer
         throws ComponentLookupException
     {
         return componentRepository.lookup( componentKey );
+    }
+
+    public Map lookupAll( String role )
+        throws ComponentLookupException
+    {
+        return componentRepository.lookupAll( role );
     }
 
     public Object lookup( String role, String id )

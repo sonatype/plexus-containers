@@ -7,6 +7,7 @@ package org.codehaus.plexus;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Map;
 
 import org.apache.avalon.framework.activity.Initializable;
 import org.apache.avalon.framework.activity.Startable;
@@ -72,11 +73,19 @@ public final class ComponentPlexusContainer
         {
             return myPlexus.lookup( role );
         }
+
         if ( parentPlexus != null )
         {
             return parentPlexus.lookup( role );
         }
+
         return myPlexus.lookup( role );
+    }
+
+    public Map lookupAll( String role )
+        throws ComponentLookupException
+    {
+        return null;
     }
 
     public Object lookup( String role, String id )
@@ -86,10 +95,12 @@ public final class ComponentPlexusContainer
         {
             return myPlexus.lookup( role, id );
         }
+
         if ( parentPlexus != null )
         {
             return parentPlexus.lookup( role, id );
         }
+
         return myPlexus.lookup( role, id );
     }
 
@@ -99,10 +110,12 @@ public final class ComponentPlexusContainer
         {
             return true;
         }
+
         if ( parentPlexus != null )
         {
             return parentPlexus.hasService( role );
         }
+
         return false;
     }
 
@@ -112,16 +125,19 @@ public final class ComponentPlexusContainer
         {
             return true;
         }
+
         if ( parentPlexus != null )
         {
             return parentPlexus.hasService( role, id );
         }
+
         return false;
     }
 
     public void release( Object service )
     {
         myPlexus.release( service );
+
         if ( parentPlexus != null )
         {
             parentPlexus.release( service );

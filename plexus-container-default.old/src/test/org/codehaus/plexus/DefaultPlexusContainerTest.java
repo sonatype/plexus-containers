@@ -7,6 +7,7 @@ import org.codehaus.plexus.util.TestThreadManager;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  *  @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -83,7 +84,7 @@ public class DefaultPlexusContainerTest
 
         assertEquals( true, container.hasService( ServiceB.ROLE ) );
 
-        assertEquals( true, container.hasService( ServiceC.ROLE + "only-instance" ) );
+        assertEquals( true, container.hasService( ServiceC.ROLE + "first-instance" ) );
 
         assertEquals( true, container.hasService( ServiceG.ROLE ) );
     }
@@ -208,13 +209,13 @@ public class DefaultPlexusContainerTest
         // ----------------------------------------------------------------------
 
         // Retrieve an manager of component c.
-        DefaultServiceC serviceC1 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "only-instance" );
+        DefaultServiceC serviceC1 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "first-instance" );
 
         // Make sure the component is alive.
         assertNotNull( serviceC1 );
 
         // Retrieve the only manager again from the component repository.
-        DefaultServiceC serviceC2 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "only-instance" );
+        DefaultServiceC serviceC2 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "first-instance" );
 
         // Make sure component is alive.
         assertNotNull( serviceC2 );
@@ -510,6 +511,20 @@ public class DefaultPlexusContainerTest
         assertEquals( true, serviceH.mo );
 
         container.release( serviceH );
+    }
+
+    public void testLookupAll()
+        throws Exception
+    {
+        Map components = container.lookupAll( ServiceC.ROLE );
+
+        assertNotNull( components );
+
+        assertEquals( 2, components.size() );
+
+        ServiceC component = (ServiceC) components.get( "first-instance" );
+
+        assertNotNull( component );
     }
 
     class SingletonComponentTestThread

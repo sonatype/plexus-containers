@@ -85,6 +85,8 @@ public class DefaultComponentRepository
 
     private ComponentManagerManager componentManagerManager = null;
 
+    private Map componentsByRole;
+
     /** Constructor. */
     public DefaultComponentRepository()
     {
@@ -93,6 +95,8 @@ public class DefaultComponentRepository
         componentManagers = Collections.synchronizedMap( new HashMap() );
 
         compManagersByCompClass = Collections.synchronizedMap( new HashMap() );
+
+        componentsByRole = Collections.synchronizedMap( new HashMap() );
     }
 
     // ----------------------------------------------------------------------
@@ -324,6 +328,24 @@ public class DefaultComponentRepository
             throw new ComponentRepositoryException( "Component descriptor validation failed: ", e );
         }
 
+        String roleHint = componentDescriptor.getRoleHint();
+
+        if ( roleHint != null )
+        {
+            String role = componentDescriptor.getRole();
+
+            Map map = (Map) componentsByRole.get( role );
+
+            if ( map == null )
+            {
+                map = new HashMap();
+
+                componentsByRole.put( role, map );
+            }
+
+            map.put( roleHint, componentDescriptor );
+        }
+
         getComponentDescriptors().put( componentDescriptor.getComponentKey(), componentDescriptor );
     }
 
@@ -426,6 +448,30 @@ public class DefaultComponentRepository
         }
 
         return component;
+    }
+
+    public synchronized Map lookupAll( String role )
+        throws ComponentLookupException
+    {
+        Map components = new HashMap();
+
+        Map componentDescriptors = (Map) componentsByRole.get( role );
+
+        if ( componentDescriptors != null )
+        {
+            // Now we have a map of component descriptors keyed by role hint.
+
+            for ( Iterator i = componentDescriptors.keySet().iterator(); i.hasNext(); )
+            {
+                String roleHint = (String) i.next();
+
+                Object component = lookup( role, roleHint );
+
+                components.put( roleHint, component );
+            }
+        }
+
+        return components;
     }
 
     public synchronized Object lookup( String role, String id )

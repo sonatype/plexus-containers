@@ -8,6 +8,8 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.logging.LoggerManager;
 
+import java.util.Map;
+
 /**
  * Like the avalon component manager. Central point to get the components from.
  *
@@ -23,6 +25,9 @@ public interface ComponentRepository
         throws Exception;
 
     Object lookup( String role )
+        throws ComponentLookupException;
+
+    Map lookupAll( String role )
         throws ComponentLookupException;
 
     Object lookup( String role, String id )

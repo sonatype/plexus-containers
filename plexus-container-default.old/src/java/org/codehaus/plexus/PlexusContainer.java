@@ -5,6 +5,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 
 import java.io.Reader;
+import java.util.Map;
 
 public interface PlexusContainer
 {
@@ -17,6 +18,9 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     Object lookup( String role, String id )
+        throws ComponentLookupException;
+
+    Map lookupAll( String role )
         throws ComponentLookupException;
 
     boolean hasService( String componentKey );

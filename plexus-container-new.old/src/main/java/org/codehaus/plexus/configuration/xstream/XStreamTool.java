@@ -1,6 +1,7 @@
 package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.alias.CannotResolveClassException;
 import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.alias.ElementMapper;
@@ -36,6 +37,11 @@ public class XStreamTool
         xstream.registerConverter( new CollectionConverter( classMapper ) );
 
         xstream.registerConverter( new ConfigurationConverter() );
+    }
+
+    public void registerConverter( Converter converter )
+    {
+        xstream.registerConverter( converter );
     }
 
     public void alias( String elementName, Class clazz )
