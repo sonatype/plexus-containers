@@ -36,8 +36,7 @@ public class PlexusTools
 
         xstreamTool.alias( "requirement", String.class );
 
-        ComponentDescriptor cd =
-            (ComponentDescriptor) xstreamTool.build( (PlexusConfiguration) configuration, ComponentDescriptor.class );
+        ComponentDescriptor cd = (ComponentDescriptor) xstreamTool.build( (PlexusConfiguration) configuration, ComponentDescriptor.class );
 
         return cd;
     }
