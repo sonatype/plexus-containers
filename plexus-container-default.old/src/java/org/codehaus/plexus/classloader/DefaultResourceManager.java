@@ -1,12 +1,12 @@
 package org.codehaus.plexus.classloader;
 
+import java.io.File;
+import java.io.InputStream;
+
+import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
 
 /** ClassLoading resource manager.
  *
@@ -19,7 +19,7 @@ public class DefaultResourceManager
     implements ResourceManager
 {
     /** The classloader to use for loading resources and classes. */
-    private PlexusClassLoader plexusClassLoader;
+    private ClassRealm classRealm;
 
     public DefaultResourceManager()
     {
@@ -29,41 +29,27 @@ public class DefaultResourceManager
     // Accessors
     // ----------------------------------------------------------------------
 
-    public void setClassLoader( ClassLoader classLoader )
+    public void setClassRealm( ClassRealm classRealm )
     {
-        plexusClassLoader = new PlexusClassLoader( classLoader );
+        this.classRealm = classRealm;
     }
-
-    /** Retrieve the resource-loading <code>ClassLoader</code>.
-     *
-     *  @return The class-loader.
+    
+    /**
+     * @return Returns the classRealm.
      */
-    public PlexusClassLoader getPlexusClassLoader()
+    public ClassRealm getClassRealm()
     {
-        if ( plexusClassLoader == null )
-        {
-            throw new IllegalStateException( "The resource manager's classloader cannot be null." );
-        }
-
-        return plexusClassLoader;
+        return classRealm;
     }
-
+    
     // ----------------------------------------------------------------------
     // Implementation
     // ----------------------------------------------------------------------
 
-    /**
-     * Get the available URLs from the underlying classloader.
-     */
-    public URL[] getURLs()
-    {
-        return getPlexusClassLoader().getURLs();
-    }
-
     /** Get a resource returned as a string. */
     public InputStream getResourceAsStream( String resource )
     {
-        return getPlexusClassLoader().getResourceAsStream( resource );
+        return getClassRealm().getClassLoader().getResourceAsStream( resource );
     }
 
     /** Perform configuration.
@@ -103,7 +89,7 @@ public class DefaultResourceManager
     public void addJarResource( File jar )
         throws Exception
     {
-        getPlexusClassLoader().addURL( jar.toURL() );
+        getClassRealm().addConstituent( jar.toURL() );
     }
 
     /**

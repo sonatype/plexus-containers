@@ -1,6 +1,7 @@
 package org.codehaus.plexus;
 
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.DuplicateRealmException;
 import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.classloader.DefaultResourceManager;
 import org.codehaus.plexus.classloader.ResourceManagerFactory;
@@ -421,7 +422,14 @@ public class DefaultPlexusContainer
     {
         if ( classLoader == null )
         {
-            throw new IllegalStateException( "This container must be assigned a ClassLoader." );
+            try
+            {
+                classLoader = getClassWorld().getRealm("core").getClassLoader();
+            }
+            catch (NoSuchRealmException e)
+            {
+                throw new IllegalStateException("There must be a core ClassWorlds realm.");
+            }
         }
 
         return classLoader;
@@ -621,7 +629,7 @@ public class DefaultPlexusContainer
         DefaultResourceManager rm =
             ResourceManagerFactory.create( getMergedConfiguration(),
                                            getLoggerManager(),
-                                           getClassLoader() );
+                                           getClassWorld().getRealm("core") );
 
         // This needs to be completely clarified. If the container becomes the boundary
         // and barrier between all behaviour in plexus then the subsystems like classworlds
@@ -629,10 +637,6 @@ public class DefaultPlexusContainer
         // and primitive components a la SOFA.
 
         setResourceManager( rm );
-
-        setClassLoader( rm.getPlexusClassLoader() );
-
-        Thread.currentThread().setContextClassLoader( getClassLoader() );
     }
 
     /**
@@ -722,6 +726,18 @@ public class DefaultPlexusContainer
 
     private ClassWorld getClassWorld()
     {
+        if ( classWorld == null )
+        {
+            classWorld = new ClassWorld();
+            
+            try
+            {
+                classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
+            }
+            catch (DuplicateRealmException e) {}
+
+            Thread.currentThread().setContextClassLoader( getClassLoader() );
+        }
         return classWorld;
     }
 
