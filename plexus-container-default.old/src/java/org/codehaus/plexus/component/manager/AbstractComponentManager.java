@@ -25,10 +25,6 @@ public abstract class AbstractComponentManager
         {
             ComponentManager componentManager = (ComponentManager) this.clone();
 
-            // This could serve as a location to initialize component managers.
-            // Was thinking here might be a good place to create the instance manager.
-            // The place to customize the prototypical component manager.
-
             return componentManager;
         }
         catch ( CloneNotSupportedException e )
