@@ -18,6 +18,12 @@
     <property name="foo" value="bar"/>
   </system-properties>
 
+  <component-discoverer-manager implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager">
+    <component-discoverers>
+      <component-discoverer implementation="org.codehaus.plexus.test.discovery.MavenPluginDiscoverer"/>
+    </component-discoverers>
+  </component-discoverer-manager>
+
   <lifecycle-handler-manager implementation="org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager">
     <lifecycle-handlers>
       <lifecycle-handler implementation="org.codehaus.plexus.test.SimpleLifecycleHandler">
