@@ -198,11 +198,14 @@ public class DAG implements Cloneable, Serializable
     /**
      * Return the list of labels of predessors in order decided by topological sort
      * 
-     * @param label
+     * @param label The label of the vertex whose predessors are serched
      * 
-     * @return The list of labels 
+     * @return The list of labels. Returned list contains also 
+     * the label passed as parameter to this method. This label should 
+     * always be the last item in the list.  
      */
-    public List getPredessorLabels( final String label )
+                    
+    public List getPredecessorLabels( final String label )
     {
         final Vertex vertex = getVertex( label );
         
