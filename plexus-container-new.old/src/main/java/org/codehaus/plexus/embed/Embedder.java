@@ -116,8 +116,7 @@ public class Embedder
     {
         if ( embedderStarted || embedderStopped )
         {
-            throw new IllegalStateException(
-                "Embedder has already been started" );
+            throw new IllegalStateException( "Embedder has already been started" );
         }
 
         container.addContextValue( key, value );

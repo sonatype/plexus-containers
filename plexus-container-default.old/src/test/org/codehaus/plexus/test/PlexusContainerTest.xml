@@ -2,7 +2,7 @@
   <logging>
     <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
     <logger>
-      <threshold>INFO</threshold>
+      <threshold>fatal</threshold>
     </logger>
   </logging>
   <components>
