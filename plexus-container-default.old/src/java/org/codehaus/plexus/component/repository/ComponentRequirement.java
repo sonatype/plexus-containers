@@ -65,5 +65,42 @@ public final class ComponentRequirement
                "}";
     }
 
+    /**
+     * 
+     */
+    public String getHumanReadableKey()
+    {
+        StringBuffer key = new StringBuffer();
+
+        key.append( "role: '");
+        
+        key.append( getRole() );
+
+        key.append( "'" );
+
+        if ( getRoleHint() != null )
+        {
+            key.append( ", role-hint: '" );
+
+            key.append( getRoleHint() );
+
+            key.append( "'. " );
+        }
+
+        if ( getFieldName() != null )
+        {
+            key.append( ", field name: '" );
+
+            key.append( getFieldName() );
+
+            key.append( "' " );
+        }
+        
+        String retValue = key.toString();
+        
+        return retValue;
+       
+    }
+
 
 }

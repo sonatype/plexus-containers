@@ -71,13 +71,13 @@ public class FieldComponentComposer extends AbstractComponentComposer
 
             if ( field.getType().isArray() )
             {
-                final Map dependencies = container.lookupMap( role );
+                final List dependencies = container.lookupList( role );
 
                 final Object[] array = ( Object[] ) Array.newInstance( field.getType(), dependencies.size() );
 
                 retValue = container.getComponentDescriptorList( role );
 
-                field.set( component, dependencies.entrySet().toArray( array ) );
+                field.set( component, dependencies.toArray( array ) );
             }
             else if ( Map.class.isAssignableFrom( field.getType() ) )
             {
@@ -89,11 +89,11 @@ public class FieldComponentComposer extends AbstractComponentComposer
             }
             else if ( List.class.isAssignableFrom( field.getType() ) )
             {
-                final Map dependencies = container.lookupMap( role );
+                final List dependencies = container.lookupList( role );
 
                 retValue = container.getComponentDescriptorList( role );
 
-                field.set( component, container.lookupList( role ) );
+                field.set( component, dependencies );
             }
             else if ( Set.class.isAssignableFrom( field.getType() ) )
             {
@@ -150,24 +150,16 @@ public class FieldComponentComposer extends AbstractComponentComposer
             }
             catch ( ClassNotFoundException e )
             {
-                final StringBuffer msg = new StringBuffer( "Component Composition failed. Requirment class: '" );
+                final StringBuffer msg = new StringBuffer( "Component Composition failed for component: ");
+                
+                msg.append( componentDescriptor.getHumanReadableKey() );
+                
+                msg.append( " Requirment class: '" );
 
                 msg.append( requirement.getRole() );
 
-                msg.append( "' not found. Component role: '" );
-
-                msg.append( componentDescriptor.getRole() );
-
-                msg.append( "'" );
-
-                if ( componentDescriptor.getRoleHint() != null )
-                {
-                    msg.append( ", role-hint: '" );
-
-                    msg.append( componentDescriptor.getRoleHint() );
-
-                    msg.append( "'" );
-                }
+                msg.append( "' not found." );
+                
                 throw new CompositionException( msg.toString() );
             }
 
@@ -212,21 +204,10 @@ public class FieldComponentComposer extends AbstractComponentComposer
 
             msg.append( fieldName );
 
-            msg.append( "' exists in component of role: '" );
-
-            msg.append( componentDescriptor.getRole() );
-
-            msg.append( "'" );
-
-            if ( componentDescriptor.getRoleHint() != null )
-            {
-                msg.append( " and role-hint: '" );
-
-                msg.append( componentDescriptor.getRoleHint() );
-
-                msg.append( "'" );
-            }
-
+            msg.append( "' exists in component: ");
+                
+            msg.append( componentDescriptor.getHumanReadableKey() );
+                
             throw new CompositionException( msg.toString() );
         }
 
@@ -285,21 +266,10 @@ public class FieldComponentComposer extends AbstractComponentComposer
 
             if ( componentDescriptor != null )
             {
-                msg.append( " Component role: '" );
+                msg.append( " Component: " );
 
-                msg.append( componentDescriptor.getRole() );
-
-                msg.append( "'" );
-
-                if ( componentDescriptor.getRoleHint() != null )
-                {
-                    msg.append( ", role-hint: '" );
-
-                    msg.append( componentDescriptor.getRoleHint() );
-
-                    msg.append( "'" );
-                }
-            }
+                msg.append( componentDescriptor.getHumanReadableKey() );
+            }            
 
             throw new CompositionException( msg.toString() );
         }

@@ -7,6 +7,6 @@ package org.codehaus.plexus.component.factory;
  *
  * @version $Id$
  */
-public class DefaultComponent
+public class ComponentImplA implements Component
 {
 }

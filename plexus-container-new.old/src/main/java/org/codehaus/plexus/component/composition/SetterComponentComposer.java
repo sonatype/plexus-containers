@@ -244,7 +244,7 @@ public class SetterComponentComposer extends AbstractComponentComposer
     {
 
         final String causeDescriprion = "Failed to assign requirment using Java Bean introspection mechanism." +
-                                        " No matching property was found in bean";
+                                        " No matching property was found in bean class";
 
         final String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
 
@@ -314,29 +314,7 @@ public class SetterComponentComposer extends AbstractComponentComposer
 
         if ( requirement != null )
         {
-            msg.append( "Failing requirement - role: '" );
-
-            msg.append( requirement.getRole() );
-
-            msg.append( "'" );
-
-            if ( requirement.getRoleHint() != null )
-            {
-                msg.append( ", role-hint: '" );
-
-                msg.append( requirement.getRoleHint() );
-
-                msg.append( "'. " );
-            }
-
-            if ( requirement.getFieldName() != null )
-            {
-                msg.append( ", field name: '" );
-
-                msg.append( requirement.getFieldName() );
-
-                msg.append( "'. " );
-            }
+            msg.append( "Failing requirement: " + requirement.getHumanReadableKey() );
         }
         if ( causeDescription != null )
         {

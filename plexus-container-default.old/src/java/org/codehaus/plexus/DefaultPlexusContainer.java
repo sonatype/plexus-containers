@@ -903,7 +903,7 @@ public class DefaultPlexusContainer
             componentFactory = componentFactoryManager.getDefaultComponentFactory();
         }
 
-        return componentFactory.newInstance( componentDescriptor.getImplementation(), getClassLoader() );
+        return componentFactory.newInstance( componentDescriptor, getClassLoader() );
     }
 
     public void composeComponent( Object component, ComponentDescriptor componentDescriptor )

@@ -58,6 +58,30 @@ public class ComponentDescriptor
         return getRole();
     }
 
+    public String getHumanReadableKey()
+    {
+        StringBuffer key = new StringBuffer();
+        
+        key.append(" role: '" + role + "'" );            
+            
+        key.append( ", implementation: '" + implementation  + "'" );
+            
+        if ( roleHint != null )
+        {
+            key.append( ", roleHint: '" + roleHint  + "'" );
+        }
+        
+        if ( alias != null )
+        {
+            key.append( ", alias: '" + alias  + "'" );
+        }
+        
+        String retValue = key.toString();
+        
+        return retValue;
+    }
+    
+    
     public String getAlias()
     {
         return alias;
