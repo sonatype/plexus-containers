@@ -96,7 +96,7 @@ public class PropertiesConfiguration
         throw new UnsupportedOperationException();
     }
 
-    public PlexusConfiguration getChild( int i )
+    public Configuration getChild( int i )
     {
         return null;
     }
@@ -170,7 +170,7 @@ public class PropertiesConfiguration
             return "unknown";
         }
 
-        public PlexusConfiguration getChild( int i )
+        public Configuration getChild( int i )
         {
             return null;
         }

@@ -1,9 +1,9 @@
 package org.codehaus.plexus.configuration.xstream.pipeline;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.xstream.XStreamTool;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.configuration.xstream.XStreamTool;
 
 import java.io.StringReader;
 
@@ -36,7 +36,7 @@ public class PipelineBuilderTest
 
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
-        PlexusConfiguration c = cb.parse( new StringReader( configuration ) );
+        Configuration c = cb.parse( new StringReader( configuration ) );
 
         Pipeline pipeline = (Pipeline) builder.build( c, Pipeline.class );
 

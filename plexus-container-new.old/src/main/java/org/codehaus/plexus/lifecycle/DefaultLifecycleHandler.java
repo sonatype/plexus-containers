@@ -1,7 +1,6 @@
 package org.codehaus.plexus.lifecycle;
 
 
-
 /** An Avalon component lifecycle handler.
  *
  *  The <code>AvalonLifecycleHandler</code> must have the following entities

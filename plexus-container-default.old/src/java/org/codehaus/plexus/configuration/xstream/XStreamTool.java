@@ -6,8 +6,8 @@ import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.alias.ElementMapper;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.objecttree.reflection.JavaReflectionObjectFactory;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
 import java.io.Reader;
@@ -57,7 +57,7 @@ public class XStreamTool
         return build( builder.parse( reader ), clazz );
     }
 
-    public Object build( PlexusConfiguration configuration, Class clazz )
+    public Object build( Configuration configuration, Class clazz )
         throws Exception
     {
         ConfigurationReader reader = new ConfigurationReader( configuration );
@@ -69,7 +69,7 @@ public class XStreamTool
         return object;
     }
 
-    public Object build( PlexusConfiguration configuration, Object root )
+    public Object build( Configuration configuration, Object root )
         throws Exception
     {
         ConfigurationReader reader = new ConfigurationReader( configuration );

@@ -1,10 +1,10 @@
 package org.codehaus.plexus;
 
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.lifecycle.phase.Mo;
-import org.codehaus.plexus.lifecycle.phase.Miny;
-import org.codehaus.plexus.lifecycle.phase.Meeny;
 import org.codehaus.plexus.lifecycle.phase.Eeny;
+import org.codehaus.plexus.lifecycle.phase.Meeny;
+import org.codehaus.plexus.lifecycle.phase.Miny;
+import org.codehaus.plexus.lifecycle.phase.Mo;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /** This component implements the custom lifecycle defined by the phases
  *

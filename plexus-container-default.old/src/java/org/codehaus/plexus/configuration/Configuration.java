@@ -114,11 +114,11 @@ public interface Configuration
 
     // Additional stuff for hierarchy
 
-    PlexusConfiguration getParent();
+    Configuration getParent();
 
-    void setParent( PlexusConfiguration configuration );
+    void setParent( Configuration configuration );
 
     int getChildCount();
 
-    PlexusConfiguration getChild( int i );
+    Configuration getChild( int i );
 }

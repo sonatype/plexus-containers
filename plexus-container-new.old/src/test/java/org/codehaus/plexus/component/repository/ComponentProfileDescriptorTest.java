@@ -5,11 +5,11 @@ import junit.framework.TestCase;
 /**
  */
 public class ComponentProfileDescriptorTest
-     extends TestCase
+    extends TestCase
 {
-    public ComponentProfileDescriptorTest(String name)
+    public ComponentProfileDescriptorTest( String name )
     {
-        super(name);
+        super( name );
     }
 
     public void testComponentProfileDescriptor()

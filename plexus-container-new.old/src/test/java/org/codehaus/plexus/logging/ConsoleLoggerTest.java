@@ -1,15 +1,14 @@
 package org.codehaus.plexus.logging;
 
 import junit.framework.TestCase;
-
-import java.io.PrintStream;
-import java.io.ByteArrayOutputStream;
-
 import org.codehaus.plexus.util.StringUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$

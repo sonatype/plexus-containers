@@ -8,7 +8,6 @@
 package org.codehaus.plexus.logging;
 
 
-
 /**
  *
  * @author <a href="mailto:peter at realityforge.org">Peter Donald</a>

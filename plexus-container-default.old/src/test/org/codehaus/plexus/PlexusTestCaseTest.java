@@ -3,11 +3,10 @@ package org.codehaus.plexus;
 import junit.framework.TestCase;
 
 import java.io.File;
-import java.net.URL;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
@@ -33,7 +32,7 @@ public class PlexusTestCaseTest
 
             fail( "IllegalStateException should be thrown." );
         }
-        catch( IllegalStateException e )
+        catch ( IllegalStateException e )
         {
             // do nothing
         }
@@ -44,7 +43,7 @@ public class PlexusTestCaseTest
 
             fail( "Exception should be thrown." );
         }
-        catch( Exception e )
+        catch ( Exception e )
         {
             // do nothing.
         }

@@ -28,7 +28,7 @@ public class ContainerTest
 
             fail( "IllegalStateException should be thrown." );
         }
-        catch( IllegalStateException e )
+        catch ( IllegalStateException e )
         {
             // do nothing.0
         }

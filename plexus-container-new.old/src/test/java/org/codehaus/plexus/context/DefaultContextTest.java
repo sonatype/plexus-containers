@@ -92,7 +92,7 @@ public class DefaultContextTest
         {
             context.get( "name" );
         }
-        catch( ContextException e )
+        catch ( ContextException e )
         {
             // do nothing
         }

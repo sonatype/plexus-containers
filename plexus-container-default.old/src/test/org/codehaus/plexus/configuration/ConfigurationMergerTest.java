@@ -25,10 +25,10 @@ public class ConfigurationMergerTest
     private String layerXml;
 
     /**  Base configuration. */
-    private PlexusConfiguration base;
+    private Configuration base;
 
     /** Parent Configuration. */
-    private PlexusConfiguration layer;
+    private Configuration layer;
 
     public ConfigurationMergerTest( String s )
     {
@@ -69,7 +69,7 @@ public class ConfigurationMergerTest
     public void testWithHelper()
         throws Exception
     {
-        PlexusConfiguration c = ConfigurationTestHelper.getTestConfiguration();
+        Configuration c = ConfigurationTestHelper.getTestConfiguration();
 
         Configuration cc = ConfigurationMerger.merge( new DefaultConfiguration( "" ), c );
 

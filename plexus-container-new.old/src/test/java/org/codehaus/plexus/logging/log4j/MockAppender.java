@@ -27,9 +27,9 @@ class MockAppender
     {
         m_output = true;
         m_priority = event.getLevel();
-        m_message = (String)event.getMessage();
+        m_message = (String) event.getMessage();
         final ThrowableInformation information = event.getThrowableInformation();
-        if( null != information )
+        if ( null != information )
         {
             m_throwable = information.getThrowable();
         }

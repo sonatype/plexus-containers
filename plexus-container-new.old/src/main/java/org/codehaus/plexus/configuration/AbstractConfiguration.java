@@ -12,7 +12,7 @@ package org.codehaus.plexus.configuration;
  * @todo remove all xml-centric notions from here.
  */
 public abstract class AbstractConfiguration
-    implements PlexusConfiguration
+    implements Configuration
 {
     protected abstract String getPrefix()
         throws ConfigurationException;
@@ -350,14 +350,14 @@ public abstract class AbstractConfiguration
         }
     }
 
-    PlexusConfiguration parent;
+    Configuration parent;
 
-    public PlexusConfiguration getParent()
+    public Configuration getParent()
     {
         return parent;
     }
 
-    public void setParent( PlexusConfiguration parent )
+    public void setParent( Configuration parent )
     {
         this.parent = parent;
     }

@@ -1,14 +1,13 @@
 package org.codehaus.plexus.classloader;
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.logging.ConsoleLogger;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
-
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
-import org.codehaus.plexus.logging.ConsoleLogger;
 
 /**
  *
@@ -79,10 +78,10 @@ public class DefaultResourceManagerTest
         XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
 
         String xml = "<resources>" +
-                       "<jar-repository>" + repo.getPath() + "</jar-repository>" +
-                       "<jar-repository>non-existent-repo</jar-repository>" +
-                       "<nothing>nothing</nothing>" +
-                     "</resources>";
+            "<jar-repository>" + repo.getPath() + "</jar-repository>" +
+            "<jar-repository>non-existent-repo</jar-repository>" +
+            "<nothing>nothing</nothing>" +
+            "</resources>";
 
         org.codehaus.plexus.configuration.Configuration configuration = builder.parse( new StringReader( xml ) );
 

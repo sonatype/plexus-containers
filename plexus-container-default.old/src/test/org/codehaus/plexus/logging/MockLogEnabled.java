@@ -6,6 +6,7 @@
  * with this distribution in the LICENSE.txt file.
  */
 package org.codehaus.plexus.logging;
+
 /**
  *
  * @author <a href="mailto:peter at realityforge.org">Peter Donald</a>

@@ -1,8 +1,8 @@
 package org.codehaus.plexus.logging.log4j;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 import org.codehaus.plexus.logging.AbstractLoggerManagerTest;
 import org.codehaus.plexus.logging.LoggerManager;

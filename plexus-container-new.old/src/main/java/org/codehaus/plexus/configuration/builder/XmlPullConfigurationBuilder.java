@@ -1,7 +1,7 @@
 package org.codehaus.plexus.configuration.builder;
 
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -22,14 +22,14 @@ public class XmlPullConfigurationBuilder
      * @return
      * @throws java.lang.Exception
      */
-    public PlexusConfiguration parse( Reader reader )
+    public Configuration parse( Reader reader )
         throws Exception
     {
         List elements = new ArrayList();
 
         List values = new ArrayList();
 
-        PlexusConfiguration configuration = null;
+        Configuration configuration = null;
 
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 

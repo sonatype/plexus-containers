@@ -3,14 +3,14 @@ package org.codehaus.plexus.component.repository;
 import junit.framework.TestCase;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.JavaComponentFactory;
-import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ClassicSingletonComponentManager;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
+import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.AbstractLifecycleHandler;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
 
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$

@@ -6,7 +6,6 @@ import com.thoughtworks.xstream.objecttree.ObjectTree;
 import com.thoughtworks.xstream.xml.XMLReader;
 import com.thoughtworks.xstream.xml.XMLWriter;
 import org.codehaus.plexus.configuration.Configuration;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 public class ConfigurationConverter
     implements Converter
@@ -25,7 +24,7 @@ public class ConfigurationConverter
     {
         ConfigurationReader reader = (ConfigurationReader) xmlReader;
 
-        PlexusConfiguration configuration = (PlexusConfiguration) reader.peek();
+        Configuration configuration = (Configuration) reader.peek();
 
         while ( xmlReader.nextChild() )
         {

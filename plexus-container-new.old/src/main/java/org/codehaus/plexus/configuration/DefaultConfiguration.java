@@ -209,9 +209,9 @@ public class DefaultConfiguration
         }
     }
 
-    public PlexusConfiguration getChild( int i )
+    public Configuration getChild( int i )
     {
-        return (PlexusConfiguration) children.get( i );
+        return (Configuration) children.get( i );
     }
 
     /**
@@ -290,7 +290,7 @@ public class DefaultConfiguration
         }
 
         // Hack until we alter the configuration interface and move away from avalon.
-        ( (PlexusConfiguration) configuration ).setParent( this );
+        ( (Configuration) configuration ).setParent( this );
 
         children.add( configuration );
     }

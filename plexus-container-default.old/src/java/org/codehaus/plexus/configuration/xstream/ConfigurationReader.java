@@ -1,8 +1,8 @@
 package org.codehaus.plexus.configuration.xstream;
 
 import com.thoughtworks.xstream.xml.XMLReader;
+import org.codehaus.plexus.configuration.Configuration;
 import org.codehaus.plexus.configuration.ConfigurationException;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.LinkedList;
 
@@ -16,11 +16,11 @@ import java.util.LinkedList;
 public class ConfigurationReader
     implements XMLReader
 {
-    private PlexusConfiguration current;
+    private Configuration current;
 
     private LinkedList pointers = new LinkedList();
 
-    public ConfigurationReader( PlexusConfiguration configuration )
+    public ConfigurationReader( Configuration configuration )
     {
         current = configuration;
 

@@ -2,10 +2,7 @@ package org.codehaus.plexus.component.repository;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.PlexusTools;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.composition.CompositionResolver;
 
-import java.util.List;
 import java.util.Set;
 
 /**

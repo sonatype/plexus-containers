@@ -1,17 +1,12 @@
 package org.codehaus.plexus.configuration.xstream;
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.configuration.Configuration;
+import org.codehaus.plexus.configuration.DefaultConfiguration;
+import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
 
 import java.io.StringReader;
 import java.util.List;
-
-import org.codehaus.plexus.configuration.xstream.Element;
-import org.codehaus.plexus.configuration.xstream.Message;
-import org.codehaus.plexus.configuration.xstream.XStreamTool;
-import org.codehaus.plexus.configuration.builder.XmlPullConfigurationBuilder;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.DefaultConfiguration;
-import org.codehaus.plexus.configuration.Configuration;
 
 /**
  *
@@ -60,7 +55,7 @@ public class XStreamToolTest
 
         XmlPullConfigurationBuilder cb = new XmlPullConfigurationBuilder();
 
-        PlexusConfiguration c = cb.parse( new StringReader( configuration ) );
+        Configuration c = cb.parse( new StringReader( configuration ) );
 
         Message message = (Message) builder.build( c, Message.class );
 
@@ -154,9 +149,9 @@ public class XStreamToolTest
 
         assertEquals( "bar", c.getChild( "foo" ).getValue() );
 
-        assertEquals( 1, c.getChild( "handlers").getChild( "one" ).getValueAsInteger() );
+        assertEquals( 1, c.getChild( "handlers" ).getChild( "one" ).getValueAsInteger() );
 
-        assertEquals( 2, c.getChild( "handlers").getChild( "two" ).getValueAsInteger() );
+        assertEquals( 2, c.getChild( "handlers" ).getChild( "two" ).getValueAsInteger() );
 
         assertEquals( "muckraker", person.getOccupation() );
     }
