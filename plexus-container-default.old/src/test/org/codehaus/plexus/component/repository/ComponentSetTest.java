@@ -19,7 +19,7 @@ public class ComponentSetTest
     public void testSimpleComponentResolution()
         throws Exception
     {
-        String cc1 =
+        String xml =
             "<component-set>" +
             "  <components>" +
             "    <component>" +
@@ -45,7 +45,7 @@ public class ComponentSetTest
             "  </dependencies>" +
             "</component-set>";
 
-        ComponentSet cs = PlexusTools.buildComponentSet( PlexusTools.buildConfiguration( cc1 ) );
+        ComponentSet cs = PlexusTools.buildComponentSet( PlexusTools.buildConfiguration( xml ) );
 
         ComponentDescriptor c1 = (ComponentDescriptor) cs.getComponents().get( 0 );
 
