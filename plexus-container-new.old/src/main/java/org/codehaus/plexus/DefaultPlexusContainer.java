@@ -557,7 +557,13 @@ public class DefaultPlexusContainer
 
             String roleHint = loadOnStartComponents[i].getChild( "role-hint" ).getValue();
 
-            getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
+            if ( role == null )
+                throw new PlexusConfigurationException( "Missing 'role' element from load-on-start." );
+
+            if ( roleHint == null )
+                getLogger().info( "Loading on start [role]: " + "[" + role + "]" );
+            else
+                getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
 
             try
             {
