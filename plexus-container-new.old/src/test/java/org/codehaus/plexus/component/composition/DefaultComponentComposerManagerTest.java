@@ -35,7 +35,7 @@ public class DefaultComponentComposerManagerTest extends PlexusTestCase
 
             final ComponentC componentC = componentB.getComponentC();
 
-            assertNotNull( componentB );
+            assertNotNull( componentC );
         }
         catch ( Exception e )
         {
