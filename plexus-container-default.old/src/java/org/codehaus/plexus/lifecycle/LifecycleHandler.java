@@ -2,7 +2,6 @@ package org.codehaus.plexus.lifecycle;
 
 
 import org.codehaus.plexus.component.manager.ComponentManager;
-import org.codehaus.plexus.logging.Logger;
 
 import java.util.Map;
 
@@ -36,6 +35,4 @@ public interface LifecycleHandler
 
     void initialize()
         throws Exception;
-
-    void enableLogging( Logger logger );
 }

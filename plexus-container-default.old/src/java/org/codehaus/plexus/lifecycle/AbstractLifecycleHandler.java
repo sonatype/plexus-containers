@@ -2,7 +2,6 @@ package org.codehaus.plexus.lifecycle;
 
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.phase.Phase;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractLifecycleHandler
-    extends AbstractLogEnabled
     implements LifecycleHandler
 {
     private String id = null;
