@@ -6,7 +6,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 

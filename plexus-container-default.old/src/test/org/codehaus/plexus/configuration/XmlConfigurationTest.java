@@ -51,7 +51,7 @@
 package org.codehaus.plexus.configuration;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.component.repository.io.XmlPlexusConfiguration;
 
 /**
  * Test the basic public methods of DefaultConfiguration.

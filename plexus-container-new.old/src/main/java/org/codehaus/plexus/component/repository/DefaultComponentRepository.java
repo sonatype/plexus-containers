@@ -10,7 +10,7 @@ import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**

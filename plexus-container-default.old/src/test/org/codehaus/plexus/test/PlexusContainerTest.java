@@ -1,26 +1,21 @@
 package org.codehaus.plexus.test;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
-
 import junit.framework.TestCase;
-
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.test.discovery.MavenPlugin;
-import org.codehaus.plexus.test.discovery.MockMavenPlugin;
-import org.codehaus.plexus.test.discovery.PluginManager;
 import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
 import org.codehaus.plexus.util.AbstractTestThread;
 import org.codehaus.plexus.util.TestThreadManager;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
 
 public class PlexusContainerTest
     extends TestCase
@@ -498,33 +493,5 @@ public class PlexusContainerTest
         DiscoveredComponent discoveredComponent = (DiscoveredComponent) container.lookup( DiscoveredComponent.ROLE );
 
         assertNotNull( discoveredComponent );
-    }
-
-    //!! I now am using a plexus component in plexus, the artifact resolver, and it's components.xml
-    //   is intefering with this test ...
-    public void xtestLookupOfComponentThatShouldBeDiscoveredWithAUserSpecifiedComponentDiscoverer()
-        throws Exception
-    {
-        MavenPlugin mavenPlugin = (MavenPlugin) container.lookup( MavenPlugin.ROLE, "mocky" );
-
-        assertNotNull( mavenPlugin );
-
-        PluginManager pluginManager = (PluginManager) container.lookup( PluginManager.ROLE );
-
-        List components = pluginManager.getComponents();
-
-        assertNotNull( components );
-
-        assertEquals( 2, components.size() );
-
-        ComponentDescriptor descriptor = (ComponentDescriptor)components.get( 0 );
-
-        assertEquals( MavenPlugin.class.getName(), descriptor.getRole() );
-
-        assertEquals( MockMavenPlugin.class.getName(), descriptor.getImplementation() );
-
-        descriptor = (ComponentDescriptor)components.get( 1 );
-
-        assertEquals( DiscoveredComponent.class.getName(), descriptor.getRole() );
     }
 }

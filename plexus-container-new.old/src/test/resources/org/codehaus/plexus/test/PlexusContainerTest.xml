@@ -19,6 +19,7 @@
   </system-properties>
 
   <component-discoverer-manager implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager">
+    <!--
     <listeners>
       <listener implementation="org.codehaus.plexus.component.discovery.DiscoveryListenerDescriptor">
         <role>org.codehaus.plexus.test.discovery.PluginManager</role>
@@ -27,6 +28,7 @@
     <component-discoverers>
       <component-discoverer implementation="org.codehaus.plexus.test.discovery.MavenPluginDiscoverer"/>
     </component-discoverers>
+    -->
   </component-discoverer-manager>
 
   <lifecycle-handler-manager implementation="org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager">

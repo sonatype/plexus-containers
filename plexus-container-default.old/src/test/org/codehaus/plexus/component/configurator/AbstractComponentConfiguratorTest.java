@@ -3,8 +3,9 @@ package org.codehaus.plexus.component.configurator;
 import junit.framework.TestCase;
 import junit.framework.Assert;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
 
 import java.io.StringReader;
 import java.util.List;

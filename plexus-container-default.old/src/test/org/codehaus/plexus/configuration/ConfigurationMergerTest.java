@@ -5,7 +5,8 @@ import junit.framework.TestCase;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.codehaus.plexus.configuration.xml.xstream.PlexusTools;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
 
 /**
  *
