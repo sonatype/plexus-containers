@@ -1,7 +1,6 @@
 package org.codehaus.plexus.lifecycle;
 
 import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.codehaus.plexus.lifecycle.phase.Phase;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.component.manager.ComponentManager;
