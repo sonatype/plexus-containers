@@ -230,6 +230,12 @@ public class PlexusTestCase
         return lookup( componentKey, id );
     }
 
+    protected void release( Object component )
+        throws Exception
+    {
+        container.getComponentRepository().release( component );
+    }
+
     // Some convenience methods for retrieving files in tests.
 
     /**
