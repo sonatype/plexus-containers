@@ -47,6 +47,10 @@ public class ComponentDescriptorBuilder
     {
         ComponentDescriptor componentDescriptor = new ComponentDescriptor();
 
+        String r = configuration.getChild( ROLE ).getValue();
+
+        System.out.println( "role = " + r );
+
         componentDescriptor.setRole( configuration.getChild( ROLE ).getValue() );
 
         componentDescriptor.setRoleHint( configuration.getChild( ROLE_HINT ).getValue( null ) );

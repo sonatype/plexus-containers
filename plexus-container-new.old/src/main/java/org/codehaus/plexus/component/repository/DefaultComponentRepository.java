@@ -7,9 +7,11 @@ import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
+import org.codehaus.plexus.configuration.ObjectBuilder;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.lifecycle.LifecycleHandlerFactory;
-import org.codehaus.plexus.lifecycle.LifecycleHandlerHousing;
+import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -44,12 +46,6 @@ public class DefaultComponentRepository
 
     /** Instance managers tag. */
     private static String INSTANCE_MANAGERS = "instance-managers";
-
-    /** Lifecycle handler tag. */
-    private static String LIFECYCLE_HANDLER = "lifecycle-handler";
-
-    /** Lifecycle handlers tag. */
-    private static String LIFECYCLE_HANDLERS = "lifecycle-handlers";
 
     // ----------------------------------------------------------------------
     //  Instance Members
@@ -87,14 +83,8 @@ public class DefaultComponentRepository
      * by instantiation strategy*/
     private Map componentManagerDescriptors;
 
-    /** Lifecycle handlers. */
-    private Map lifecycleHandlers;
-
     /** Default instantiation strategy. */
     private String defaultInstantiationStrategy;
-
-    /** Default lifecycle handler. */
-    private LifecycleHandler defaultLifecycleHandler;
 
     /**
      * Object to lock when creating a new component manager during
@@ -103,14 +93,9 @@ public class DefaultComponentRepository
      */
     private Object lookupLock = new Object();
 
-    /**
-     * ServiceManager given to InstanceManagers if they need access to
-     * other components. Care must be taken no circular dependencies
-     * are created.
-     */
-    //private ServiceManager service;
-
     private ComponentDescriptorBuilder componentDescriptorBuilder;
+
+    private LifecycleHandlerManager lifecycleHandlerManager = null;
 
     /** Constructor. */
     public DefaultComponentRepository()
@@ -122,8 +107,6 @@ public class DefaultComponentRepository
         componentManagers = Collections.synchronizedMap( new HashMap() );
 
         compManagersByCompClass = Collections.synchronizedMap( new HashMap() );
-
-        lifecycleHandlers = new HashMap();
 
         componentDescriptorBuilder = new ComponentDescriptorBuilder();
     }
@@ -155,16 +138,10 @@ public class DefaultComponentRepository
      * @see org.codehaus.plexus.component.repository.ComponentRepository#getDefaultLifecycleHandler()
      */
     public LifecycleHandler getDefaultLifecycleHandler()
-    {
-        return defaultLifecycleHandler;
-    }
+        throws UndefinedLifecycleHandlerException
 
-    /**
-     * @return
-     */
-    Context getContext()
     {
-        return context;
+        return lifecycleHandlerManager.getDefaultLifecycleHandler();
     }
 
     /**
@@ -183,18 +160,7 @@ public class DefaultComponentRepository
     public LifecycleHandler getLifecycleHandler( String id )
         throws UndefinedLifecycleHandlerException
     {
-        LifecycleHandlerHousing h = null;
-
-        if ( id != null )
-        {
-            h = (LifecycleHandlerHousing) lifecycleHandlers.get( id );
-        }
-
-        if ( h == null )
-        {
-            throw new UndefinedLifecycleHandlerException( "No LifecycleHandler defined for id: " + id );
-        }
-        return h.getHandler();
+        return lifecycleHandlerManager.getLifecycleHandler( id );
     }
 
     protected Configuration getConfiguration()
@@ -253,7 +219,7 @@ public class DefaultComponentRepository
     // ----------------------------------------------------------------------
 
     /**
-     * @see org.codehaus.plexus.component.repository.ComponentRepository#contextualize(org.apache.avalon.framework.context.Context)
+     * @see ComponentRepository#contextualize(org.apache.avalon.framework.context.Context)
      */
     public void contextualize( Context context )
     {
@@ -276,7 +242,7 @@ public class DefaultComponentRepository
     public void initialize()
         throws Exception
     {
-        initializeLifecycleHandlers();
+        initializeLifecycleHandlerManager();
 
         initializeComponentManagers();
 
@@ -286,77 +252,18 @@ public class DefaultComponentRepository
     /**
      * Adds all the lifecycle handlers and initializes them. Sets up the default lifecycle handler
      */
-    private void initializeLifecycleHandlers()
+    private void initializeLifecycleHandlerManager()
         throws Exception
     {
-        String defaultHandlerId = getConfiguration().getChild( LIFECYCLE_HANDLERS ).getAttribute( "default", null );
+        ObjectBuilder builder = new ObjectBuilder();
 
-        if ( defaultHandlerId == null )
-        {
-            throw new ConfigurationException( "No default lifecycle handler defined" );
-        }
+        builder.alias( "lifecycle-handler-manager", DefaultLifecycleHandlerManager.class );
 
-        Configuration[] configs = getConfiguration().getChild( LIFECYCLE_HANDLERS ).getChildren( LIFECYCLE_HANDLER );
+        Configuration c = getConfiguration().getChild( "lifecycle-handler-manager" );
 
-        for ( int i = 0; i < configs.length; i++ )
-        {
-            addLifecycleHandlerHousing( configs[i], false );
-        }
+        lifecycleHandlerManager = (LifecycleHandlerManager) builder.build( (PlexusConfiguration) c, DefaultLifecycleHandlerManager.class );
 
-        //grab the default LifecycleHandler. This is the one used when components don't specify
-        //one
-        LifecycleHandlerHousing housing = (LifecycleHandlerHousing) lifecycleHandlers.get( defaultHandlerId );
-
-        if ( housing == null )
-        {
-            throw new ConfigurationException(
-                "The default LifecycleHandler is specified as: "
-                + defaultHandlerId
-                + " but no LifecycleHandler"
-                + " of this id is defined" );
-
-        }
-
-        defaultLifecycleHandler = housing.getHandler();
-
-        getLogger().info( "Default LifecycleHandler id is set to: '" + defaultHandlerId + "'" );
-    }
-
-    /**
-     * Add a LifecycleHandler to this container.
-     *
-     * @param config
-     * @param ignoreDuplicates if duplicate handlers should be quitely ignored
-     * @throws Exception
-     */
-    void addLifecycleHandlerHousing( Configuration config, boolean ignoreDuplicates )
-        throws Exception
-    {
-        LifecycleHandlerHousing housing =
-            LifecycleHandlerFactory.createLifecycleHandlerHousing( config,
-                                                                   getComponentLogManager(),
-                                                                   getClassLoader(),
-                                                                   getContext(),
-                                                                   this );
-
-        if ( !lifecycleHandlers.containsKey( housing.getId() ) )
-        {
-            getLogger().info(
-                "Adding Lifecyclehandler. id="
-                + housing.getId()
-                + ", impl="
-                + housing.getImplementation() );
-
-            lifecycleHandlers.put( housing.getId(), housing );
-        }
-        else
-        {
-            if ( ignoreDuplicates == false )
-            {
-                throw new ConfigurationException(
-                    "Duplicate Lifecycle handler. Duplicate id: " + housing.getId() );
-            }
-        }
+        lifecycleHandlerManager.initialize( loggerManager, context, this );
     }
 
     /**
@@ -379,7 +286,9 @@ public class DefaultComponentRepository
         defaultInstantiationStrategy = getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute(
             "default", getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute( "default", null ) );
 
-        if ( defaultInstantiationStrategy == null || defaultInstantiationStrategy.length() == 0 )
+        if ( defaultInstantiationStrategy == null
+             ||
+             defaultInstantiationStrategy.length() == 0 )
         {
             throw new ConfigurationException( "No default instantiation strategy defined" );
         }
@@ -446,19 +355,19 @@ public class DefaultComponentRepository
                 + descriptor.getRole() );
         }
 
-        LifecycleHandlerHousing lhh;
-        LifecycleHandler h;
-
         String id = descriptor.getLifecycleHandler();
 
-        if ( id != null )
+        LifecycleHandler h;
+
+        System.out.println( "lifecycleHandlerManager = " + lifecycleHandlerManager );
+
+        if ( id == null )
         {
-            lhh = (LifecycleHandlerHousing) lifecycleHandlers.get( id );
-            h = lhh.getHandler();
+            h = lifecycleHandlerManager.getDefaultLifecycleHandler();
         }
         else
         {
-            h = defaultLifecycleHandler;
+            h = lifecycleHandlerManager.getLifecycleHandler( id );
         }
 
         ComponentManager componentManager = ComponentManagerFactory.create( componentManagerDescriptor,

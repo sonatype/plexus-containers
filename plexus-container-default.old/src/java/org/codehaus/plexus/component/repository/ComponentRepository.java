@@ -108,5 +108,6 @@ public interface ComponentRepository
      *
      * @return
      */
-    LifecycleHandler getDefaultLifecycleHandler();
+    LifecycleHandler getDefaultLifecycleHandler()
+        throws UndefinedLifecycleHandlerException;
 }
