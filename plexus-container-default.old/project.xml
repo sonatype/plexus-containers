@@ -15,21 +15,21 @@
   <inceptionYear>2001</inceptionYear>
   <package>org.codehaus.plexus</package>
   <logo>/images/plexus-logo.gif</logo>
-  
+
   <!-- Gump integration -->
   <gumpRepositoryId>jakarta</gumpRepositoryId>
 
   <description>
   </description>
-  
+
   <shortDescription></shortDescription>
 
   <url>http://plexus.codehaus.org</url>
   <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10080</issueTrackingUrl>
- 
+
   <siteAddress>plexus.codehaus.org</siteAddress>
   <siteDirectory>/www/plexus.codehaus.org</siteDirectory>
-  
+
   <repository>
     <connection>scm:cvs:pserver:anonymous@cvs.codehaus.org:/scm/cvspublic:plexus/plexus-container</connection>
     <url>http://cvs.codehaus.org/viewcvs.cgi/plexus/?root=codehaus</url>
@@ -112,21 +112,21 @@
       </roles>
     </developer>
   </developers>
-  
+
   <dependencies>
-    
+
     <!--
      |
-     | Avalon Dependencies. 
+     | Avalon Dependencies.
      |
      -->
-    
+
     <dependency>
       <groupId>avalon</groupId>
       <artifactId>avalon-framework-api</artifactId>
       <version>4.1.4</version>
     </dependency>
-    
+
     <dependency>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
@@ -134,7 +134,7 @@
     </dependency>
 
 
-    <!-- 
+    <!--
      |
      | Plexus Dependencies.
      |
@@ -146,7 +146,7 @@
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
     </dependency>
-    
+
     <!-- Launcher -->
     <dependency>
       <groupId>classworlds</groupId>
@@ -159,7 +159,7 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.6</version>
-    </dependency>   
+    </dependency>
 
     <dependency>
       <groupId>commons-graph</groupId>
@@ -189,7 +189,10 @@
       <includes>
         <include>**/*Test.java</include>
       </includes>
-      
+      <excludes>
+        <exclude>org/codehaus/plexus/logging/AbstractLoggerManagerTest.java</exclude>
+      </excludes>
+
       <resources>
         <resource>
           <directory>${basedir}/src/test</directory>
@@ -201,7 +204,7 @@
         </resource>
       </resources>
     </unitTest>
-    
+
     <resources>
       <resource>
         <directory>${basedir}/src/conf</directory>
@@ -213,7 +216,7 @@
     </resources>
 
   </build>
-  
+
   <reports>
     <report>maven-jdepend-plugin</report>
     <report>maven-checkstyle-plugin</report>
@@ -234,6 +237,6 @@
     <report>maven-multiproject-plugin</report>
     -->
   </reports>
-  
+
 </project>
 
