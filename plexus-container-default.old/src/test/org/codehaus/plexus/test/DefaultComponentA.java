@@ -3,10 +3,17 @@ package org.codehaus.plexus.test;
 public class DefaultComponentA
     implements ComponentA
 {
-    private DefaultComponentB componentB;
+    private ComponentB componentB;
+
+    private ComponentC componentC;
 
     public ComponentB getComponentB()
     {
         return componentB;
+    }
+
+    public ComponentC getComponentC()
+    {
+        return componentC;
     }
 }

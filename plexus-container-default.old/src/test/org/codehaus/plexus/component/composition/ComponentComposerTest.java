@@ -39,7 +39,7 @@ public class ComponentComposerTest
         }
         catch ( CompositionException e )
         {
-            assertEquals( "No field which is compatible in component object.", e.getMessage() );
+            assertTrue( e.getMessage().startsWith( "No field which is compatible in component object:" ) );
         }
     }
 

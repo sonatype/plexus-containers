@@ -80,5 +80,9 @@ public class PlexusContainerTest
         ComponentB componentB = componentA.getComponentB();
 
         assertNotNull( componentB );
+
+        ComponentC componentC = componentA.getComponentC();
+
+        assertNotNull( componentC );
     }
 }
