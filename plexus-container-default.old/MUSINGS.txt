@@ -11,9 +11,6 @@ are very detailed and specific, while others are more general.  -pete
   set/getDefaultConfiguration(), but PlexusContainer does not.  Is
   this intentional?
 
-- Everything that takes the two Configurations should be simplified
-  such that a Configuration can be nested in one Configuration.
-
 - Whats the deal with ResourceManager not having an interface defined
   and the use of DefaultResourceManager everywhere?  If there is no
   interface, might as well ditch it.  Also, based on the current
