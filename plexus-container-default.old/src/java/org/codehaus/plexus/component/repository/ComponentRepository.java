@@ -16,8 +16,7 @@ import org.codehaus.plexus.logging.LoggerManager;
  */
 public interface ComponentRepository
 {
-    void configure( Configuration defaultConfiguration,
-                    Configuration configuration );
+    void configure( Configuration configuration );
 
     void contextualize( Context context );
 

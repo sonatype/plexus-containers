@@ -9,36 +9,29 @@ import org.codehaus.plexus.logging.LoggerManager;
 public class ComponentRepositoryFactory
     extends AbstractPlexusFactory
 {
-    public static ComponentRepository create( Configuration defaultConfiguration,
-                                              Configuration configuration,
+    public static ComponentRepository create( Configuration configuration,
                                               LoggerManager loggerManager,
                                               PlexusContainer container,
                                               ClassLoader classLoader,
                                               Context context )
         throws Exception
     {
-        String implementation;
+        String implementation = configuration.getChild( "component-repository" ).getChild( "implementation" ).getValue();
 
-        if ( configuration.getChild( "component-repository", false ) != null )
-        {
-            implementation =
-                configuration.getChild( "component-repository" ).getChild( "implementation" ).getValue();
-        }
-        else
-        {
-            implementation =
-                defaultConfiguration.getChild( "component-repository" ).getChild( "implementation" ).getValue();
-        }
+        ComponentRepository componentRepository = (ComponentRepository) getInstance( implementation, classLoader );
 
-        ComponentRepository sr = (ComponentRepository) getInstance( implementation, classLoader );
+        componentRepository.setComponentLogManager( loggerManager );
 
-        sr.setComponentLogManager( loggerManager );
-        sr.enableLogging( loggerManager.getLogger( "component-repository" ) );
-        sr.contextualize( context );
-        sr.setPlexusContainer( container );
-        sr.configure( defaultConfiguration, configuration );
-        sr.initialize();
+        componentRepository.enableLogging( loggerManager.getLogger( "component-repository" ) );
 
-        return sr;
+        componentRepository.contextualize( context );
+
+        componentRepository.setPlexusContainer( container );
+
+        componentRepository.configure( configuration );
+
+        componentRepository.initialize();
+
+        return componentRepository;
     }
 }

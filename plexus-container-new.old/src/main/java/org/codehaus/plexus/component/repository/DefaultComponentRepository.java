@@ -72,9 +72,6 @@ public class DefaultComponentRepository
     //  Instance Members
     // ----------------------------------------------------------------------
 
-    /** Default configuration */
-    private Configuration defaultConfiguration;
-
     /** Configuration */
     private Configuration configuration;
 
@@ -218,14 +215,6 @@ public class DefaultComponentRepository
     }
 
     /**
-     * @return
-     */
-    protected Configuration getDefaultConfiguration()
-    {
-        return defaultConfiguration;
-    }
-
-    /**
      * @see org.apache.avalon.framework.service.ServiceManager#hasService(java.lang.String)
      */
     public synchronized boolean hasService( String role )
@@ -295,9 +284,8 @@ public class DefaultComponentRepository
      *
      * @param configuration
      */
-    public void configure( Configuration defaultConfiguration, Configuration configuration )
+    public void configure( Configuration configuration )
     {
-        this.defaultConfiguration = defaultConfiguration;
         this.configuration = configuration;
     }
 
@@ -320,7 +308,7 @@ public class DefaultComponentRepository
         throws Exception
     {
         String defaultHandlerId = getConfiguration().getChild( LIFECYCLE_HANDLERS )
-            .getAttribute( "default", getDefaultConfiguration().getChild( LIFECYCLE_HANDLERS ).getAttribute( "default", null ) );
+            .getAttribute( "default", getConfiguration().getChild( LIFECYCLE_HANDLERS ).getAttribute( "default", null ) );
 
         if ( defaultHandlerId == null )
         {
@@ -329,18 +317,9 @@ public class DefaultComponentRepository
 
         Configuration[] configs = getConfiguration().getChild( LIFECYCLE_HANDLERS ).getChildren( LIFECYCLE_HANDLER );
 
-        Configuration[] defaults = getDefaultConfiguration().getChild( LIFECYCLE_HANDLERS ).getChildren( LIFECYCLE_HANDLER );
-
         for ( int i = 0; i < configs.length; i++ )
         {
             addLifecycleHandlerHousing( configs[i], false );
-        }
-
-        for ( int i = 0; i < defaults.length; i++ )
-        {
-            //ignore duplicates as we allow the custom configuration
-            //to override default handlers
-            addLifecycleHandlerHousing( defaults[i], true );
         }
 
         //grab the default LifecycleHandler. This is the one used when components don't specify
@@ -408,14 +387,6 @@ public class DefaultComponentRepository
     private void initializeComponentManagers()
         throws Exception
     {
-        Configuration[] defaultComponentConfigurations =
-            defaultConfiguration.getChild( INSTANCE_MANAGERS ).getChildren( INSTANCE_MANAGER );
-
-        for ( int i = 0; i < defaultComponentConfigurations.length; i++ )
-        {
-            addComponentManagerDescriptor( createComponentDescriptor( defaultComponentConfigurations[i] ) );
-        }
-
         Configuration[] componentConfigurations =
             configuration.getChild( INSTANCE_MANAGERS ).getChildren( INSTANCE_MANAGER );
 
@@ -425,7 +396,7 @@ public class DefaultComponentRepository
         }
 
         defaultInstantiationStrategy = getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute(
-            "default", getDefaultConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute( "default", null ) );
+            "default", getConfiguration().getChild( INSTANCE_MANAGERS ).getAttribute( "default", null ) );
 
         if ( defaultInstantiationStrategy == null || defaultInstantiationStrategy.length() == 0 )
         {
@@ -497,7 +468,6 @@ public class DefaultComponentRepository
         LifecycleHandlerHousing lhh;
         LifecycleHandler h;
 
-        Configuration c = descriptor.getConfiguration();
         String id = descriptor.getLifecycleHandler();
 
         if ( id != null )
@@ -533,14 +503,6 @@ public class DefaultComponentRepository
     public void initializeComponentDescriptors()
         throws Exception
     {
-        Configuration[] defaultComponentConfigurations =
-            defaultConfiguration.getChild( COMPONENTS ).getChildren( COMPONENT );
-
-        for ( int i = 0; i < defaultComponentConfigurations.length; i++ )
-        {
-            addComponentDescriptor( createComponentDescriptor( defaultComponentConfigurations[i] ) );
-        }
-
         Configuration[] componentConfigurations =
             configuration.getChild( COMPONENTS ).getChildren( COMPONENT );
 

@@ -78,6 +78,10 @@ public class CascadingConfiguration
      */
     private final Configuration parent;
 
+    // ----------------------------------------------------------------------
+    // Constructors
+    // ----------------------------------------------------------------------
+
     /**
      * Create a CascadingConfiguration with specified parent.  The base
      * configuration shall override a parent configuration on request for

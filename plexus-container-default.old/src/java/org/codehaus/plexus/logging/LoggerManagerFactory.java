@@ -12,14 +12,17 @@ public class LoggerManagerFactory
     /** XML element used to select the logger manager implementation. */
     private static final String IMPLEMENTATION_TAG = "implementation";
 
-    public static LoggerManager create( Configuration defaultConfiguration,
-                                        Configuration configuration,
+    public static LoggerManager create( Configuration configuration,
                                         ClassLoader classLoader )
         throws Exception
     {
         String implementation;
         boolean loggingWithNoImplementationSpecified = false;
 
+        implementation = configuration.getChild( LOGGING_TAG ).getChild( IMPLEMENTATION_TAG ).getValue( null );
+
+
+        /*
         if ( configuration.getChild( LOGGING_TAG, false ) != null )
         {
             implementation =
@@ -39,9 +42,9 @@ public class LoggerManagerFactory
         {
             implementation = defaultConfiguration.getChild( LOGGING_TAG ).getChild( IMPLEMENTATION_TAG ).getValue();
         }
+        */
 
-        LoggerManager lm =
-            (LoggerManager) getInstance( implementation, classLoader );
+        LoggerManager lm = (LoggerManager) getInstance( implementation, classLoader );
 
         lm.configure( configuration.getChild( LOGGING_TAG ) );
         lm.initialize();

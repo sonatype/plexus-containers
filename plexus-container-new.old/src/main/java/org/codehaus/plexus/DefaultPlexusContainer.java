@@ -333,9 +333,14 @@ public class DefaultPlexusContainer
         }
     }
 
-    private Configuration createCascadingConfiguration( Configuration base, Configuration parent )
+    private Configuration cascadingConfiguration;
+
+    private Configuration getCascadingConfiguration()
     {
-        Configuration cascadingConfiguration = new CascadingConfiguration( base, parent );
+        if ( cascadingConfiguration == null )
+        {
+            cascadingConfiguration = new CascadingConfiguration( getConfiguration(), getDefaultConfiguration() );
+        }
 
         return cascadingConfiguration;
     }
@@ -348,11 +353,10 @@ public class DefaultPlexusContainer
     private void initializeLoggerManager()
         throws Exception
     {
-        LoggerManager loggerManager =
-            LoggerManagerFactory.create(
-                createCascadingConfiguration( getConfiguration(), getDefaultConfiguration() ), getClassLoader() );
+        LoggerManager loggerManager = LoggerManagerFactory.create( getCascadingConfiguration(), getClassLoader() );
 
         enableLogging( loggerManager.getRootLogger() );
+
         setLoggerManager( loggerManager );
     }
 
@@ -365,8 +369,7 @@ public class DefaultPlexusContainer
         throws Exception
     {
         ComponentRepository componentRepository =
-            ComponentRepositoryFactory.create( getDefaultConfiguration(),
-                                               getConfiguration(),
+            ComponentRepositoryFactory.create( getCascadingConfiguration(),
                                                getLoggerManager(),
                                                this,
                                                getClassLoader(),
