@@ -54,23 +54,23 @@ public class PlexusTestCase
 
         customizeContext();
         
-        //container.addContextValue( "plexus.home", System.getProperty( "plexus.home" ) );
+        container.addContextValue( "plexus.home", System.getProperty( "plexus.home" ) );
         
-        String plexusHome = ( String ) getContext().get( "plexus.home" );
-                       
-        if ( plexusHome == null )
-        {
-        
-            File f = new File( basedir, "target/plexus-home" );
-            
-            if ( !f.isDirectory() )
-            {
-                f.mkdir();
-            }
-            
-            getContext().put( "plexus.home", f.getAbsolutePath() );
-
-        }
+//        String plexusHome = ( String ) getContext().get( "plexus.home" );
+//                       
+//        if ( plexusHome == null )
+//        {
+//        
+//            File f = new File( basedir, "target/plexus-home" );
+//            
+//            if ( !f.isDirectory() )
+//            {
+//                f.mkdir();
+//            }
+//            
+//            getContext().put( "plexus.home", f.getAbsolutePath() );
+//
+//        }
         
         if ( configuration != null )
         {
