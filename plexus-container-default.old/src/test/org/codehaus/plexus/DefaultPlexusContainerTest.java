@@ -388,20 +388,20 @@ public class DefaultPlexusContainerTest
         }
         reg.runTestThreads();
 
-        while ( reg.isStillRunningThreads() )
-        {
-            //wait until all threads have finished execution
-            synchronized ( this )
+		//now wait for the threads to finish..
+		synchronized (this)
+		{
+			try
+			{
+				if( reg.isStillRunningThreads() )
+				{
+					wait();
+				}
+			}
+            catch ( InterruptedException e )
             {
-                try
-                {
-                    wait();
-                }
-                catch ( InterruptedException e )
-                {
-                }
             }
-        }
+     	}        
 
         assertEquals( "Expected 5 test threads to of run", reg.getRunThreads().size(), 5 );
         //now test if any components were returned which was not the same manager
