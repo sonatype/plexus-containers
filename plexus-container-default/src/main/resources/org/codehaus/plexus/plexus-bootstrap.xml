@@ -29,6 +29,9 @@
       <component-manager implementation="org.codehaus.plexus.component.manager.ClassicSingletonComponentManager">
         <id>singleton</id>
       </component-manager>
+      <component-manager implementation="org.codehaus.plexus.component.manager.KeepAliveSingletonComponentManager">
+        <id>singleton-keep-alive</id>
+      </component-manager>
     </component-managers>
   </component-manager-manager>
 
