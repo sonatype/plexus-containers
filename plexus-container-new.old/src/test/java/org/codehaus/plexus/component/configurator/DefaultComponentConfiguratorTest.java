@@ -51,13 +51,13 @@ public class DefaultComponentConfiguratorTest
 
         cc.configureComponent( component, configuration );
 
-        assertEquals( 0, component.getIntValue() );
+        assertEquals( "check integer value", 0, component.getIntValue() );
 
-        assertTrue( new Float(1).floatValue() == component.getFloatValue() );
+        assertEquals( "check float value", 1.0f, component.getFloatValue(), 0.001f );
 
-        assertTrue( new Long(2).longValue() == component.getLongValue() );
+        assertEquals( "check long value", 2L, component.getLongValue() );
 
-        assertTrue( new Double(3).doubleValue() == component.getDoubleValue() );
+        assertEquals( "check double value", 3.0, component.getDoubleValue(), 0.001 );
 
         assertEquals( "foo", component.getStringValue() );
 
