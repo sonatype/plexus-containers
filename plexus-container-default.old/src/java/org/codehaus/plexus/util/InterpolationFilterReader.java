@@ -269,8 +269,11 @@ public class InterpolationFilterReader
 
             if ( value != null )
             {
-                replaceData = value;
-                replaceIndex = 0;
+                if ( value.length() != 0 )
+                {
+                    replaceData = value;
+                    replaceIndex = 0;
+                }
                 return read();
             }
             else
