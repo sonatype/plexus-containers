@@ -45,7 +45,7 @@ public class DefaultComponentConfiguratorTest
 
         PlexusConfiguration configuration = builder.parse( new StringReader( xml ) );
 
-        Component component = new Component();
+        ConfigurableComponent component = new ConfigurableComponent();
 
         ComponentConfigurator cc = new DefaultComponentConfigurator();
 
@@ -74,5 +74,29 @@ public class DefaultComponentConfiguratorTest
         PlexusConfiguration c = component.getConfiguration();
 
         assertEquals( "jason", c.getChild( "name" ).getValue() );
+    }
+
+    public void testComponentConfigurationWhereFieldsToConfigureResideInTheSuperclass()
+        throws Exception
+    {
+        String xml =
+            "<component>" +
+            "  <name>jason</name>" +
+            "  <address>bollywood</address>" +
+            "</component>";
+
+        XmlPullConfigurationBuilder builder = new XmlPullConfigurationBuilder();
+
+        PlexusConfiguration configuration = builder.parse( new StringReader( xml ) );
+
+        DefaultComponent component = new DefaultComponent();
+
+        ComponentConfigurator cc = new DefaultComponentConfigurator();
+
+        cc.configureComponent( component, configuration );
+
+        assertEquals( "jason", component.getName() );
+
+        assertEquals( "bollywood", component.getAddress() );
     }
 }
