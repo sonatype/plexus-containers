@@ -39,7 +39,7 @@ public class Embedder
 
     private volatile URL configurationURL;
 
-    private final PlexusContainer container;
+    private final DefaultPlexusContainer container;
 
     private volatile boolean embedderStarted = false;
 
@@ -85,6 +85,11 @@ public class Embedder
     public void release( Object service )
     {
         getContainer().release( service );
+    }
+
+    public void setClassLoader( ClassLoader classLoader )
+    {
+        container.setClassLoader( classLoader );
     }
 
     public void setConfiguration( String configuration )
