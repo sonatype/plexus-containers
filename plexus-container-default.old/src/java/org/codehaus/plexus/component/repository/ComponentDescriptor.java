@@ -35,6 +35,8 @@ public class ComponentDescriptor
 
     private Set requirements;
 
+    private Set dependencies;
+
     // ----------------------------------------------------------------------
     //  Instance methods
     // ----------------------------------------------------------------------
@@ -141,5 +143,14 @@ public class ComponentDescriptor
             requirements = new HashSet();
         }
         return requirements;
+    }
+
+    public Set getDependencies()
+    {
+        if ( dependencies == null )
+        {
+            dependencies = new HashSet();
+        }
+        return dependencies;
     }
 }
