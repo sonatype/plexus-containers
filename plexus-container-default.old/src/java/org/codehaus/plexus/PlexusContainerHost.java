@@ -22,6 +22,8 @@ public class PlexusContainerHost
 
     private boolean isStopped;
 
+    private static Object waitObj;
+    
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -148,7 +150,10 @@ public class PlexusContainerHost
                 }
             }
             
-            PlexusContainerHost.class.notifyAll();
+            synchronized( waitObj )
+            {
+                waitObj.notifyAll();
+            }
         }
     }
 
@@ -167,6 +172,8 @@ public class PlexusContainerHost
 
         try
         {
+            waitObj = new Object();
+
             PlexusContainerHost host = new PlexusContainerHost();
             host.start( classWorld, args[0] );
             
@@ -174,7 +181,10 @@ public class PlexusContainerHost
             {
                 try
                 {
-                    PlexusContainerHost.class.wait();
+                    synchronized( waitObj )
+                    {
+                        waitObj.wait();
+                    }
                 }
                 catch ( InterruptedException e )
                 {
