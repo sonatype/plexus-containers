@@ -10,4 +10,7 @@ package org.codehaus.plexus.configuration.pipeline;
 public interface Valve
 {
     String getId();
+
+    String getName();
 }
+

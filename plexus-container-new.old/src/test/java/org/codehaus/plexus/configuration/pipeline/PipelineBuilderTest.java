@@ -23,8 +23,12 @@ public class PipelineBuilderTest
         String configuration =
             "<pipeline>" +
             "  <valves>" +
-            "    <valve implementation='org.codehaus.plexus.configuration.pipeline.FirstValve'/>" +
-            "    <valve implementation='org.codehaus.plexus.configuration.pipeline.SecondValve'/>" +
+            "    <valve implementation='org.codehaus.plexus.configuration.pipeline.FirstValve'>" +
+            "      <name>MyLittlePony</name>" +
+            "    </valve>" +
+            "    <valve implementation='org.codehaus.plexus.configuration.pipeline.SecondValve'>" +
+            "      <name>MyBiggerPony</name>" +
+            "    </valve>" +
             "  </valves>" +
             "</pipeline>";
 
@@ -42,10 +46,14 @@ public class PipelineBuilderTest
 
         assertEquals( "first", firstValve.getId() );
 
+        assertEquals( "MyLittlePony", firstValve.getName() );
+
         Valve secondValve = pipeline.getValve( 1 );
 
         assertNotNull( secondValve );
 
         assertEquals( "second", secondValve.getId() );
+
+        assertEquals( "MyBiggerPony", secondValve.getName() );
     }
 }

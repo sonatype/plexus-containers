@@ -11,8 +11,15 @@ package org.codehaus.plexus.configuration.pipeline;
 public class FirstValve
     implements Valve
 {
+    private String name;
+
     public String getId()
     {
         return "first";
+    }
+
+    public String getName()
+    {
+        return name;
     }
 }
