@@ -532,6 +532,8 @@ public class DefaultPlexusContainer
     public void setClassLoader( ClassLoader classLoader )
     {
         this.classLoader = classLoader;
+        
+        addContextValue( "common.classloader", classLoader );
     }
 
     public ClassLoader getClassLoader()
