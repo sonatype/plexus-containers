@@ -549,7 +549,7 @@ public class DefaultPlexusContainer
     {
         PlexusConfiguration[] loadOnStartComponents = configuration.getChild( "load-on-start" ).getChildren( "component" );
 
-        getLogger().info( "Found " + loadOnStartComponents.length + " components to load on start" );
+        getLogger().debug( "Found " + loadOnStartComponents.length + " components to load on start" );
 
         for ( int i = 0; i < loadOnStartComponents.length; i++ )
         {
