@@ -1,7 +1,6 @@
 package org.codehaus.plexus.component.factory.java;
 
 import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.factory.AbstractComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
@@ -17,13 +16,12 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 public class JavaComponentFactory
     extends AbstractComponentFactory
 {
-    /**
-     * @todo which exception shold be thrown if '!implementationMatch'?
-     */
     public Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm, PlexusContainer container )
         throws ComponentInstantiationException
     {
         ClassRealm componentClassRealm = container.getComponentRealm( componentDescriptor.getComponentKey() );
+
+        Class implementationClass = null;
 
         try
         {
@@ -37,7 +35,7 @@ public class JavaComponentFactory
 
             //componentClassRealm.display();
 
-            Class implementationClass = componentClassRealm.loadClass( implementation );
+            implementationClass = componentClassRealm.loadClass( implementation );
 
             //boolean implementationMatch = roleClass.isAssignableFrom( implementationClass );
 
@@ -58,17 +56,34 @@ public class JavaComponentFactory
 
             return instance;
         }
-        catch ( Exception e )
+        catch ( InstantiationException e )
         {
-            // ----------------------------------------------------------------------
-            // Display the realm when there is an error, We should probably return a string here so we
-            // can incorporate this into the error message for easy debugging.
-            // ----------------------------------------------------------------------
-            componentClassRealm.display();
-
-            String msg = "Component " + componentDescriptor.getHumanReadableKey() + " cannot be instantiated: " + e.getMessage();
-
-            throw new ComponentInstantiationException( msg, e );
+            throw makeException( componentClassRealm, componentDescriptor, implementationClass, e );
         }
+        catch ( ClassNotFoundException e )
+        {
+            throw makeException( componentClassRealm, componentDescriptor, implementationClass, e );
+        }
+        catch( IllegalAccessException e )
+        {
+            throw makeException( componentClassRealm, componentDescriptor, implementationClass, e );
+        }
+        catch( LinkageError e )
+        {
+            throw makeException( componentClassRealm, componentDescriptor, implementationClass, e );
+        }
+    }
+
+    private ComponentInstantiationException makeException( ClassRealm componentClassRealm, ComponentDescriptor componentDescriptor, Class implementationClass, Throwable e )
+    {
+        // ----------------------------------------------------------------------
+        // Display the realm when there is an error, We should probably return a string here so we
+        // can incorporate this into the error message for easy debugging.
+        // ----------------------------------------------------------------------
+        componentClassRealm.display();
+
+        String msg = "Could not instanciate component: " + componentDescriptor.getHumanReadableKey();
+
+        return new ComponentInstantiationException( msg, e );
     }
 }
