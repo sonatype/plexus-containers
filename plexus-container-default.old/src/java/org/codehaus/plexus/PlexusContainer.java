@@ -24,35 +24,23 @@ public interface PlexusContainer
 
     void resume( Object component );
 
-    // ----------------------------------------------------------------------
-    // Pre-initialization - can only be called prior to initialization
-    // ----------------------------------------------------------------------
+    void addContextValue( Object key, Object value );
 
-     void addContextValue( Object key, Object value );
+    void setClassWorld( ClassWorld classWorld );
 
-     void setClassWorld( ClassWorld classWorld );
+    void setClassLoader( ClassLoader classLoader );
 
-     void setClassLoader( ClassLoader classLoader );
-
-     void setConfigurationResource( Reader configuration )
+    void setConfigurationResource( Reader configuration )
         throws ConfigurationResourceException;
 
-    // ----------------------------------------------------------------------
-    // Post-initialization - can only be called post initialization
-    // ----------------------------------------------------------------------
+    ClassLoader getClassLoader();
 
-     ClassLoader getClassLoader();
-
-    // ----------------------------------------------------------------------
-    // Lifecylce Management
-    // ----------------------------------------------------------------------
-
-     void initialize()
+    void initialize()
         throws Exception;
 
-     void start()
+    void start()
         throws Exception;
 
-     void dispose()
+    void dispose()
         throws Exception;
 }
