@@ -1,3 +1,9 @@
+<!--
+ |
+ | o Test merging of all possible elements that are dealt with by the configuration merger.
+ |
+ -->
+
 <plexus>
 
   <configurations-directory>${basedir}/src/test-input/configurations-directory</configurations-directory>
