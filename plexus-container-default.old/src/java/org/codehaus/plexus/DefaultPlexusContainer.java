@@ -252,6 +252,8 @@ public class DefaultPlexusContainer
      */
     private void initializeContext()
     {
+        addContextValue( PlexusConstants.PLEXUS_KEY, this );
+        addContextValue( PlexusConstants.RESOURCE_MANAGER_KEY, resourceManager );
         addContextValue( PlexusConstants.COMMON_CLASSLOADER, getClassLoader() );
     }
 
