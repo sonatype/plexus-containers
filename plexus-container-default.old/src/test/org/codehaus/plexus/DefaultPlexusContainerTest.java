@@ -71,6 +71,36 @@ public class DefaultPlexusContainerTest
         assertEquals( "bar", System.getProperty( "foo" ) );
     }
 
+    // ----------------------------------------------------------------------
+    // Test the native plexus lifecycle. Note that the configuration for
+    // this TestCase supplies its own lifecycle, so this test verifies that
+    // the native lifecycle is available after configuration merging.
+    // ----------------------------------------------------------------------
+
+    public void testNativeLifecyclePassage()
+        throws Exception
+    {
+        DefaultServiceB serviceB = (DefaultServiceB) container.lookup( ServiceB.ROLE );
+
+        // Make sure the component is alive.
+        assertNotNull( serviceB );
+
+        // Make sure the component went through all the lifecycle phases
+        assertEquals( true, serviceB.enableLogging );
+
+        assertEquals( true, serviceB.contextualize );
+
+        assertEquals( true, serviceB.initialize );
+
+        assertEquals( true, serviceB.start );
+        
+        assertEquals( false, serviceB.stop );
+
+        container.release( serviceB );
+
+        assertEquals( true, serviceB.stop );
+    }
+
     public void testComponentLookupWithRoleHint()
         throws Exception
     {
