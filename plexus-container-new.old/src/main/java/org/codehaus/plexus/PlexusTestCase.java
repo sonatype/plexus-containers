@@ -228,17 +228,17 @@ public class PlexusTestCase
 
     public static File getTestFile( String basedir, String path )
     {
-        return new File( getBasedir(), path );
+        return new File( basedir, path );
     }
 
     public static String getTestPath( String path )
     {
-        return new File( getBasedir(), path ).getAbsolutePath();
+        return getTestFile( path ).getAbsolutePath();
     }
 
     public static String getTestPath( String basedir, String path )
     {
-        return new File( getBasedir(), path ).getAbsolutePath();
+        return getTestFile( basedir, path ).getAbsolutePath();
     }
 
     public static String getBasedir()
