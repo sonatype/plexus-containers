@@ -33,6 +33,8 @@ public class ObjectBuilder
                                elementMapper );
 
         xstream.registerConverter( new CollectionConverter( classMapper ) );
+
+        xstream.registerConverter( new ConfigurationConverter() );
     }
 
     public void alias( String elementName, Class clazz )
