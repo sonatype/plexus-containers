@@ -54,11 +54,20 @@ public class DefaultComponentComposer
         }
     }
 
-    protected void assembleComponents( final Map components,
+    protected void assembleComponents( final String role,
+                                       final Object component,
+                                       final Map components,
                                        final Map componentDescriptorMap,
                                        final PlexusContainer container )
         throws CompositionException
     {
+        if ( componentDescriptorMap == null )
+        {
+            // We really do need a clean way to log for basic entities.
+            // No reason why they can't be components too most likely.
+
+            return;
+        }
 
         final Set roleHints = componentDescriptorMap.keySet();
 
@@ -68,9 +77,7 @@ public class DefaultComponentComposer
 
             final ComponentDescriptor componentDescriptor = (ComponentDescriptor) componentDescriptorMap.get( roleHint );
 
-            final Object component = components.get( roleHint );
-
-            assembleComponent( component, componentDescriptor, container );
+            assembleComponent( components.get( roleHint ), componentDescriptor, container );
         }
     }
 
@@ -88,7 +95,7 @@ public class DefaultComponentComposer
 
                 final Object[] array = (Object[]) Array.newInstance( field.getType(), dependencies.size() );
 
-                assembleComponents( dependencies, container.getComponentDescriptorMap( role ), container );
+                assembleComponents( role, component, dependencies, container.getComponentDescriptorMap( role ), container );
 
                 field.set( component, dependencies.entrySet().toArray( array ) );
             }
@@ -96,7 +103,7 @@ public class DefaultComponentComposer
             {
                 Map dependencies = container.lookupMap( role );
 
-                assembleComponents( dependencies, container.getComponentDescriptorMap( role ), container );
+                assembleComponents( role, component, dependencies, container.getComponentDescriptorMap( role ), container );
 
                 field.set( component, dependencies );
             }
@@ -104,7 +111,7 @@ public class DefaultComponentComposer
             {
                 Map dependencies = container.lookupMap( role );
 
-                assembleComponents( dependencies, container.getComponentDescriptorMap( role ), container );
+                assembleComponents( role, component, dependencies, container.getComponentDescriptorMap( role ), container );
 
                 field.set( component, container.lookupList( role ) );
             }
@@ -112,7 +119,7 @@ public class DefaultComponentComposer
             {
                 Map dependencies = container.lookupMap( role );
 
-                assembleComponents( dependencies, container.getComponentDescriptorMap( role ), container );
+                assembleComponents( role, component, dependencies, container.getComponentDescriptorMap( role ), container );
 
                 field.set( component, dependencies.entrySet() );
             }
