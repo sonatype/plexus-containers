@@ -6,16 +6,16 @@ import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.service.ServiceException;
 import org.codehaus.plexus.classloader.DefaultResourceManager;
 import org.codehaus.plexus.classloader.ResourceManagerFactory;
+import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
+import org.codehaus.plexus.configuration.CascadingConfiguration;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
-import org.codehaus.plexus.configuration.CascadingConfiguration;
 import org.codehaus.plexus.context.DefaultContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.LoggerManagerFactory;
-import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.component.repository.ComponentRepositoryFactory;
 import org.codehaus.plexus.util.ContextMapAdapter;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.InterpolationFilterReader;
@@ -474,25 +474,6 @@ public class DefaultPlexusContainer
     private void setResourceManager( DefaultResourceManager resourceManager )
     {
         this.resourceManager = resourceManager;
-    }
-
-    /**
-     *  Retrieve the <code>ResourceManager</code>.
-     *
-     *  @return The resource manager.
-     */
-    private DefaultResourceManager getResourceManager()
-    {
-        return resourceManager;
-    }
-
-    /**
-     *
-     * @param context
-     */
-    private void setContext( DefaultContext context )
-    {
-        this.context = context;
     }
 
     /**
