@@ -59,7 +59,7 @@ public class DefaultComponentRepository
      * which can handle concurrent reads and writes. Will be about
      * the same number of reads as writes
      */
-    private Map componentManagersByCompClass;
+    private Map componentManagersByComponentClass;
 
     private PlexusContainer plexusContainer;
 
@@ -79,7 +79,7 @@ public class DefaultComponentRepository
 
         componentManagers = new HashMap();
 
-        componentManagersByCompClass = new HashMap();
+        componentManagersByComponentClass = new HashMap();
 
         componentsByRole = new HashMap();
     }
@@ -374,7 +374,7 @@ public class DefaultComponentRepository
 
             // We do this so we know what to do when releasing. Only have to do it once
             //per component class
-            componentManagersByCompClass.put( component.getClass().getName(), componentManager );
+            componentManagersByComponentClass.put( component.getClass().getName(), componentManager );
         }
         else
         {
@@ -469,7 +469,7 @@ public class DefaultComponentRepository
 
     protected ComponentManager findComponentManager( Object component )
     {
-        return (ComponentManager) componentManagersByCompClass.get( component.getClass().getName() );
+        return (ComponentManager) componentManagersByComponentClass.get( component.getClass().getName() );
     }
 
     public synchronized void dispose()
