@@ -323,6 +323,7 @@ public class DefaultPlexusContainer
         return result;
     }
 
+
     public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws ComponentRepositoryException
     {
@@ -448,7 +449,13 @@ public class DefaultPlexusContainer
             {
                 ComponentDescriptor componentDescriptor = (ComponentDescriptor) j.next();
 
-                addComponentDescriptor( componentDescriptor );
+                // If the user has already defined a component descriptor for this particular
+                // component then do not let the discovered component descriptor override
+                // the user defined one.
+                if ( getComponentDescriptor( componentDescriptor.getComponentKey() ) == null )
+                {
+                    addComponentDescriptor( componentDescriptor );
+                }
             }
         }
     }
