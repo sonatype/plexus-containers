@@ -21,8 +21,6 @@ public class PlexusConfigurationMerger
     // -----------------------------------+-----------------------------------------------------------------
     // component-repository               | user wins
     // -----------------------------------+-----------------------------------------------------------------
-    // resource-manager                   | user ignore
-    // -----------------------------------+-----------------------------------------------------------------
     // resources                          | user
     // -----------------------------------+-----------------------------------------------------------------
     // component-manager-manager          | user ignore
@@ -36,6 +34,10 @@ public class PlexusConfigurationMerger
     {
         XmlPlexusConfiguration mergedConfiguration = new XmlPlexusConfiguration( "plexus" );
 
+        // ----------------------------------------------------------------------
+        // Load on start
+        // ----------------------------------------------------------------------
+
         PlexusConfiguration loadOnStart = user.getChild( "load-on-start" );
 
         if ( loadOnStart.getChildCount() != 0 )
@@ -43,12 +45,20 @@ public class PlexusConfigurationMerger
             mergedConfiguration.addChild( loadOnStart );
         }
 
+        // ----------------------------------------------------------------------
+        // System properties
+        // ----------------------------------------------------------------------
+
         PlexusConfiguration systemProperties = user.getChild( "system-properties" );
 
         if ( systemProperties.getChildCount() != 0 )
         {
             mergedConfiguration.addChild( systemProperties );
         }
+
+        // ----------------------------------------------------------------------
+        // Configurations directory
+        // ----------------------------------------------------------------------
 
         PlexusConfiguration[] configurationsDirectories = user.getChildren( "configurations-directory" );
 
@@ -59,6 +69,10 @@ public class PlexusConfigurationMerger
                 mergedConfiguration.addChild( configurationsDirectories[i] );
             }
         }
+
+        // ----------------------------------------------------------------------
+        // Logging
+        // ----------------------------------------------------------------------
 
         PlexusConfiguration logging = user.getChild( "logging" );
 
@@ -71,6 +85,10 @@ public class PlexusConfigurationMerger
             mergedConfiguration.addChild( system.getChild( "logging" ) );
         }
 
+        // ----------------------------------------------------------------------
+        // Component repository
+        // ----------------------------------------------------------------------
+
         PlexusConfiguration componentRepository = user.getChild( "component-repository" );
 
         if ( componentRepository.getChildCount() != 0 )
@@ -82,11 +100,23 @@ public class PlexusConfigurationMerger
             mergedConfiguration.addChild( system.getChild( "component-repository" ) );
         }
 
+        // ----------------------------------------------------------------------
+        // Resources
+        // ----------------------------------------------------------------------
+
         mergedConfiguration.addChild( user.getChild( "resources" ) );
 
-        mergedConfiguration.addChild( system.getChild( "resource-manager" ) );
+        // ----------------------------------------------------------------------
+        // Component manager manager
+        // ----------------------------------------------------------------------
 
         mergedConfiguration.addChild( system.getChild( "component-manager-manager" ) );
+
+        // ----------------------------------------------------------------------
+        // Component discoverer manager
+        // ----------------------------------------------------------------------
+
+        mergedConfiguration.addChild( system.getChild( "component-discoverer-manager" ) );
 
         // ----------------------------------------------------------------------
         // Lifecycle handler managers
