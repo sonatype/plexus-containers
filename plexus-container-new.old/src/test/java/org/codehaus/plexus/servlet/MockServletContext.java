@@ -144,15 +144,16 @@ public class MockServletContext implements ServletContext
 
     public String getInitParameter(String arg0)
     {
-        throw new RuntimeException("not implemented");
+        return null;
     }
 
+    private static final Vector EMPTY_VECTOR = new Vector();
     public Enumeration getInitParameterNames()
     {
-        throw new RuntimeException("not implemented");
+        return EMPTY_VECTOR.elements();        
     }
 
-    Map attributes = new HashMap();
+    private final Map attributes = new HashMap();
     public Object getAttribute(String arg0)
     {
         return attributes.get(arg0);
