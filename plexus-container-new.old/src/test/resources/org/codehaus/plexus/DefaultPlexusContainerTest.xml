@@ -57,30 +57,18 @@
       <role>org.codehaus.plexus.ServiceC</role>
       <role-hint>first-instance</role-hint>
       <implementation>org.codehaus.plexus.DefaultServiceC</implementation>
-      <configuration>
-        <host>localhost</host>
-        <port>10000</port>
-      </configuration>
     </component>
 
     <component>
       <role>org.codehaus.plexus.ServiceC</role>
       <role-hint>second-instance</role-hint>
       <implementation>org.codehaus.plexus.DefaultServiceC</implementation>
-      <configuration>
-        <host>localhost</host>
-        <port>10000</port>
-      </configuration>
     </component>
 
     <component>
       <role>org.codehaus.plexus.ServiceD</role>
       <implementation>org.codehaus.plexus.DefaultServiceD</implementation>
       <instantiation-strategy>poolable</instantiation-strategy>
-      <configuration>
-        <host>localhost</host>
-        <port>10000</port>
-      </configuration>
     </component>
 
     <component>
