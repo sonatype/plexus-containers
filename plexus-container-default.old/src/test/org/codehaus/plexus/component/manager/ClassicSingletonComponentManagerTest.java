@@ -37,16 +37,17 @@ class ComponentLookupThread extends Thread
 /**
  * @author Ben Walding
  */
-
 public class ClassicSingletonComponentManagerTest extends PlexusTestCase
 {
-
-    public void test1() throws Exception
+    public void testThreads1() throws Exception
     {
         test( 1 );
     }
 
-    public void test10() throws Exception
+    /**
+     * Tests that multiple concurrent threads don't acquire different components.
+     */
+    public void testThreads10() throws Exception
     {
         test( 10 );
     }
@@ -61,9 +62,6 @@ public class ClassicSingletonComponentManagerTest extends PlexusTestCase
             tt[i].start();
         }
 
-        //This is a bit dirty
-        //Thread.sleep(2000);
-
         //Wait for them to finish
         for ( int i = 0; i < count; i++ )
         {
@@ -73,7 +71,7 @@ public class ClassicSingletonComponentManagerTest extends PlexusTestCase
             }
         }
 
-        //Get master 
+        //Get master component
         SlowComponent masterTC = (SlowComponent) lookup( SlowComponent.ROLE );
         //Verify them
         for ( int i = 0; i < count; i++ )
