@@ -206,19 +206,39 @@ public class DefaultComponentComposer
         return field;
     }
 
+    
+    protected Field getFieldByNameIncludingSuperclasses( final Class componentClass, final String fieldName ) 
+    {
+        
+        if ( Object.class.equals( componentClass ) )
+        {
+            return null;
+        }    
+                        
+        try
+        {
+           Field field = componentClass.getDeclaredField( fieldName );    
+           
+           return field;
+        }
+        catch( Exception e )
+        {
+           return  getFieldByNameIncludingSuperclasses( componentClass.getSuperclass(), fieldName );
+        }
+         
+           
+    }
+    
     protected Field getFieldByName( final Object component,
                                     final String fieldName,
                                     final ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
-        Field field = null;
-
-        try
-        {
-            field = component.getClass().getDeclaredField( fieldName );
-        }
-        catch ( NoSuchFieldException e )
-        {
+        final Field field = getFieldByNameIncludingSuperclasses( component.getClass(), fieldName );
+        
+        if ( field == null )
+        {    
+        
             StringBuffer msg = new StringBuffer( "Component Composition failed. No field of name: '" );
 
             msg.append( fieldName );
@@ -237,6 +257,7 @@ public class DefaultComponentComposer
 
                 msg.append( "'" );
             }
+            
             throw new CompositionException( msg.toString() );
         }
 
@@ -265,7 +286,7 @@ public class DefaultComponentComposer
                 break;
             }
         }
-
+        
         if ( field == null && componentClass.getSuperclass() != Object.class )
         {
             field = getFieldByTypeIncludingSuperclasses( componentClass.getSuperclass(), type, componentDescriptor );
@@ -288,7 +309,9 @@ public class DefaultComponentComposer
             msg.append( type );
 
             msg.append( "' exists in class '" );
+            
             msg.append( component.getClass().getName() );
+            
             msg.append( "'." );
 
             if ( componentDescriptor != null )

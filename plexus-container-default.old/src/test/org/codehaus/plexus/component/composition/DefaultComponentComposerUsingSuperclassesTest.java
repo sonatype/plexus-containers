@@ -22,4 +22,17 @@ public class DefaultComponentComposerUsingSuperclassesTest
 
         assertEquals( ComponentA.class, fieldA.getType() );
     }
+    
+    public void testGetFieldByNameWhereFieldResidesInTheSuperclass()
+    throws Exception
+    {
+        DefaultComponentComposer composer = new DefaultComponentComposer();
+
+        DefaultComponent component = new DefaultComponent();
+        
+        Field fieldA = composer.getFieldByName( component, "componentA", null );
+
+        assertEquals( "componentA", fieldA.getName() );
+    }
+    
 }
