@@ -46,9 +46,3 @@ are very detailed and specific, while others are more general.  -pete
   Perhaps it would be better to use a '/' as a separator, although
   that doesn't resolve the issue completely either because role names
   can be anything.
-
-- InstanceManager.setImplementation() should probably be renamed as
-  its ambiguous if this refers to the implementation of the instance
-  manager itself OR the implementation of the component to be
-  instantiated.  Thus, perhaps, setComponentImplementation or
-  setInstanceImplementation.
