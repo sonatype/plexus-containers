@@ -38,7 +38,7 @@ public class DefaultPlexusConfiguration
         else
         {
             throw new PlexusConfigurationException( "No value is associated with the "
-                                              + "configuration element \"" + getName() + "." );
+                                              + "configuration element \"" + getName() + "\"." );
         }
     }
 
