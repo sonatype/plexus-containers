@@ -64,12 +64,6 @@ public abstract class PlexusConstants
      any. */
     public static final String RESOURCE_MANAGER_KEY = "plexus:resource-manager";
 
-    /**
-     * Key to retrieve the Avalon <code>ServiceManager</code>, typically
-     * from the ServletContext.
-     */
-    public static final String SERVICE_MANAGER_KEY = "plexus:service-manager";
-
     /** Common classloader */
     public static final String COMMON_CLASSLOADER = "common.classloader";
 }
