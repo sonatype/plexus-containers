@@ -23,16 +23,7 @@ public class JavaComponentFactory
     public Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm, PlexusContainer container )
         throws ComponentInstantiationException
     {
-        ClassRealm componentClassRealm;
-
-        try
-        {
-            componentClassRealm = classRealm.getWorld().getRealm( componentDescriptor.getComponentKey() );
-        }
-        catch ( NoSuchRealmException e )
-        {
-            componentClassRealm = classRealm;
-        }
+        ClassRealm componentClassRealm = container.getComponentRealm( componentDescriptor.getComponentKey() );
 
         try
         {
@@ -63,15 +54,17 @@ public class JavaComponentFactory
             }
             */
 
+            //componentClassRealm.display();
+
             Object instance = implementationClass.newInstance();
 
             return instance;
         }
         catch ( Exception e )
         {
+            componentClassRealm.display();
             // Display the realm when there is an error, We should probably return a string here so we
             // can incorporate this into the error message for easy debugging.
-            componentClassRealm.display();
 
             String msg = "Component " + componentDescriptor.getHumanReadableKey() + " cannot be instantiated: " + e.getMessage();
 
