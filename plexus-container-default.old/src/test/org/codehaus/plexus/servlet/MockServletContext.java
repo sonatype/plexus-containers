@@ -1,7 +1,7 @@
 package org.codehaus.plexus.servlet;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -21,10 +21,11 @@ import javax.servlet.ServletException;
 public class MockServletContext implements ServletContext
 {
 
-    public MockServletContext() {
-        
+    public MockServletContext()
+    {
+
     }
-    
+
     public ServletContext getContext(String arg0)
     {
         throw new RuntimeException("not implemented");
@@ -50,18 +51,31 @@ public class MockServletContext implements ServletContext
         throw new RuntimeException("not implemented");
     }
 
-    public URL getResource(String arg0) throws MalformedURLException
+    public URL getResource(String resourceName) 
     {
+        if (resourceName.equals("/WEB-INF/plexus.xml"))
+        {
+            return MockServletContext.class.getResource("plexus.xml");
+        }
         throw new RuntimeException("not implemented");
     }
 
     public InputStream getResourceAsStream(String resourceName)
     {
-        if (resourceName.equals("/WEB-INF/plexus.xml"))
-        {
-            return MockServletContext.class.getResourceAsStream("plexus.xml");
-        }
-        return null;
+        URL url = getResource(resourceName);
+        if (url == null) {
+            return null;
+        } else {
+            try
+            {
+                return url.openStream();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return null;
+            }
+        }      
     }
 
     public RequestDispatcher getRequestDispatcher(String arg0)
@@ -150,7 +164,7 @@ public class MockServletContext implements ServletContext
     private static final Vector EMPTY_VECTOR = new Vector();
     public Enumeration getInitParameterNames()
     {
-        return EMPTY_VECTOR.elements();        
+        return EMPTY_VECTOR.elements();
     }
 
     private final Map attributes = new HashMap();

@@ -19,6 +19,7 @@ import org.codehaus.plexus.embed.Embedder;
  * configuration file relative to the root of your webapplication.  This must be
  * passed as the "plexus-config" init-parameter to the servlet.
  * </p>
+ * 
  * @author <a href="dan@envoisolutions.com">Dan Diephouse</a>
  * @author <a href="mhw@kremvax.net@>Mark Wilkinson</a>
  * @since Feb 2, 2003
@@ -38,12 +39,10 @@ public class PlexusLoaderServlet extends HttpServlet
         super.init();
 
         log( "Initializing Plexus..." );
-        String configFileName = getInitParameter( ServletContextUtils.PLEXUS_CONFIG_PARAM );
-
-//        System.getProperties().setProperty( "plexus.home", applicationRoot + "/WEB-INF" );
+        String configName = getInitParameter( ServletContextUtils.PLEXUS_CONFIG_PARAM );
 
         embedder = ServletContextUtils.createContainer( getServletContext(),
-                                                        configFileName );
+                                                        configName );
         log( "Plexus Initialized." );
     }
 
@@ -54,9 +53,9 @@ public class PlexusLoaderServlet extends HttpServlet
      */
     public void destroy()
     {
-        log( "Shutting down plexus!..." );
+        log( "Shutting down Plexus..." );
         ServletContextUtils.destroyContainer( embedder, getServletContext() );
-        log( "...plexus shutdown. goodbye" );
+        log( "... Plexus shutdown. Goodbye" );
 
         super.destroy();
     }

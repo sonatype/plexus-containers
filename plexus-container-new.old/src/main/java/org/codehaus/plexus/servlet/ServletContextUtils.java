@@ -1,6 +1,7 @@
 package org.codehaus.plexus.servlet;
 
 import java.io.File;
+import java.net.URL;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -27,6 +28,17 @@ final class ServletContextUtils {
     private ServletContextUtils() {
     }
 
+    private static String resolveConfig(ServletContext context, String plexusConf) {
+        if (plexusConf == null) {
+            plexusConf = context.getInitParameter( PLEXUS_CONFIG_PARAM );
+        }
+        if (plexusConf == null) {
+            plexusConf = DEFAULT_PLEXUS_CONFIG;
+        }
+        
+        return plexusConf;
+    }
+    
     /**
      * Create a Plexus container using the {@link Embedder}. This method
      * should be called from an environment where a
@@ -43,33 +55,28 @@ final class ServletContextUtils {
     static Embedder createContainer(ServletContext context, String plexusConf)
         throws ServletException
     {
-        Embedder embedder;
-        File f;
-        PlexusContainer plexus;
-        ServiceManager serviceManager;
-
-        embedder = new Embedder();
-        f = new File( context.getRealPath( "/WEB-INF" ) );
+        Embedder embedder = new Embedder();
+        
+        //XXX: This will not necessarily do what you want.  TomCat has getRealPath() == null when running out of a WAR
+        File f = new File( context.getRealPath( "/WEB-INF" ) );
         embedder.addContextValue( "plexus.home", f.getAbsolutePath() );
-        if (plexusConf == null) {
-            plexusConf = context.getInitParameter( PLEXUS_CONFIG_PARAM );
-        }
-        if (plexusConf == null) {
-            plexusConf = DEFAULT_PLEXUS_CONFIG;
-        }
-        f = new File( context.getRealPath( plexusConf ) );
-        embedder.setConfiguration( f.getAbsolutePath() );
+        
         try
         {
+            plexusConf = resolveConfig( context, plexusConf );
+            embedder.setConfiguration( context.getResource(plexusConf) );
             embedder.start();
         }
         catch ( Exception e )
         {
+            e.printStackTrace();
             throw new ServletException( "Could not start Plexus!", e );
         }
-        plexus = embedder.getContainer();
+        
+        PlexusContainer plexus = embedder.getContainer();
         context.setAttribute( PlexusConstants.PLEXUS_KEY, plexus );
-        serviceManager = new AvalonServiceManager( plexus.getComponentRepository() );
+        
+        ServiceManager serviceManager = new AvalonServiceManager( plexus.getComponentRepository() );
         context.setAttribute( PlexusConstants.SERVICE_MANAGER_KEY, serviceManager );
         return embedder;
     }

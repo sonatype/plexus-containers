@@ -33,17 +33,16 @@ public class PlexusServletContextListener implements ServletContextListener
     public void contextInitialized(ServletContextEvent sce)
     {
         ServletContext context = sce.getServletContext();
-        String configFileName;
+        String configName = context.getInitParameter( ServletContextUtils.PLEXUS_CONFIG_PARAM );
 
-        configFileName = context.getInitParameter( ServletContextUtils.PLEXUS_CONFIG_PARAM );
         context.log("Initializing Plexus container...");
         try
         {
-            embedder = ServletContextUtils.createContainer(context, configFileName);
+            embedder = ServletContextUtils.createContainer(context, configName);
         }
         catch (ServletException e)
         {
-            throw new RuntimeException();
+            throw new RuntimeException(e.getLocalizedMessage());
         }
         context.log("Plexus container initialized.");
     }
