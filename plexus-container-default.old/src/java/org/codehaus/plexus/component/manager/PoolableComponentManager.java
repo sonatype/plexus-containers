@@ -134,33 +134,4 @@ public class PoolableComponentManager
                                 sweepInterval,
                                 triggerSize );
     }
-
-    class ComponentPool extends SweeperPool
-    {
-
-        /**
-         * @param maxSize
-         * @param minSize
-         * @param intialCapacity
-         * @param sweepInterval
-         * @param triggerSize
-         */
-        public ComponentPool(
-            int maxSize,
-            int minSize,
-            int intialCapacity,
-            int sweepInterval,
-            int triggerSize )
-        {
-            super( maxSize, minSize, intialCapacity, sweepInterval, triggerSize );
-        }
-
-        /**
-         * @see org.codehaus.plexus.util.SweeperPool#objectDisposed(java.lang.Object)
-         */
-        public void objectDisposed( Object obj )
-        {
-            endComponentLifecycle( obj );
-        }
-    }
 }
