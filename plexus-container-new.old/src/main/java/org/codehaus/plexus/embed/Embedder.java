@@ -35,20 +35,20 @@ import java.net.URL;
  */
 public class Embedder
 {
-    /** Configuration resource or file. */
+    /** Configuration resource or file. (Deprecated)*/
     private String configuration;
 
     /** Configuration resource URL */
-    private URL configurationURL;
+    private volatile URL configurationURL;
 
     /** Plexus Container. */
-    private PlexusContainer container;
+    private final PlexusContainer container;
 
     /** Flag to indicate embedder has been started. */
-    private boolean embedderStarted = false;
+    private volatile boolean embedderStarted = false;
 
     /** Flag to indicate embedder has been stopped. */
-    private boolean embedderStopped = false;
+    private volatile boolean embedderStopped = false;
 
     /**
      * Default constructor.
@@ -172,7 +172,7 @@ public class Embedder
      * started, or if its already been stopped.  The embedder cannot
      * be restarted.
      */
-    public void start()
+    public synchronized void start()
         throws Exception
     {
         if ( embedderStarted )
@@ -202,7 +202,7 @@ public class Embedder
      * @throws IllegalStateException If the embedder has not been
      * started, or if its already been stopped.
      */
-    public void stop()
+    public synchronized void stop()
         throws Exception
     {
         if ( embedderStopped )
