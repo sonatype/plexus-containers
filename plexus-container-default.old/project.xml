@@ -6,7 +6,7 @@
   <artifactId>plexus</artifactId>
   <id>plexus</id>
   <name>plexus</name>
-  <currentVersion>0.12</currentVersion>
+  <currentVersion>0.13</currentVersion>
   <organization>
     <name>Codehaus</name>
     <url>http://www.codehaus.org/</url>
@@ -176,9 +176,9 @@
   <build>
 
     <nagEmailAddress>plexus-dev@plexus.codehaus.org</nagEmailAddress>
-    <sourceDirectory>${basedir}/src/java</sourceDirectory>
-    <aspectSourceDirectory>${basedir}/src/aspect</aspectSourceDirectory>
-    <unitTestSourceDirectory>${basedir}/src/test</unitTestSourceDirectory>
+    <sourceDirectory>src/java</sourceDirectory>
+    <aspectSourceDirectory>src/aspect</aspectSourceDirectory>
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
 
     <unitTest>
       <includes>
