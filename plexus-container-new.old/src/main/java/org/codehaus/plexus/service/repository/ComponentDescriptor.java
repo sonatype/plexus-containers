@@ -39,7 +39,10 @@ public class ComponentDescriptor
     private String instantiationStrategy;
 
     /** Which lifecyclehandler to use. If null, use the containers default one. */
-    private String lifecycleHandlerId;
+    private String lifecycleHandler;
+
+    /** Component profile id. */
+    private String componentProfile;
 
     // ----------------------------------------------------------------------
     //  Constructors
@@ -203,9 +206,9 @@ public class ComponentDescriptor
     /**
      * @return
      */
-    public String getLifecycleHandlerId()
+    public String getLifecycleHandler()
     {
-        return lifecycleHandlerId;
+        return lifecycleHandler;
     }
 
     /**
@@ -213,9 +216,18 @@ public class ComponentDescriptor
      *
      * @param id
      */
-    public void setLifecycleHandlerId( String id )
+    public void setLifecycleHandler( String id )
     {
-        lifecycleHandlerId = id;
+        lifecycleHandler = id;
     }
 
+    public String getComponentProfile()
+    {
+        return componentProfile;
+    }
+
+    public void setComponentProfile( String componentProfile )
+    {
+        this.componentProfile = componentProfile;
+    }
 }
