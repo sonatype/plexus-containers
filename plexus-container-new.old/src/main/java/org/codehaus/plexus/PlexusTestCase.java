@@ -86,6 +86,8 @@ public class PlexusTestCase
             fail( e.getMessage() );
         }
 
+        basedir = getBasedir();
+
         container = getContainerInstance();
 
         container.addContextValue( "basedir", getBasedir() );
