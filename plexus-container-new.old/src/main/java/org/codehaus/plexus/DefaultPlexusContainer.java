@@ -9,6 +9,7 @@ import org.codehaus.plexus.classloader.ResourceManagerFactory;
 import org.codehaus.plexus.configuration.ConfigurationResourceException;
 import org.codehaus.plexus.configuration.DefaultConfiguration;
 import org.codehaus.plexus.configuration.XmlPullConfigurationBuilder;
+import org.codehaus.plexus.configuration.CascadingConfiguration;
 import org.codehaus.plexus.context.DefaultContext;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -332,6 +333,13 @@ public class DefaultPlexusContainer
         }
     }
 
+    private Configuration createCascadingConfiguration( Configuration base, Configuration parent )
+    {
+        Configuration cascadingConfiguration = new CascadingConfiguration( base, parent );
+
+        return cascadingConfiguration;
+    }
+
     /**
      * Initialize Logging.
      *
@@ -341,9 +349,8 @@ public class DefaultPlexusContainer
         throws Exception
     {
         LoggerManager loggerManager =
-            LoggerManagerFactory.create( getDefaultConfiguration(),
-                                         getConfiguration(),
-                                         getClassLoader() );
+            LoggerManagerFactory.create(
+                createCascadingConfiguration( getConfiguration(), getDefaultConfiguration() ), getClassLoader() );
 
         enableLogging( loggerManager.getRootLogger() );
         setLoggerManager( loggerManager );
