@@ -33,7 +33,7 @@ public class DefaultComponentComposer
                                    ComponentDescriptor componentDescriptor,
                                    PlexusContainer container,
                                    ComponentRepository componentRepository )
-            throws CompositionException
+        throws CompositionException
     {
         if ( componentDescriptor.getRequirements().size() == 0 )
         {
@@ -47,7 +47,7 @@ public class DefaultComponentComposer
 
         for ( final Iterator i = requirements.iterator(); i.hasNext(); )
         {
-            final ComponentRequirement requirement = ( ComponentRequirement ) i.next();
+            final ComponentRequirement requirement = (ComponentRequirement) i.next();
 
             final String role = requirement.getRole();
 
@@ -79,7 +79,7 @@ public class DefaultComponentComposer
                                           final String role,
                                           ComponentRepository componentRepository,
                                           Object component )
-            throws CompositionException
+        throws CompositionException
     {
         try
         {
@@ -87,7 +87,7 @@ public class DefaultComponentComposer
             {
                 Map dependencies = container.lookupMap( role );
 
-                final Object[] array = ( Object[] ) Array.newInstance( field.getType(), dependencies.size() );
+                final Object[] array = (Object[]) Array.newInstance( field.getType(), dependencies.size() );
 
                 assembleComponents( dependencies, componentRepository.getComponentDescriptorMap( role ), container, componentRepository );
 
@@ -144,7 +144,7 @@ public class DefaultComponentComposer
     protected Field findMatchingField( Object component,
                                        ComponentDescriptor componentDescriptor,
                                        final ComponentRequirement requirement )
-            throws CompositionException
+        throws CompositionException
     {
         final String fieldName = requirement.getFieldName();
 
@@ -234,6 +234,36 @@ public class DefaultComponentComposer
         return field;
     }
 
+    protected Field getFieldByTypeIncludingSuperclasses( final Class componentClass,
+                                                         final Class type,
+                                                         final ComponentDescriptor componentDescriptor )
+        throws CompositionException
+    {
+        Field field = null;
+
+        Class arrayType = Array.newInstance( type, 0 ).getClass();
+
+        Field[] fields = componentClass.getDeclaredFields();
+
+        for ( int i = 0; i < fields.length; i++ )
+        {
+            Class fieldType = fields[i].getType();
+
+            if ( fieldType.isAssignableFrom( type ) || fieldType.isAssignableFrom( arrayType ) )
+            {
+                field = fields[i];
+
+                break;
+            }
+        }
+
+        if ( field == null && componentClass.getSuperclass() != Object.class )
+        {
+            field = getFieldByTypeIncludingSuperclasses( componentClass.getSuperclass(), type, componentDescriptor );
+        }
+
+        return field;
+    }
 
     /**
      * Try to find assignable field.
@@ -249,23 +279,7 @@ public class DefaultComponentComposer
                                     final ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
-        Field field = null;
-
-        Class arrayType = Array.newInstance( type, 0 ).getClass();
-
-        Field[] fields = component.getClass().getDeclaredFields();
-
-        for ( int i = 0; i < fields.length; i++ )
-        {
-            Class fieldType = fields[i].getType();
-
-            if ( fieldType.isAssignableFrom( type ) || fieldType.isAssignableFrom( arrayType ) )
-            {
-                field = fields[i];
-
-                break;
-            }
-        }
+        Field field = getFieldByTypeIncludingSuperclasses( component.getClass(), type, componentDescriptor );
 
         if ( field == null )
         {
@@ -310,20 +324,20 @@ public class DefaultComponentComposer
                                        final Map componentDescriptorMap,
                                        final PlexusContainer container,
                                        final ComponentRepository componentRepository )
-            throws CompositionException
+        throws CompositionException
     {
 
         final Set roleHints = componentDescriptorMap.keySet();
 
         for ( final Iterator iterator = roleHints.iterator(); iterator.hasNext(); )
         {
-            final String roleHint = ( String ) iterator.next();
+            final String roleHint = (String) iterator.next();
 
-            final ComponentDescriptor componentDescriptor =  ( ComponentDescriptor ) componentDescriptorMap.get( roleHint );
+            final ComponentDescriptor componentDescriptor = (ComponentDescriptor) componentDescriptorMap.get( roleHint );
 
             final Object component = components.get( roleHint );
 
-            assembleComponent(  component, componentDescriptor, container, componentRepository );
+            assembleComponent( component, componentDescriptor, container, componentRepository );
         }
     }
 }
