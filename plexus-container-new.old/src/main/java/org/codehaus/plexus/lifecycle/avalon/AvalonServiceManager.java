@@ -75,33 +75,4 @@ public class AvalonServiceManager
     {
         componentRepository.release( service );
     }
-
-    // ----------------------------------------------------------------------
-    // Additional methods for dealing with component lookups by id.
-    // ----------------------------------------------------------------------
-
-    /**
-     * @see ComponentRepository#lookup(String,String)
-     */
-    public Object lookup( String role, String id )
-        throws ServiceException
-    {
-        return componentRepository.lookup( role, id );
-    }
-
-    /**
-     * @see ComponentRepository#hasService(String,String)
-     */
-    public boolean hasService( String role, String id )
-    {
-        return componentRepository.hasService( role, id );
-    }
-
-    /**
-     * @see ComponentRepository#dispose()
-     */
-    public void dispose()
-    {
-        componentRepository.dispose();
-    }
 }

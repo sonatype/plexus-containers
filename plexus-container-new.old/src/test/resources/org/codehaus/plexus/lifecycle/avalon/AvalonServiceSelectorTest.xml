@@ -41,6 +41,16 @@
       </configuration>
     </component>
 
+    <component>
+      <role>org.codehaus.plexus.ServiceC</role>
+      <role-hint>only-instance-two</role-hint>
+      <implementation>org.codehaus.plexus.DefaultServiceC</implementation>
+      <configuration>
+        <host>localhost</host>
+        <port>10000</port>
+      </configuration>
+    </component>
+    
   </components>
 
 </plexus>

@@ -33,8 +33,9 @@ public class AvalonServiceSelectorTest
         ServiceA serviceA = (ServiceA) selector.select( "only-instance" );
         assertTrue( serviceA != null );
 
+        selector.release( serviceA );
+        
         release( selector );
-        release( serviceA );
     }
 
     public void testCustomSelector()
@@ -49,7 +50,8 @@ public class AvalonServiceSelectorTest
         ServiceC serviceC = (ServiceC) selector.select( "only-instance" );
         assertTrue( serviceC != null );
 
+        selector.release( serviceC );
+        
         release( selector );
-        release( serviceC );
     }
 }
