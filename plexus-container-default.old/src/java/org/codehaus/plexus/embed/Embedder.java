@@ -76,6 +76,11 @@ public class Embedder
         return container;
     }
 
+    public void setClassLoader( ClassLoader classLoader )
+    {
+        container.setClassLoader( classLoader );
+    }
+
     public Object lookup( String role )
         throws ComponentLookupException
     {
