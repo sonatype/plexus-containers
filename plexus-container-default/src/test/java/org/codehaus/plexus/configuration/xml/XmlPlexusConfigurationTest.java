@@ -1,4 +1,4 @@
-package org.codehaus.plexus.configuration;
+package org.codehaus.plexus.configuration.xml;
 
 /*
  * The MIT License
@@ -24,16 +24,16 @@ package org.codehaus.plexus.configuration;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.configuration.ConfigurationTestHelper;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+
 import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
 /**
- * Test the basic public methods of DefaultConfiguration.
- *
  * @author <a href="mailto:rantene@hotmail.com">Ran Tene</a>
+ * @version $Id$
  */
-public final class XmlConfigurationTest
+public final class XmlPlexusConfigurationTest
     extends TestCase
 {
     private XmlPlexusConfiguration configuration;
@@ -41,11 +41,6 @@ public final class XmlConfigurationTest
     public void setUp()
     {
         configuration = new XmlPlexusConfiguration( "a" );
-    }
-
-    public void tearDowm()
-    {
-        configuration = null;
     }
 
     public void testWithHelper()

@@ -27,6 +27,9 @@ package org.codehaus.plexus.configuration.xml;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
+/**
+ * @version $Id$
+ */
 public class XmlPlexusConfiguration
     implements PlexusConfiguration
 {
@@ -72,7 +75,6 @@ public class XmlPlexusConfiguration
         if ( value == null )
         {
             value = defaultValue;
-
         }
 
         return value;
