@@ -123,16 +123,7 @@ public class XmlPlexusConfiguration
 
     public PlexusConfiguration getChild( String name )
     {
-        Xpp3Dom child = dom.getChild( name );
-
-        if ( child == null )
-        {
-            child = new Xpp3Dom( name );
-
-            dom.addChild( child );
-        }
-
-        return new XmlPlexusConfiguration( child );
+        return getChild( name, true );
     }
 
     public PlexusConfiguration getChild( int i )
@@ -140,9 +131,25 @@ public class XmlPlexusConfiguration
         return new XmlPlexusConfiguration( dom.getChild( i ) );
     }
 
-    public PlexusConfiguration getChild( String name, boolean value )
+    public PlexusConfiguration getChild( String name, boolean createChild )
     {
-        return getChild( name );
+        Xpp3Dom child = dom.getChild( name );
+
+        if ( child == null )
+        {
+            if ( createChild )
+            {
+                child = new Xpp3Dom( name );
+
+                dom.addChild( child );
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        return new XmlPlexusConfiguration( child );
     }
 
     public PlexusConfiguration[] getChildren()
