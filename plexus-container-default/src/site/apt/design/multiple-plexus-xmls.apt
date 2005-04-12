@@ -45,55 +45,14 @@ Design Documentation: Supporting Multiple plexus.xml Files
   appropriate factories by calling a maven-plugin, or by simply dropping the 
   appropriate artifacts into the core directory.
   
-  <<UPDATE:>> It might be perfectly safe to allow resolved component-artifacts
+  <<NOTE:>> It might be perfectly safe to allow resolved component-artifacts
   to participate in core component configuration, as well. We need to explore
   these issues more fully in a design session, and come to some sort of 
   consensus. The biggest advantage would be allowing maven plugins to simply 
   load the component factory they needed to run, on-the-fly.
   
-* Changes to the container bootstrap process
-
-  The default container is itself a component, configured in the same way as 
-  other components. The only exception to this is that the container config
-  (the plexus.xml, or rather the plexus-bootstrap.xml) has non-componentSet
-  XML in it that gives implementation names for the container's 
-  member-components.
-  
-  Recognizing these similarities, and understanding that we want to reuse as
-  much of the plexus.xml processing as possible, here's what I propose:
-  
-  If we're using a component configurator to wire up the container instance with
-  the services/components that it needs already, then we have to ask ourselves
-  what makes this container different from the components that it manages? It
-  seems to me that it would be a simple enough matter to have a prototypical
-  container with a static (i.e. non-dynamic) initialization of configurators,
-  component repository, etc. which it would then use to process the plexus.xml
-  files in the classpath, wire them together as a collection of components, and
-  lookup something like CONTAINER, which would be the real plexus container
-  instance. At this point, that container has been wired using <requirements/>
-  just like other components, and we can discard (or blank for reuse) the 
-  prototypical container and return the looked up version for use.
-  
-  This has a major advantage of consolidating all of the plexus.xml-related
-  component discovery code with the more specialized handling of plexus.xml
-  which has previously been used to extract the particular implementation
-  details for the componentRepository, componentFactoryManager, etc. The 
-  "static" container has the advantage of staying above the fray, and therefore
-  can assemble the various configuration fragments into a coherent whole before
-  it has to wire anything together.
-  
-  Since the assembly|bootstrap|prototypical (choose your own naming) container
-  has static (not injected) references to the services it needs, it should be
-  much more efficient to start than a container where the components are
-  discovered and wired together. As such, it should be a relatively low-cost 
-  way of preserving the reusability of the plexus.xml processing code. It also
-  has the advantage of working just like any other plexus container, 
-  post-discovery; there are no special-case configurations, everything is
-  a component. Essentially, for this special-case container we would simply be
-  providing the wiring from a piece of code rather than a piece of XML, and 
-  using it to bootstrap the real container using the same component 
-  implementations that we will most likely be using in the actual container, 
-  the one that is discovered fragment by fragment.
+  For now, I will pursue discovery via plexus.xml even on resolved component
+  artifacts.
   
 * Modification Points
 
@@ -105,19 +64,62 @@ Design Documentation: Supporting Multiple plexus.xml Files
       sets from the former core-config file, and will read multiple instances
       of this file in the classpath.
       
-  * [DefaultPlexusContainer] Change to have a static factory method to launch
-      a container given a certain set of configuration parameters (locations, 
-      ClassWorld, etc.). 
+      This component will also have other public methods which are not part of
+      the ComponentDiscoverer interface, and which will allow extraction of a
+      PlexusConfiguration object that contains the member-component information
+      for the container's configuration. In this way, we can reuse the code 
+      from this ComponentDiscoverer implementation which reads from plexus.xml 
+      files. It seems important to centralize all handler logic for this 
+      resource, in order to promote maintainability and reduce the lengths to 
+      which we must go if we change something in this file.
       
-      This method will create a container instance with members that are 
-      injected from the method itself (wire it by hand from this method). That 
-      container will be used to discover the components given a set of 
-      ComponentDiscoverers that includes the original discoverer for 
-      components.xml and the new one geared toward the plexus.xml. Using the
-      components discovered by this set of ComponentDiscoverer instances, the
-      container will perform a lookup() for a set variable, maybe
-      <<<org.codehaus.plexus.PlexusContainer.ROLE>>>. This will return a fully
-      wired container "component" which is configured and ready to init(), 
-      start(), or whatever the next step in the container lifecycle is. That 
-      static factory method will return this looked-up container instance as the
-      launched container.
+  * [DefaultPlexusContainer] Change the processing logic for plexus.xml 
+      resources to use the new PlexusXmlComponentDiscoverer, described above.
+      In this usage, the implementation-specific public methods will be used
+      to directly retrieve the PlexusConfiguration from those resources. This is
+      part of the non-interface API for this component, as stated above. Once
+      the PlexusConfiguration is retrieved from the PlexusXmlComponentDiscoverer
+      instance, it will be merged in much the same way as is currently done,
+      with the exception that each instance of the plexus.xml resource will be
+      merged.
+
+      
+* Implications for Container Initialization and Resolved Artifacts
+
+  One implication of this type of discovery is that any resolved artifacts -
+  that is, any artifact which is not on the original classpath of the
+  container - will not be able to contribute to the member-components for the 
+  container itself. This should be obvious, because no component-artifact
+  resolution can take place until the container itself is initialized.
+  
+  <<NOTE:>> Is that really true? What about component descriptors in the original
+  classpath that declare dependencies on artifacts that don't exist in the
+  original classpath? Is there any reasonable way to initialize the artifact
+  container with a set of artifact repositories, such that missing artifacts
+  can be resolved, downloaded, and added to the classpath at initialization-time?
+  Is this even a Good Thing(tm)?? 
+  
+  If we were to support artifact resolution at initialization-time, we could
+  say that only the artifacts either:
+  
+  [[a]] present on the original classpath, or
+  
+  [[b]] implied by artifacts on the original classpath
+  
+  would be used to discover container member-components (things like
+  ComponentRepository, ComponentFactoryManager, etc.) and that subsequent calls
+  to addComponent(..) or addArtifact(..) or whatever it's called would not be 
+  allowed to reconfigure the container's member-components.
+  
+  I think we could handle this, by changing the
+  way we construct/initialize the ArtifactEnabledContainer, but it remains to be
+  decided whether this non-conventional initialization parameter is permissable,
+  and whether this approach is a good idea. It might be better to require that
+  the core component set (that is, the components with which the container is
+  initialized) be completely present on the original classpath, to avoid network
+  induced errors during the initialization process...
+  
+  My personal tendency is to say that resolution of missing artifacts at
+  initialization time is the only consistent way of using an 
+  ArtifactEnabledContainer.
+  
