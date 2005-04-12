@@ -1,0 +1,123 @@
+  ---
+  Design Supporting Multiple plexus.xml Files
+  ---
+  John Casey
+  ---
+  11-April-2005
+  ---
+  
+Design Documentation: Supporting Multiple plexus.xml Files
+
+* Introduction and Motivation
+
+  Currently, plexus is configured using one plexus.xml file, one user-space
+  plexus.xml file, and zero or more components.xml files. The components.xml
+  files are assumed to be embedded in META-INF/plexus within component artifacts
+  that are included in the classpath. Unfortunately, because of the differences
+  between plexus.xml and components.xml, so-called "core" components cannot be
+  added or configured using components.xml (because the container is assumed to
+  be completely ready to run before the component descriptors are processed).
+  
+  This means that the plexus.xml file has to be created outside of any component
+  which in turn means that the plexus.xml author has to have quite a lot of 
+  information about each "core" component in order to write a core descriptor.
+  
+  Support for fragmentary plexus.xml files in component artifacts would promote
+  reusability, and reduce the requirements for extensive dependency 
+  specification inside a container-driven application, particularly when that
+  application has many optional add-ons that require optional core components
+  to be added to the container.
+  
+  One good use-case for multiple plexus.xml files is maven-2. We want to support
+  multiple languages for maven plugins, but cannot without adding their 
+  respective plexus-component-factory implementations. While this may not seem
+  to be that big of a deal, the dependency chains dragged into the build by the
+  inclusion of any one non-java plexus-component-factory can be quite 
+  significant. Bringing in plexus-marmalade-factory, for instance, dragged in 
+  4 new artifacts (plexus-marmalade-factory, marmalade-core, 
+  maven-script-marmalade, marmalade-el-commons) to the maven-core build, where
+  we had to configure the plexus marmalade factory in the plexus.xml...we didn't
+  have the luxury of using different plexus.xml files depending on the desired
+  language support.
+  
+  Adding a restricted incarnation of multiple plexus.xml support would allow
+  users to determine which languages they want to use, and configure the 
+  appropriate factories by calling a maven-plugin, or by simply dropping the 
+  appropriate artifacts into the core directory.
+  
+  <<UPDATE:>> It might be perfectly safe to allow resolved component-artifacts
+  to participate in core component configuration, as well. We need to explore
+  these issues more fully in a design session, and come to some sort of 
+  consensus. The biggest advantage would be allowing maven plugins to simply 
+  load the component factory they needed to run, on-the-fly.
+  
+* Changes to the container bootstrap process
+
+  The default container is itself a component, configured in the same way as 
+  other components. The only exception to this is that the container config
+  (the plexus.xml, or rather the plexus-bootstrap.xml) has non-componentSet
+  XML in it that gives implementation names for the container's 
+  member-components.
+  
+  Recognizing these similarities, and understanding that we want to reuse as
+  much of the plexus.xml processing as possible, here's what I propose:
+  
+  If we're using a component configurator to wire up the container instance with
+  the services/components that it needs already, then we have to ask ourselves
+  what makes this container different from the components that it manages? It
+  seems to me that it would be a simple enough matter to have a prototypical
+  container with a static (i.e. non-dynamic) initialization of configurators,
+  component repository, etc. which it would then use to process the plexus.xml
+  files in the classpath, wire them together as a collection of components, and
+  lookup something like CONTAINER, which would be the real plexus container
+  instance. At this point, that container has been wired using <requirements/>
+  just like other components, and we can discard (or blank for reuse) the 
+  prototypical container and return the looked up version for use.
+  
+  This has a major advantage of consolidating all of the plexus.xml-related
+  component discovery code with the more specialized handling of plexus.xml
+  which has previously been used to extract the particular implementation
+  details for the componentRepository, componentFactoryManager, etc. The 
+  "static" container has the advantage of staying above the fray, and therefore
+  can assemble the various configuration fragments into a coherent whole before
+  it has to wire anything together.
+  
+  Since the assembly|bootstrap|prototypical (choose your own naming) container
+  has static (not injected) references to the services it needs, it should be
+  much more efficient to start than a container where the components are
+  discovered and wired together. As such, it should be a relatively low-cost 
+  way of preserving the reusability of the plexus.xml processing code. It also
+  has the advantage of working just like any other plexus container, 
+  post-discovery; there are no special-case configurations, everything is
+  a component. Essentially, for this special-case container we would simply be
+  providing the wiring from a piece of code rather than a piece of XML, and 
+  using it to bootstrap the real container using the same component 
+  implementations that we will most likely be using in the actual container, 
+  the one that is discovered fragment by fragment.
+  
+* Modification Points
+
+  The following points in the code will have to be modified in order to 
+  accommodate this change:
+  
+  * [PlexusXmlComponentDiscoverer<(new)>] Scan for any resources named
+      META-INF/plexus/plexus.xml. This discoverer will be used to component
+      sets from the former core-config file, and will read multiple instances
+      of this file in the classpath.
+      
+  * [DefaultPlexusContainer] Change to have a static factory method to launch
+      a container given a certain set of configuration parameters (locations, 
+      ClassWorld, etc.). 
+      
+      This method will create a container instance with members that are 
+      injected from the method itself (wire it by hand from this method). That 
+      container will be used to discover the components given a set of 
+      ComponentDiscoverers that includes the original discoverer for 
+      components.xml and the new one geared toward the plexus.xml. Using the
+      components discovered by this set of ComponentDiscoverer instances, the
+      container will perform a lookup() for a set variable, maybe
+      <<<org.codehaus.plexus.PlexusContainer.ROLE>>>. This will return a fully
+      wired container "component" which is configured and ready to init(), 
+      start(), or whatever the next step in the container lifecycle is. That 
+      static factory method will return this looked-up container instance as the
+      launched container.
