@@ -90,6 +90,9 @@ public class DefaultArtifactEnabledContainer
         // First we need to see if the artifact is present
         // ----------------------------------------------------------------------
 
+        // TODO: we are being passed in the plugin repository for this, but then later using those to resolve other artifacts.
+        //   the passed in remote repos should be the artifact repositories, and this should be done before the addComponent call...
+        //   (see MNG-229)
         artifactResolver.resolve( component, remoteRepositories, localRepository );
 
         realmTmpId++;
