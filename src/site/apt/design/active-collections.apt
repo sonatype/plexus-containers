@@ -185,75 +185,9 @@ Design Documentation: Plexus-Backed "Active" Collections of Components
   be the largest section of this discussion.
   
   Iterator can have a SoftReference to the next() component, populated when/if
-  the next() method is called. If reference == null, no next. If next.get() == null,
-  throw ConcurrentModificationException...? If next() not called, then directly
-  lookup the next component from the set of keys...
+  the next() method is called. It will also have a boolean field that determines
+  whether hasNext() was called since the last call to next(). If 
+  reference == null and hasNextCalled == true, no next. If next.get() == null,
+  throw ConcurrentModificationException...? If hasNextCalled == false, then 
+  directly lookup the next component from the set of keys...
   
-  More formally:
-  
-  [ComponentMappingIterator] Iterator implementation which keeps a running list
-    of the role-hints that it has iterated over, and a SoftReference to the next
-    component to be iterated over when using hasNext()->next().
-    
-    Fields:
-    
-    [visitedRoleHints:java.util.List]
-    
-      Used to track the role-hints already visited, in case they change order
-      between iteration-steps. As hasNext() or next() is called, each 
-      next-component's role-hint is stored in here to avoid revisiting that
-      component in the event the component ordering is changed by some sort of
-      container-spawned jiggering. Searches for a next-component will only
-      succeed if the next-component is found, and the corresponding role-hint
-      is not in this list.
-    
-    [nextComponent: java.lang.ref.SoftReference]
-    
-      Used to store the component reference resulting from searching for a
-      "next" component, as in resulting from a call to hasNext():boolean. The
-      following states are possible for this field:
-        
-      * If hasNext() is never called, the field will be null.
-      
-      * If hasNext() is called, and returns false, the field will be null.
-      
-      * If hasNext() returns true, and the component has not been unloaded
-        from the container (and thus garbage-collected), this field will
-        contain a reference to the next component to be returned as a result
-        of the next() method call.
-          
-      * If hasNext() returns true, and the component has been unloaded from
-        the container (and garbage-collected), this field will contain a
-        SoftReference that references null. That is, SoftReference.get() will
-        return null.
-  
-    [hasNextCalled: boolean]
-    
-      Used to flag when hasNext() is called, but next() has not yet been 
-      called. This is useful because it will determine the difference between
-      hasNext() being called and not finding anything, and hasNext() not being
-      called. In the former case, the next() method should NOT try to find a
-      next-component. In the latter case, we don't know what's out there, so 
-      a call to next() should search for a next-component.
-        
-      The following states are possible for this field:
-        
-      * If hasNext() is not called, this field is false.
-      
-      * If hasNext() is called, and next() has not been called, this field
-        is true.
-      
-      * When next() is called, this field is set to false again. That way, 
-        successive calls to next() will result in these calls searching for
-        successive next-components.
-
-    Methods:
-    
-    [findNextComponent():java.lang.Object]
-    
-      Asks the container for a list of role-hints corresponding to the role this
-      Iterator was constructed with. Using this list, and 
-      
-      
-<<NOTE:>> I need to sleep on this for the evening...I can't see the solution for
-now.
