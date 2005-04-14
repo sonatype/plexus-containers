@@ -32,7 +32,8 @@ import org.codehaus.plexus.util.StringUtils;
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
  */
-public abstract class AbstractConfigurationConverter implements ConfigurationConverter
+public abstract class AbstractConfigurationConverter
+    implements ConfigurationConverter
 {
     private static final String IMPLEMENTATION = "implementation";
 
@@ -42,10 +43,9 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
      * If 'implementation' hint was provided we will try to load correspoding class
      * If we are unable to do so error will be reported
      */
-    protected Class getClassForImplementationHint( Class type,
-                                                   PlexusConfiguration configuration,
+    protected Class getClassForImplementationHint( Class type, PlexusConfiguration configuration,
                                                    ClassLoader classLoader )
-            throws ComponentConfigurationException
+        throws ComponentConfigurationException
     {
         Class retValue = type;
 
@@ -60,19 +60,19 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
             }
             catch ( ClassNotFoundException e )
             {
-                String msg = "Class name which was explicitly given in configuration using 'implementation' attribute: '"
-                        + implementation + "' cannot be loaded: " + e.getMessage();
+                String msg = "Class name which was explicitly given in configuration using 'implementation' attribute: '" +
+                    implementation + "' cannot be loaded: " + e.getMessage();
 
                 throw new ComponentConfigurationException( msg );
             }
         }
 
-
         return retValue;
     }
 
 
-    protected Class loadClass( String classname, ClassLoader classLoader ) throws ComponentConfigurationException
+    protected Class loadClass( String classname, ClassLoader classLoader )
+        throws ComponentConfigurationException
     {
         Class retValue = null;
 
@@ -113,7 +113,7 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
         {
             String msg = "Class '" + clazz.getName() + "' cannot be instantiated";
 
-            throw new ComponentConfigurationException( msg );
+            throw new ComponentConfigurationException( msg, e );
         }
     }
 
@@ -125,7 +125,7 @@ public abstract class AbstractConfigurationConverter implements ConfigurationCon
     }
 
     // firstName --> first-name
-    protected  String toXML( String fieldName )
+    protected String toXML( String fieldName )
     {
         return StringUtils.addAndDeHump( fieldName );
     }
