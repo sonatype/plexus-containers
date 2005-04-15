@@ -34,6 +34,7 @@ import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.discovery.DiscoveryListenerDescriptor;
+import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.manager.ComponentManager;
@@ -60,6 +61,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 
@@ -69,6 +71,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -102,7 +105,7 @@ public class DefaultPlexusContainer
     private ClassRealm plexusRealm;
 
     private String name;
-
+    
     private ComponentRepository componentRepository;
 
     private ComponentManagerManager componentManagerManager;
@@ -557,37 +560,40 @@ public class DefaultPlexusContainer
                 ComponentSetDescriptor componentSet = (ComponentSetDescriptor) j.next();
 
                 List componentDescriptors = componentSet.getComponents();
-
-                for ( Iterator k = componentDescriptors.iterator(); k.hasNext(); )
+                
+                if(componentDescriptors != null)
                 {
-                    ComponentDescriptor componentDescriptor = (ComponentDescriptor) k.next();
-
-                    componentDescriptor.setComponentSetDescriptor( componentSet );
-
-                    // If the user has already defined a component descriptor for this particular
-                    // component then do not let the discovered component descriptor override
-                    // the user defined one.
-                    if ( getComponentDescriptor( componentDescriptor.getComponentKey() ) == null )
+                    for ( Iterator k = componentDescriptors.iterator(); k.hasNext(); )
                     {
-                        addComponentDescriptor( componentDescriptor );
+                        ComponentDescriptor componentDescriptor = (ComponentDescriptor) k.next();
 
-                        // We only want to add components that have not yet been
-                        // discovered in a parent realm. We don't quite have fine
-                        // grained control over this right now but this is for
-                        // dynamic additions which are only happening from maven
-                        // at the moment. And plugins have a parent realm and
-                        // a grand parent realm so if the component has been
-                        // discovered it's most likely in those realms.
+                        componentDescriptor.setComponentSetDescriptor( componentSet );
 
-                        // I actually need to keep track of what realm a component
-                        // was discovered in so that i can accurately search the
-                        // parents.
+                        // If the user has already defined a component descriptor for this particular
+                        // component then do not let the discovered component descriptor override
+                        // the user defined one.
+                        if ( getComponentDescriptor( componentDescriptor.getComponentKey() ) == null )
+                        {
+                            addComponentDescriptor( componentDescriptor );
 
-                        discoveredComponentDescriptors.add( componentDescriptor );
+                            // We only want to add components that have not yet been
+                            // discovered in a parent realm. We don't quite have fine
+                            // grained control over this right now but this is for
+                            // dynamic additions which are only happening from maven
+                            // at the moment. And plugins have a parent realm and
+                            // a grand parent realm so if the component has been
+                            // discovered it's most likely in those realms.
+
+                            // I actually need to keep track of what realm a component
+                            // was discovered in so that i can accurately search the
+                            // parents.
+
+                            discoveredComponentDescriptors.add( componentDescriptor );
+                        }
                     }
+                    
+                    //discoveredComponentDescriptors.addAll( componentDescriptors );
                 }
-
-                //discoveredComponentDescriptors.addAll( componentDescriptors );
             }
         }
 
@@ -857,10 +863,6 @@ public class DefaultPlexusContainer
         //
         // ----------------------------------------------------------------------
 
-        String PLEXUS_XML = "META-INF/plexus/plexus.xml";
-
-        InputStream plexusXml = plexusRealm.getResourceAsStream( PLEXUS_XML );
-
         // ----------------------------------------------------------------------
         //
         // ----------------------------------------------------------------------
@@ -874,13 +876,11 @@ public class DefaultPlexusContainer
 
         configuration = systemConfiguration;
 
-        if ( plexusXml != null )
+        PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
+        PlexusConfiguration plexusConfiguration = discoverer.discoverConfiguration(getContext(), plexusRealm);
+        
+        if(plexusConfiguration != null)
         {
-            // User userConfiguration
-
-            PlexusConfiguration plexusConfiguration =
-                PlexusTools.buildConfiguration( getInterpolationConfigurationReader( new InputStreamReader( plexusXml ) ) );
-
             configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
 
             processConfigurationsDirectory();
@@ -915,7 +915,7 @@ public class DefaultPlexusContainer
 
         p.addConfigurationResourceHandler( new DirectoryConfigurationResourceHandler() );
 
-        configuration = p.process( configuration, new HashMap() );
+        configuration = p.process( configuration, Collections.EMPTY_MAP );
     }
 
     protected Reader getInterpolationConfigurationReader( Reader reader )
@@ -973,7 +973,7 @@ public class DefaultPlexusContainer
         throws Exception
     {
         BasicComponentConfigurator configurator = new BasicComponentConfigurator();
-
+        
         PlexusConfiguration c = configuration.getChild( "component-repository" );
 
         processCoreComponentConfiguration( "component-repository", configurator, c );
@@ -983,7 +983,7 @@ public class DefaultPlexusContainer
         componentRepository.setClassRealm( plexusRealm );
 
         componentRepository.initialize();
-
+        
         // Lifecycle handler manager
 
         c = configuration.getChild( "lifecycle-handler-manager" );
@@ -1013,6 +1013,15 @@ public class DefaultPlexusContainer
         c = configuration.getChild( "component-factory-manager" );
 
         processCoreComponentConfiguration(  "component-factory-manager", configurator, c );
+        
+        if( componentFactoryManager instanceof Contextualizable )
+        {
+            Context context = getContext();
+            
+            context.put( PlexusConstants.PLEXUS_KEY, this );
+            
+            ((Contextualizable) componentFactoryManager).contextualize( getContext() );
+        }
 
         // Component factory manager
 
@@ -1170,17 +1179,32 @@ public class DefaultPlexusContainer
         String componentFactoryId = componentDescriptor.getComponentFactory();
 
         ComponentFactory componentFactory = null;
-
-        if ( componentFactoryId != null )
+        Object component = null;
+        
+        try
         {
-            componentFactory = componentFactoryManager.findComponentFactory( componentFactoryId );
+            if ( componentFactoryId != null )
+            {
+                componentFactory = componentFactoryManager.findComponentFactory( componentFactoryId );
+            }
+            else
+            {
+                componentFactory = componentFactoryManager.getDefaultComponentFactory();
+            }
+    
+            component = componentFactory.newInstance( componentDescriptor, plexusRealm, this );
         }
-        else
+        finally
         {
-            componentFactory = componentFactoryManager.getDefaultComponentFactory();
+            // the java factory is a special case, without a component manager.
+            // Don't bother releasing the java factory.
+            if( componentFactoryId != null && !"java".equals( componentFactoryId ) )
+            {
+                release(componentFactory);
+            }
         }
-
-        return componentFactory.newInstance( componentDescriptor, plexusRealm, this );
+        
+        return component;
     }
 
     public void composeComponent( Object component, ComponentDescriptor componentDescriptor )

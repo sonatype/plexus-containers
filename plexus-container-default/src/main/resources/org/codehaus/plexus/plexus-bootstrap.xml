@@ -10,6 +10,8 @@
    -->
 
   <!-- Bootstrap components -->
+  <!-- default-component-factory-id>java</default-component-factory-id -->
+    
   <component-repository implementation="org.codehaus.plexus.component.repository.DefaultComponentRepository">
     <composition-resolver implementation="org.codehaus.plexus.component.composition.DefaultCompositionResolver"/>
   </component-repository>
@@ -17,6 +19,7 @@
   <component-discoverer-manager implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager">
     <component-discoverers>
       <component-discoverer implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscoverer"/>
+      <component-discoverer implementation="org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer"/>
     </component-discoverers>
   </component-discoverer-manager>
 
@@ -107,13 +110,14 @@
 
   <component-factory-manager implementation="org.codehaus.plexus.component.factory.DefaultComponentFactoryManager">
     <default-component-factory-id>java</default-component-factory-id>
-    <component-factories>
+    <default-component-factory implementation="org.codehaus.plexus.component.factory.java.JavaComponentFactory"/>
+    <!-- component-factories>
       <component-factory implementation="org.codehaus.plexus.component.factory.java.JavaComponentFactory">
         <id>java</id>
       </component-factory>
-    </component-factories>
+    </component-factories -->
   </component-factory-manager>
-
+  
   <component-composer-manager implementation="org.codehaus.plexus.component.composition.DefaultComponentComposerManager">
     <component-composers>
       <component-composer implementation="org.codehaus.plexus.component.composition.FieldComponentComposer">
