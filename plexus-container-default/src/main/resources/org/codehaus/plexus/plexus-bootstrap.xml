@@ -11,7 +11,7 @@
 
   <!-- Bootstrap components -->
   <!-- default-component-factory-id>java</default-component-factory-id -->
-    
+
   <component-repository implementation="org.codehaus.plexus.component.repository.DefaultComponentRepository">
     <composition-resolver implementation="org.codehaus.plexus.component.composition.DefaultCompositionResolver"/>
   </component-repository>
@@ -117,7 +117,7 @@
       </component-factory>
     </component-factories -->
   </component-factory-manager>
-  
+
   <component-composer-manager implementation="org.codehaus.plexus.component.composition.DefaultComponentComposerManager">
     <component-composers>
       <component-composer implementation="org.codehaus.plexus.component.composition.FieldComponentComposer">
@@ -146,17 +146,14 @@
     <component>
       <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
       <implementation>org.codehaus.plexus.component.configurator.BasicComponentConfigurator</implementation>
-      <!--
-      <implementation>org.codehaus.plexus.component.configurator.DefaultComponentConfigurator</implementation>
-      -->
       <lifecycle-handler>passive</lifecycle-handler>
+      <!-- TODO: the converters should be components -->
       <requirements>
-        <!--
         <requirement>
           <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
-         </requirement>
-         -->
+        </requirement>
       </requirements>
+         -->
     </component>
     <!--
     <component>
