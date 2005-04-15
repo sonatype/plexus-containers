@@ -47,6 +47,11 @@ public class PlexusTestCaseTest
     public void setUp()
     {
         basedir = System.getProperty( "basedir" );
+        
+        if(basedir == null)
+        {
+            basedir = new File(".").getAbsolutePath();
+        }
     }
 
     public void testPlexusTestCase()

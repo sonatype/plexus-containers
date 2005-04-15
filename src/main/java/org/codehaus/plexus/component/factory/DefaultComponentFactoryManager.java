@@ -30,6 +30,8 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
+import java.util.List;
+
 /**
  *
  *
@@ -45,6 +47,9 @@ public class DefaultComponentFactoryManager
     private ComponentFactory defaultComponentFactory;
 
     private PlexusContainer container;
+    
+    /** @deprecated Register factories as components with language as role-hint instead.*/
+    private List componentFactories;
 
     public ComponentFactory findComponentFactory( String id )
         throws UndefinedComponentFactoryException
