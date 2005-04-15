@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component.configurator.expression;
 
+import java.io.File;
+
 /*
  * The MIT License
  *
@@ -34,9 +36,18 @@ public interface ExpressionEvaluator
 {
     /**
      * Evaluate an expression.
+     *
      * @param expression the expression
      * @return the value of the expression
      */
     Object evaluate( String expression )
         throws ExpressionEvaluationException;
+
+    /**
+     * Align a given path to the base directory that can be evaluated by this expression evaluator, if known.
+     *
+     * @param file the file
+     * @return the aligned file
+     */
+    File alignToBaseDirectory( File file );
 }
