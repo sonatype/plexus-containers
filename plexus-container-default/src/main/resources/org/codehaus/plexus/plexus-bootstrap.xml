@@ -150,8 +150,26 @@
       <implementation>org.codehaus.plexus.component.configurator.DefaultComponentConfigurator</implementation>
       -->
       <lifecycle-handler>passive</lifecycle-handler>
+      <requirements>
+        <!--
+        <requirement>
+          <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
+         </requirement>
+         -->
+      </requirements>
     </component>
-    <!-- Component composer -->
+    <!--
+    <component>
+      <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
+      <implementation>org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.component.configurator.converters.ConfigurationConverter</role>
+          <field-name>converters</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    -->
   </components>
 
 </plexus>

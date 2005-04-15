@@ -24,33 +24,24 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
-import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
+import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
-
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
+ * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
  * @version $Id$
  */
-public class BasicComponentConfigurator
-    extends AbstractComponentConfigurator
+public abstract class AbstractComponentConfigurator
+    implements ComponentConfigurator
 {
-    public void configureComponent( Object component, PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator )
+    // TODO: configured as a component
+    protected ConverterLookup converterLookup = new DefaultConverterLookup();
+
+    public void configureComponent( Object component, PlexusConfiguration configuration )
         throws ComponentConfigurationException
     {
-        // ----------------------------------------------------------------------
-        // We should probably take into consideration the realm that the component
-        // came from in order to load the correct classes.
-        // ----------------------------------------------------------------------
-
-        // michal: My solution was to to use the same classloader which defined component class
-        ClassLoader classLoader = component.getClass().getClassLoader();
-
-        ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
-
-        converter.processConfiguration( converterLookup, component, classLoader, configuration, expressionEvaluator );
+        configureComponent( component, configuration, new DefaultExpressionEvaluator() );
     }
 }

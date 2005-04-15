@@ -24,13 +24,12 @@ package org.codehaus.plexus;
  * SOFTWARE.
  */
 
+import junit.framework.TestCase;
+import org.codehaus.plexus.context.Context;
+
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import junit.framework.TestCase;
-
-import org.codehaus.plexus.context.Context;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -38,7 +37,7 @@ import org.codehaus.plexus.context.Context;
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
  */
-public class PlexusTestCase
+public abstract class PlexusTestCase
     extends TestCase
 {
     protected PlexusContainer container;

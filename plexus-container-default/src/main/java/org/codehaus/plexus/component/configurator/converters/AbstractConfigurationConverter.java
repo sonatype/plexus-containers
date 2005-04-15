@@ -25,6 +25,8 @@ package org.codehaus.plexus.component.configurator.converters;
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -130,4 +132,38 @@ public abstract class AbstractConfigurationConverter
         return StringUtils.addAndDeHump( fieldName );
     }
 
+    protected Object fromExpression( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator,
+                                     Class type )
+        throws ComponentConfigurationException
+    {
+        Object v = null;
+        String value = configuration.getValue( null );
+        // TODO: How does it get an empty value?
+        if ( value != null && value.length() > 0 )
+        {
+            // Object is provided by an expression
+            // This seems a bit ugly... canConvert really should return false in this instance, but it doesn't have the
+            //   configuration to know better
+            try
+            {
+                v = expressionEvaluator.evaluate( value );
+            }
+            catch ( ExpressionEvaluationException e )
+            {
+                String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
+                    configuration.getName() + "'";
+                throw new ComponentConfigurationException( msg, e );
+            }
+            if ( v != null )
+            {
+                if ( !type.isAssignableFrom( v.getClass() ) )
+                {
+                    String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type +
+                        "' from '" + value + "', which is of type " + v.getClass();
+                    throw new ComponentConfigurationException( msg );
+                }
+            }
+        }
+        return v;
+    }
 }
