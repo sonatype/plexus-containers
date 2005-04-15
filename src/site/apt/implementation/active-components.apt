@@ -1,0 +1,172 @@
+  ---
+  Implementation Details: Active Collections
+  ---
+  John Casey
+  ---
+  14-April-2005
+  ---
+  
+Implementation Details for Active Collections
+
+* Iterator
+
+  [SetLogicActiveIterator] Iterator implementation which keeps a running list
+    of the role-hints that it has iterated over, and a SoftReference to the next
+    component to be iterated over when using hasNext()->next().
+    
+    Fields:
+    
+    [lastRoleHintList:java.util.List]
+    
+      Using the equals(..) method on this list vs. a newly retrieved copy of the
+      list of role-hints, determines whether we need to discard our current
+      index in this list (used for traversal), and seek a new one from the new
+      list instance and using the visitedRoleHints to skip repositioned
+      components.
+      
+      <<NB:>> This will be inefficient for large collections of role-hints
+      (components bound to the same role with different hints), since
+      List.equals(List) is O(n) I believe...
+    
+    [currentIndex:int]
+    
+      Used to quickly resume traversal of the list of role-hints in the event
+      that that list hasn't changed since the last step in the iteration. If
+      the lists (last-used vs. current) are not equal, this index is discarded, 
+      and a new "currentIndex" is sought based on the visitedRoleHints and the
+      most current copy of the role-hint List.
+    
+    [nextComponent: java.lang.ref.SoftReference]
+    
+      Used to store the component reference resulting from searching for a
+      "next" component, as in resulting from a call to hasNext():boolean. The
+      following states are possible for this field:
+        
+      * If hasNext() is never called, the field will be null.
+      
+      * If hasNext() is called, and returns false, the field will be null.
+      
+      * If hasNext() returns true, and the component has not been unloaded
+        from the container (and thus garbage-collected), this field will
+        contain a reference to the next component to be returned as a result
+        of the next() method call.
+          
+      * If hasNext() returns true, and the component has been unloaded from
+        the container (and garbage-collected), this field will contain a
+        SoftReference that references null. That is, SoftReference.get() will
+        return null.
+  
+    [hasNextCalled: boolean]
+    
+      Used to flag when hasNext() is called, but next() has not yet been 
+      called. This is useful because it will determine the difference between
+      hasNext() being called and not finding anything, and hasNext() not being
+      called. In the former case, the next() method should NOT try to find a
+      next-component. In the latter case, we don't know what's out there, so 
+      a call to next() should search for a next-component.
+        
+      The following states are possible for this field:
+        
+      * If hasNext() is not called, this field is false.
+      
+      * If hasNext() is called, and next() has not been called, this field
+        is true.
+      
+      * When next() is called, this field is set to false again. That way, 
+        successive calls to next() will result in these calls searching for
+        successive next-components.
+
+    Methods:
+    
+    [findNextComponent():boolean]
+    
+      Used to find the next component in to visit from this Iterator instance.
+      The return value signals whether this method was successful in populating
+      the nextComponent field reference.
+      
+      Executes the following general algorithm:
+      
+      [[1]] Asks the container for a current list of role-hints corresponding to 
+            the role this Iterator was constructed with. 
+      
+      [[2]] Using the list from [1], and the lastRoleHintsList field, determine 
+            whether the list has changed since the last step in the iteration. 
+            
+            * If it has changed:
+            
+              [[a]] Reassign the lastRoleHintList field to the "current" value
+                    of the role-hint list.
+                    
+              [[b]] Discard the currentIndex field value
+              
+              [[c]] Seek a new currentIndex value by calling 
+                    seekCurrentPositionIn() and passing in the "current" list
+                    as the parameter.
+              
+                    * If the result of this method call is false:
+                    
+                      [[a]] set nextComponent = null
+                      
+                      [[b]] return false
+      
+      [[3]] If the list has not changed, use currentIndex to retrieve the next
+            role-hint used to lookup the next component in the iteration.
+            
+            * If the next role-hint is null, or the index >= role-hint list.size
+              then:
+              
+              [[a]] set nextComponent = null
+              
+              [[b]] return false
+              
+      [[4]] Using the role-hint from [3], lookup the next component from the 
+            container.
+            
+            * If the component is null:
+            
+              [[a]] set nextComponent = null
+              
+              [[b]] return false
+              
+            * Otherwise:
+            
+              [[a]] set nextComponent = new SoftReference(component)
+              
+                    This is to ensure that the Iterator instance doesn't hold
+                    onto the component inappropriately and block unloading, etc.
+                    
+              [[c]] return true
+              
+    [seekCurrentPositionIn(List):boolean]
+    
+      Used to repopulate the currentIndex of this iterator in the traversal of
+      the available role-hints for the container. This is only triggered in the
+      event that a change to the list of associated role-hints is detected 
+      during iteration. The return value for this method is used to indicate
+      whether the method succeeded in seeking a new value for currentIndex. If
+      the return value is false, we are to assume that there are no unvisited
+      components associated with the role with which this Iterator instance was
+      constructed.
+      
+      Executes the following general algorithm:
+      
+      <<NB:>> General algorithm notes:
+      
+      Iterate through the new list up to the currentIndex, and use Object
+      equals() at each element to determine if the change is in the "past"
+      relative to traversal progress. If so, replace currentIndex with that
+      changed index (maybe with a notation to skip back to original current index
+      after traversing values changed in the "past"?). If not, then we know that
+      any changes have taken place ahead of our current position, so there is no
+      need to reposition the current index.
+      
+      PROBLEM: If elements[0] changes and currentIndex == 5, then you will wind
+      up re-traversing the other 4-5 elements you already visited because the
+      resetting of the currentIndex will move them back out ahead of currentIndex.
+      
+      [[1]] 
+      
+<<NB:>> I'm still trying to complete the update-detection algorithm...it needs
+work, to minimize the weird effects that take place with a container reorders
+the components assigned to a particular role.
+now.

@@ -24,8 +24,11 @@ package org.codehaus.plexus.component.factory;
  * SOFTWARE.
  */
 
-import java.util.Iterator;
-import java.util.List;
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 /**
  *
@@ -35,33 +38,56 @@ import java.util.List;
  * @version $Id$
  */
 public class DefaultComponentFactoryManager
-    implements ComponentFactoryManager
+    implements ComponentFactoryManager, Contextualizable
 {
     private String defaultComponentFactoryId = "java";
 
-    private List componentFactories;
+    private ComponentFactory defaultComponentFactory;
+
+    private PlexusContainer container;
 
     public ComponentFactory findComponentFactory( String id )
         throws UndefinedComponentFactoryException
     {
-        ComponentFactory componentFactory = null;
-
-        for ( Iterator iterator = componentFactories.iterator(); iterator.hasNext(); )
+        if(defaultComponentFactoryId.equals(id))
         {
-            componentFactory = (ComponentFactory) iterator.next();
-
-            if ( id.equals( componentFactory.getId() ) )
+            return defaultComponentFactory;
+        }
+        else
+        {
+            try
             {
-                return componentFactory;
+                return (ComponentFactory) container.lookup(ComponentFactory.ROLE, id);
+            }
+            catch ( ComponentLookupException e )
+            {
+                throw new UndefinedComponentFactoryException( "Specified component factory cannot be found: " + id, e );
             }
         }
 
-        throw new UndefinedComponentFactoryException( "Specified component factory cannot be found: " + id );
+        // Commented out until we get active collections working; we'll do direct
+        // lookups until then.
+//        for ( Iterator iterator = componentFactories.iterator(); iterator.hasNext(); )
+//        {
+//            componentFactory = (ComponentFactory) iterator.next();
+//
+//            if ( id.equals( componentFactory.getId() ) )
+//            {
+//                return componentFactory;
+//            }
+//        }
+
     }
 
     public ComponentFactory getDefaultComponentFactory()
         throws UndefinedComponentFactoryException
     {
         return  findComponentFactory( defaultComponentFactoryId );
+    }
+
+    public void contextualize( Context context )
+        throws Exception
+    {
+        this.container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 }
