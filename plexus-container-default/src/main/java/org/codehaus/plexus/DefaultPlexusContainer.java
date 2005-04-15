@@ -64,6 +64,7 @@ import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileReader;
@@ -1198,7 +1199,7 @@ public class DefaultPlexusContainer
         {
             // the java factory is a special case, without a component manager.
             // Don't bother releasing the java factory.
-            if( componentFactoryId != null && !"java".equals( componentFactoryId ) )
+            if( StringUtils.isNotEmpty(componentFactoryId) && !"java".equals( componentFactoryId ) )
             {
                 release(componentFactory);
             }
