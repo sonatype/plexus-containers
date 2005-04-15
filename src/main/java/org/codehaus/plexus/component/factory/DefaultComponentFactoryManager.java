@@ -26,9 +26,11 @@ package org.codehaus.plexus.component.factory;
 
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.factory.java.JavaComponentFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class DefaultComponentFactoryManager
 {
     private String defaultComponentFactoryId = "java";
 
-    private ComponentFactory defaultComponentFactory;
+    private ComponentFactory defaultComponentFactory = new JavaComponentFactory();
 
     private PlexusContainer container;
     
@@ -54,7 +56,7 @@ public class DefaultComponentFactoryManager
     public ComponentFactory findComponentFactory( String id )
         throws UndefinedComponentFactoryException
     {
-        if(defaultComponentFactoryId.equals(id))
+        if(StringUtils.isEmpty(id) || defaultComponentFactoryId.equals(id))
         {
             return defaultComponentFactory;
         }
@@ -87,7 +89,7 @@ public class DefaultComponentFactoryManager
     public ComponentFactory getDefaultComponentFactory()
         throws UndefinedComponentFactoryException
     {
-        return  findComponentFactory( defaultComponentFactoryId );
+        return  defaultComponentFactory;
     }
 
     public void contextualize( Context context )
