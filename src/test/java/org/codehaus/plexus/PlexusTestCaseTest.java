@@ -24,15 +24,13 @@ package org.codehaus.plexus;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-
 import junit.framework.TestCase;
-
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.test.DefaultLoadOnStartService;
+
+import java.io.File;
+import java.io.InputStream;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -57,7 +55,7 @@ public class PlexusTestCaseTest
     public void testPlexusTestCase()
         throws Exception
     {
-        PlexusTestCase tc = new PlexusTestCase();
+        PlexusTestCase tc = new PlexusTestCase() {};
 
         tc.setUp();
 

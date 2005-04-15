@@ -28,6 +28,7 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurationExceptio
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.ReflectionUtils;
 
@@ -40,12 +41,13 @@ import java.util.Map;
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
  */
-public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
+public class ObjectWithFieldsConverter
+    extends AbstractConfigurationConverter
 {
     /**
-     * @todo I am not sure what should go into this method
      * @param type
      * @return
+     * @todo I am not sure what should go into this method
      */
     public boolean canConvert( Class type )
     {
@@ -68,30 +70,34 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
         return retValue;
     }
 
-    public Object fromConfiguration( ConverterLookup converterLookup,
-                                     PlexusConfiguration configuration,
-                                     Class type,
-                                     Class baseType,
-                                     ClassLoader classLoader )
+    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
-        // it is a "composite"
-        Class implementation = getClassForImplementationHint( type, configuration, classLoader );
+        Object retValue = fromExpression( configuration, expressionEvaluator, type );
+        if ( retValue == null )
+        {
+            // it is a "composite" - we compose it from its children. It does not have a value of its own
+            Class implementation = getClassForImplementationHint( type, configuration, classLoader );
 
-        Object retValue = instantiateObject( implementation );
+            retValue = instantiateObject( implementation );
 
-        processConfiguration( converterLookup, retValue, classLoader, configuration );
-
+            processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator );
+        }
         return retValue;
-
     }
 
 
-    public void processConfiguration( ConverterLookup converterLookup,
-                                      Object object,
-                                      ClassLoader classLoader,
+    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
                                       PlexusConfiguration configuration )
-            throws ComponentConfigurationException
+        throws ComponentConfigurationException
+    {
+        processConfiguration( converterLookup, object, classLoader, configuration, null );
+    }
+
+    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
+                                      PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
+        throws ComponentConfigurationException
     {
         int items = configuration.getChildCount();
 
@@ -110,17 +116,16 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
             ConfigurationConverter converter = converterLookup.lookupConverterForType( fieldType );
 
             Object value = converter.fromConfiguration( converterLookup, childConfiguration, fieldType,
-                                                        object.getClass(), classLoader );
+                                                        object.getClass(), classLoader, expressionEvaluator );
 
             setFieldValue( field, object, value );
         }
-
 
     }
 
 
     private void setFieldValue( Field field, Object object, Object value )
-            throws ComponentConfigurationException
+        throws ComponentConfigurationException
     {
         try
         {
@@ -140,18 +145,22 @@ public class ObjectWithFieldsConverter extends AbstractConfigurationConverter
         }
         catch ( IllegalAccessException e )
         {
-            String msg = "Cannot access field: '"
-                    + field.getName() +
-                    " in class: '"
-                    + object.getClass().getName()
-                    + "'";
+            String msg = "Cannot access field: '" + field.getName() + "' in class: '" + object.getClass().getName() +
+                "'";
+
+            throw new ComponentConfigurationException( msg );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            String msg = "Cannot assign field: '" + field.getName() + "' in class: '" + object.getClass().getName() +
+                "' with value '" + value + "' of type '" + value.getClass().getName() + "'";
 
             throw new ComponentConfigurationException( msg );
         }
     }
 
     private Field getFieldByName( String fieldName, Object object )
-            throws ComponentConfigurationException
+        throws ComponentConfigurationException
     {
 
         Class clazz = object.getClass();

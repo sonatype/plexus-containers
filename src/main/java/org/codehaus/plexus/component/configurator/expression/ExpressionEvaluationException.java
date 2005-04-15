@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.configurator;
+package org.codehaus.plexus.component.configurator.expression;
 
 /*
  * The MIT License
@@ -24,21 +24,22 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * Exception that occurs during the evaluation of an expression.
+ *
+ * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
  * @version $Id$
  */
-public interface ComponentConfigurator
+public class ExpressionEvaluationException
+    extends Exception
 {
-    String ROLE = ComponentConfigurator.class.getName();
+    public ExpressionEvaluationException( String message )
+    {
+        super( message );
+    }
 
-    void configureComponent( Object component, PlexusConfiguration configuration )
-        throws ComponentConfigurationException;
-
-    void configureComponent( Object component, PlexusConfiguration configuration,
-                             ExpressionEvaluator expressionEvaluator )
-        throws ComponentConfigurationException;
+    public ExpressionEvaluationException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
 }

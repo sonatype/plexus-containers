@@ -27,6 +27,7 @@ package org.codehaus.plexus.component.configurator.converters.composite;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 
@@ -46,7 +47,8 @@ public class PlexusConfigurationConverter extends AbstractConfigurationConverter
                                      PlexusConfiguration configuration,
                                      Class type,
                                      Class baseType,
-                                     ClassLoader classLoader )
+                                     ClassLoader classLoader,
+                                     ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
         return configuration;

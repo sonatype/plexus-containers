@@ -27,6 +27,8 @@ package org.codehaus.plexus.component.configurator.converters.basic;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
@@ -38,14 +40,13 @@ public abstract class AbstractBasicConverter
     abstract protected Object fromString( String str );
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader )
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
         if ( configuration.getChildCount() > 0 )
         {
             throw new ComponentConfigurationException( "When configuring a basic element the configuration cannot " +
-                                                       "contain any child elements. " +
-                                                       "Configuration element '" + configuration.getName() + "'." );
+                                                       "contain any child elements. " + "Configuration element '" + configuration.getName() + "'." );
         }
 
         String value = configuration.getValue( null );
@@ -59,7 +60,20 @@ public abstract class AbstractBasicConverter
             throw new ComponentConfigurationException( msg );
         }
 
-        Object retValue = fromString( value );
+        Object retValue;
+        try
+        {
+            retValue = expressionEvaluator.evaluate( value );
+        }
+        catch ( ExpressionEvaluationException e )
+        {
+            throw new ComponentConfigurationException( "Unable to evaluate expression", e );
+        }
+
+        if ( retValue instanceof String )
+        {
+            retValue = fromString( (String) retValue );
+        }
 
         return retValue;
     }

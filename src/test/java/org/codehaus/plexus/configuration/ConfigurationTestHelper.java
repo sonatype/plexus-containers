@@ -24,17 +24,16 @@ package org.codehaus.plexus.configuration;
  * SOFTWARE.
  */
 
-import java.io.StringReader;
-
+import junit.framework.TestCase;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 
-import junit.framework.TestCase;
+import java.io.StringReader;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  */
-public class ConfigurationTestHelper
+public abstract class ConfigurationTestHelper
     extends TestCase
 {
     public static PlexusConfiguration getTestConfiguration()

@@ -28,6 +28,7 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurationExceptio
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -43,27 +44,29 @@ import java.util.Set;
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
  */
-public class CollectionConverter extends AbstractConfigurationConverter
+public class CollectionConverter
+    extends AbstractConfigurationConverter
 {
     public boolean canConvert( Class type )
     {
         return Collection.class.isAssignableFrom( type );
     }
 
-    public Object fromConfiguration( ConverterLookup converterLookup,
-                                     PlexusConfiguration configuration,
-                                     Class type,
-                                     Class baseType,
-                                     ClassLoader classLoader )
+    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
-        Collection retValue = null;
+        Object retValue = fromExpression( configuration, expressionEvaluator, type );
+        if ( retValue != null )
+        {
+            return retValue;
+        }
 
         Class implementation = getClassForImplementationHint( null, configuration, classLoader );
 
         if ( implementation != null )
         {
-            retValue = ( Collection ) instantiateObject( implementation );
+            retValue = instantiateObject( implementation );
         }
         else
         {
@@ -81,16 +84,15 @@ public class CollectionConverter extends AbstractConfigurationConverter
             {
                 try
                 {
-                    retValue = ( Collection ) type.newInstance();
+                    retValue = type.newInstance();
                 }
                 catch ( Exception e )
                 {
-                    String msg = "An attempt to convert configuration entry "+
-                            configuration.getName() +
-                            "' into Collection object failed: " + e.getMessage();
+                    String msg = "An attempt to convert configuration entry " + configuration.getName() +
+                        "' into Collection object failed: " + e.getMessage();
 
                     throw new ComponentConfigurationException( msg );
-               }
+                }
             }
         }
         // now we have collection and we have to add some objects to it
@@ -123,7 +125,7 @@ public class CollectionConverter extends AbstractConfigurationConverter
                 }
                 else
                 {
-                    String basePackage = baseTypeName.substring(0, lastDot );
+                    String basePackage = baseTypeName.substring( 0, lastDot );
 
                     className = basePackage + "." + name;
                 }
@@ -133,9 +135,11 @@ public class CollectionConverter extends AbstractConfigurationConverter
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
-            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader );
+            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader,
+                                                         expressionEvaluator );
 
-            retValue.add( object );
+            Collection collection = (Collection) retValue;
+            collection.add( object );
         }
 
         return retValue;

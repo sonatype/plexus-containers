@@ -1,12 +1,5 @@
 package org.codehaus.plexus.configuration.processor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.StringUtils;
-
 /*
  * The MIT License
  *
@@ -31,9 +24,19 @@ import org.codehaus.plexus.util.StringUtils;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Take a normal PlexusConfiguration and look for directives within it
  * that allow the inlining of external configuration sources.
+ *
+ * @todo could this be amalgamated with the expression handling in the component configurator? It cannot be used here,
+ *       as it requires actual objects to be returned, which cannot be stored back into a configuration object.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
