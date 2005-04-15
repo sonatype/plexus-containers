@@ -24,12 +24,18 @@ package org.codehaus.plexus.component.configurator.converters.basic;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+
 import java.io.File;
 
 /**
  * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
  */
-public class FileConverter extends AbstractBasicConverter
+public class FileConverter
+    extends AbstractBasicConverter
 {
     public boolean canConvert( Class type )
     {
@@ -38,8 +44,17 @@ public class FileConverter extends AbstractBasicConverter
 
     public Object fromString( String str )
     {
-        // TODO: any need for a base directory?
         return new File( str );
     }
 
+    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
+        throws ComponentConfigurationException
+    {
+        File f = (File) super.fromConfiguration( converterLookup, configuration, type, baseType, classLoader,
+                                                 expressionEvaluator );
+
+        // Hmmm... is this cheating? Can't think of a better way right now
+        return expressionEvaluator.alignToBaseDirectory( f );
+    }
 }
