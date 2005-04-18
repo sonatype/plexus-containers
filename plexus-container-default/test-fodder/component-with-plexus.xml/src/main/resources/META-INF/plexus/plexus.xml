@@ -1,0 +1,8 @@
+<plexus>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.test.fodder.withplx.TestComponent</role>
+      <implementation>org.codehaus.plexus.test.fodder.withplx.TestComponentImpl</implementation>
+    </component>
+  </components>
+</plexus>
