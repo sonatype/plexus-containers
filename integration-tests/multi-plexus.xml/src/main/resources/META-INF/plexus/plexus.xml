@@ -1,0 +1,8 @@
+<plexus>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.test.it.multiplx.Component</role>
+      <implementation>org.codehaus.plexus.test.it.multiplx.ComponentImpl</implementation>
+    </component>
+  </components>
+</plexus>
