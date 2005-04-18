@@ -22,4 +22,9 @@
       <version>1.1-alpha-1</version>
     </dependency>
   </dependencies>
+
+  <!-- modules>
+    <module>test-fodder/component-with-plexus.xml</module>
+    <module>integration-tests/multi-plexus.xml</module>
+  </modules -->
 </project>
