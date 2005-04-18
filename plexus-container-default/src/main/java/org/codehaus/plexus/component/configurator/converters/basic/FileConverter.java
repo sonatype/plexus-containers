@@ -54,7 +54,14 @@ public class FileConverter
         File f = (File) super.fromConfiguration( converterLookup, configuration, type, baseType, classLoader,
                                                  expressionEvaluator );
 
-        // Hmmm... is this cheating? Can't think of a better way right now
-        return expressionEvaluator.alignToBaseDirectory( f );
+        if ( f != null )
+        {
+            // Hmmm... is this cheating? Can't think of a better way right now
+            return expressionEvaluator.alignToBaseDirectory( f );
+        }
+        else
+        {
+            return null;
+        }
     }
 }
