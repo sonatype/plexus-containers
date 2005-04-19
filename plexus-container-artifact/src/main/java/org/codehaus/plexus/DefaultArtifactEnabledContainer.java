@@ -28,14 +28,21 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.construction.ArtifactConstructionSupport;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.DuplicateRealmException;
+import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -75,7 +82,7 @@ public class DefaultArtifactEnabledContainer
     public void addComponent( Artifact component, ArtifactResolver artifactResolver, List remoteRepositories,
                               ArtifactRepository localRepository, ArtifactMetadataSource sourceReader,
                               ArtifactFilter filter )
-        throws Exception
+        throws ArtifactResolutionException, ArtifactEnabledContainerException
     {
         boolean dependencyComponentsDiscovered = false;
 
@@ -99,13 +106,25 @@ public class DefaultArtifactEnabledContainer
 
         ClassWorld classWorld = getClassWorld();
 
-        ClassRealm tmp = classWorld.newRealm( "tmp" + realmTmpId );
+        List componentDescriptors = null;
+        try
+        {
+            ClassRealm tmp = classWorld.newRealm( "tmp" + realmTmpId );
 
-        tmp.addConstituent( component.getFile().toURL() );
+            tmp.addConstituent( getArtifactUrl( component ) );
 
-        List componentDescriptors = discoverComponents( tmp );
+            componentDescriptors = discoverArtifactComponents( tmp );
 
-        classWorld.disposeRealm( "tmp" + realmTmpId );
+            classWorld.disposeRealm( "tmp" + realmTmpId );
+        }
+        catch ( DuplicateRealmException e )
+        {
+            throw new ArtifactEnabledContainerException( "Unable to add component class realm", e );
+        }
+        catch ( NoSuchRealmException e )
+        {
+            throw new ArtifactEnabledContainerException( "Unable to add component class realm", e );
+        }
 
         // ----------------------------------------------------------------------
         // Now we walk through any of the component descriptors that we find in
@@ -133,7 +152,14 @@ public class DefaultArtifactEnabledContainer
 
         String realmId = component.getId();
 
-        componentRealm = plexusRealm.createChildRealm( realmId );
+        try
+        {
+            componentRealm = plexusRealm.createChildRealm( realmId );
+        }
+        catch ( DuplicateRealmException e )
+        {
+            throw new ArtifactEnabledContainerException( "Unable to add component class realm", e );
+        }
 
         for ( Iterator i = componentDescriptors.iterator(); i.hasNext(); )
         {
@@ -194,7 +220,7 @@ public class DefaultArtifactEnabledContainer
 
                     if ( filter.include( a ) )
                     {
-                        componentRealm.addConstituent( a.getFile().toURL() );
+                        componentRealm.addConstituent( getArtifactUrl( a ) );
                     }
                 }
             }
@@ -209,7 +235,7 @@ public class DefaultArtifactEnabledContainer
 
             if ( !dependencyComponentsDiscovered )
             {
-                List dependencyComponents = discoverComponents( componentRealm );
+                List dependencyComponents = discoverArtifactComponents( componentRealm );
 
                 // ----------------------------------------------------------------------
                 // We have to make sure that components among the dependencies have
@@ -234,7 +260,37 @@ public class DefaultArtifactEnabledContainer
             // JAR itself into the realm and everything is now ready for use.
             // ----------------------------------------------------------------------
 
-            componentRealm.addConstituent( component.getFile().toURL() );
+            componentRealm.addConstituent( getArtifactUrl( component ) );
+        }
+    }
+
+    private List discoverArtifactComponents( ClassRealm tmp )
+        throws ArtifactEnabledContainerException
+    {
+        try
+        {
+            return discoverComponents( tmp );
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            throw new ArtifactEnabledContainerException( "Error discovering components", e );
+        }
+        catch ( ComponentRepositoryException e )
+        {
+            throw new ArtifactEnabledContainerException( "Error discovering components", e );
+        }
+    }
+
+    private URL getArtifactUrl( Artifact component )
+        throws ArtifactEnabledContainerException
+    {
+        try
+        {
+            return component.getFile().toURL();
+        }
+        catch ( MalformedURLException e )
+        {
+            throw new ArtifactEnabledContainerException( "Error constructing file URL", e );
         }
     }
 }

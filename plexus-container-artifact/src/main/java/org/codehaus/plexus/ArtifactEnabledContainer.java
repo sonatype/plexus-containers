@@ -3,6 +3,7 @@ package org.codehaus.plexus;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 
@@ -21,5 +22,5 @@ public interface ArtifactEnabledContainer
                               ArtifactRepository localRepository,
                               ArtifactMetadataSource sourceReader,
                               ArtifactFilter filter )
-        throws Exception;
+        throws ArtifactResolutionException, ArtifactEnabledContainerException;
 }

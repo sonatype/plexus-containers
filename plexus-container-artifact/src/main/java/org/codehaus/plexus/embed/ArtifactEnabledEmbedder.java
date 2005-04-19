@@ -1,17 +1,21 @@
 package org.codehaus.plexus.embed;
 
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.DefaultArtifactEnabledContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.util.PropertyUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
-
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.plexus.DefaultArtifactEnabledContainer;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.util.PropertyUtils;
 
 public class ArtifactEnabledEmbedder
 {
@@ -61,7 +65,8 @@ public class ArtifactEnabledEmbedder
         return getContainer().hasComponent( role, id );
     }
 
-    public void release( Object service ) throws Exception
+    public void release( Object service )
+        throws ComponentLifecycleException
     {
         getContainer().release( service );
     }
@@ -120,14 +125,16 @@ public class ArtifactEnabledEmbedder
         }
     }
 
-    public synchronized void start( ClassWorld classWorld ) throws Exception
+    public synchronized void start( ClassWorld classWorld )
+        throws PlexusContainerException
     {
         container.setClassWorld( classWorld );
 
         start();
     }
 
-    public synchronized void start() throws Exception
+    public synchronized void start()
+        throws PlexusContainerException
     {
         if ( embedderStarted )
         {
@@ -141,7 +148,18 @@ public class ArtifactEnabledEmbedder
 
         if ( configurationURL != null )
         {
-            container.setConfigurationResource( new InputStreamReader( configurationURL.openStream() ) );
+            try
+            {
+                container.setConfigurationResource( new InputStreamReader( configurationURL.openStream() ) );
+            }
+            catch ( PlexusConfigurationResourceException e )
+            {
+                throw new PlexusContainerException( "Error loading from configuration reader", e );
+            }
+            catch ( IOException e )
+            {
+                throw new PlexusContainerException( "Error loading from configuration reader", e );
+            }
         }
 
         if ( properties != null )
@@ -156,7 +174,7 @@ public class ArtifactEnabledEmbedder
         container.start();
     }
 
-    public synchronized void stop() throws Exception
+    public synchronized void stop()
     {
         if ( embedderStopped )
         {
