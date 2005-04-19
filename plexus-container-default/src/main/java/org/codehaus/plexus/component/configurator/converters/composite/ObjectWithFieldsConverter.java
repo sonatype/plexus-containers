@@ -148,14 +148,14 @@ public class ObjectWithFieldsConverter
             String msg = "Cannot access field: '" + field.getName() + "' in class: '" + object.getClass().getName() +
                 "'";
 
-            throw new ComponentConfigurationException( msg );
+            throw new ComponentConfigurationException( msg, e );
         }
         catch ( IllegalArgumentException e )
         {
             String msg = "Cannot assign field: '" + field.getName() + "' in class: '" + object.getClass().getName() +
                 "' with value '" + value + "' of type '" + value.getClass().getName() + "'";
 
-            throw new ComponentConfigurationException( msg );
+            throw new ComponentConfigurationException( msg, e );
         }
     }
 

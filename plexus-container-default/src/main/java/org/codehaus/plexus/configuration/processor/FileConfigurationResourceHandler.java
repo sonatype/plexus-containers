@@ -1,11 +1,12 @@
 package org.codehaus.plexus.configuration.processor;
 
+import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
+
 import java.io.File;
 import java.io.FileReader;
 import java.util.Map;
-
-import org.codehaus.plexus.component.repository.io.PlexusTools;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /*
  * The MIT License
@@ -57,7 +58,7 @@ public class FileConfigurationResourceHandler
         {
             return new PlexusConfiguration[]{ PlexusTools.buildConfiguration( new FileReader( f ) ) };
         }
-        catch ( Exception e )
+        catch ( PlexusConfigurationException e )
         {
             throw new ConfigurationProcessingException( e );
         }

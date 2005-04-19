@@ -24,18 +24,19 @@ package org.codehaus.plexus.component.repository;
  * SOFTWARE.
  */
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @todo We need to process component descriptors from a specified configuration file in addition
@@ -147,7 +148,7 @@ public class DefaultComponentRepository
         {
             componentDescriptor = PlexusTools.buildComponentDescriptor( configuration );
         }
-        catch ( Exception e )
+        catch ( PlexusConfigurationException e )
         {
             throw new ComponentRepositoryException( "Cannot unmarshall component descriptor:", e );
         }

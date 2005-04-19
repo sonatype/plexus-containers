@@ -71,6 +71,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1131,7 +1132,7 @@ public class DefaultPlexusContainer
                     getLogger().warn( "Unknown resource type: " + name );
                 }
             }
-            catch ( Exception e )
+            catch ( MalformedURLException e )
             {
                 getLogger().error( "Error configuring resource: " + resourceConfigs[i].getName() + "=" + resourceConfigs[i].getValue(), e );
             }
@@ -1143,13 +1144,13 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     public void addJarResource( File jar )
-        throws Exception
+        throws MalformedURLException
     {
         plexusRealm.addConstituent( jar.toURL() );
     }
 
     public void addJarRepository( File repository )
-        throws Exception
+        throws MalformedURLException
     {
         if ( repository.exists() && repository.isDirectory() )
         {

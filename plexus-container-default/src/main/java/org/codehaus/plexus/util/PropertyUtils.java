@@ -24,12 +24,12 @@ package org.codehaus.plexus.util;
  * SOFTWARE.
  */
 
-import java.util.Properties;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 /**
  *
@@ -47,7 +47,7 @@ public class PropertyUtils
         {
             return loadProperties( url.openStream() );
         }
-        catch ( Exception e )
+        catch ( IOException e )
         {
             // ignore
         }
@@ -61,7 +61,7 @@ public class PropertyUtils
         {
             return loadProperties( new FileInputStream( file ) );
         }
-        catch ( Exception e )
+        catch ( IOException e )
         {
             // ignore
         }

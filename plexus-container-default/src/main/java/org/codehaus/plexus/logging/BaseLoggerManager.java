@@ -145,14 +145,13 @@ public abstract class BaseLoggerManager
 
         if ( obj == null )
         {
+            // TODO: use a logger!
             System.err.println( "There was no such logger '" + key + "' " + hashCode() + "." );
         }
     }
 
     public int getActiveLoggerCount()
     {
-        System.out.println( "loggerCache:" + loggerCache );
-
         return loggerCache.size();
     }
 
