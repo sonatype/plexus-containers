@@ -7,11 +7,18 @@ public class InitializePhase
     extends AbstractPhase
 {
     public void execute( Object object, ComponentManager manager )
-        throws Exception
+        throws PhaseExecutionException
     {
         if ( object instanceof Initializable )
         {
-            ( (Initializable) object ).initialize();
+            try
+            {
+                ( (Initializable) object ).initialize();
+            }
+            catch ( InitializationException e )
+            {
+                throw new PhaseExecutionException( "Error initialising component", e );
+            }
         }
     }
 }

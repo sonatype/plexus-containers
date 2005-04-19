@@ -47,7 +47,7 @@ public class DefaultComponentDiscoverer
     }
 
     public ComponentSetDescriptor createComponentDescriptors( Reader componentDescriptorReader, String source )
-        throws Exception
+        throws PlexusConfigurationException
     {
         PlexusConfiguration componentDescriptorConfiguration = PlexusTools.buildConfiguration( componentDescriptorReader );
 
@@ -70,7 +70,7 @@ public class DefaultComponentDiscoverer
             }
             catch ( PlexusConfigurationException e )
             {
-                throw new Exception( "Cannot process component descriptor: " + source, e );
+                throw new PlexusConfigurationException( "Cannot process component descriptor: " + source, e );
             }
 
             componentDescriptor.setComponentType( "plexus" );

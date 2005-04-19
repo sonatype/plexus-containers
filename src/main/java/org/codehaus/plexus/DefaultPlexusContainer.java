@@ -26,8 +26,11 @@ package org.codehaus.plexus;
 
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.DuplicateRealmException;
 import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
+import org.codehaus.plexus.component.composition.CompositionException;
+import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
@@ -37,11 +40,15 @@ import org.codehaus.plexus.component.discovery.DiscoveryListenerDescriptor;
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
+import org.codehaus.plexus.component.factory.ComponentInstantiationException;
+import org.codehaus.plexus.component.factory.UndefinedComponentFactoryException;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
+import org.codehaus.plexus.component.manager.UndefinedComponentManagerException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
@@ -49,25 +56,32 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.configuration.processor.ConfigurationProcessingException;
 import org.codehaus.plexus.configuration.processor.ConfigurationProcessor;
+import org.codehaus.plexus.configuration.processor.ConfigurationResourceNotFoundException;
 import org.codehaus.plexus.configuration.processor.DirectoryConfigurationResourceHandler;
 import org.codehaus.plexus.configuration.processor.FileConfigurationResourceHandler;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
+import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -192,17 +206,17 @@ public class DefaultPlexusContainer
         try
         {
             component = componentManager.getComponent();
-
-            componentManagerManager.associateComponentWithComponentManager( component, componentManager );
         }
-        catch ( Exception e )
+        catch ( ComponentInstantiationException e )
         {
-            String message = "Cannot create component for " + componentKey + ".";
-
-            getLogger().error( message, e );
-
-            throw new ComponentLookupException( message, e );
+            throw new ComponentLookupException( "Unable to lookup component '" + componentKey + "', it could not be created", e );
         }
+        catch ( ComponentLifecycleException e )
+        {
+            throw new ComponentLookupException( "Unable to lookup component '" + componentKey + "', it could not be started", e );
+        }
+
+        componentManagerManager.associateComponentWithComponentManager( component, componentManager );
 
         return component;
     }
@@ -216,11 +230,15 @@ public class DefaultPlexusContainer
         {
             componentManager = componentManagerManager.createComponentManager( descriptor, this );
         }
-        catch ( Exception e )
+        catch ( UndefinedComponentManagerException e )
         {
             String message = "Cannot create component manager for " + descriptor.getComponentKey() + ", so we cannot provide a component instance.";
 
-            getLogger().error( message, e );
+            throw new ComponentLookupException( message, e );
+        }
+        catch ( UndefinedLifecycleHandlerException e )
+        {
+            String message = "Cannot create component manager for " + descriptor.getComponentKey() + ", so we cannot provide a component instance.";
 
             throw new ComponentLookupException( message, e );
         }
@@ -372,7 +390,7 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     public void release( Object component )
-        throws Exception
+        throws ComponentLifecycleException
     {
         if ( component == null )
         {
@@ -399,7 +417,7 @@ public class DefaultPlexusContainer
     }
 
     public void releaseAll( Map components )
-        throws Exception
+        throws ComponentLifecycleException
     {
         for ( Iterator i = components.values().iterator(); i.hasNext(); )
         {
@@ -410,7 +428,7 @@ public class DefaultPlexusContainer
     }
 
     public void releaseAll( List components )
-        throws Exception
+        throws ComponentLifecycleException
     {
         for ( Iterator i = components.iterator(); i.hasNext(); )
         {
@@ -431,7 +449,7 @@ public class DefaultPlexusContainer
     }
 
     public void suspend( Object component )
-        throws Exception
+        throws ComponentLifecycleException
     {
         if ( component == null )
         {
@@ -444,7 +462,7 @@ public class DefaultPlexusContainer
     }
 
     public void resume( Object component )
-        throws Exception
+        throws ComponentLifecycleException
     {
         if ( component == null )
         {
@@ -497,27 +515,58 @@ public class DefaultPlexusContainer
     }
 
     public void initialize()
-        throws Exception
+        throws PlexusContainerException
     {
         realmAliases = new HashMap();
 
-        initializeClassWorlds();
+        try
+        {
+            initializeClassWorlds();
 
-        initializeConfiguration();
+            initializeConfiguration();
 
-        initializeResources();
+            initializeResources();
 
-        initializeCoreComponents();
+            initializeCoreComponents();
 
-        initializeLoggerManager();
+            initializeLoggerManager();
 
-        initializeContext();
+            initializeContext();
 
-        initializeSystemProperties();
+            initializeSystemProperties();
+        }
+        catch ( DuplicateRealmException e )
+        {
+            throw new PlexusContainerException( "Error initializing classworlds", e );
+        }
+        catch ( ConfigurationProcessingException e )
+        {
+            throw new PlexusContainerException( "Error processing configuration", e );
+        }
+        catch ( ConfigurationResourceNotFoundException e )
+        {
+            throw new PlexusContainerException( "Error processing configuration", e );
+        }
+        catch ( ComponentConfigurationException e )
+        {
+            throw new PlexusContainerException( "Error configuring components", e );
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            throw new PlexusContainerException( "Error configuring components", e );
+        }
+        catch ( ComponentRepositoryException e )
+        {
+            throw new PlexusContainerException( "Error initializing components", e );
+        }
+        catch ( ContextException e )
+        {
+            throw new PlexusContainerException( "Error contextualizing components", e );
+        }
     }
 
-    public void registerComponentDiscoverytListeners()
-        throws Exception
+    public void registerComponentDiscoveryListeners()
+        throws ComponentLookupException
     {
         List listeners = componentDiscovererManager.getListenerDescriptors();
 
@@ -544,10 +593,9 @@ public class DefaultPlexusContainer
      * TODO: Enhance the ComponentRepository so that it can take entire
      * ComponentSetDescriptors instead of just ComponentDescriptors.
      *
-     * @throws Exception
      */
     public List discoverComponents( ClassRealm classRealm )
-        throws Exception
+        throws PlexusConfigurationException, ComponentRepositoryException
     {
         List discoveredComponentDescriptors = new ArrayList();
 
@@ -606,13 +654,28 @@ public class DefaultPlexusContainer
     // as the discovery listener itself depends on components that need to be discovered.
 
     public void start()
-        throws Exception
+        throws PlexusContainerException
     {
-        registerComponentDiscoverytListeners();
+        try
+        {
+            registerComponentDiscoveryListeners();
 
-        discoverComponents( plexusRealm );
+            discoverComponents( plexusRealm );
 
-        loadComponentsOnStart();
+            loadComponentsOnStart();
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            throw new PlexusContainerException( "Error starting container", e );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new PlexusContainerException( "Error starting container", e );
+        }
+        catch ( ComponentRepositoryException e )
+        {
+            throw new PlexusContainerException( "Error starting container", e );
+        }
 
         configuration = null;
     }
@@ -654,6 +717,7 @@ public class DefaultPlexusContainer
     }
 
     /**
+     * @todo don't hold this reference - the reader will remain open forever
      * @see PlexusContainer#setConfigurationResource(Reader)
      */
     public void setConfigurationResource( Reader configuration )
@@ -744,7 +808,7 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     private void initializeClassWorlds()
-        throws Exception
+        throws DuplicateRealmException
     {
         if ( classWorld == null )
         {
@@ -846,7 +910,7 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     protected void initializeConfiguration()
-        throws Exception
+        throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException
     {
         // System userConfiguration
 
@@ -934,7 +998,7 @@ public class DefaultPlexusContainer
      * can be within nested directories to help with component organization.
      */
     private void processConfigurationsDirectory()
-        throws Exception
+        throws PlexusConfigurationException
     {
         String s = configuration.getChild( "configurations-directory" ).getValue( null );
 
@@ -948,31 +1012,59 @@ public class DefaultPlexusContainer
                 &&
                 configurationsDirectory.isDirectory() )
             {
-                List componentConfigurationFiles = FileUtils.getFiles( configurationsDirectory, "**/*.conf", "**/*.xml" );
+                List componentConfigurationFiles = null;
+                try
+                {
+                    componentConfigurationFiles = FileUtils.getFiles( configurationsDirectory, "**/*.conf", "**/*.xml" );
+                }
+                catch ( IOException e )
+                {
+                    throw new PlexusConfigurationException( "Unable to locate configuration files", e );
+                }
 
                 for ( Iterator i = componentConfigurationFiles.iterator(); i.hasNext(); )
                 {
                     File componentConfigurationFile = (File) i.next();
 
-                    PlexusConfiguration componentConfiguration =
-                        PlexusTools.buildConfiguration( getInterpolationConfigurationReader( new FileReader( componentConfigurationFile ) ) );
+                    FileReader reader = null;
+                    try
+                    {
+                        reader = new FileReader( componentConfigurationFile );
+                        PlexusConfiguration componentConfiguration =
+                            PlexusTools.buildConfiguration( getInterpolationConfigurationReader( reader ) );
 
-                    componentsConfiguration.addChild( componentConfiguration.getChild( "components" ) );
+                        componentsConfiguration.addChild( componentConfiguration.getChild( "components" ) );
+                    }
+                    catch ( FileNotFoundException e )
+                    {
+                        throw new PlexusConfigurationException( "File " + componentConfigurationFile + " disappeared before processing", e );
+                    }
+                    finally
+                    {
+                        IOUtil.close( reader );
+                    }
                 }
             }
         }
     }
 
     private void initializeLoggerManager()
-        throws Exception
+        throws PlexusContainerException
     {
-        loggerManager = (LoggerManager) lookup( LoggerManager.ROLE );
+        try
+        {
+            loggerManager = (LoggerManager) lookup( LoggerManager.ROLE );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new PlexusContainerException( "Unable to locate logger manager", e );
+        }
 
         enableLogging( loggerManager.getLoggerForComponent( PlexusContainer.class.getName() ) );
     }
 
     private void initializeCoreComponents()
-        throws Exception
+        throws ComponentConfigurationException, ComponentRepositoryException, ContextException
     {
         BasicComponentConfigurator configurator = new BasicComponentConfigurator();
         
@@ -1150,7 +1242,6 @@ public class DefaultPlexusContainer
     }
 
     public void addJarRepository( File repository )
-        throws MalformedURLException
     {
         if ( repository.exists() && repository.isDirectory() )
         {
@@ -1160,7 +1251,14 @@ public class DefaultPlexusContainer
             {
                 if ( jars[j].getAbsolutePath().endsWith( ".jar" ) )
                 {
-                    addJarResource( jars[j] );
+                    try
+                    {
+                        addJarResource( jars[j] );
+                    }
+                    catch ( MalformedURLException e )
+                    {
+                        getLogger().warn( "Unable to add JAR: " + jars[j], e );
+                    }
                 }
             }
         }
@@ -1176,7 +1274,7 @@ public class DefaultPlexusContainer
     }
 
     public Object createComponentInstance( ComponentDescriptor componentDescriptor )
-        throws Exception
+        throws ComponentInstantiationException, ComponentLifecycleException
     {
         String componentFactoryId = componentDescriptor.getComponentFactory();
 
@@ -1196,6 +1294,10 @@ public class DefaultPlexusContainer
     
             component = componentFactory.newInstance( componentDescriptor, plexusRealm, this );
         }
+        catch ( UndefinedComponentFactoryException e )
+        {
+            throw new ComponentInstantiationException( "Unable to create component as factory '" + componentFactoryId + "' could not be found", e );
+        }
         finally
         {
             // the java factory is a special case, without a component manager.
@@ -1210,7 +1312,7 @@ public class DefaultPlexusContainer
     }
 
     public void composeComponent( Object component, ComponentDescriptor componentDescriptor )
-        throws Exception
+        throws CompositionException, UndefinedComponentComposerException
     {
         componentComposerManager.assembleComponent( component, componentDescriptor, this );
     }

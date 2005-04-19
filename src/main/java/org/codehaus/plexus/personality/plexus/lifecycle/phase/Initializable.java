@@ -10,5 +10,5 @@ package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 public interface Initializable
 {
     public void initialize()
-        throws Exception;
+        throws InitializationException;
 }

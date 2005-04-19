@@ -42,12 +42,18 @@ public class SlowComponent
     /* Number of ms to sleep during start() */
     private long delay;
 
-    public void start() throws Exception
+    public void start()
     {
-        Thread.sleep( delay );
+        try
+        {
+            Thread.sleep( delay );
+        }
+        catch ( InterruptedException e )
+        {
+        }
     }
 
-    public void stop() throws Exception
+    public void stop()
     {
     }
 }

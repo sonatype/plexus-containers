@@ -21,7 +21,7 @@ public abstract class BaseLoggerManager
 
     private int currentThreshold;
 
-    public void initialize() throws Exception
+    public void initialize()
     {
         currentThreshold = parseThreshold( threshold );
 

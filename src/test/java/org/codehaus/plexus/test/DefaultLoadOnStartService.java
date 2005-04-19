@@ -39,13 +39,11 @@ public class DefaultLoadOnStartService
     public static boolean isStarted = false;
 
     public void start()
-        throws Exception
     {
         isStarted = true;
     }
 
     public void stop()
-        throws Exception
     {
     }
 }

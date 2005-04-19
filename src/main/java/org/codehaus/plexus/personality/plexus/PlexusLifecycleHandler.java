@@ -13,7 +13,6 @@ public class PlexusLifecycleHandler
     }
 
     public void initialize()
-        throws Exception
     {
     }
 }

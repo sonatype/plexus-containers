@@ -29,7 +29,6 @@ public class PassiveLifecycleHandler
 {
     /** @see org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable#initialize */
     public void initialize()
-        throws Exception
     {
     }
 }

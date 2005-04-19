@@ -1,5 +1,8 @@
 package org.codehaus.plexus.component.manager;
 
+import org.codehaus.plexus.component.factory.ComponentInstantiationException;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+
 /*
  * The MIT License
  *
@@ -41,7 +44,6 @@ public class KeepAliveSingletonComponentManager
     private Object singleton;
 
     public void release( Object component )
-        throws Exception
     {
         synchronized( lock )
         {
@@ -57,7 +59,7 @@ public class KeepAliveSingletonComponentManager
     }
 
     public void dispose()
-        throws Exception
+        throws ComponentLifecycleException
     {
         synchronized( lock )
         {
@@ -71,7 +73,8 @@ public class KeepAliveSingletonComponentManager
         }
     }
 
-    public Object getComponent() throws Exception
+    public Object getComponent()
+        throws ComponentInstantiationException, ComponentLifecycleException
     {
         synchronized( lock )
         {

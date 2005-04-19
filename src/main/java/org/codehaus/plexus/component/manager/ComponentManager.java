@@ -2,7 +2,9 @@ package org.codehaus.plexus.component.manager;
 
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 
 /**
@@ -23,30 +25,28 @@ public interface ComponentManager
 
     String getId();
 
-    void setup( PlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor )
-        throws Exception;
+    void setup( PlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor );
 
-    void initialize()
-        throws Exception;
+    void initialize();
 
     int getConnections();
 
     LifecycleHandler getLifecycleHandler();
 
     void dispose()
-        throws Exception;
+        throws ComponentLifecycleException;
 
     void release( Object component )
-        throws Exception;
+        throws ComponentLifecycleException;
 
     void suspend( Object component )
-        throws Exception;
+        throws ComponentLifecycleException;
 
     void resume( Object component )
-        throws Exception;
+        throws ComponentLifecycleException;
 
     Object getComponent()
-        throws Exception;
+        throws ComponentInstantiationException, ComponentLifecycleException;
 
     ComponentDescriptor getComponentDescriptor();
 

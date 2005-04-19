@@ -1,5 +1,8 @@
 package org.codehaus.plexus.component.manager;
 
+import org.codehaus.plexus.component.factory.ComponentInstantiationException;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+
 /*
  * The MIT License
  *
@@ -40,7 +43,7 @@ public class PerLookupComponentManager
     }
 
     public Object getComponent()
-        throws Exception
+        throws ComponentInstantiationException, ComponentLifecycleException
     {
         Object component = createComponentInstance();
 
@@ -48,7 +51,7 @@ public class PerLookupComponentManager
     }
 
     public void release( Object component )
-        throws Exception
+        throws ComponentLifecycleException
     {
         endComponentLifecycle( component );
     }

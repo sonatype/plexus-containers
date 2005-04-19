@@ -24,11 +24,14 @@ package org.codehaus.plexus;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.StartingException;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -66,7 +69,7 @@ public class SimplePlexusContainerManager
     }
 
     public void initialize()
-        throws Exception
+        throws InitializationException
     {
         myPlexus = new DefaultPlexusContainer();
 
@@ -78,7 +81,14 @@ public class SimplePlexusContainerManager
 
         Reader r = new InputStreamReader( stream );
 
-        myPlexus.setConfigurationResource( r );
+        try
+        {
+            myPlexus.setConfigurationResource( r );
+        }
+        catch ( PlexusConfigurationResourceException e )
+        {
+            throw new InitializationException( "Unable to initialize container configuration", e );
+        }
 
         if ( contextValues != null )
         {
@@ -90,17 +100,30 @@ public class SimplePlexusContainerManager
             }
         }
 
-        myPlexus.initialize();
+        try
+        {
+            myPlexus.initialize();
+        }
+        catch ( PlexusContainerException e )
+        {
+            throw new InitializationException( "Error initializing container", e );
+        }
     }
 
     public void start()
-        throws Exception
+        throws StartingException
     {
-        myPlexus.start();
+        try
+        {
+            myPlexus.start();
+        }
+        catch ( PlexusContainerException e )
+        {
+            throw new StartingException( "Error starting container", e );
+        }
     }
 
     public void stop()
-        throws Exception
     {
         myPlexus.dispose();
     }

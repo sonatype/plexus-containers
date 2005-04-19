@@ -2,6 +2,7 @@ package org.codehaus.plexus.lifecycle;
 
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.phase.Phase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -83,15 +84,11 @@ public abstract class AbstractLifecycleHandler
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    /** Start a component's lifecycle.
-     *
-     *  @param component
-     *
-     *  @throws java.lang.Exception If an error occurs while attempting to beginSegment
-     *          the component's lifecycle.
+    /**
+     * Start a component's lifecycle.
      */
     public void start( Object component, ComponentManager manager )
-        throws Exception
+        throws PhaseExecutionException
     {
         if ( segmentIsEmpty( getBeginSegment() ) )
         {
@@ -106,7 +103,7 @@ public abstract class AbstractLifecycleHandler
     }
 
     public void suspend( Object component, ComponentManager manager )
-        throws Exception
+        throws PhaseExecutionException
     {
         if ( segmentIsEmpty( getSuspendSegment() ) )
         {
@@ -121,7 +118,7 @@ public abstract class AbstractLifecycleHandler
     }
 
     public void resume( Object component, ComponentManager manager )
-        throws Exception
+        throws PhaseExecutionException
     {
         if ( segmentIsEmpty( getResumeSegment() ) )
         {
@@ -135,15 +132,11 @@ public abstract class AbstractLifecycleHandler
         }
     }
 
-    /** End a component's lifecycle.
-     *
-     *  @param component
-     *
-     *  @throws java.lang.Exception If an error occurs while attempting to endSegment
-     *          the component's lifecycle.
+    /**
+     * End a component's lifecycle.
      */
     public void end( Object component, ComponentManager manager )
-        throws Exception
+        throws PhaseExecutionException
     {
         if ( segmentIsEmpty( getEndSegment() ) )
         {

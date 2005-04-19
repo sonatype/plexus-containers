@@ -7,11 +7,18 @@ public class StartPhase
     extends AbstractPhase
 {
     public void execute( Object object, ComponentManager manager )
-        throws Exception
+        throws PhaseExecutionException
     {
         if ( object instanceof Startable )
         {
-            ( (Startable) object ).start();
+            try
+            {
+                ( (Startable) object ).start();
+            }
+            catch ( StartingException e )
+            {
+                throw new PhaseExecutionException( "Error starting component", e );
+            }
         }
     }
 }

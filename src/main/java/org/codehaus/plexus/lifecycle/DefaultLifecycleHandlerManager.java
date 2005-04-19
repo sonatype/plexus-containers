@@ -40,7 +40,6 @@ public class DefaultLifecycleHandlerManager
     private String defaultLifecycleHandlerId = "plexus";
 
     public void initialize()
-        throws Exception
     {
         for ( Iterator iterator = lifecycleHandlers.iterator(); iterator.hasNext(); )
         {
