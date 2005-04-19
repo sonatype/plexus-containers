@@ -24,8 +24,6 @@ package org.codehaus.plexus.component.composition;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.component.composition.AbstractComponent;
-
 /**
  *
  * 

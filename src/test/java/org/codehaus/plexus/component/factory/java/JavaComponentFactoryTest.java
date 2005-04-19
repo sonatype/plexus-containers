@@ -24,6 +24,7 @@ package org.codehaus.plexus.component.factory.java;
  * SOFTWARE.
  */
 
+import junit.framework.TestCase;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.factory.Component;
 import org.codehaus.plexus.component.factory.ComponentImplA;
@@ -32,8 +33,6 @@ import org.codehaus.plexus.component.factory.ComponentImplC;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.embed.Embedder;
-
-import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -116,7 +115,7 @@ public class JavaComponentFactoryTest
         }
         catch( ComponentInstantiationException ex )
         {
-            // expected
+            assertTrue( true );
         }
     }
 }

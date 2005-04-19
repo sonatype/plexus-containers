@@ -36,9 +36,10 @@ import java.beans.PropertyDescriptor;
  * @version $Id$
  */
 public class SetterComponentComposerTest
-        extends TestCase
+    extends TestCase
 {
-    public void testGetPropertyByName() throws IntrospectionException
+    public void testGetPropertyByName()
+        throws IntrospectionException
     {
         ComponentF componentF = new ComponentF();
 
@@ -48,66 +49,48 @@ public class SetterComponentComposerTest
 
         final SetterComponentComposer composer = new SetterComponentComposer();
 
-        try
-        {
-            final PropertyDescriptor propertyA = composer.getPropertyDescriptorByName( "componentA", propertyDescriptors );
+        final PropertyDescriptor propertyA = composer.getPropertyDescriptorByName( "componentA", propertyDescriptors );
 
-            assertEquals( ComponentA.class, propertyA.getPropertyType() );
+        assertEquals( ComponentA.class, propertyA.getPropertyType() );
 
-            final PropertyDescriptor propertyB = composer.getPropertyDescriptorByName( "componentB", propertyDescriptors );
+        final PropertyDescriptor propertyB = composer.getPropertyDescriptorByName( "componentB", propertyDescriptors );
 
-            assertEquals( ComponentB.class, propertyB.getPropertyType() );
+        assertEquals( ComponentB.class, propertyB.getPropertyType() );
 
-            final PropertyDescriptor propertyC = composer.getPropertyDescriptorByName( "componentC", propertyDescriptors );
+        final PropertyDescriptor propertyC = composer.getPropertyDescriptorByName( "componentC", propertyDescriptors );
 
-            assertTrue( propertyC.getPropertyType().isArray() );
-        }
-
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-
-            fail( e.getMessage() );
-
-        }
+        assertTrue( propertyC.getPropertyType().isArray() );
     }
 
 
     public void testGetPropertyByType()
+        throws IntrospectionException
     {
 
         final SetterComponentComposer composer = new SetterComponentComposer();
 
-        try
-        {
-            final ComponentF componentF = new ComponentF();
+        final ComponentF componentF = new ComponentF();
 
-            BeanInfo beanInfo = Introspector.getBeanInfo( componentF.getClass() );
+        BeanInfo beanInfo = Introspector.getBeanInfo( componentF.getClass() );
 
-            final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
 
-            final PropertyDescriptor propertyA = composer.getPropertyDescriptorByType( ComponentA.class.getName(), propertyDescriptors );
+        final PropertyDescriptor propertyA = composer.getPropertyDescriptorByType( ComponentA.class.getName(),
+                                                                                   propertyDescriptors );
 
-            assertNotNull( propertyA );
-            
-            assertEquals( ComponentA.class, propertyA.getPropertyType() );
+        assertNotNull( propertyA );
 
-            final PropertyDescriptor propertyB = composer.getPropertyDescriptorByType( ComponentB.class.getName(), propertyDescriptors );
+        assertEquals( ComponentA.class, propertyA.getPropertyType() );
 
-            assertEquals( ComponentB.class, propertyB.getPropertyType() );
+        final PropertyDescriptor propertyB = composer.getPropertyDescriptorByType( ComponentB.class.getName(),
+                                                                                   propertyDescriptors );
 
-            final PropertyDescriptor propertyC = composer.getPropertyDescriptorByType( ComponentC.class.getName(), propertyDescriptors );
+        assertEquals( ComponentB.class, propertyB.getPropertyType() );
 
-            assertTrue( propertyC.getPropertyType().isArray() );
+        final PropertyDescriptor propertyC = composer.getPropertyDescriptorByType( ComponentC.class.getName(),
+                                                                                   propertyDescriptors );
 
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-            
-            fail( e.getMessage() );
-
-        }
+        assertTrue( propertyC.getPropertyType().isArray() );
     }
 
 

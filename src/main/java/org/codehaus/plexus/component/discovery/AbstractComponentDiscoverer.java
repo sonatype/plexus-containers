@@ -1,5 +1,12 @@
 package org.codehaus.plexus.component.discovery;
 
+import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextMapAdapter;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.InterpolationFilterReader;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
@@ -7,13 +14,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
-import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
-import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.context.ContextMapAdapter;
-import org.codehaus.plexus.util.InterpolationFilterReader;
-import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -44,35 +44,28 @@ public abstract class AbstractComponentDiscoverer
     }
 
     public List findComponents( Context context, ClassRealm classRealm )
+        throws Exception
     {
         List componentSetDescriptors = new ArrayList();
 
-        try
+        for ( Enumeration e = classRealm.findResources( getComponentDescriptorLocation() ); e.hasMoreElements(); )
         {
-            for ( Enumeration e = classRealm.findResources( getComponentDescriptorLocation() ); e.hasMoreElements(); )
-            {
-                URL url = (URL) e.nextElement();
+            URL url = (URL) e.nextElement();
 
-                InterpolationFilterReader input =
-                    new InterpolationFilterReader( new InputStreamReader( url.openStream() ), new ContextMapAdapter( context ) );
+            InterpolationFilterReader input = new InterpolationFilterReader( new InputStreamReader( url.openStream() ),
+                                                                             new ContextMapAdapter( context ) );
 
-                String descriptor = IOUtil.toString( input );
+            String descriptor = IOUtil.toString( input );
 
-                ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( new StringReader( descriptor ), url.toString() );
+            ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( new StringReader( descriptor ),
+                                                                                        url.toString() );
 
-                componentSetDescriptors.add( componentSetDescriptor );
+            componentSetDescriptors.add( componentSetDescriptor );
 
-                // Fire the event
-                ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
+            // Fire the event
+            ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
 
-                manager.fireComponentDiscoveryEvent( event );
-            }
-        }
-        catch ( Exception e )
-        {
-            //classRealm.display();
-
-            e.printStackTrace();
+            manager.fireComponentDiscoveryEvent( event );
         }
 
         return componentSetDescriptors;

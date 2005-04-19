@@ -24,9 +24,9 @@ package org.codehaus.plexus.embed;
  * SOFTWARE.
  */
 
-import java.util.Properties;
-
 import junit.framework.TestCase;
+
+import java.util.Properties;
 
 /**
  * @author Ben Walding
@@ -61,7 +61,7 @@ public class EmbedderTest
         }
         catch ( IllegalStateException e )
         {
-            // do nothing
+            assertTrue( true );
         }
 
         Object o = embed.lookup( MockComponent.ROLE );

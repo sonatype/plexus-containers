@@ -1,6 +1,5 @@
 package org.codehaus.plexus.logging;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 import java.util.HashMap;

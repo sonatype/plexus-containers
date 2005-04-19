@@ -1,3 +1,5 @@
+package org.codehaus.plexus.util.reflection;
+
 /*
  *
  * Copyright (c) 2004 John Dennis Casey
@@ -33,15 +35,11 @@
  *
  * Created on November 1, 2002, 7:31 AM
  */
-package org.codehaus.plexus.util.reflection;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

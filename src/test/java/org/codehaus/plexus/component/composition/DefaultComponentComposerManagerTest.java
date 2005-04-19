@@ -24,9 +24,9 @@ package org.codehaus.plexus.component.composition;
  * SOFTWARE.
  */
 
-import java.io.InputStream;
-
 import org.codehaus.plexus.PlexusTestCase;
+
+import java.io.InputStream;
 
 /**
  * @author <a href="mailto:mma@imtf.ch">Michal Maczka</a>
@@ -35,7 +35,8 @@ import org.codehaus.plexus.PlexusTestCase;
 public class DefaultComponentComposerManagerTest
     extends PlexusTestCase
 {
-    protected InputStream getCustomConfiguration() throws Exception
+    protected InputStream getCustomConfiguration()
+        throws Exception
     {
         System.out.println( "Reading custom configuration" );
 
@@ -47,26 +48,18 @@ public class DefaultComponentComposerManagerTest
     }
 
     public void testComposition()
+        throws Exception
     {
-        try
-        {
-            final ComponentA componentA = ( ComponentA ) lookup( ComponentA.ROLE );
+        final ComponentA componentA = (ComponentA) lookup( ComponentA.ROLE );
 
-            assertNotNull( componentA );
+        assertNotNull( componentA );
 
-            final ComponentB componentB = componentA.getComponentB();
+        final ComponentB componentB = componentA.getComponentB();
 
-            assertNotNull( componentB );
+        assertNotNull( componentB );
 
-            final ComponentC componentC = componentB.getComponentC();
+        final ComponentC componentC = componentB.getComponentC();
 
-            assertNotNull( componentC );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-
-            fail( e.getMessage() );
-        }
+        assertNotNull( componentC );
     }
 }
