@@ -241,42 +241,35 @@ public class XmlPlexusConfiguration
             }
             else
             {
-                try
+                String value = child.getValue( null );
+
+                if ( value != null )
                 {
-                    String value = child.getValue();
+                    sb.append( indent( depth ) ).
+                        append( '<' ).
+                        append( child.getName() );
 
-                    if ( value != null )
-                    {
-                        sb.append( indent( depth ) ).
-                            append( '<' ).
-                            append( child.getName() );
+                    attributes( child, sb );
 
-                        attributes( child, sb );
-
-                        sb.append( '>' ).
-                            append( child.getValue() ).
-                            append( '<' ).
-                            append( '/' ).
-                            append( child.getName() ).
-                            append( '>' ).
-                            append( '\n' );
-                    }
-                    else
-                    {
-                        sb.append( indent( depth ) ).
-                            append( '<' ).
-                            append( child.getName() );
-
-                        attributes( child, sb );
-
-                        sb.append( '/' ).
-                            append( '>' ).
-                            append( "\n" );
-                    }
+                    sb.append( '>' ).
+                        append( child.getValue( null ) ).
+                        append( '<' ).
+                        append( '/' ).
+                        append( child.getName() ).
+                        append( '>' ).
+                        append( '\n' );
                 }
-                catch ( Exception e )
+                else
                 {
-                    // do nothing
+                    sb.append( indent( depth ) ).
+                        append( '<' ).
+                        append( child.getName() );
+
+                    attributes( child, sb );
+
+                    sb.append( '/' ).
+                        append( '>' ).
+                        append( "\n" );
                 }
             }
 

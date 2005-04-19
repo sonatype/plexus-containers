@@ -24,7 +24,6 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 
 import java.io.InputStreamReader;
@@ -48,83 +47,67 @@ public class PlexusXmlComponentDiscoverer
     }
 
     public List findComponents( Context context, ClassRealm classRealm )
+        throws Exception
     {
         PlexusConfiguration configuration = discoverConfiguration( context, classRealm );
 
         List componentSetDescriptors = new ArrayList();
 
-        try
-        {
-            ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( configuration, classRealm );
+        ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( configuration, classRealm );
 
-            componentSetDescriptors.add( componentSetDescriptor );
+        componentSetDescriptors.add( componentSetDescriptor );
 
-            // Fire the event
-            ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
+        // Fire the event
+        ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
 
-            manager.fireComponentDiscoveryEvent( event );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-        }
+        manager.fireComponentDiscoveryEvent( event );
 
         return componentSetDescriptors;
     }
 
     public PlexusConfiguration discoverConfiguration( Context context, ClassRealm classRealm )
+        throws Exception
     {
         PlexusConfiguration configuration = null;
 
-        try
+        for ( Enumeration e = classRealm.findResources( PLEXUS_XML_RESOURCE ); e.hasMoreElements(); )
         {
-            for ( Enumeration e = classRealm.findResources( PLEXUS_XML_RESOURCE ); e.hasMoreElements(); )
+            URL url = (URL) e.nextElement();
+
+            InputStreamReader reader = new InputStreamReader( url.openStream() );
+
+            ContextMapAdapter contextAdapter = new ContextMapAdapter( context );
+
+            InterpolationFilterReader interpolationFilterReader = new InterpolationFilterReader( reader,
+                                                                                                 contextAdapter );
+
+            PlexusConfiguration discoveredConfig = PlexusTools.buildConfiguration( interpolationFilterReader );
+
+            if ( configuration == null )
             {
-                URL url = (URL) e.nextElement();
-
-                InterpolationFilterReader input = new InterpolationFilterReader( new InputStreamReader( url
-                    .openStream() ), new ContextMapAdapter( context ) );
-
-                String descriptor = IOUtil.toString( input );
-
-                InputStreamReader reader = new InputStreamReader( url.openStream() );
-
-                ContextMapAdapter contextAdapter = new ContextMapAdapter( context );
-
-                InterpolationFilterReader interpolationFilterReader = new InterpolationFilterReader( reader,
-                                                                                                     contextAdapter );
-
-                PlexusConfiguration discoveredConfig = PlexusTools.buildConfiguration( interpolationFilterReader );
-
-                if ( configuration == null )
-                {
-                    configuration = discoveredConfig;
-                }
-                else
-                {
-                    configuration = PlexusConfigurationMerger.merge( configuration, discoveredConfig );
-                }
+                configuration = discoveredConfig;
             }
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
+            else
+            {
+                configuration = PlexusConfigurationMerger.merge( configuration, discoveredConfig );
+            }
         }
 
         return configuration;
     }
 
-    private ComponentSetDescriptor createComponentDescriptors( PlexusConfiguration configuration, ClassRealm classRealm )
+    private ComponentSetDescriptor createComponentDescriptors( PlexusConfiguration configuration,
+                                                               ClassRealm classRealm )
         throws Exception
     {
         ComponentSetDescriptor componentSetDescriptor = new ComponentSetDescriptor();
-        
-        if(configuration != null)
+
+        if ( configuration != null )
         {
             List componentDescriptors = new ArrayList();
 
-            PlexusConfiguration[] componentConfigurations = configuration.getChild( "components" )
-                .getChildren( "component" );
+            PlexusConfiguration[] componentConfigurations = configuration.getChild( "components" ).getChildren(
+                "component" );
 
             for ( int i = 0; i < componentConfigurations.length; i++ )
             {
@@ -138,8 +121,8 @@ public class PlexusXmlComponentDiscoverer
                 }
                 catch ( Exception e )
                 {
-                    throw new Exception( "Cannot build component descriptor from resource found in:\n"
-                        + Arrays.asList( classRealm.getConstituents() ), e );
+                    throw new Exception( "Cannot build component descriptor from resource found in:\n" +
+                                         Arrays.asList( classRealm.getConstituents() ), e );
                 }
 
                 componentDescriptor.setComponentType( "plexus" );

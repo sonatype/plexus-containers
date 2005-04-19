@@ -67,7 +67,7 @@ public class PlexusTestCaseTest
         }
         catch ( ComponentLookupException ex )
         {
-            // do nothing.
+            assertTrue( true );
         }
 
         // This component is discovered from src/test/META-INF/plexus/components.xml

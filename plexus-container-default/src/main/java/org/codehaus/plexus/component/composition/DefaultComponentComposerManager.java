@@ -24,15 +24,14 @@ package org.codehaus.plexus.component.composition;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>

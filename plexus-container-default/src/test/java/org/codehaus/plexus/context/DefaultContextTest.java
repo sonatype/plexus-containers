@@ -126,7 +126,7 @@ public class DefaultContextTest
         }
         catch ( ContextException ce )
         {
-            // Supposed to be thrown.
+            assertTrue( true );
         }
 
         child.makeReadOnly();
@@ -138,7 +138,7 @@ public class DefaultContextTest
         }
         catch ( IllegalStateException ise )
         {
-            // Supposed to be thrown.
+            assertTrue( true );
         }
     }
 }
