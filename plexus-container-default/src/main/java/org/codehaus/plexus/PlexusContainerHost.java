@@ -25,8 +25,10 @@ package org.codehaus.plexus;
  */
 
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 /**
@@ -65,7 +67,7 @@ public class PlexusContainerHost
     // ----------------------------------------------------------------------
 
     public PlexusContainer start( ClassWorld classWorld, String configurationResource )
-        throws Exception
+        throws FileNotFoundException, PlexusConfigurationResourceException, PlexusContainerException
     {
         container = getPlexusContainer();
 
@@ -160,11 +162,8 @@ public class PlexusContainerHost
 
     /**
      * Shutdown this container.
-     *
-     * @throws java.lang.Exception If an error occurs while shutting down the container.
      */
     public void shutdown()
-        throws Exception
     {
         synchronized ( this )
         {

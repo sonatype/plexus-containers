@@ -31,7 +31,6 @@ public class MeenyPhase
     extends AbstractPhase
 {
     public void execute( Object object, ComponentManager manager )
-        throws Exception
     {
         if ( object instanceof Meeny )
         {

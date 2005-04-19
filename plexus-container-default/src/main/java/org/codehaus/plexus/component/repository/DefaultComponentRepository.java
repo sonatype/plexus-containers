@@ -113,19 +113,19 @@ public class DefaultComponentRepository
     }
 
     public void initialize()
-        throws Exception
+        throws ComponentRepositoryException
     {
         initializeComponentDescriptors();
     }
 
     public void initializeComponentDescriptors()
-        throws Exception
+        throws ComponentRepositoryException
     {
         initializeComponentDescriptorsFromUserConfiguration();
     }
 
     private void initializeComponentDescriptorsFromUserConfiguration()
-        throws Exception
+        throws ComponentRepositoryException
     {
         PlexusConfiguration[] componentConfigurations = configuration.getChild( COMPONENTS ).getChildren( COMPONENT );
 

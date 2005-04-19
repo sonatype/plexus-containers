@@ -55,7 +55,6 @@ public class PlexusConfigurationMerger
     // -----------------------------------+-----------------------------------------------------------------
 
     public static PlexusConfiguration merge( PlexusConfiguration user, PlexusConfiguration system )
-        throws Exception
     {
         XmlPlexusConfiguration mergedConfiguration = new XmlPlexusConfiguration( "plexus" );
 

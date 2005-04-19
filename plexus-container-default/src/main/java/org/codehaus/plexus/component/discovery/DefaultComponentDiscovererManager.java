@@ -83,7 +83,6 @@ public class DefaultComponentDiscovererManager
     // ----------------------------------------------------------------------
 
     public void initialize()
-        throws Exception
     {
         for ( Iterator i = componentDiscoverers.iterator(); i.hasNext(); )
         {

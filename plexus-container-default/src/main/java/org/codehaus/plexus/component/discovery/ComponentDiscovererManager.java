@@ -12,8 +12,7 @@ public interface ComponentDiscovererManager
 
     void fireComponentDiscoveryEvent( ComponentDiscoveryEvent event );
 
-    void initialize()
-        throws Exception;
+    void initialize();
 
     List getListenerDescriptors();
 }

@@ -2,14 +2,15 @@ package org.codehaus.plexus.component.discovery;
 
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -32,7 +33,7 @@ public abstract class AbstractComponentDiscoverer
     protected abstract String getComponentDescriptorLocation();
 
     protected abstract ComponentSetDescriptor createComponentDescriptors( Reader reader, String source )
-        throws Exception;
+        throws PlexusConfigurationException;
 
     // ----------------------------------------------------------------------
     //  ComponentDiscoverer
@@ -44,28 +45,48 @@ public abstract class AbstractComponentDiscoverer
     }
 
     public List findComponents( Context context, ClassRealm classRealm )
-        throws Exception
+        throws PlexusConfigurationException
     {
         List componentSetDescriptors = new ArrayList();
 
-        for ( Enumeration e = classRealm.findResources( getComponentDescriptorLocation() ); e.hasMoreElements(); )
+        Enumeration resources;
+        try
+        {
+            resources = classRealm.findResources( getComponentDescriptorLocation() );
+        }
+        catch ( IOException e )
+        {
+            throw new PlexusConfigurationException( "Unable to read resource " + getComponentDescriptorLocation() );
+        }
+        for ( Enumeration e = resources; e.hasMoreElements(); )
         {
             URL url = (URL) e.nextElement();
 
-            InterpolationFilterReader input = new InterpolationFilterReader( new InputStreamReader( url.openStream() ),
-                                                                             new ContextMapAdapter( context ) );
+            InputStreamReader reader = null;
+            try
+            {
+                reader = new InputStreamReader( url.openStream() );
+                InterpolationFilterReader input = new InterpolationFilterReader( reader,
+                                                                                 new ContextMapAdapter( context ) );
 
-            String descriptor = IOUtil.toString( input );
+                ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( input,
+                                                                                            url.toString() );
 
-            ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( new StringReader( descriptor ),
-                                                                                        url.toString() );
+                componentSetDescriptors.add( componentSetDescriptor );
 
-            componentSetDescriptors.add( componentSetDescriptor );
+                // Fire the event
+                ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
 
-            // Fire the event
-            ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
-
-            manager.fireComponentDiscoveryEvent( event );
+                manager.fireComponentDiscoveryEvent( event );
+            }
+            catch ( IOException ex )
+            {
+                throw new PlexusConfigurationException( "Error reading configuration " + url, ex );
+            }
+            finally
+            {
+                IOUtil.close( reader );
+            }
         }
 
         return componentSetDescriptors;

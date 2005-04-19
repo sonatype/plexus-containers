@@ -1,12 +1,12 @@
 package org.codehaus.plexus.component.repository;
 
-import java.util.List;
-import java.util.Map;
-
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Like the avalon component manager. Central point to get the components from.
@@ -18,8 +18,7 @@ public interface ComponentRepository
 {
     void configure( PlexusConfiguration configuration );
 
-    void initialize()
-        throws Exception;
+    void initialize() throws ComponentRepositoryException;
 
     boolean hasComponent( String role );
 

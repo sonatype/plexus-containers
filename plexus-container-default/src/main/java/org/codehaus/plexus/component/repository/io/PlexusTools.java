@@ -144,7 +144,7 @@ public class PlexusTools
     }
 
     public static ComponentSetDescriptor buildComponentSet( PlexusConfiguration c )
-        throws Exception
+        throws PlexusConfigurationException
     {
         ComponentSetDescriptor csd = new ComponentSetDescriptor();
 

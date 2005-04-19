@@ -26,7 +26,6 @@ package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,7 +47,7 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
     public void assembleComponent( final Object component,
                                    final ComponentDescriptor componentDescriptor,
                                    final PlexusContainer container )
-            throws CompositionException, UndefinedComponentComposerException, ComponentLookupException
+        throws UndefinedComponentComposerException, CompositionException
     {
 
         if ( componentDescriptor.getRequirements().size() == 0 )

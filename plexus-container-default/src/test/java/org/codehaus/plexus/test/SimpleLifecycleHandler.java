@@ -37,7 +37,6 @@ public class SimpleLifecycleHandler
     extends AbstractLifecycleHandler
 {
     public void initialize()
-        throws Exception
     {
     }
 }

@@ -1,10 +1,11 @@
 package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+
 import java.util.List;
 import java.util.Map;
-
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 /**
  * A ServiceLocator for PlexusContainer.
@@ -56,24 +57,27 @@ public class PlexusContainerLocator
 	/**
 	 * @see org.codehaus.xfire.lifecycle.ServiceLocator#release(java.lang.Object)
 	 */
-	public void release(Object component) throws Exception
-	{
+	public void release(Object component)
+        throws ComponentLifecycleException
+    {
 		container.release(component);
 	}
 
 	/**
 	 * @see org.codehaus.xfire.lifecycle.ServiceLocator#releaseAll(java.util.Map)
 	 */
-	public void releaseAll(Map components) throws Exception
-	{
+	public void releaseAll(Map components)
+        throws ComponentLifecycleException
+    {
 		container.releaseAll(components);
 	}
 
 	/**
 	 * @see org.codehaus.xfire.lifecycle.ServiceLocator#releaseAll(java.util.List)
 	 */
-	public void releaseAll(List components) throws Exception
-	{
+	public void releaseAll(List components)
+        throws ComponentLifecycleException
+    {
 		container.releaseAll(components);
 	}
 

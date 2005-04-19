@@ -29,6 +29,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.factory.java.JavaComponentFactory;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -93,7 +94,7 @@ public class DefaultComponentFactoryManager
     }
 
     public void contextualize( Context context )
-        throws Exception
+        throws ContextException
     {
         this.container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }

@@ -1,15 +1,18 @@
 /* Created on Oct 7, 2004 */
 package org.codehaus.plexus.embed;
 
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Properties;
-
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 /**
  * @author jdcasey
@@ -27,7 +30,8 @@ public interface PlexusEmbedder
 
     boolean hasComponent( String role, String id );
 
-    void release( Object service ) throws Exception;
+    void release( Object service )
+        throws ComponentLifecycleException;
 
     void setClassWorld( ClassWorld classWorld );
 
@@ -41,10 +45,12 @@ public interface PlexusEmbedder
 
     void setProperties( File file );
 
-    void start( ClassWorld classWorld ) throws Exception;
+    void start( ClassWorld classWorld )
+        throws PlexusContainerException, PlexusConfigurationResourceException;
 
-    void start() throws Exception;
+    void start()
+        throws PlexusContainerException, PlexusConfigurationResourceException;
 
-    void stop() throws Exception;
+    void stop();
 
 }

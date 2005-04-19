@@ -2,9 +2,12 @@ package org.codehaus.plexus.component.manager;
 
 
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
@@ -74,7 +77,6 @@ public abstract class AbstractComponentManager
     // ----------------------------------------------------------------------
 
     public void setup( PlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor )
-        throws Exception
     {
         this.container = container;
         this.lifecycleHandler = lifecycleHandler;
@@ -82,12 +84,11 @@ public abstract class AbstractComponentManager
     }
 
     public void initialize()
-        throws Exception
     {
     }
 
     protected Object createComponentInstance()
-        throws Exception
+        throws ComponentInstantiationException, ComponentLifecycleException
     {
         Object component = container.createComponentInstance( componentDescriptor );
 
@@ -97,28 +98,55 @@ public abstract class AbstractComponentManager
     }
 
     protected void startComponentLifecycle( Object component )
-        throws Exception
+        throws ComponentLifecycleException
     {
-        getLifecycleHandler().start( component, this );
+        try
+        {
+            getLifecycleHandler().start( component, this );
+        }
+        catch ( PhaseExecutionException e )
+        {
+            throw new ComponentLifecycleException( "Error starting component", e );
+        }
     }
 
     public void suspend( Object component )
-        throws Exception
+        throws ComponentLifecycleException
     {
-        getLifecycleHandler().suspend( component, this );
+        try
+        {
+            getLifecycleHandler().suspend( component, this );
+        }
+        catch ( PhaseExecutionException e )
+        {
+            throw new ComponentLifecycleException( "Error suspending component", e );
+        }
     }
 
     public void resume( Object component )
-        throws Exception
+        throws ComponentLifecycleException
     {
-        getLifecycleHandler().resume( component, this );
+        try
+        {
+            getLifecycleHandler().resume( component, this );
+        }
+        catch ( PhaseExecutionException e )
+        {
+            throw new ComponentLifecycleException( "Error suspending component", e );
+        }
     }
 
     protected void endComponentLifecycle( Object component )
-        throws Exception
+        throws ComponentLifecycleException
     {
-        getLifecycleHandler().end( component, this );
-
+        try
+        {
+            getLifecycleHandler().end( component, this );
+        }
+        catch ( PhaseExecutionException e )
+        {
+            throw new ComponentLifecycleException( "Error ending component lifecycle", e );
+        }
     }
 
     public PlexusContainer getContainer()

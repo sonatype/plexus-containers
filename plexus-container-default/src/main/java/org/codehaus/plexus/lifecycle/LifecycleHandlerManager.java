@@ -12,8 +12,7 @@ package org.codehaus.plexus.lifecycle;
  */
 public interface LifecycleHandlerManager
 {
-    void initialize()
-        throws Exception;
+    void initialize();
 
     LifecycleHandler getDefaultLifecycleHandler()
         throws UndefinedLifecycleHandlerException;

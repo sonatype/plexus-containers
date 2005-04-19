@@ -64,19 +64,16 @@ public class DefaultServiceE
     }
 
     public void initialize()
-        throws Exception
     {
         initialize = true;
     }
 
     public void start()
-        throws Exception
     {
         start = true;
     }
 
     public void stop()
-        throws Exception
     {
         stop = true;
     }

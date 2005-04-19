@@ -24,20 +24,23 @@ package org.codehaus.plexus.embed;
  * SOFTWARE.
  */
 
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.util.PropertyUtils;
+
 import java.io.File;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
-
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.util.PropertyUtils;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 public class Embedder implements PlexusEmbedder
 {
@@ -91,7 +94,7 @@ public class Embedder implements PlexusEmbedder
     }
 
     public void release( Object service )
-        throws Exception
+        throws ComponentLifecycleException
     {
         getContainer().release( service );
     }
@@ -161,7 +164,7 @@ public class Embedder implements PlexusEmbedder
     }
 
     public synchronized void start( ClassWorld classWorld )
-        throws Exception
+        throws PlexusContainerException
     {
         container.setClassWorld( classWorld );
 
@@ -169,7 +172,7 @@ public class Embedder implements PlexusEmbedder
     }
 
     public synchronized void start()
-        throws Exception
+        throws PlexusContainerException
     {
         if ( embedderStarted )
         {
@@ -183,7 +186,14 @@ public class Embedder implements PlexusEmbedder
 
         if ( configurationReader != null )
         {
-            container.setConfigurationResource( configurationReader );
+            try
+            {
+                container.setConfigurationResource( configurationReader );
+            }
+            catch ( PlexusConfigurationResourceException e )
+            {
+                throw new PlexusContainerException( "Error loading from configuration reader", e );
+            }
         }
 
         if ( properties != null)
@@ -199,7 +209,6 @@ public class Embedder implements PlexusEmbedder
     }
 
     public synchronized void stop()
-        throws Exception
     {
         if ( embedderStopped )
         {

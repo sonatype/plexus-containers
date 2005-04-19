@@ -2,9 +2,7 @@ package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 
 public interface Startable
 {
-    void start()
-        throws Exception;
+    void start() throws StartingException;
 
-    void stop()
-        throws Exception;
+    void stop();
 }

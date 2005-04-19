@@ -79,7 +79,7 @@ public class DefaultComponentManagerManager
     }
 
     public ComponentManager createComponentManager( ComponentDescriptor descriptor, PlexusContainer container )
-        throws Exception
+        throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException
     {
         String componentManagerId = descriptor.getInstantiationStrategy();
 
