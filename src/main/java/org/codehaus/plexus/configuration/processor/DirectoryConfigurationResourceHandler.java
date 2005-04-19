@@ -24,14 +24,17 @@ package org.codehaus.plexus.configuration.processor;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.io.FileReader;
-import java.util.List;
-import java.util.Map;
-
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.FileUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -99,7 +102,15 @@ public class DirectoryConfigurationResourceHandler
 
             return configurations;
         }
-        catch ( Exception e )
+        catch ( FileNotFoundException e )
+        {
+            throw new ConfigurationProcessingException( e );
+        }
+        catch ( IOException e )
+        {
+            throw new ConfigurationProcessingException( e );
+        }
+        catch ( PlexusConfigurationException e )
         {
             throw new ConfigurationProcessingException( e );
         }

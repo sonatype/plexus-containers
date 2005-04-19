@@ -19,7 +19,7 @@ public abstract class AbstractLogger
     {
         if ( !isValidThreshold( threshold ) )
         {
-            throw new RuntimeException( "threshold" );
+            throw new IllegalArgumentException( "Threshold " + threshold + " is not valid" );
         }
 
         this.threshold = threshold;

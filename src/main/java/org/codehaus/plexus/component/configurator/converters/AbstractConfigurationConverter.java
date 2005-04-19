@@ -63,9 +63,9 @@ public abstract class AbstractConfigurationConverter
             catch ( ClassNotFoundException e )
             {
                 String msg = "Class name which was explicitly given in configuration using 'implementation' attribute: '" +
-                    implementation + "' cannot be loaded: " + e.getMessage();
+                    implementation + "' cannot be loaded";
 
-                throw new ComponentConfigurationException( msg );
+                throw new ComponentConfigurationException( msg, e );
             }
         }
 
@@ -82,7 +82,7 @@ public abstract class AbstractConfigurationConverter
         {
             retValue = classLoader.loadClass( classname );
         }
-        catch ( Exception e )
+        catch ( ClassNotFoundException e )
         {
             throw new ComponentConfigurationException( "Error loading class '" + classname + "'", e );
         }
@@ -111,11 +111,13 @@ public abstract class AbstractConfigurationConverter
 
             return retValue;
         }
-        catch ( Exception e )
+        catch ( IllegalAccessException e )
         {
-            String msg = "Class '" + clazz.getName() + "' cannot be instantiated";
-
-            throw new ComponentConfigurationException( msg, e );
+            throw new ComponentConfigurationException( "Class '" + clazz.getName() + "' cannot be instantiated", e );
+        }
+        catch ( InstantiationException e )
+        {
+            throw new ComponentConfigurationException( "Class '" + clazz.getName() + "' cannot be instantiated", e );
         }
     }
 

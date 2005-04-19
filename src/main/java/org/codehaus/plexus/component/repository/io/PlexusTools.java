@@ -24,16 +24,19 @@ package org.codehaus.plexus.component.repository.io;
  * SOFTWARE.
  */
 
-import java.io.Reader;
-import java.io.StringReader;
-
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 
 
 /**
@@ -45,25 +48,36 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 public class PlexusTools
 {
     public static PlexusConfiguration buildConfiguration( Reader configuration )
-        throws Exception
+        throws PlexusConfigurationException
     {
-        return new XmlPlexusConfiguration( Xpp3DomBuilder.build( configuration ) );
+        try
+        {
+            return new XmlPlexusConfiguration( Xpp3DomBuilder.build( configuration ) );
+        }
+        catch ( XmlPullParserException e )
+        {
+            throw new PlexusConfigurationException( "Parse error building configuration", e );
+        }
+        catch ( IOException e )
+        {
+            throw new PlexusConfigurationException( "IO error building configuration", e );
+        }
     }
 
     public static PlexusConfiguration buildConfiguration( String configuration )
-        throws Exception
+        throws PlexusConfigurationException
     {
         return buildConfiguration( new StringReader( configuration ) );
     }
 
     public static ComponentDescriptor buildComponentDescriptor( String configuration )
-        throws Exception
+        throws PlexusConfigurationException
     {
         return buildComponentDescriptor( buildConfiguration( configuration ) );
     }
 
     public static ComponentDescriptor buildComponentDescriptor( PlexusConfiguration configuration )
-        throws Exception
+        throws PlexusConfigurationException
     {
         ComponentDescriptor cd = new ComponentDescriptor();
 

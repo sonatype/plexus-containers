@@ -24,14 +24,15 @@ package org.codehaus.plexus.component.discovery;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
+
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.component.repository.io.PlexusTools;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -67,9 +68,9 @@ public class DefaultComponentDiscoverer
             {
                 componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );
             }
-            catch( Exception e )
+            catch ( PlexusConfigurationException e )
             {
-                throw new Exception( "Cannot process component descriptor: " + source, e );                
+                throw new Exception( "Cannot process component descriptor: " + source, e );
             }
 
             componentDescriptor.setComponentType( "plexus" );

@@ -21,6 +21,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
@@ -119,7 +120,7 @@ public class PlexusXmlComponentDiscoverer
                 {
                     componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );
                 }
-                catch ( Exception e )
+                catch ( PlexusConfigurationException e )
                 {
                     throw new Exception( "Cannot build component descriptor from resource found in:\n" +
                                          Arrays.asList( classRealm.getConstituents() ), e );
