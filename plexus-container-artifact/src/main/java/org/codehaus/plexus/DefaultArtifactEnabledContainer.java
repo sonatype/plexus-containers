@@ -25,7 +25,8 @@ package org.codehaus.plexus;
  */
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.construction.ArtifactConstructionSupport;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.factory.DefaultArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
@@ -57,8 +58,8 @@ public class DefaultArtifactEnabledContainer
     extends DefaultPlexusContainer
     implements ArtifactEnabledContainer
 {
-
-    private ArtifactConstructionSupport artifactConstructionSupport = new ArtifactConstructionSupport();
+    // TODO: should be a component?
+    private ArtifactFactory artifactFactory = new DefaultArtifactFactory();
 
     public DefaultArtifactEnabledContainer()
     {
@@ -67,8 +68,8 @@ public class DefaultArtifactEnabledContainer
 
     private Artifact createArtifact( ComponentDependency cd )
     {
-        return artifactConstructionSupport.createArtifact( cd.getGroupId(), cd.getArtifactId(), cd.getVersion(),
-                                                           Artifact.SCOPE_RUNTIME, cd.getType() );
+        return artifactFactory.createArtifact( cd.getGroupId(), cd.getArtifactId(), cd.getVersion(),
+                                               Artifact.SCOPE_RUNTIME, cd.getType() );
     }
 
     // ----------------------------------------------------------------------
