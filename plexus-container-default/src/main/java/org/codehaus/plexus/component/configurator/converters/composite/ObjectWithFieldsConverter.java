@@ -118,7 +118,10 @@ public class ObjectWithFieldsConverter
             Object value = converter.fromConfiguration( converterLookup, childConfiguration, fieldType,
                                                         object.getClass(), classLoader, expressionEvaluator );
 
-            setFieldValue( field, object, value );
+            if ( value != null )
+            {
+                setFieldValue( field, object, value );
+            }
         }
 
     }
