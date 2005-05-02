@@ -196,6 +196,13 @@ public class DefaultComponentRepository
         }
 
         componentDescriptors.put( componentDescriptor.getComponentKey(), componentDescriptor );
+        
+        // We need to be able to lookup by role only (in non-collection situations), even when the 
+        // component has a roleHint.
+        if ( componentDescriptors.get( componentDescriptor.getRole() ) == null )
+        {
+            componentDescriptors.put( componentDescriptor.getRole(), componentDescriptor );
+        }
     }
 
     public void validateComponentDescriptor( ComponentDescriptor componentDescriptor )

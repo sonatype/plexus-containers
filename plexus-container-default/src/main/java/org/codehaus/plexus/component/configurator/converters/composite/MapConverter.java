@@ -32,6 +32,7 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 
 /**
@@ -45,7 +46,7 @@ public class MapConverter
 {
     public boolean canConvert( Class type )
     {
-        return Map.class.isAssignableFrom( type );
+        return Map.class.isAssignableFrom( type ) && !Properties.class.isAssignableFrom( type );
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
