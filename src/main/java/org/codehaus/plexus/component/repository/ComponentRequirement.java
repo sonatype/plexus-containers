@@ -14,6 +14,8 @@ public final class ComponentRequirement
 
     private String fieldName;
     
+    private String fieldMappingType;
+    
     public String getFieldName()
     {
         return fieldName;
@@ -100,6 +102,16 @@ public final class ComponentRequirement
         
         return retValue;
        
+    }
+
+    public String getFieldMappingType()
+    {
+        return fieldMappingType;
+    }
+
+    public void setFieldMappingType( String fieldType )
+    {
+        this.fieldMappingType = fieldType;
     }
 
 

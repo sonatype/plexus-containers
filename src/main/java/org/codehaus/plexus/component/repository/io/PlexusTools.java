@@ -99,6 +99,8 @@ public class PlexusTools
 
         cd.setComponentComposer( configuration.getChild( "component-composer" ).getValue() );
 
+        cd.setComponentConfigurator( configuration.getChild( "component-configurator" ).getValue() );
+
         cd.setComponentFactory( configuration.getChild( "component-factory" ).getValue() );
 
         cd.setDescription( configuration.getChild( "description" ).getValue() );

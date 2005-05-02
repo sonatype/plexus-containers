@@ -40,6 +40,8 @@ public class ComponentDescriptor
     private String componentFactory;
 
     private String componentComposer;
+    
+    private String componentConfigurator;
 
     private String description;
 
@@ -269,6 +271,57 @@ public class ComponentDescriptor
     public List getDependencies()
     {
         return dependencies;
+    }
+
+    public String getComponentConfigurator()
+    {
+        return componentConfigurator;
+    }
+
+    public void setComponentConfigurator( String componentConfigurator )
+    {
+        this.componentConfigurator = componentConfigurator;
+    }
+    
+    // Component identity established here!
+    public boolean equals(Object other)
+    {
+        if(!(other instanceof ComponentDescriptor))
+        {
+            return false;
+        }
+        else
+        {
+            ComponentDescriptor otherDescriptor = (ComponentDescriptor) other;
+            
+            boolean isEqual = true;
+            
+            String role = getRole();
+            String otherRole = otherDescriptor.getRole();
+            
+            isEqual = isEqual && ( role == otherRole || role.equals( otherRole ) );
+            
+            String roleHint = getRoleHint();
+            String otherRoleHint = otherDescriptor.getRoleHint();
+            
+            isEqual = isEqual && ( roleHint == otherRoleHint || roleHint.equals( otherRoleHint ) );
+            
+            return isEqual;
+        }
+    }
+    
+    public int hashCode()
+    {
+        int result = getRole().hashCode() + 1;
+        
+        String hint = getRoleHint();
+        
+        if( hint != null )
+        {
+            result += hint.hashCode();
+        }
+        
+        return result;
     }
 
 }
