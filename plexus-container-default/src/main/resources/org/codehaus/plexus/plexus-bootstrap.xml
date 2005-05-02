@@ -126,6 +126,9 @@
       <component-composer implementation="org.codehaus.plexus.component.composition.SetterComponentComposer">
         <id>setter</id>
       </component-composer>
+      <component-composer implementation="org.codehaus.plexus.component.composition.MapOrientedComponentComposer">
+        <id>map-oriented</id>
+      </component-composer>
       <component-composer implementation="org.codehaus.plexus.component.composition.NoOpComponentComposer">
         <id>noop</id>
       </component-composer>
@@ -145,6 +148,7 @@
     <!-- Component configurator -->
     <component>
       <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
+      <role-hint>basic</role-hint>
       <implementation>org.codehaus.plexus.component.configurator.BasicComponentConfigurator</implementation>
       <lifecycle-handler>passive</lifecycle-handler>
       <!-- TODO: the converters should be components -->
@@ -153,7 +157,18 @@
           <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
         </requirement>
       </requirements>
-         -->
+    </component>
+    <component>
+      <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
+      <role-hint>map-oriented</role-hint>
+      <implementation>org.codehaus.plexus.component.configurator.MapOrientedComponentConfigurator</implementation>
+      <lifecycle-handler>passive</lifecycle-handler>
+      <!-- TODO: the converters should be components -->
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
+        </requirement>
+      </requirements>
     </component>
     <!--
     <component>

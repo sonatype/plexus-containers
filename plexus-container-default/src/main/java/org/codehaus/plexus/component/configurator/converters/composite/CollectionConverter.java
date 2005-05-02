@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -49,7 +50,7 @@ public class CollectionConverter
 {
     public boolean canConvert( Class type )
     {
-        return Collection.class.isAssignableFrom( type );
+        return Collection.class.isAssignableFrom( type ) && !Map.class.isAssignableFrom( type );
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
