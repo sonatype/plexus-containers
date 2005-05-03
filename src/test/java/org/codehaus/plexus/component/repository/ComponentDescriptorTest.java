@@ -93,4 +93,17 @@ public class ComponentDescriptorTest
 
         assertTrue( containsC3 );
     }
+    
+    public void testShouldNotBeEqualWhenRolesAreSameButHintsAreDifferent()
+    {
+        ComponentDescriptor desc = new ComponentDescriptor();
+        desc.setRole("one");
+        desc.setRoleHint("one");
+        
+        ComponentDescriptor desc2 = new ComponentDescriptor();
+        desc2.setRole("one");
+        desc2.setRoleHint("two");
+        
+        assertFalse(desc.equals(desc2));
+    }
 }

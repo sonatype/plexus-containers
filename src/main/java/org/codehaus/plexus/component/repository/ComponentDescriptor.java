@@ -310,6 +310,11 @@ public class ComponentDescriptor
         }
     }
     
+    public String toString()
+    {
+        return this.getClass().getName() + " [role: \'" + getRole() + "\', hint: \'" + getRoleHint() + "\']";
+    }
+    
     public int hashCode()
     {
         int result = getRole().hashCode() + 1;
