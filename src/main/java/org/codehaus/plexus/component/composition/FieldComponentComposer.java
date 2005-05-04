@@ -139,9 +139,14 @@ public class FieldComponentComposer
 
             return retValue;
         }
+        catch ( IllegalArgumentException e )
+        {
+            throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
+                                            "in object of type " + component.getClass().getName(), e );
+        }
         catch ( IllegalAccessException e )
         {
-            throw new CompositionException( "Composition failed of field " + field.getName() + " " +
+            throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
                                             "in object of type " + component.getClass().getName(), e );
         }
         catch ( ComponentLookupException e )
