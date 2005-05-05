@@ -59,14 +59,14 @@ public class ConfigurationMergerTest
 
         assertNotNull( userStream );
 
-        user = PlexusTools.buildConfiguration( new InputStreamReader( userStream ) );
+        user = PlexusTools.buildConfiguration( "<Test User Stream>", new InputStreamReader( userStream ) );
 
         InputStream systemStream =
             Thread.currentThread().getContextClassLoader().getResourceAsStream( DefaultPlexusContainer.BOOTSTRAP_CONFIGURATION );
 
         assertNotNull( systemStream );
 
-        system = PlexusTools.buildConfiguration( new InputStreamReader( systemStream ) );
+        system = PlexusTools.buildConfiguration( "<Test System Stream>", new InputStreamReader( systemStream ) );
     }
 
     public void testSimpleConfigurationCascading()

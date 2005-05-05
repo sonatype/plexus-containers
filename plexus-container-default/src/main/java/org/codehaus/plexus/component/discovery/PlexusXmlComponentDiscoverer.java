@@ -80,7 +80,7 @@ public class PlexusXmlComponentDiscoverer
         }
         catch ( IOException e )
         {
-            throw new PlexusConfigurationException( "Error reading " + PLEXUS_XML_RESOURCE, e );
+            throw new PlexusConfigurationException( "Error retrieving configuration resources: " + PLEXUS_XML_RESOURCE + " from class realm: " + classRealm.getId(), e );
         }
 
         for ( Enumeration e = resources; e.hasMoreElements(); )
@@ -97,7 +97,7 @@ public class PlexusXmlComponentDiscoverer
                 InterpolationFilterReader interpolationFilterReader = new InterpolationFilterReader( reader,
                                                                                                      contextAdapter );
 
-                PlexusConfiguration discoveredConfig = PlexusTools.buildConfiguration( interpolationFilterReader );
+                PlexusConfiguration discoveredConfig = PlexusTools.buildConfiguration( url.toExternalForm(), interpolationFilterReader );
 
                 if ( configuration == null )
                 {
@@ -110,7 +110,7 @@ public class PlexusXmlComponentDiscoverer
             }
             catch ( IOException ex )
             {
-                throw new PlexusConfigurationException( "Error reading " + url, ex );
+                throw new PlexusConfigurationException( "Error reading configuration from: " + url.toExternalForm(), ex );
             }
             finally
             {

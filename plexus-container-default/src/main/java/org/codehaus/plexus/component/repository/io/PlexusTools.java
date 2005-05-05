@@ -47,7 +47,7 @@ import java.io.StringReader;
  */
 public class PlexusTools
 {
-    public static PlexusConfiguration buildConfiguration( Reader configuration )
+    public static PlexusConfiguration buildConfiguration( String resourceName, Reader configuration )
         throws PlexusConfigurationException
     {
         try
@@ -56,18 +56,18 @@ public class PlexusTools
         }
         catch ( XmlPullParserException e )
         {
-            throw new PlexusConfigurationException( "Parse error building configuration", e );
+            throw new PlexusConfigurationException( "Failed to parse configuration resource: \'" + resourceName + "\'\nError was: \'" + e.getLocalizedMessage() + "\'", e );
         }
         catch ( IOException e )
         {
-            throw new PlexusConfigurationException( "IO error building configuration", e );
+            throw new PlexusConfigurationException( "IO error building configuration from: " + resourceName, e );
         }
     }
 
     public static PlexusConfiguration buildConfiguration( String configuration )
         throws PlexusConfigurationException
     {
-        return buildConfiguration( new StringReader( configuration ) );
+        return buildConfiguration( "<String Memory Resource>", new StringReader( configuration ) );
     }
 
     public static ComponentDescriptor buildComponentDescriptor( String configuration )

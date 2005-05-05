@@ -60,7 +60,7 @@ public class FileConfigurationResourceHandler
         try
         {
             configurationReader = new FileReader( f );
-            return new PlexusConfiguration[]{ PlexusTools.buildConfiguration( configurationReader ) };
+            return new PlexusConfiguration[]{ PlexusTools.buildConfiguration( f.getAbsolutePath(), configurationReader ) };
         }
         catch ( PlexusConfigurationException e )
         {
