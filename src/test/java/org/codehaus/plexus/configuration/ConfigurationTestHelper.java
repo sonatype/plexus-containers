@@ -39,7 +39,7 @@ public abstract class ConfigurationTestHelper
     public static PlexusConfiguration getTestConfiguration()
         throws Exception
     {
-        return PlexusTools.buildConfiguration( new StringReader( ConfigurationTestHelper.getXmlConfiguration() ) );
+        return PlexusTools.buildConfiguration( "<Test String>", new StringReader( ConfigurationTestHelper.getXmlConfiguration() ) );
     }
 
     public static String getXmlConfiguration()

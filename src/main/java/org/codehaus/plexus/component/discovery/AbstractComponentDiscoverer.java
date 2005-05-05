@@ -56,7 +56,7 @@ public abstract class AbstractComponentDiscoverer
         }
         catch ( IOException e )
         {
-            throw new PlexusConfigurationException( "Unable to read resource " + getComponentDescriptorLocation() );
+            throw new PlexusConfigurationException( "Unable to retrieve resources for: " + getComponentDescriptorLocation() + " in class realm: " + classRealm.getId() );
         }
         for ( Enumeration e = resources; e.hasMoreElements(); )
         {

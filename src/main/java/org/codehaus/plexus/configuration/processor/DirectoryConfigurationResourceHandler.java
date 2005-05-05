@@ -95,7 +95,7 @@ public class DirectoryConfigurationResourceHandler
             {
                 File configurationFile = (File) files.get( i );
 
-                PlexusConfiguration configuration = PlexusTools.buildConfiguration( new FileReader( configurationFile ) );
+                PlexusConfiguration configuration = PlexusTools.buildConfiguration( configurationFile.getAbsolutePath(), new FileReader( configurationFile ) );
 
                 configurations[i] = configuration;
             }

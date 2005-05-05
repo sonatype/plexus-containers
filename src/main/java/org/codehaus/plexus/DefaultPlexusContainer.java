@@ -923,7 +923,7 @@ public class DefaultPlexusContainer
                                              "most likely corrupt." );
         }
 
-        PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( new InputStreamReader( is ) );
+        PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( BOOTSTRAP_CONFIGURATION, new InputStreamReader( is ) );
 
         // ----------------------------------------------------------------------
         //
@@ -957,7 +957,7 @@ public class DefaultPlexusContainer
             // User userConfiguration
 
             PlexusConfiguration userConfiguration =
-                PlexusTools.buildConfiguration( getInterpolationConfigurationReader( configurationReader ) );
+                PlexusTools.buildConfiguration( "<User Specified Configuration Reader>", getInterpolationConfigurationReader( configurationReader ) );
 
             // Merger of systemConfiguration and user userConfiguration
 
@@ -1031,7 +1031,7 @@ public class DefaultPlexusContainer
                     {
                         reader = new FileReader( componentConfigurationFile );
                         PlexusConfiguration componentConfiguration =
-                            PlexusTools.buildConfiguration( getInterpolationConfigurationReader( reader ) );
+                            PlexusTools.buildConfiguration( componentConfigurationFile.getAbsolutePath(), getInterpolationConfigurationReader( reader ) );
 
                         componentsConfiguration.addChild( componentConfiguration.getChild( "components" ) );
                     }

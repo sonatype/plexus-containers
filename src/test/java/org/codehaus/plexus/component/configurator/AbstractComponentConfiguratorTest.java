@@ -29,6 +29,7 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 import java.io.StringReader;
 import java.util.LinkedList;
@@ -41,7 +42,8 @@ import java.util.Vector;
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
  */
-public abstract class AbstractComponentConfiguratorTest extends TestCase
+public abstract class AbstractComponentConfiguratorTest
+    extends TestCase
 {
     public AbstractComponentConfiguratorTest( String s )
     {
@@ -51,25 +53,16 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
     protected abstract ComponentConfigurator getComponentConfigurator();
 
     public void testComponentConfigurator()
-            throws Exception
+        throws Exception
     {
-        String xml =
-                "<configuration>" +
-                "  <int-value>0</int-value>" +
-                "  <float-value>1</float-value>" +
-                "  <long-value>2</long-value>" +
-                "  <double-value>3</double-value>" +
-                "  <string-value>foo</string-value>" +
-                "  <important-things>" +
-                "    <important-thing><name>jason</name></important-thing>" +
-                "    <important-thing><name>tess</name></important-thing>" +
-                "  </important-things>" +
-                "  <configuration>" +
-                "      <name>jason</name>" +
-                "  </configuration>" +
-                "</configuration>";
+        String xml = "<configuration>" + "  <int-value>0</int-value>" + "  <float-value>1</float-value>"
+            + "  <long-value>2</long-value>" + "  <double-value>3</double-value>"
+            + "  <string-value>foo</string-value>" + "  <important-things>"
+            + "    <important-thing><name>jason</name></important-thing>"
+            + "    <important-thing><name>tess</name></important-thing>" + "  </important-things>"
+            + "  <configuration>" + "      <name>jason</name>" + "  </configuration>" + "</configuration>";
 
-        PlexusConfiguration configuration = PlexusTools.buildConfiguration( new StringReader( xml ) );
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
         ConfigurableComponent component = new ConfigurableComponent();
 
@@ -97,10 +90,9 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         assertEquals( 2, list.size() );
 
-        assertEquals( "jason", ( ( ImportantThing ) list.get( 0 ) ).getName() );
+        assertEquals( "jason", ( (ImportantThing) list.get( 0 ) ).getName() );
 
-        assertEquals( "tess", ( ( ImportantThing ) list.get( 1 ) ).getName() );
-
+        assertEquals( "tess", ( (ImportantThing) list.get( 1 ) ).getName() );
 
         // Embedded Configuration
 
@@ -109,17 +101,12 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
         assertEquals( "jason", c.getChild( "name" ).getValue() );
     }
 
-
     public void testComponentConfigurationWhereFieldsToConfigureResideInTheSuperclass()
-            throws Exception
+        throws Exception
     {
-        String xml =
-                "<configuration>" +
-                "  <name>jason</name>" +
-                "  <address>bollywood</address>" +
-                "</configuration>";
+        String xml = "<configuration>" + "  <name>jason</name>" + "  <address>bollywood</address>" + "</configuration>";
 
-        PlexusConfiguration configuration = PlexusTools.buildConfiguration( new StringReader( xml ) );
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
         DefaultComponent component = new DefaultComponent();
 
@@ -139,28 +126,15 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
     }
 
     public void testComponentConfigurationWhereFieldsAreCollections()
-            throws Exception
+        throws Exception
     {
-        String xml =
-                "<configuration>" +
-                "  <vector>" +
-                "    <important-thing>" +
-                "       <name>life</name>" +
-                "    </important-thing>" +
-                "  </vector>" +
-                "  <set>" +
-                "    <important-thing>" +
-                "       <name>life</name>" +
-                "    </important-thing>" +
-                "  </set>" +
-                "   <list implementation=\"java.util.LinkedList\">" +
-                "     <important-thing>" +
-                "       <name>life</name>" +
-                "    </important-thing>" +
-                "  </list>" +
-                "</configuration>";
+        String xml = "<configuration>" + "  <vector>" + "    <important-thing>" + "       <name>life</name>"
+            + "    </important-thing>" + "  </vector>" + "  <set>" + "    <important-thing>"
+            + "       <name>life</name>" + "    </important-thing>" + "  </set>"
+            + "   <list implementation=\"java.util.LinkedList\">" + "     <important-thing>"
+            + "       <name>life</name>" + "    </important-thing>" + "  </list>" + "</configuration>";
 
-        PlexusConfiguration configuration = PlexusTools.buildConfiguration( new StringReader( xml ) );
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
         ComponentWithCollectionFields component = new ComponentWithCollectionFields();
 
@@ -176,7 +150,7 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         Vector vector = component.getVector();
 
-        assertEquals( "life", ( ( ImportantThing ) vector.get( 0 ) ).getName() );
+        assertEquals( "life", ( (ImportantThing) vector.get( 0 ) ).getName() );
 
         assertEquals( 1, vector.size() );
 
@@ -186,29 +160,26 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         Object[] setContents = set.toArray();
 
-        assertEquals( "life", ( ( ImportantThing ) setContents[0] ).getName() );
+        assertEquals( "life", ( (ImportantThing) setContents[0] ).getName() );
 
         List list = component.getList();
 
         assertEquals( list.getClass(), LinkedList.class );
 
-        assertEquals( "life", ( ( ImportantThing ) list.get( 0 ) ).getName() );
+        assertEquals( "life", ( (ImportantThing) list.get( 0 ) ).getName() );
 
         assertEquals( 1, list.size() );
     }
 
     public void testComponentConfigurationWithCompositeFields()
-            throws Exception
+        throws Exception
     {
 
-        String xml =
-                "<configuration>" +
-                "  <thing implementation=\"org.codehaus.plexus.component.configurator.ImportantThing\">" +
-                "     <name>I am not abstract!</name>" +
-                "  </thing>" +
-                "</configuration>";
+        String xml = "<configuration>"
+            + "  <thing implementation=\"org.codehaus.plexus.component.configurator.ImportantThing\">"
+            + "     <name>I am not abstract!</name>" + "  </thing>" + "</configuration>";
 
-        PlexusConfiguration configuration = PlexusTools.buildConfiguration( new StringReader( xml ) );
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
         ComponentWithCompositeFields component = new ComponentWithCompositeFields();
 
@@ -228,25 +199,44 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
     }
 
-    public void testComponentConfigurationWithPropertiesFields()
-            throws Exception
+    public void testInvalidComponentConfiguration()
+        throws Exception
     {
 
-        String xml =
-                "<configuration>" +
-                "  <someProperties>" +
-                "     <property>" +
-                "        <name>firstname</name>" +
-                "        <value>michal</value>" +
-                "     </property>" +
-                "     <property>" +
-                "        <name>lastname</name>" +
-                "        <value>maczka</value>" +
-                "     </property>" +
-                "  </someProperties>" +
-                "</configuration>";
+        String xml = "<configuration><goodStartElement>theName</badStopElement></configuration>";
 
-        PlexusConfiguration configuration = PlexusTools.buildConfiguration( new StringReader( xml ) );
+        try
+        {
+            PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test-Invalid>",
+                                                                                new StringReader( xml ) );
+
+            fail( "Should have caused an error because of the invalid XML." );
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            // should catch this...
+            System.out.println("Error Message:\n\n" + e.getLocalizedMessage() + "\n\n");
+            System.err.println("Error with stacktrace:\n\n");
+            e.printStackTrace();
+            System.err.println("\n\n");
+        }
+        catch ( Exception e )
+        {
+            fail( "Should have caught the invalid plexus configuration exception." );
+        }
+
+    }
+
+    public void testComponentConfigurationWithPropertiesFields()
+        throws Exception
+    {
+
+        String xml = "<configuration>" + "  <someProperties>" + "     <property>" + "        <name>firstname</name>"
+            + "        <value>michal</value>" + "     </property>" + "     <property>"
+            + "        <name>lastname</name>" + "        <value>maczka</value>" + "     </property>"
+            + "  </someProperties>" + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
         ComponentWithPropertiesField component = new ComponentWithPropertiesField();
 
@@ -262,11 +252,11 @@ public abstract class AbstractComponentConfiguratorTest extends TestCase
 
         Properties properties = component.getSomeProperties();
 
-        assertNotNull( properties  );
+        assertNotNull( properties );
 
-        assertEquals( "michal" , properties.get( "firstname"  ) );
+        assertEquals( "michal", properties.get( "firstname" ) );
 
-        assertEquals( "maczka" , properties.get( "lastname"  ) );
+        assertEquals( "maczka", properties.get( "lastname" ) );
 
     }
 

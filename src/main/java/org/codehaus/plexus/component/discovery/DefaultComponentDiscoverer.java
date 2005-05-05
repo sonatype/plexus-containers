@@ -49,7 +49,7 @@ public class DefaultComponentDiscoverer
     public ComponentSetDescriptor createComponentDescriptors( Reader componentDescriptorReader, String source )
         throws PlexusConfigurationException
     {
-        PlexusConfiguration componentDescriptorConfiguration = PlexusTools.buildConfiguration( componentDescriptorReader );
+        PlexusConfiguration componentDescriptorConfiguration = PlexusTools.buildConfiguration( source, componentDescriptorReader );
 
         ComponentSetDescriptor componentSetDescriptor = new ComponentSetDescriptor();
 
