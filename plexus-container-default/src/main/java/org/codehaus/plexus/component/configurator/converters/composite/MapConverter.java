@@ -55,25 +55,27 @@ public class MapConverter
     {
         String element = configuration.getName();
 
-        Map retValue = new TreeMap();
+        Object retValue = null;
 
-        PlexusConfiguration[] children = configuration.getChildren();
+        String expression = configuration.getValue( null );
 
-        if ( children != null && children.length > 0 )
+        if ( expression == null )
         {
+            Map map = new TreeMap();
+
+            PlexusConfiguration[] children = configuration.getChildren();
+
             for ( int i = 0; i < children.length; i++ )
             {
                 PlexusConfiguration child = children[i];
 
                 String name = child.getName();
 
-                String expression = child.getValue( null );
-
-                Object value;
+                expression = child.getValue( null );
 
                 try
                 {
-                    value = expressionEvaluator.evaluate( expression );
+                    map.put( name, expressionEvaluator.evaluate( expression ) );
                 }
                 catch ( ExpressionEvaluationException e )
                 {
@@ -82,11 +84,23 @@ public class MapConverter
                                                                    + element + "(failed to resolve expression: \'"
                                                                    + expression + "\' keyed to: \'" + name + "\')", e );
                 }
-
-                retValue.put( name, value );
+            }
+            retValue = map;
+        }
+        else
+        {
+            try
+            {
+                retValue = expressionEvaluator.evaluate( expression );
+            }
+            catch ( ExpressionEvaluationException e )
+            {
+                throw new ComponentConfigurationException(
+                                                           "Cannot resolve java.util.Map for configuration element: "
+                                                               + element + "(failed to resolve expression: \'"
+                                                               + expression + ")", e );
             }
         }
-
         return retValue;
     }
 
