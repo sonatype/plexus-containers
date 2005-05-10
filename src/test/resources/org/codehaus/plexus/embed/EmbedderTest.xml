@@ -7,7 +7,8 @@
   <components>
     <component>
       <role>org.codehaus.plexus.embed.MockComponent</role>
-      <implementation>org.codehaus.plexus.embed.MockComponent</implementation>      
+      <role-hint>default</role-hint>
+      <implementation>org.codehaus.plexus.embed.MockComponent</implementation>
     </component>
     <component>
       <role>org.codehaus.plexus.embed.MockComponent</role>

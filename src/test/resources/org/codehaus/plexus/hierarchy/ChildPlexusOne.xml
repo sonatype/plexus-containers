@@ -10,6 +10,7 @@
   <components>
     <component>
       <role>org.codehaus.plexus.hierarchy.TestService</role>
+      <role-hint>default</role-hint>
       <implementation>org.codehaus.plexus.hierarchy.TestServiceImpl</implementation>
       <configuration>
         <known-value>three blind mice</known-value>
