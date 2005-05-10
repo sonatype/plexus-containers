@@ -168,11 +168,22 @@ public class DefaultComponentRepository
             throw new ComponentRepositoryException( "Component descriptor validation failed: ", e );
         }
 
+        String role = componentDescriptor.getRole();
+
         String roleHint = componentDescriptor.getRoleHint();
 
         if ( roleHint != null )
         {
-            String role = componentDescriptor.getRole();
+            if ( componentDescriptors.containsKey( role ) )
+            {
+                ComponentDescriptor desc = (ComponentDescriptor) componentDescriptors.get( role );
+                if ( desc.getRoleHint() == null )
+                {
+                    String message = "Component descriptor " + componentDescriptor.getHumanReadableKey() +
+                        " has a hint, but there are other implementations that don't";
+                    throw new ComponentRepositoryException( message );
+                }
+            }
 
             Map map = (Map) componentDescriptorMaps.get( role );
 
@@ -185,6 +196,25 @@ public class DefaultComponentRepository
 
             map.put( roleHint, componentDescriptor );
         }
+        else
+        {
+            if ( componentDescriptorMaps.containsKey( role ) )
+            {
+                String message = "Component descriptor " + componentDescriptor.getHumanReadableKey() +
+                    " has no hint, but there are other implementations that do";
+                throw new ComponentRepositoryException( message );
+            }
+            else if ( componentDescriptors.containsKey( role ) )
+            {
+                if ( !componentDescriptors.get( role ).equals( componentDescriptor ) )
+                {
+                    String message = "Component role " + role +
+                        " is already in the repository and different to attempted addition of " +
+                        componentDescriptor.getHumanReadableKey();
+                    throw new ComponentRepositoryException( message );
+                }
+            }
+        }
 
         try
         {
@@ -192,16 +222,16 @@ public class DefaultComponentRepository
         }
         catch ( CompositionException e )
         {
-            throw new ComponentRepositoryException( e.getMessage() , e );
+            throw new ComponentRepositoryException( e.getMessage(), e );
         }
 
         componentDescriptors.put( componentDescriptor.getComponentKey(), componentDescriptor );
         
         // We need to be able to lookup by role only (in non-collection situations), even when the 
         // component has a roleHint.
-        if ( componentDescriptors.get( componentDescriptor.getRole() ) == null )
+        if ( !componentDescriptors.containsKey( role ) )
         {
-            componentDescriptors.put( componentDescriptor.getRole(), componentDescriptor );
+            componentDescriptors.put( role, componentDescriptor );
         }
     }
 

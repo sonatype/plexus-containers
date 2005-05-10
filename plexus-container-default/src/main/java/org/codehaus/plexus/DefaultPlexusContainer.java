@@ -365,16 +365,17 @@ public class DefaultPlexusContainer
         }
         else
         {
-            result = new ArrayList();
+            ComponentDescriptor unhintedDescriptor = getComponentDescriptor( role );
+
+            if ( unhintedDescriptor != null )
+            {
+                result = Collections.singletonList( unhintedDescriptor );
+            }
+            else
+            {
+                result = Collections.EMPTY_LIST;
+            }
         }
-
-        ComponentDescriptor unhintedDescriptor = getComponentDescriptor( role );
-
-        if ( unhintedDescriptor != null )
-        {
-            result.add( unhintedDescriptor );
-        }
-
         return result;
     }
 

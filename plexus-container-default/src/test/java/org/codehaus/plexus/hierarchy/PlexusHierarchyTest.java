@@ -212,7 +212,7 @@ public class PlexusHierarchyTest
 
         Map componentMap = rootPlexus.lookupMap( TestService.ROLE );
 
-        assertEquals( 2, componentMap.size() );
+        assertEquals( 3, componentMap.size() );
 
         testService = (TestService) componentMap.get( "global" );
 
@@ -231,7 +231,7 @@ public class PlexusHierarchyTest
 
         componentMap = childPlexus.lookupMap( TestService.ROLE );
 
-        assertEquals( 3, componentMap.size() );
+        assertEquals( 4, componentMap.size() );
 
         testService = (TestService) componentMap.get( "global" );
 
@@ -252,7 +252,7 @@ public class PlexusHierarchyTest
 
         componentMap = childPlexus2.lookupMap( TestService.ROLE );
 
-        assertEquals( 3, componentMap.size() );
+        assertEquals( 4, componentMap.size() );
 
         testService = (TestService) componentMap.get( "global" );
 
