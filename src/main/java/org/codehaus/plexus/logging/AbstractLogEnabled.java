@@ -1,5 +1,7 @@
 package org.codehaus.plexus.logging;
 
+import org.codehaus.plexus.logging.console.ConsoleLogger;
+
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -17,6 +19,10 @@ public abstract class AbstractLogEnabled
 
     protected Logger getLogger()
     {
+        if ( logger == null )
+        {
+            logger = new ConsoleLogger( ConsoleLogger.LEVEL_INFO, this.getClass().getName() );
+        }
         return logger;
     }
 
