@@ -19,10 +19,6 @@ public abstract class AbstractLogEnabled
 
     protected Logger getLogger()
     {
-        if ( logger == null )
-        {
-            logger = new ConsoleLogger( ConsoleLogger.LEVEL_INFO, this.getClass().getName() );
-        }
         return logger;
     }
 
