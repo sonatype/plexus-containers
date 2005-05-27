@@ -94,7 +94,7 @@ public class DefaultConverterLookup implements ConverterLookup
         if ( retValue == null )
         {
             // this is highly irregular
-            throw new ComponentConfigurationException( "Configuration converter lookup failed" );
+            throw new ComponentConfigurationException( "Configuration converter lookup failed for type: " + type );
         }
         return retValue;
     }
