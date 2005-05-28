@@ -7,10 +7,18 @@ public class StopPhase
     extends AbstractPhase
 {
     public void execute( Object object, ComponentManager manager )
+        throws PhaseExecutionException
     {
         if ( object instanceof Startable )
         {
-            ( (Startable) object ).stop();
+            try
+            {
+                ( (Startable) object ).stop();
+            }
+            catch ( StoppingException e )
+            {
+                throw new PhaseExecutionException( "Error stopping component", e );
+            }
         }
     }
 }
