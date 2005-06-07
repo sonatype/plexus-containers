@@ -24,6 +24,7 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
+import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -38,7 +39,7 @@ public class BasicComponentConfigurator
     extends AbstractComponentConfigurator
 {
     public void configureComponent( Object component, PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator )
+                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm )
         throws ComponentConfigurationException
     {
         // ----------------------------------------------------------------------
@@ -46,11 +47,9 @@ public class BasicComponentConfigurator
         // came from in order to load the correct classes.
         // ----------------------------------------------------------------------
 
-        // michal: My solution was to to use the same classloader which defined component class
-        ClassLoader classLoader = component.getClass().getClassLoader();
-
         ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
 
-        converter.processConfiguration( converterLookup, component, classLoader, configuration, expressionEvaluator );
+        converter.processConfiguration( converterLookup, component, containerRealm.getClassLoader(), configuration, expressionEvaluator );
     }
+    
 }

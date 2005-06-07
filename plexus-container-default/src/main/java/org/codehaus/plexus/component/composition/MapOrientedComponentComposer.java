@@ -2,6 +2,7 @@ package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.MapOrientedComponent;
+import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -132,6 +133,11 @@ public class MapOrientedComponentComposer
         {
             throw new CompositionException( "Composition failed in object of type " + component.getClass().getName()
                 + " because the requirement " + requirement + " was missing", e );
+        }
+        catch ( ComponentConfigurationException e )
+        {
+            throw new CompositionException( "Composition failed in object of type " + component.getClass().getName()
+                                            + " because the requirement " + requirement + " cannot be set on the component.", e );
         }
     }
 

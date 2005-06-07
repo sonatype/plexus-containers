@@ -21,15 +21,13 @@ public class JavaComponentFactory
     public Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm, PlexusContainer container )
         throws ComponentInstantiationException
     {
-        ClassRealm componentClassRealm = container.getComponentRealm( componentDescriptor.getComponentKey() );
-
         Class implementationClass = null;
 
         try
         {
             String implementation = componentDescriptor.getImplementation();
 
-            implementationClass = componentClassRealm.loadClass( implementation );
+            implementationClass = classRealm.loadClass( implementation );
 
             int modifiers = implementationClass.getModifiers();
 
@@ -49,19 +47,19 @@ public class JavaComponentFactory
         }
         catch ( InstantiationException e )
         {
-            throw makeException( componentClassRealm, componentDescriptor, implementationClass, e );
+            throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
         catch ( ClassNotFoundException e )
         {
-            throw makeException( componentClassRealm, componentDescriptor, implementationClass, e );
+            throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
         catch( IllegalAccessException e )
         {
-            throw makeException( componentClassRealm, componentDescriptor, implementationClass, e );
+            throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
         catch( LinkageError e )
         {
-            throw makeException( componentClassRealm, componentDescriptor, implementationClass, e );
+            throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
     }
 

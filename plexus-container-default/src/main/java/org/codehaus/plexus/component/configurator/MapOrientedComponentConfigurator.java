@@ -1,5 +1,6 @@
 package org.codehaus.plexus.component.configurator;
 
+import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.configurator.converters.composite.MapConverter;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
@@ -28,7 +29,7 @@ public class MapOrientedComponentConfigurator
 {
 
     public void configureComponent( Object component, PlexusConfiguration configuration,
-                                   ExpressionEvaluator expressionEvaluator )
+                                   ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm )
         throws ComponentConfigurationException
     {
         if ( !( component instanceof MapOrientedComponent ) )
@@ -39,10 +40,8 @@ public class MapOrientedComponentConfigurator
 
         MapConverter converter = new MapConverter();
 
-        ClassLoader componentClassloader = component.getClass().getClassLoader();
-
         Map context = (Map) converter.fromConfiguration( converterLookup, configuration, null, null,
-                                                         componentClassloader, expressionEvaluator );
+                                                         containerRealm.getClassLoader(), expressionEvaluator );
 
         ( (MapOrientedComponent) component ).setComponentConfiguration( context );
     }

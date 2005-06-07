@@ -12,4 +12,9 @@ public class PlexusContainerException extends Exception
     {
         super( message, throwable );
     }
+    
+    public PlexusContainerException( String message )
+    {
+        super( message );
+    }
 }

@@ -179,7 +179,7 @@ public class FieldComponentComposer
                 if ( container != null )
                 {
                     fieldClass =
-                        container.getComponentRealm( requirement.getRole() ).loadClass( requirement.getRole() );
+                        container.getContainerRealm().loadClass( requirement.getRole() );
                 }
                 else
                 {
