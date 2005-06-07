@@ -1,9 +1,4 @@
-package org.codehaus.plexus.component;
-
-import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
-import org.codehaus.plexus.component.repository.ComponentRequirement;
-
-import java.util.Map;
+package org.codehaus.plexus;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -21,13 +16,30 @@ import java.util.Map;
  * limitations under the License.
  */
 
-public interface MapOrientedComponent
+public class DuplicateChildContainerException
+    extends PlexusContainerException
 {
 
-    void addComponentRequirement( ComponentRequirement requirementDescriptor, Object requirementValue )
-        throws ComponentConfigurationException;
+    private final String parent;
+    private final String child;
 
-    void setComponentConfiguration( Map componentConfiguration )
-        throws ComponentConfigurationException;
+    public DuplicateChildContainerException( String parent, String child )
+    {
+        super( "Cannot create child container, because child named \'" + child + "\' already exists in parent \'" + parent + "\'." );
 
+        this.parent = parent;
+
+        this.child = child;
+    }
+    
+    public String getParent()
+    {
+        return parent;
+    }
+    
+    public String getChild()
+    {
+        return child;
+    }
+    
 }

@@ -26,15 +26,15 @@ package org.codehaus.plexus.test;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
+//import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
-import org.codehaus.plexus.util.AbstractTestThread;
-import org.codehaus.plexus.util.TestThreadManager;
+//import org.codehaus.plexus.util.AbstractTestThread;
+//import org.codehaus.plexus.util.TestThreadManager;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -296,74 +296,74 @@ public class PlexusContainerTest
         container.releaseAll( components );
     }
 
-    class SingletonComponentTestThread
-        extends AbstractTestThread
-    {
-        private Object expectedComponent;
-
-        private Object returnedComponent;
-
-        private PlexusContainer container;
-
-        private String role;
-
-        public SingletonComponentTestThread( PlexusContainer container, String role, Object expectedComponent )
-        {
-            super();
-
-            this.expectedComponent = expectedComponent;
-
-            this.container = container;
-
-            this.role = role;
-        }
-
-        /**
-         * @param registry
-         */
-        public SingletonComponentTestThread( TestThreadManager registry, PlexusContainer container, String role,
-                                             Object expectedComponent )
-        {
-            super( registry );
-
-            this.expectedComponent = expectedComponent;
-
-            this.container = container;
-
-            this.role = role;
-        }
-
-        /* (non-Javadoc)
-         * @see org.codehaus.plexus.util.AbstractRegisteredThread#doRun()
-         */
-        public void doRun()
-            throws Throwable
-        {
-            try
-            {
-                returnedComponent = container.lookup( role );
-
-                if ( returnedComponent == null )
-                {
-                    setErrorMsg( "Null component returned" );
-                }
-                else if ( returnedComponent == expectedComponent )
-                {
-                    setPassed( true );
-                }
-                else
-                {
-                    setErrorMsg(
-                        "Returned component was a different manager. Expected=" + expectedComponent + ", got=" +
-                        returnedComponent );
-                }
-            }
-            finally
-            {
-                container.release( returnedComponent );
-            }
-        }
-    }
+//    class SingletonComponentTestThread
+//        extends AbstractTestThread
+//    {
+//        private Object expectedComponent;
+//
+//        private Object returnedComponent;
+//
+//        private PlexusContainer container;
+//
+//        private String role;
+//
+//        public SingletonComponentTestThread( PlexusContainer container, String role, Object expectedComponent )
+//        {
+//            super();
+//
+//            this.expectedComponent = expectedComponent;
+//
+//            this.container = container;
+//
+//            this.role = role;
+//        }
+//
+//        /**
+//         * @param registry
+//         */
+//        public SingletonComponentTestThread( TestThreadManager registry, PlexusContainer container, String role,
+//                                             Object expectedComponent )
+//        {
+//            super( registry );
+//
+//            this.expectedComponent = expectedComponent;
+//
+//            this.container = container;
+//
+//            this.role = role;
+//        }
+//
+//        /* (non-Javadoc)
+//         * @see org.codehaus.plexus.util.AbstractRegisteredThread#doRun()
+//         */
+//        public void doRun()
+//            throws Throwable
+//        {
+//            try
+//            {
+//                returnedComponent = container.lookup( role );
+//
+//                if ( returnedComponent == null )
+//                {
+//                    setErrorMsg( "Null component returned" );
+//                }
+//                else if ( returnedComponent == expectedComponent )
+//                {
+//                    setPassed( true );
+//                }
+//                else
+//                {
+//                    setErrorMsg(
+//                        "Returned component was a different manager. Expected=" + expectedComponent + ", got=" +
+//                        returnedComponent );
+//                }
+//            }
+//            finally
+//            {
+//                container.release( returnedComponent );
+//            }
+//        }
+//    }
 
 
     public void testAutomatedComponentConfigurationUsingXStreamPoweredComponentConfigurator()

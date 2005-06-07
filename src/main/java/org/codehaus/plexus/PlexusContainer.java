@@ -23,6 +23,20 @@ public interface PlexusContainer
     String ROLE = PlexusContainer.class.getName();
 
     // ----------------------------------------------------------------------
+    // Child container access
+    // ----------------------------------------------------------------------
+
+    boolean hasChildContainer( String name );
+    
+    PlexusContainer getChildContainer( String name );
+    
+    PlexusContainer createChildContainer( String name, List classpathJars, Map context )
+        throws PlexusContainerException;
+    
+    PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
+    throws PlexusContainerException;
+
+    // ----------------------------------------------------------------------
     // Component lookup
     // ----------------------------------------------------------------------
 
@@ -133,5 +147,8 @@ public interface PlexusContainer
 
     void addJarRepository( File repository );
 
-    ClassRealm getComponentRealm( String id );
+    ClassRealm getContainerRealm();
+
+    /** @deprecated Use getContainerRealm() instead. */
+    ClassRealm getComponentRealm( String componentKey );
 }

@@ -26,6 +26,9 @@ package org.codehaus.plexus.component.configurator;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -73,8 +76,12 @@ public abstract class AbstractComponentConfiguratorTest
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
+        
+        ClassWorld classWorld = new ClassWorld();
+        
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration );
+        cc.configureComponent( component, configuration, realm );
 
         assertEquals( "check integer value", 0, component.getIntValue() );
 
@@ -118,7 +125,11 @@ public abstract class AbstractComponentConfiguratorTest
 
         descriptor.setImplementation( component.getClass().getName() );
 
-        cc.configureComponent( component, configuration );
+        ClassWorld classWorld = new ClassWorld();
+        
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        cc.configureComponent( component, configuration, realm );
 
         assertEquals( "jason", component.getName() );
 
@@ -146,7 +157,11 @@ public abstract class AbstractComponentConfiguratorTest
 
         descriptor.setImplementation( component.getClass().getName() );
 
-        cc.configureComponent( component, configuration );
+        ClassWorld classWorld = new ClassWorld();
+        
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        cc.configureComponent( component, configuration, realm );
 
         Vector vector = component.getVector();
 
@@ -191,7 +206,11 @@ public abstract class AbstractComponentConfiguratorTest
 
         descriptor.setImplementation( component.getClass().getName() );
 
-        cc.configureComponent( component, configuration );
+        ClassWorld classWorld = new ClassWorld();
+        
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        cc.configureComponent( component, configuration, realm );
 
         assertNotNull( component.getThing() );
 
@@ -248,7 +267,11 @@ public abstract class AbstractComponentConfiguratorTest
 
         descriptor.setImplementation( component.getClass().getName() );
 
-        cc.configureComponent( component, configuration );
+        ClassWorld classWorld = new ClassWorld();
+        
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        cc.configureComponent( component, configuration, realm );
 
         Properties properties = component.getSomeProperties();
 

@@ -92,6 +92,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * @todo clarify configuration handling vis-a-vis user vs default values
@@ -134,7 +135,7 @@ public class DefaultPlexusContainer
 
     private ComponentComposerManager componentComposerManager;
 
-    private Map realmAliases;
+    private Map childContainers = new WeakHashMap();
 
     public static final String BOOTSTRAP_CONFIGURATION = "org/codehaus/plexus/plexus-bootstrap.xml";
 
@@ -155,6 +156,107 @@ public class DefaultPlexusContainer
     // Container Contract
     // ----------------------------------------------------------------------
 
+    // ----------------------------------------------------------------------
+    // Child container access
+    // ----------------------------------------------------------------------
+    
+    public boolean hasChildContainer( String name )
+    {
+        return childContainers.get( name ) != null;
+    }
+    
+    public PlexusContainer getChildContainer( String name )
+    {
+        return (PlexusContainer) childContainers.get( name );
+    }
+    
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context )
+        throws PlexusContainerException
+    {
+        return createChildContainer( name, classpathJars, context, Collections.EMPTY_LIST );
+    }
+
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
+        throws PlexusContainerException
+    {
+        if( hasChildContainer( name ) )
+        {
+            throw new DuplicateChildContainerException( getName(), name );
+        }
+        
+        DefaultPlexusContainer child = new DefaultPlexusContainer();
+        
+        child.classWorld = classWorld;
+        
+        ClassRealm childRealm = null;
+        
+        String childRealmId = getName() + ".child-container[" + name + "]";
+        try
+        {
+            childRealm = classWorld.getRealm( childRealmId );
+        }
+        catch ( NoSuchRealmException e )
+        {
+            try
+            {
+                childRealm = classWorld.newRealm( childRealmId );
+            }
+            catch ( DuplicateRealmException impossibleError )
+            {
+                getLogger().error( "An impossible error has occurred. After getRealm() failed, newRealm() " +
+                        "produced duplication error on same id!", impossibleError );
+            }
+        }
+        
+        childRealm.setParent( plexusRealm );
+        
+        child.coreRealm = childRealm;
+        
+        child.plexusRealm = childRealm;
+        
+        child.setName( name );
+        
+        child.setParentPlexusContainer( this );
+        
+        for ( Iterator it = context.entrySet().iterator(); it.hasNext(); )
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            
+            child.addContextValue( entry.getKey(), entry.getValue() );
+        }
+        
+        child.initialize();
+        
+        for ( Iterator it = classpathJars.iterator(); it.hasNext(); )
+        {
+            Object next = it.next();
+            
+            File jar = (File) next;
+            
+            try
+            {
+                child.addJarResource( jar );
+            }
+            catch ( MalformedURLException e )
+            {
+                getLogger().error( "IGNORING: invalid classpath entry: " + jar + " while creating child container: " + name, e );
+            }
+        }
+        
+        for ( Iterator it = discoveryListeners.iterator(); it.hasNext(); )
+        {
+            ComponentDiscoveryListener listener = (ComponentDiscoveryListener) it.next();
+            
+            child.registerComponentDiscoveryListener(listener);
+        }
+        
+        child.start();
+        
+        childContainers.put( name, child );
+        
+        return child;
+    }
+    
     // ----------------------------------------------------------------------
     // Component Lookup
     // ----------------------------------------------------------------------
@@ -246,6 +348,9 @@ public class DefaultPlexusContainer
         return componentManager;
     }
 
+    /**
+     * @todo Change this to include components looked up from parents as well...
+     */
     public Map lookupMap( String role )
         throws ComponentLookupException
     {
@@ -260,7 +365,7 @@ public class DefaultPlexusContainer
             for ( Iterator i = componentDescriptors.keySet().iterator(); i.hasNext(); )
             {
                 String roleHint = (String) i.next();
-
+                
                 Object component = lookup( role, roleHint );
 
                 components.put( roleHint, component );
@@ -270,11 +375,14 @@ public class DefaultPlexusContainer
         return components;
     }
 
+    /**
+     * @todo Change this to include components looked up from parents as well...
+     */
     public List lookupList( String role )
         throws ComponentLookupException
     {
         List components = new ArrayList();
-
+        
         List componentDescriptors = getComponentDescriptorList( role );
 
         if ( componentDescriptors != null )
@@ -479,47 +587,15 @@ public class DefaultPlexusContainer
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    protected void addRealmAlias( String alias, String realmId )
-    {
-        realmAliases.put( alias, realmId );
-    }
-
+    /** @deprecated Use getContainerRealm() instead. */
     public ClassRealm getComponentRealm( String id )
     {
-        ClassRealm classRealm;
-
-        try
-        {
-            // If there is an alias then use the alias
-            // We still need to account for the case where a component
-            // is a dependency of more than one component which is in
-            // an entirely different realm.
-
-            if ( realmAliases.get( id ) != null )
-            {
-                id = (String) realmAliases.get( id );
-            }
-
-            classRealm = classWorld.getRealm( id );
-        }
-        catch ( NoSuchRealmException e )
-        {
-            classRealm = plexusRealm;
-        }
-
-        return classRealm;
-    }
-
-    protected Map getRealmAliases()
-    {
-        return realmAliases;
+        return plexusRealm;
     }
 
     public void initialize()
         throws PlexusContainerException
     {
-        realmAliases = new HashMap();
-
         try
         {
             initializeClassWorlds();
@@ -859,9 +935,10 @@ public class DefaultPlexusContainer
 
             Thread.currentThread().setContextClassLoader( plexusRealm.getClassLoader() );
         }
+        
     }
 
-    protected ClassRealm getContainerRealm() {
+    public ClassRealm getContainerRealm() {
         return plexusRealm;
     }
 
@@ -1154,7 +1231,7 @@ public class DefaultPlexusContainer
 
         try
         {
-            configurator.configureComponent( this, configuration );
+            configurator.configureComponent( this, configuration, plexusRealm );
         }
         catch ( ComponentConfigurationException e )
         {
@@ -1235,13 +1312,13 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
-
+    
     public void addJarResource( File jar )
         throws MalformedURLException
     {
         plexusRealm.addConstituent( jar.toURL() );
     }
-
+    
     public void addJarRepository( File repository )
     {
         if ( repository.exists() && repository.isDirectory() )
