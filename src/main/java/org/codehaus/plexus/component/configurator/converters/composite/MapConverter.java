@@ -50,7 +50,7 @@ public class MapConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                    Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
         String element = configuration.getName();
@@ -71,35 +71,13 @@ public class MapConverter
 
                 String name = child.getName();
 
-                expression = child.getValue( null );
-
-                try
-                {
-                    map.put( name, expressionEvaluator.evaluate( expression ) );
-                }
-                catch ( ExpressionEvaluationException e )
-                {
-                    throw new ComponentConfigurationException(
-                                                               "Cannot resolve java.util.Map for configuration element: "
-                                                                   + element + "(failed to resolve expression: \'"
-                                                                   + expression + "\' keyed to: \'" + name + "\')", e );
-                }
+                map.put( name, fromExpression( child, expressionEvaluator ) );
             }
             retValue = map;
         }
         else
         {
-            try
-            {
-                retValue = expressionEvaluator.evaluate( expression );
-            }
-            catch ( ExpressionEvaluationException e )
-            {
-                throw new ComponentConfigurationException(
-                                                           "Cannot resolve java.util.Map for configuration element: "
-                                                               + element + "(failed to resolve expression: \'"
-                                                               + expression + ")", e );
-            }
+            retValue = fromExpression( configuration, expressionEvaluator );
         }
         return retValue;
     }

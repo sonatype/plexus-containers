@@ -49,26 +49,7 @@ public abstract class AbstractBasicConverter
                                                        "contain any child elements. " + "Configuration element '" + configuration.getName() + "'." );
         }
 
-        String value = configuration.getValue( null );
-
-        // value should never be null as this converter wouldn't ever be called unless there
-        // is a <tag> in the configuration and then it will always have a value -- trygvis
-        if ( value == null )
-        {
-            String msg = "Could not find a value for configuration element: '" + configuration.getName() + "'.";
-
-            throw new ComponentConfigurationException( msg );
-        }
-
-        Object retValue;
-        try
-        {
-            retValue = expressionEvaluator.evaluate( value );
-        }
-        catch ( ExpressionEvaluationException e )
-        {
-            throw new ComponentConfigurationException( "Unable to evaluate expression", e );
-        }
+        Object retValue = fromExpression( configuration, expressionEvaluator );
 
         if ( retValue instanceof String )
         {
