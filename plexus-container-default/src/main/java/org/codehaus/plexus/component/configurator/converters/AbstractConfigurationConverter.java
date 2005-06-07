@@ -138,9 +138,24 @@ public abstract class AbstractConfigurationConverter
                                      Class type )
         throws ComponentConfigurationException
     {
+        Object v = fromExpression( configuration, expressionEvaluator );
+        if ( v != null )
+        {
+            if ( !type.isAssignableFrom( v.getClass() ) )
+            {
+                String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type +
+                    "' from '" + configuration.getValue( null ) + "', which is of type " + v.getClass();
+                throw new ComponentConfigurationException( msg );
+            }
+        }
+        return v;
+    }
+
+    protected Object fromExpression( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
+        throws ComponentConfigurationException
+    {
         Object v = null;
         String value = configuration.getValue( null );
-        // TODO: How does it get an empty value?
         if ( value != null && value.length() > 0 )
         {
             // Object is provided by an expression
@@ -156,15 +171,10 @@ public abstract class AbstractConfigurationConverter
                     configuration.getName() + "'";
                 throw new ComponentConfigurationException( msg, e );
             }
-            if ( v != null )
-            {
-                if ( !type.isAssignableFrom( v.getClass() ) )
-                {
-                    String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type +
-                        "' from '" + value + "', which is of type " + v.getClass();
-                    throw new ComponentConfigurationException( msg );
-                }
-            }
+        }
+        if ( v == null )
+        {
+            v = configuration.getAttribute( "default-value", null );
         }
         return v;
     }
