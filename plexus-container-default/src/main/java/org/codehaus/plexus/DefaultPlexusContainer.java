@@ -139,6 +139,10 @@ public class DefaultPlexusContainer
 
     public static final String BOOTSTRAP_CONFIGURATION = "org/codehaus/plexus/plexus-bootstrap.xml";
 
+    private boolean started = false;
+
+    private boolean initialized = false;
+
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -233,14 +237,7 @@ public class DefaultPlexusContainer
             
             File jar = (File) next;
             
-            try
-            {
-                child.addJarResource( jar );
-            }
-            catch ( MalformedURLException e )
-            {
-                getLogger().error( "IGNORING: invalid classpath entry: " + jar + " while creating child container: " + name, e );
-            }
+            child.addJarResource( jar );
         }
         
         for ( Iterator it = discoveryListeners.iterator(); it.hasNext(); )
@@ -592,6 +589,11 @@ public class DefaultPlexusContainer
     {
         return plexusRealm;
     }
+    
+    public boolean isInitialized()
+    {
+        return initialized;
+    }
 
     public void initialize()
         throws PlexusContainerException
@@ -611,6 +613,8 @@ public class DefaultPlexusContainer
             initializeContext();
 
             initializeSystemProperties();
+            
+            this.initialized = true;
         }
         catch ( DuplicateRealmException e )
         {
@@ -729,6 +733,11 @@ public class DefaultPlexusContainer
 
     // We need to be aware of dependencies between discovered components when the listed component
     // as the discovery listener itself depends on components that need to be discovered.
+    
+    public boolean isStarted()
+    {
+        return started;
+    }
 
     public void start()
         throws PlexusContainerException
@@ -740,6 +749,8 @@ public class DefaultPlexusContainer
             discoverComponents( plexusRealm );
 
             loadComponentsOnStart();
+            
+            this.started = true;
         }
         catch ( PlexusConfigurationException e )
         {
@@ -760,6 +771,9 @@ public class DefaultPlexusContainer
     public void dispose()
     {
         disposeAllComponents();
+        
+        this.started = false;
+        this.initialized = true;
     }
 
     protected void disposeAllComponents()
@@ -1314,9 +1328,29 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     
     public void addJarResource( File jar )
-        throws MalformedURLException
+        throws PlexusContainerException
     {
-        plexusRealm.addConstituent( jar.toURL() );
+        try
+        {
+            plexusRealm.addConstituent( jar.toURL() );
+
+            if( isStarted() )
+            {
+                discoverComponents( plexusRealm );
+            }
+        }
+        catch ( MalformedURLException e )
+        {
+            throw new PlexusContainerException( "Cannot add jar resource: " + jar + " (bad URL)", e );
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            throw new PlexusContainerException( "Cannot add jar resource: " + jar + " (error discovering new components)", e );
+        }
+        catch ( ComponentRepositoryException e )
+        {
+            throw new PlexusContainerException( "Cannot add jar resource: " + jar + " (error discovering new components)", e );
+        }
     }
     
     public void addJarRepository( File repository )
@@ -1333,7 +1367,7 @@ public class DefaultPlexusContainer
                     {
                         addJarResource( jars[j] );
                     }
-                    catch ( MalformedURLException e )
+                    catch ( PlexusContainerException e )
                     {
                         getLogger().warn( "Unable to add JAR: " + jars[j], e );
                     }
