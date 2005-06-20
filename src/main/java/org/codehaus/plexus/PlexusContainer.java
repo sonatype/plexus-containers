@@ -15,6 +15,7 @@ import org.codehaus.plexus.logging.Logger;
 
 import java.io.File;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 
@@ -102,9 +103,13 @@ public interface PlexusContainer
 
     void initialize()
         throws PlexusContainerException;
+    
+    boolean isInitialized();
 
     void start()
         throws PlexusContainerException;
+    
+    boolean isStarted();
 
     void dispose();
 
@@ -146,6 +151,8 @@ public interface PlexusContainer
     // ----------------------------------------------------------------------
 
     void addJarRepository( File repository );
+    
+    void addJarResource( File resource ) throws PlexusContainerException;
 
     ClassRealm getContainerRealm();
 
