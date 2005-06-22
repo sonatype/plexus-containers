@@ -10,7 +10,7 @@
   <groupId>plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
   <name>Default Plexus Container</name>
-  <version>1.0-alpha-4-SNAPSHOT</version>
+  <version>1.0-alpha-4</version>
   <dependencies>
     <!-- TODO: remove this, but currently PlexusTestCase requires it -->
 
@@ -35,4 +35,5 @@
     <module>test-fodder/component-with-plexus.xml</module>
     <module>integration-tests/multi-plexus.xml</module>
   </modules -->
+
 </project>
