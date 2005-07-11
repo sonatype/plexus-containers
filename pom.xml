@@ -10,7 +10,7 @@
   <groupId>plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
   <name>Default Plexus Container</name>
-  <version>1.0-alpha-5</version>
+  <version>1.0-alpha-6-SNAPSHOT</version>
   <dependencies>
     <!-- TODO: remove this, but currently PlexusTestCase requires it -->
 
