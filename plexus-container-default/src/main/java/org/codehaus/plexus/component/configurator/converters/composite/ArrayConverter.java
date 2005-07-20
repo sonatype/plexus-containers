@@ -32,6 +32,7 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,15 +43,15 @@ import java.util.Set;
 
 
 /**
- * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
+ * @author <a href="mailto:kenney@codehaus.org">Kenney Westerhof</a>
  * @version $Id$
  */
-public class CollectionConverter
+public class ArrayConverter
     extends AbstractConfigurationConverter
 {
     public boolean canConvert( Class type )
     {
-        return Collection.class.isAssignableFrom( type ) && !Map.class.isAssignableFrom( type );
+        return type.isArray();
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
@@ -63,56 +64,19 @@ public class CollectionConverter
             return retValue;
         }
 
-        Class implementation = getClassForImplementationHint( null, configuration, classLoader );
-
-        if ( implementation != null )
-        {
-            retValue = instantiateObject( implementation );
-        }
-        else
-        {
-            // we can have 2 cases here:
-            //  - provided collection class which is not abstract
-            //     like Vector, ArrayList, HashSet - so we will just instantantiate it
-            // - we have an abtract class so we have to use default collection type
-            int modifiers = type.getModifiers();
-
-            if ( Modifier.isAbstract( modifiers ) )
-            {
-                retValue = getDefaultCollection( type );
-            }
-            else
-            {
-                try
-                {
-                    retValue = type.newInstance();
-                }
-                catch ( IllegalAccessException e )
-                {
-                    String msg = "An attempt to convert configuration entry " + configuration.getName() + "' into " + type + " object failed: " + e.getMessage();
-
-                    throw new ComponentConfigurationException( msg, e );
-                }
-                catch ( InstantiationException e )
-                {
-                    String msg = "An attempt to convert configuration entry " + configuration.getName() + "' into " + type + " object failed: " + e.getMessage();
-
-                    throw new ComponentConfigurationException( msg, e );
-                }
-            }
-        }
-        // now we have collection and we have to add some objects to it
+        ArrayList values = new ArrayList();
 
         for ( int i = 0; i < configuration.getChildCount(); i++ )
         {
             PlexusConfiguration c = configuration.getChild( i );
-            //Object o = null;
 
             String configEntry = c.getName();
 
             String name = fromXML( configEntry );
 
             Class childType = getClassForImplementationHint( null, c, classLoader );
+
+            // check if the name is a fully qualified classname
 
             if ( childType == null && name.indexOf( '.' ) > 0 )
             {
@@ -122,14 +86,14 @@ public class CollectionConverter
                 }
                 catch ( ClassNotFoundException e )
                 {
-                    // not found, continue processing
+                    // doesn't exist - continue processing
                 }
             }
 
             if ( childType == null )
             {
-                // Some classloaders don't create Package objects for classes
-                // so we have to resort to slicing up the class name
+                // try to find the class in the package of the baseType
+                // (which is the component being configured)
 
                 String baseTypeName = baseType.getName();
 
@@ -149,7 +113,21 @@ public class CollectionConverter
                         StringUtils.capitalizeFirstLetter( name );
                 }
 
-                childType = loadClass( className, classLoader );
+                try
+                {
+                    childType = classLoader.loadClass( className );
+                }
+                catch ( ClassNotFoundException e )
+                {
+                    // doesn't exist, continue processing
+                }
+            }
+
+            // finally just try the component type of the array
+
+            if ( childType == null )
+            {
+                childType = type.getComponentType();
             }
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
@@ -157,11 +135,10 @@ public class CollectionConverter
             Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader,
                                                          expressionEvaluator );
 
-            Collection collection = (Collection) retValue;
-            collection.add( object );
+            values.add( object );
         }
 
-        return retValue;
+        return values.toArray( ( Object [] ) Array.newInstance( type.getComponentType(), 0 ) );
     }
 
     protected Collection getDefaultCollection( Class collectionType )

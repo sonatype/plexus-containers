@@ -38,6 +38,7 @@ import org.codehaus.plexus.component.configurator.converters.basic.LongConverter
 import org.codehaus.plexus.component.configurator.converters.basic.ShortConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.StringBufferConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.StringConverter;
+import org.codehaus.plexus.component.configurator.converters.composite.ArrayConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.CollectionConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.MapConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
@@ -133,6 +134,8 @@ public class DefaultConverterLookup implements ConverterLookup
     {
         registerConverter( new MapConverter() );
         
+        registerConverter( new ArrayConverter() );
+
         registerConverter( new CollectionConverter() );
 
         registerConverter( new PropertiesConverter() );
