@@ -143,7 +143,7 @@ public abstract class AbstractComponentConfiguratorTest
             + "    </important-thing>" + "  </vector>" + "  <set>" + "    <important-thing>"
             + "       <name>life</name>" + "    </important-thing>" + "  </set>"
             + "   <list implementation=\"java.util.LinkedList\">" + "     <important-thing>"
-            + "       <name>life</name>" + "    </important-thing>" + "  </list>" + "</configuration>";
+            + "       <name>life</name>" + "    </important-thing>" + "  </list>"  + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -184,6 +184,83 @@ public abstract class AbstractComponentConfiguratorTest
         assertEquals( "life", ( (ImportantThing) list.get( 0 ) ).getName() );
 
         assertEquals( 1, list.size() );
+    }
+
+    public void testComponentConfigurationWhereFieldsAreArrays()
+        throws Exception
+    {
+        String xml =
+            "<configuration>" +
+            "  <stringArray>" +
+            "    <first-string>value1</first-string>" +
+            "    <second-string>value2</second-string>" +
+            "  </stringArray>" +
+            "  <integerArray>" +
+            "    <firstInt>42</firstInt>" +
+            "    <secondInt>69</secondInt>" +
+            "  </integerArray>" +
+            "  <importantThingArray>" +
+            "    <importantThing><name>Hello</name></importantThing>" +
+            "    <importantThing><name>World!</name></importantThing>" +
+            "  </importantThingArray>" +
+            "  <objectArray>" +
+            "    <java.lang.String>some string</java.lang.String>" +
+            "    <importantThing><name>something important</name></importantThing>" +
+            "    <whatever implementation='java.lang.Integer'>303</whatever>" +
+            "  </objectArray>" +
+            "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithArrayFields component = new ComponentWithArrayFields();
+
+        ComponentConfigurator cc = getComponentConfigurator();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        ClassWorld classWorld = new ClassWorld();
+        
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        cc.configureComponent( component, configuration, realm );
+
+        String [] stringArray = component.getStringArray();
+
+        assertEquals( 2, stringArray.length );
+
+        assertEquals( "value1", stringArray[0] );
+
+        assertEquals( "value2", stringArray[1] );
+
+        Integer [] integerArray = component.getIntegerArray();
+
+        assertEquals( 2, integerArray.length );
+
+        assertEquals( new Integer( 42 ), integerArray[0] );
+
+        assertEquals( new Integer( 69 ), integerArray[1] );
+
+        ImportantThing [] importantThingArray = component.getImportantThingArray();
+
+        assertEquals( 2, importantThingArray.length );
+
+        assertEquals( "Hello", importantThingArray[0].getName() );
+
+        assertEquals( "World!", importantThingArray[1].getName() );
+
+        Object [] objectArray = component.getObjectArray();
+
+        assertEquals( 3, objectArray.length );
+
+        assertEquals( "some string", objectArray[0] );
+
+        assertEquals( "something important", (( ImportantThing) objectArray[1] ).getName() );
+
+        assertEquals( new Integer( 303 ), objectArray[2] );
     }
 
     public void testComponentConfigurationWithCompositeFields()
