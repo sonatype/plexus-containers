@@ -44,6 +44,7 @@ import org.codehaus.plexus.component.configurator.converters.composite.MapConver
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PlexusConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PropertiesConverter;
+import org.codehaus.plexus.component.configurator.converters.special.ClassRealmConverter;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -54,6 +55,8 @@ import java.util.Map;
 public class DefaultConverterLookup implements ConverterLookup
 {
     private List converters = new LinkedList();
+
+    private List customConverters = new LinkedList();
 
     private Map converterMap = new HashMap();
 
@@ -66,7 +69,12 @@ public class DefaultConverterLookup implements ConverterLookup
 
     public void registerConverter( ConfigurationConverter converter )
     {
-       converters.add( converter );
+        customConverters.add( converter );
+    }
+
+    protected void registerDefaultConverter( ConfigurationConverter converter )
+    {
+        converters.add( converter );
     }
 
     public ConfigurationConverter lookupConverterForType( Class type ) throws ComponentConfigurationException
@@ -79,71 +87,86 @@ public class DefaultConverterLookup implements ConverterLookup
         }
         else
         {
-            for ( Iterator iterator = converters.iterator(); iterator.hasNext(); )
+            retValue = findConverterForType(
+                customConverters, type
+            );
+
+            if ( retValue == null )
             {
-                ConfigurationConverter converter = ( ConfigurationConverter ) iterator.next();
-
-                if ( converter.canConvert( type ) )
-                {
-                    retValue = converter;
-
-                    break;
-                }
+                retValue = findConverterForType( converters, type );
             }
-            converterMap.put( type, retValue );
         }
+
         if ( retValue == null )
         {
             // this is highly irregular
             throw new ComponentConfigurationException( "Configuration converter lookup failed for type: " + type );
         }
+
         return retValue;
+    }
+
+    private ConfigurationConverter findConverterForType( List converters, Class type )
+    {
+        for ( Iterator iterator = converters.iterator(); iterator.hasNext(); )
+        {
+            ConfigurationConverter converter = ( ConfigurationConverter ) iterator.next();
+
+            if ( converter.canConvert( type ) )
+            {
+                converterMap.put( type, converter );
+
+                return converter;
+            }
+        }
+
+        return null;
     }
 
 
     private void registerDefaultBasicConverters()
     {
-        registerConverter( new BooleanConverter() );
+        registerDefaultConverter( new BooleanConverter() );
 
-        registerConverter( new ByteConverter() );
+        registerDefaultConverter( new ByteConverter() );
 
-        registerConverter( new CharConverter() );
+        registerDefaultConverter( new CharConverter() );
 
-        registerConverter( new DoubleConverter() );
+        registerDefaultConverter( new DoubleConverter() );
 
-        registerConverter( new FloatConverter() );
+        registerDefaultConverter( new FloatConverter() );
 
-        registerConverter( new IntConverter() );
+        registerDefaultConverter( new IntConverter() );
 
-        registerConverter( new LongConverter() );
+        registerDefaultConverter( new LongConverter() );
 
-        registerConverter( new ShortConverter() );
+        registerDefaultConverter( new ShortConverter() );
 
-        registerConverter( new StringBufferConverter() );
+        registerDefaultConverter( new StringBufferConverter() );
 
-        registerConverter( new StringConverter() );
+        registerDefaultConverter( new StringConverter() );
 
-        registerConverter( new DateConverter() );
+        registerDefaultConverter( new DateConverter() );
 
-        registerConverter( new FileConverter() );
+        registerDefaultConverter( new FileConverter() );
 
-        //registerConverter( new BigIntegerConverter() );
+        //registerDefaultConverter( new BigIntegerConverter() );
     }
 
     private void registerDefaultCompositeConverters()
     {
-        registerConverter( new MapConverter() );
+        registerDefaultConverter( new MapConverter() );
         
-        registerConverter( new ArrayConverter() );
+        registerDefaultConverter( new ArrayConverter() );
 
-        registerConverter( new CollectionConverter() );
+        registerDefaultConverter( new CollectionConverter() );
 
-        registerConverter( new PropertiesConverter() );
+        registerDefaultConverter( new PropertiesConverter() );
 
-        registerConverter( new PlexusConfigurationConverter() );
+        registerDefaultConverter( new PlexusConfigurationConverter() );
 
         // this converter should be always registred as the last one
-        registerConverter( new ObjectWithFieldsConverter() );
+        registerDefaultConverter( new ObjectWithFieldsConverter() );
     }
 
 }

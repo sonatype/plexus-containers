@@ -33,9 +33,9 @@ package org.codehaus.plexus.component.configurator;
  */
 public class ComponentWithCompositeFields
 {
-    private AbstractThing thing;
+    private ThingInterface thing;
 
-    public AbstractThing getThing()
+    public ThingInterface getThing()
     {
         return thing;
     }

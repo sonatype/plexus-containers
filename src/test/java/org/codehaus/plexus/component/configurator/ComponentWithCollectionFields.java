@@ -43,6 +43,8 @@ public class ComponentWithCollectionFields
 
     List list;
 
+    List stringList;
+
     public Vector getVector()
     {
         return vector;
@@ -56,5 +58,10 @@ public class ComponentWithCollectionFields
     public List getList()
     {
         return list;
+    }
+
+    public List getStringList()
+    {
+        return stringList;
     }
 }

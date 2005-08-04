@@ -25,7 +25,6 @@ package org.codehaus.plexus.component.configurator;
  */
 
 
-public interface AbstractThing
+public abstract class AbstractThing
 {
-     String getName();
 }

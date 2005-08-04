@@ -155,6 +155,7 @@
       <requirements>
         <requirement>
           <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
+          <role-hint>default</role-hint>
         </requirement>
       </requirements>
     </component>
@@ -167,12 +168,13 @@
       <requirements>
         <requirement>
           <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
+          <role-hint>default</role-hint>
         </requirement>
       </requirements>
     </component>
-    <!--
     <component>
       <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
+      <role-hint>default</role-hint>
       <implementation>org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup</implementation>
       <requirements>
         <requirement>
@@ -181,7 +183,6 @@
         </requirement>
       </requirements>
     </component>
-    -->
   </components>
 
 </plexus>
