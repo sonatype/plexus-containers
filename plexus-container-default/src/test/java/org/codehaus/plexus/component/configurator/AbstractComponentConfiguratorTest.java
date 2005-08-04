@@ -139,11 +139,28 @@ public abstract class AbstractComponentConfiguratorTest
     public void testComponentConfigurationWhereFieldsAreCollections()
         throws Exception
     {
-        String xml = "<configuration>" + "  <vector>" + "    <important-thing>" + "       <name>life</name>"
-            + "    </important-thing>" + "  </vector>" + "  <set>" + "    <important-thing>"
-            + "       <name>life</name>" + "    </important-thing>" + "  </set>"
-            + "   <list implementation=\"java.util.LinkedList\">" + "     <important-thing>"
-            + "       <name>life</name>" + "    </important-thing>" + "  </list>"  + "</configuration>";
+        String xml = "<configuration>" +
+            "  <vector>" +
+            "    <important-thing>" +
+            "       <name>life</name>" +
+            "    </important-thing>" +
+            "  </vector>" +
+            "  <set>" +
+            "    <important-thing>" +
+            "       <name>life</name>" +
+            "    </important-thing>" +
+            "  </set>" +
+            "   <list implementation=\"java.util.LinkedList\">" +
+            "     <important-thing>" +
+            "       <name>life</name>" +
+            "    </important-thing>" +
+            "  </list>"  +
+        // TODO: implement List<String> etc..
+        //  "<stringList>" +
+        //  "  <something>abc</something>" +
+        //  "  <somethingElse>def</somethingElse>" +
+        //  "</stringList>" +
+            "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 

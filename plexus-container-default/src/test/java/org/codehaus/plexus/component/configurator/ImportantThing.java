@@ -32,7 +32,7 @@ package org.codehaus.plexus.component.configurator;
  *
  * @version $Id$
  */
-public class ImportantThing implements AbstractThing
+public class ImportantThing extends AbstractThing implements ThingInterface
 {
     private String name;
 

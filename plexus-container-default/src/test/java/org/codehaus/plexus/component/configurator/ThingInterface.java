@@ -24,50 +24,8 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import java.util.Vector;
-import java.util.List;
-import java.util.HashSet;
 
-/**
- * @author <a href="mailto:kenney@codehaus.org">Kenney Westerhof</a>
- *
- * @version $Id$
- */
-public class ComponentWithArrayFields
+public interface ThingInterface
 {
-    String [] stringArray;
-
-    Integer [] integerArray;
-
-    ImportantThing [] importantThingArray;
-
-    Object [] objectArray;
-
-    AbstractThing [] abstractArray;
-
-    public String [] getStringArray()
-    {
-        return stringArray;
-    }
-
-    public Integer [] getIntegerArray()
-    {
-        return integerArray;
-    }
-
-    public ImportantThing [] getImportantThingArray()
-    {
-        return importantThingArray;
-    }
-
-    public Object [] getObjectArray()
-    {
-        return objectArray;
-    }
-
-    public AbstractThing [] getAbstractThingArray()
-    {
-        return abstractArray;
-    }
-
+    String getName();
 }

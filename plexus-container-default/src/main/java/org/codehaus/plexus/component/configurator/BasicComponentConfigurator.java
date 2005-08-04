@@ -26,6 +26,7 @@ package org.codehaus.plexus.component.configurator;
 
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
+import org.codehaus.plexus.component.configurator.converters.special.ClassRealmConverter;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
@@ -46,6 +47,8 @@ public class BasicComponentConfigurator
         // We should probably take into consideration the realm that the component
         // came from in order to load the correct classes.
         // ----------------------------------------------------------------------
+
+        converterLookup.registerConverter( new ClassRealmConverter( containerRealm ) );
 
         ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
 
