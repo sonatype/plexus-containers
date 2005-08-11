@@ -37,6 +37,7 @@ import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
@@ -374,6 +375,45 @@ public abstract class AbstractComponentConfiguratorTest
         assertEquals( "michal", properties.get( "firstname" ) );
 
         assertEquals( "maczka", properties.get( "lastname" ) );
+
+    }
+
+    public void testComponentConfigurationWithMapField()
+        throws Exception
+    {
+        String xml =
+            "<configuration>" +
+            "  <map>" +
+            "     <firstName>Kenney</firstName>" +
+            "     <lastName>Westerhof</lastName>" +
+            "  </map>" +
+            "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithMapField component = new ComponentWithMapField();
+
+        ComponentConfigurator cc = getComponentConfigurator();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        ClassWorld classWorld = new ClassWorld();
+        
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        cc.configureComponent( component, configuration, realm );
+
+        Map map = component.getMap();
+
+        assertNotNull( map );
+
+        assertEquals( "Kenney", map.get( "firstName" ) );
+
+        assertEquals( "Westerhof", map.get( "lastName" ) );
 
     }
 
