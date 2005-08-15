@@ -26,6 +26,7 @@ package org.codehaus.plexus.component.configurator.converters.composite;
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
+import org.codehaus.plexus.component.configurator.converters.ComponentValueSetter;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
@@ -33,6 +34,7 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Map;
@@ -107,66 +109,29 @@ public class ObjectWithFieldsConverter
 
             String elementName = childConfiguration.getName();
 
-            String fieldName = fromXML( elementName );
+            ComponentValueSetter valueSetter = new ComponentValueSetter(
+                fromXML( elementName ), object, converterLookup
+            );
 
-            Field field = getFieldByName( fieldName, object );
-
-            Class fieldType = field.getType();
-
-            ConfigurationConverter converter = converterLookup.lookupConverterForType( fieldType );
-
-            Object value = converter.fromConfiguration( converterLookup, childConfiguration, fieldType,
-                                                        object.getClass(), classLoader, expressionEvaluator );
+            valueSetter.configure( childConfiguration, classLoader, expressionEvaluator );
+            /*
+            Object value = valueSetter.getConverter().fromConfiguration(
+                converterLookup, childConfiguration, valueSetter.getValueType(),
+                object.getClass(), classLoader, expressionEvaluator
+            );
 
             if ( value != null )
             {
-                setFieldValue( field, object, value );
+                valueSetter.setValue( value );
             }
+            */
         }
 
     }
 
-
-    private void setFieldValue( Field field, Object object, Object value )
+    private Field getFieldByName( String fieldName, Class clazz )
         throws ComponentConfigurationException
     {
-        try
-        {
-            boolean wasAccessible = field.isAccessible();
-
-            if ( !wasAccessible )
-            {
-                field.setAccessible( true );
-            }
-
-            field.set( object, value );
-
-            if ( !wasAccessible )
-            {
-                field.setAccessible( false );
-            }
-        }
-        catch ( IllegalAccessException e )
-        {
-            String msg = "Cannot access field: '" + field.getName() + "' in class: '" + object.getClass().getName() +
-                "'";
-
-            throw new ComponentConfigurationException( msg, e );
-        }
-        catch ( IllegalArgumentException e )
-        {
-            String msg = "Cannot assign field: '" + field.getName() + "' in class: '" + object.getClass().getName() +
-                "' with value '" + value + "' of type '" + value.getClass().getName() + "'";
-
-            throw new ComponentConfigurationException( msg, e );
-        }
-    }
-
-    private Field getFieldByName( String fieldName, Object object )
-        throws ComponentConfigurationException
-    {
-
-        Class clazz = object.getClass();
         Field retValue = ReflectionUtils.getFieldByNameIncludingSuperclasses( fieldName, clazz );
 
         if ( retValue == null )
@@ -178,5 +143,4 @@ public class ObjectWithFieldsConverter
 
         return retValue;
     }
-
 }
