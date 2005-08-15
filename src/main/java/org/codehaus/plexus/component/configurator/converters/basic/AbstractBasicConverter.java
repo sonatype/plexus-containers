@@ -37,8 +37,7 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 public abstract class AbstractBasicConverter
     extends AbstractConfigurationConverter
 {
-    abstract protected Object fromString( String str )
-        throws ComponentConfigurationException;
+    abstract protected Object fromString( String str );
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
                                      Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )

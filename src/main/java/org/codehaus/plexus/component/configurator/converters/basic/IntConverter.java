@@ -1,7 +1,5 @@
 package org.codehaus.plexus.component.configurator.converters.basic;
 
-import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
-
 /*
  * The MIT License
  *
@@ -35,18 +33,8 @@ public class IntConverter extends AbstractBasicConverter
     }
 
     public Object fromString( String str )
-        throws ComponentConfigurationException
     {
-        try
-        {
-            return Integer.valueOf( str );
-        }
-        catch ( NumberFormatException e )
-        {
-            throw new ComponentConfigurationException(
-                "Not a number: '" + str + "'", e
-            );
-        }
+        return Integer.valueOf( str );
     }
 
 }
