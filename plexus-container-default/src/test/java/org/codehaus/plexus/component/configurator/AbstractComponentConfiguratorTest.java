@@ -411,11 +411,10 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertNotNull( map );
 
-        assertEquals( 2, map.size() );
-
         assertEquals( "Kenney", map.get( "firstName" ) );
 
         assertEquals( "Westerhof", map.get( "lastName" ) );
+
     }
 
 }
