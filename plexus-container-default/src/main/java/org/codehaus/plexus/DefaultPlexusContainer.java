@@ -93,6 +93,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.Collection;
 
 /**
  * @todo clarify configuration handling vis-a-vis user vs default values
@@ -122,7 +123,7 @@ public class DefaultPlexusContainer
     private ClassRealm plexusRealm;
 
     private String name;
-    
+
     private ComponentRepository componentRepository;
 
     private ComponentManagerManager componentManagerManager;
@@ -163,17 +164,17 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     // Child container access
     // ----------------------------------------------------------------------
-    
+
     public boolean hasChildContainer( String name )
     {
         return childContainers.get( name ) != null;
     }
-    
+
     public PlexusContainer getChildContainer( String name )
     {
         return (PlexusContainer) childContainers.get( name );
     }
-    
+
     public PlexusContainer createChildContainer( String name, List classpathJars, Map context )
         throws PlexusContainerException
     {
@@ -187,13 +188,13 @@ public class DefaultPlexusContainer
         {
             throw new DuplicateChildContainerException( getName(), name );
         }
-        
+
         DefaultPlexusContainer child = new DefaultPlexusContainer();
-        
+
         child.classWorld = classWorld;
-        
+
         ClassRealm childRealm = null;
-        
+
         String childRealmId = getName() + ".child-container[" + name + "]";
         try
         {
@@ -211,49 +212,49 @@ public class DefaultPlexusContainer
                         "produced duplication error on same id!", impossibleError );
             }
         }
-        
+
         childRealm.setParent( plexusRealm );
-        
+
         child.coreRealm = childRealm;
-        
+
         child.plexusRealm = childRealm;
-        
+
         child.setName( name );
-        
+
         child.setParentPlexusContainer( this );
-        
+
         for ( Iterator it = context.entrySet().iterator(); it.hasNext(); )
         {
             Map.Entry entry = (Map.Entry) it.next();
-            
+
             child.addContextValue( entry.getKey(), entry.getValue() );
         }
-        
+
         child.initialize();
-        
+
         for ( Iterator it = classpathJars.iterator(); it.hasNext(); )
         {
             Object next = it.next();
-            
+
             File jar = (File) next;
-            
+
             child.addJarResource( jar );
         }
-        
+
         for ( Iterator it = discoveryListeners.iterator(); it.hasNext(); )
         {
             ComponentDiscoveryListener listener = (ComponentDiscoveryListener) it.next();
-            
+
             child.registerComponentDiscoveryListener(listener);
         }
-        
+
         child.start();
-        
+
         childContainers.put( name, child );
-        
+
         return child;
     }
-    
+
     // ----------------------------------------------------------------------
     // Component Lookup
     // ----------------------------------------------------------------------
@@ -362,7 +363,7 @@ public class DefaultPlexusContainer
             for ( Iterator i = componentDescriptors.keySet().iterator(); i.hasNext(); )
             {
                 String roleHint = (String) i.next();
-                
+
                 Object component = lookup( role, roleHint );
 
                 components.put( roleHint, component );
@@ -379,7 +380,7 @@ public class DefaultPlexusContainer
         throws ComponentLookupException
     {
         List components = new ArrayList();
-        
+
         List componentDescriptors = getComponentDescriptorList( role );
 
         if ( componentDescriptors != null )
@@ -589,7 +590,7 @@ public class DefaultPlexusContainer
     {
         return plexusRealm;
     }
-    
+
     public boolean isInitialized()
     {
         return initialized;
@@ -613,7 +614,7 @@ public class DefaultPlexusContainer
             initializeContext();
 
             initializeSystemProperties();
-            
+
             this.initialized = true;
         }
         catch ( DuplicateRealmException e )
@@ -691,7 +692,7 @@ public class DefaultPlexusContainer
                 ComponentSetDescriptor componentSet = (ComponentSetDescriptor) j.next();
 
                 List componentDescriptors = componentSet.getComponents();
-                
+
                 if(componentDescriptors != null)
                 {
                     for ( Iterator k = componentDescriptors.iterator(); k.hasNext(); )
@@ -722,7 +723,7 @@ public class DefaultPlexusContainer
                             discoveredComponentDescriptors.add( componentDescriptor );
                         }
                     }
-                    
+
                     //discoveredComponentDescriptors.addAll( componentDescriptors );
                 }
             }
@@ -733,7 +734,7 @@ public class DefaultPlexusContainer
 
     // We need to be aware of dependencies between discovered components when the listed component
     // as the discovery listener itself depends on components that need to be discovered.
-    
+
     public boolean isStarted()
     {
         return started;
@@ -749,7 +750,7 @@ public class DefaultPlexusContainer
             discoverComponents( plexusRealm );
 
             loadComponentsOnStart();
-            
+
             this.started = true;
         }
         catch ( PlexusConfigurationException e )
@@ -771,14 +772,16 @@ public class DefaultPlexusContainer
     public void dispose()
     {
         disposeAllComponents();
-        
+
         this.started = false;
         this.initialized = true;
     }
 
     protected void disposeAllComponents()
     {
-        for ( Iterator iter = componentManagerManager.getComponentManagers().values().iterator(); iter.hasNext(); )
+        // copy the list so we don't get concurrent modification exceptions during disposal
+        Collection collection = new ArrayList( componentManagerManager.getComponentManagers().values() );
+        for ( Iterator iter = collection.iterator(); iter.hasNext(); )
         {
             try
             {
@@ -949,7 +952,7 @@ public class DefaultPlexusContainer
 
             Thread.currentThread().setContextClassLoader( plexusRealm.getClassLoader() );
         }
-        
+
     }
 
     public ClassRealm getContainerRealm() {
@@ -1036,7 +1039,7 @@ public class DefaultPlexusContainer
 
         PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
         PlexusConfiguration plexusConfiguration = discoverer.discoverConfiguration(getContext(), plexusRealm);
-        
+
         if(plexusConfiguration != null)
         {
             configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
@@ -1159,7 +1162,7 @@ public class DefaultPlexusContainer
         throws ComponentConfigurationException, ComponentRepositoryException, ContextException
     {
         BasicComponentConfigurator configurator = new BasicComponentConfigurator();
-        
+
         PlexusConfiguration c = configuration.getChild( "component-repository" );
 
         processCoreComponentConfiguration( "component-repository", configurator, c );
@@ -1169,7 +1172,7 @@ public class DefaultPlexusContainer
         componentRepository.setClassRealm( plexusRealm );
 
         componentRepository.initialize();
-        
+
         // Lifecycle handler manager
 
         c = configuration.getChild( "lifecycle-handler-manager" );
@@ -1199,13 +1202,13 @@ public class DefaultPlexusContainer
         c = configuration.getChild( "component-factory-manager" );
 
         processCoreComponentConfiguration(  "component-factory-manager", configurator, c );
-        
+
         if( componentFactoryManager instanceof Contextualizable )
         {
             Context context = getContext();
-            
+
             context.put( PlexusConstants.PLEXUS_KEY, this );
-            
+
             ((Contextualizable) componentFactoryManager).contextualize( getContext() );
         }
 
@@ -1326,7 +1329,7 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
-    
+
     public void addJarResource( File jar )
         throws PlexusContainerException
     {
@@ -1352,7 +1355,7 @@ public class DefaultPlexusContainer
             throw new PlexusContainerException( "Cannot add jar resource: " + jar + " (error discovering new components)", e );
         }
     }
-    
+
     public void addJarRepository( File repository )
     {
         if ( repository.exists() && repository.isDirectory() )
@@ -1392,7 +1395,7 @@ public class DefaultPlexusContainer
 
         ComponentFactory componentFactory = null;
         Object component = null;
-        
+
         try
         {
             if ( componentFactoryId != null )
@@ -1403,7 +1406,7 @@ public class DefaultPlexusContainer
             {
                 componentFactory = componentFactoryManager.getDefaultComponentFactory();
             }
-    
+
             component = componentFactory.newInstance( componentDescriptor, plexusRealm, this );
         }
         catch ( UndefinedComponentFactoryException e )
@@ -1419,7 +1422,7 @@ public class DefaultPlexusContainer
                 release(componentFactory);
             }
         }
-        
+
         return component;
     }
 
