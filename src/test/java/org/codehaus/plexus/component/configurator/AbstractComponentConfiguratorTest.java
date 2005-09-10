@@ -77,9 +77,9 @@ public abstract class AbstractComponentConfiguratorTest
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
-        
+
         ClassWorld classWorld = new ClassWorld();
-        
+
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
         cc.configureComponent( component, configuration, realm );
@@ -109,6 +109,73 @@ public abstract class AbstractComponentConfiguratorTest
         assertEquals( "jason", c.getChild( "name" ).getValue() );
     }
 
+    public void testComponentConfiguratorWithAComponentThatProvidesSettersForConfiguration()
+        throws Exception
+    {
+        String xml = "<configuration>" + "  <int-value>0</int-value>" + "  <float-value>1</float-value>"
+            + "  <long-value>2</long-value>" + "  <double-value>3</double-value>"
+            + "  <string-value>foo</string-value>" + "  <important-things>"
+            + "    <important-thing><name>jason</name></important-thing>"
+            + "    <important-thing><name>tess</name></important-thing>" + "  </important-things>"
+            + "  <configuration>" + "      <name>jason</name>" + "  </configuration>" + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithSetters component = new ComponentWithSetters();
+
+        ComponentConfigurator cc = getComponentConfigurator();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        cc.configureComponent( component, configuration, realm );
+
+        assertEquals( "check integer value", 0, component.getIntValue() );
+
+        assertTrue( component.intValueSet );
+
+        assertEquals( "check float value", 1.0f, component.getFloatValue(), 0.001f );
+
+        assertTrue( component.floatValueSet );
+
+        assertEquals( "check long value", 2L, component.getLongValue() );
+
+        assertTrue( component.longValueSet );
+
+        Assert.assertEquals( "check double value", 3.0, component.getDoubleValue(), 0.001 );
+
+        assertTrue( component.doubleValueSet );
+
+        assertEquals( "foo", component.getStringValue() );
+
+        assertTrue( component.stringValueSet );
+
+        List list = component.getImportantThings();
+
+        assertEquals( 2, list.size() );
+
+        assertEquals( "jason", ( (ImportantThing) list.get( 0 ) ).getName() );
+
+        assertEquals( "tess", ( (ImportantThing) list.get( 1 ) ).getName() );
+
+        assertTrue( component.importantThingsValueSet );
+
+        // Embedded Configuration
+
+        PlexusConfiguration c = component.getConfiguration();
+
+        assertEquals( "jason", c.getChild( "name" ).getValue() );
+
+        assertTrue( component.configurationValueSet );        
+    }
+
     public void testComponentConfigurationWhereFieldsToConfigureResideInTheSuperclass()
         throws Exception
     {
@@ -127,7 +194,7 @@ public abstract class AbstractComponentConfiguratorTest
         descriptor.setImplementation( component.getClass().getName() );
 
         ClassWorld classWorld = new ClassWorld();
-        
+
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
         cc.configureComponent( component, configuration, realm );
@@ -176,7 +243,7 @@ public abstract class AbstractComponentConfiguratorTest
         descriptor.setImplementation( component.getClass().getName() );
 
         ClassWorld classWorld = new ClassWorld();
-        
+
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
         cc.configureComponent( component, configuration, realm );
@@ -241,7 +308,7 @@ public abstract class AbstractComponentConfiguratorTest
         descriptor.setImplementation( component.getClass().getName() );
 
         ClassWorld classWorld = new ClassWorld();
-        
+
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
         cc.configureComponent( component, configuration, realm );
@@ -302,7 +369,7 @@ public abstract class AbstractComponentConfiguratorTest
         descriptor.setImplementation( component.getClass().getName() );
 
         ClassWorld classWorld = new ClassWorld();
-        
+
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
         cc.configureComponent( component, configuration, realm );
@@ -363,7 +430,7 @@ public abstract class AbstractComponentConfiguratorTest
         descriptor.setImplementation( component.getClass().getName() );
 
         ClassWorld classWorld = new ClassWorld();
-        
+
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
         cc.configureComponent( component, configuration, realm );
@@ -402,7 +469,7 @@ public abstract class AbstractComponentConfiguratorTest
         descriptor.setImplementation( component.getClass().getName() );
 
         ClassWorld classWorld = new ClassWorld();
-        
+
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
         cc.configureComponent( component, configuration, realm );
