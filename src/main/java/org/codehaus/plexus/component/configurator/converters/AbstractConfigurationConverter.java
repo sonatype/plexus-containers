@@ -62,9 +62,8 @@ public abstract class AbstractConfigurationConverter
             }
             catch ( ClassNotFoundException e )
             {
-                String msg =
-                    "Class name which was explicitly given in configuration using 'implementation' attribute: '" +
-                        implementation + "' cannot be loaded";
+                String msg = "Class name which was explicitly given in configuration using 'implementation' attribute: '" +
+                    implementation + "' cannot be loaded";
 
                 throw new ComponentConfigurationException( msg, e );
             }
@@ -175,20 +174,7 @@ public abstract class AbstractConfigurationConverter
         }
         if ( v == null )
         {
-            value = configuration.getAttribute( "default-value", null );
-            if ( value != null && value.length() > 0 )
-            {
-                try
-                {
-                    v = expressionEvaluator.evaluate( value );
-                }
-                catch ( ExpressionEvaluationException e )
-                {
-                    String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
-                        configuration.getName() + "'";
-                    throw new ComponentConfigurationException( msg, e );
-                }
-            }
+            v = configuration.getAttribute( "default-value", null );
         }
         return v;
     }
