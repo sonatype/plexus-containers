@@ -1,15 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <project>
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>plexus-containers</artifactId>
     <groupId>plexus</groupId>
+    <artifactId>plexus-containers</artifactId>
     <version>1.0.1</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
   <groupId>plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
   <name>Default Plexus Container</name>
-  <version>1.0-alpha-6</version>
+  <version>1.0-alpha-6-SNAPSHOT</version>
   <dependencies>
+    <!-- TODO: remove this, but currently PlexusTestCase requires it -->
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -17,14 +21,19 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>1.0.2-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>classworlds</groupId>
       <artifactId>classworlds</artifactId>
       <version>1.1-alpha-2</version>
     </dependency>
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>1.0.2-SNAPSHOT</version>
+    </dependency>
   </dependencies>
+  <!-- modules>
+    <module>test-fodder/component-with-plexus.xml</module>
+    <module>integration-tests/multi-plexus.xml</module>
+  </modules -->
+
 </project>
