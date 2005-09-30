@@ -113,6 +113,26 @@ public final class ComponentRequirement
     {
         this.fieldMappingType = fieldType;
     }
+    
+    public boolean equals( Object other )
+    {
+        if ( other instanceof ComponentRequirement )
+        {
+            String myId = role + ":" + roleHint;
+            
+            ComponentRequirement req = (ComponentRequirement) other;
+            String otherId = req.role + ":" + req.roleHint;
+            
+            return myId.equals( otherId );
+        }
+        
+        return false;
+    }
+    
+    public int hashCode()
+    {
+        return ( role + ":" + roleHint ).hashCode();
+    }
 
 
 }

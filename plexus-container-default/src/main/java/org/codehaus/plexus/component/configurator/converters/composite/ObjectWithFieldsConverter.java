@@ -79,12 +79,24 @@ public class ObjectWithFieldsConverter
         Object retValue = fromExpression( configuration, expressionEvaluator, type );
         if ( retValue == null )
         {
-            // it is a "composite" - we compose it from its children. It does not have a value of its own
-            Class implementation = getClassForImplementationHint( type, configuration, classLoader );
+            try
+            {
+                // it is a "composite" - we compose it from its children. It does not have a value of its own
+                Class implementation = getClassForImplementationHint( type, configuration, classLoader );
 
-            retValue = instantiateObject( implementation );
+                retValue = instantiateObject( implementation );
 
-            processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator );
+                processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator );
+            }
+            catch ( ComponentConfigurationException e )
+            {
+                if ( e.getFailedConfiguration() == null )
+                {
+                    e.setFailedConfiguration( configuration );
+                }
+                
+                throw e;
+            }
         }
         return retValue;
     }
