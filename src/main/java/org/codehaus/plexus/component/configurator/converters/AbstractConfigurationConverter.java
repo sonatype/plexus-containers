@@ -30,6 +30,8 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
+import javax.security.auth.login.FailedLoginException;
+
 /**
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
@@ -146,7 +148,7 @@ public abstract class AbstractConfigurationConverter
             {
                 String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type +
                     "' from '" + configuration.getValue( null ) + "', which is of type " + v.getClass();
-                throw new ComponentConfigurationException( msg );
+                throw new ComponentConfigurationException( configuration, msg );
             }
         }
         return v;
@@ -170,7 +172,7 @@ public abstract class AbstractConfigurationConverter
             {
                 String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
                     configuration.getName() + "'";
-                throw new ComponentConfigurationException( msg, e );
+                throw new ComponentConfigurationException( configuration, msg, e );
             }
         }
         if ( v == null )
@@ -186,7 +188,7 @@ public abstract class AbstractConfigurationConverter
                 {
                     String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
                         configuration.getName() + "'";
-                    throw new ComponentConfigurationException( msg, e );
+                    throw new ComponentConfigurationException( configuration, msg, e );
                 }
             }
         }
