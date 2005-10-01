@@ -28,6 +28,7 @@ import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
@@ -109,7 +110,6 @@ public class Embedder implements PlexusEmbedder
         container.setClassWorld( classWorld );
     }
 
-
     public synchronized void setConfiguration( URL configuration ) throws IOException {
         if ( embedderStarted || embedderStopped )
         {
@@ -138,7 +138,6 @@ public class Embedder implements PlexusEmbedder
         container.addContextValue( key, value );
     }
 
-
     public synchronized void setProperties( Properties properties )
     {
          this.properties = properties;
@@ -148,6 +147,19 @@ public class Embedder implements PlexusEmbedder
     {
         properties = PropertyUtils.loadProperties( file );
     }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    public void setLoggerManager( LoggerManager loggerManager )
+    {
+        container.setLoggerManager( loggerManager );
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
 
     protected synchronized void initializeContext()
     {

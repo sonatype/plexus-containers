@@ -151,10 +151,6 @@ public class DefaultPlexusContainer
     public DefaultPlexusContainer()
     {
         context = new DefaultContext();
-
-        loggerManager = new ConsoleLoggerManager( "debug" );
-
-        enableLogging( loggerManager.getLoggerForComponent( PlexusContainer.class.getName() ) );
     }
 
     // ----------------------------------------------------------------------
@@ -184,7 +180,7 @@ public class DefaultPlexusContainer
     public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
         throws PlexusContainerException
     {
-        if( hasChildContainer( name ) )
+        if ( hasChildContainer( name ) )
         {
             throw new DuplicateChildContainerException( getName(), name );
         }
@@ -209,7 +205,7 @@ public class DefaultPlexusContainer
             catch ( DuplicateRealmException impossibleError )
             {
                 getLogger().error( "An impossible error has occurred. After getRealm() failed, newRealm() " +
-                        "produced duplication error on same id!", impossibleError );
+                    "produced duplication error on same id!", impossibleError );
             }
         }
 
@@ -222,6 +218,13 @@ public class DefaultPlexusContainer
         child.setName( name );
 
         child.setParentPlexusContainer( this );
+
+        // ----------------------------------------------------------------------
+        // Set all the child elements from the parent that were set
+        // programmatically.
+        // ----------------------------------------------------------------------
+
+        child.setLoggerManager( loggerManager );
 
         for ( Iterator it = context.entrySet().iterator(); it.hasNext(); )
         {
@@ -245,7 +248,7 @@ public class DefaultPlexusContainer
         {
             ComponentDiscoveryListener listener = (ComponentDiscoveryListener) it.next();
 
-            child.registerComponentDiscoveryListener(listener);
+            child.registerComponentDiscoveryListener( listener );
         }
 
         child.start();
@@ -585,7 +588,9 @@ public class DefaultPlexusContainer
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    /** @deprecated Use getContainerRealm() instead. */
+    /**
+     * @deprecated Use getContainerRealm() instead.
+     */
     public ClassRealm getComponentRealm( String id )
     {
         return plexusRealm;
@@ -674,7 +679,6 @@ public class DefaultPlexusContainer
     /**
      * TODO: Enhance the ComponentRepository so that it can take entire
      * ComponentSetDescriptors instead of just ComponentDescriptors.
-     *
      */
     public List discoverComponents( ClassRealm classRealm )
         throws PlexusConfigurationException, ComponentRepositoryException
@@ -693,7 +697,7 @@ public class DefaultPlexusContainer
 
                 List componentDescriptors = componentSet.getComponents();
 
-                if(componentDescriptors != null)
+                if ( componentDescriptors != null )
                 {
                     for ( Iterator k = componentDescriptors.iterator(); k.hasNext(); )
                     {
@@ -848,7 +852,7 @@ public class DefaultPlexusContainer
 
                 lookup( role );
             }
-            else if ( roleHint.equals("*") )
+            else if ( roleHint.equals( "*" ) )
             {
                 getLogger().info( "Loading on start all components with [role]: " + "[" + role + "]" );
 
@@ -955,7 +959,8 @@ public class DefaultPlexusContainer
 
     }
 
-    public ClassRealm getContainerRealm() {
+    public ClassRealm getContainerRealm()
+    {
         return plexusRealm;
     }
 
@@ -1014,8 +1019,8 @@ public class DefaultPlexusContainer
         if ( is == null )
         {
             throw new IllegalStateException( "The internal default plexus-bootstrap.xml is missing. " +
-                                             "This is highly irregular, your plexus JAR is " +
-                                             "most likely corrupt." );
+                "This is highly irregular, your plexus JAR is " +
+                "most likely corrupt." );
         }
 
         PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( BOOTSTRAP_CONFIGURATION, new InputStreamReader( is ) );
@@ -1038,9 +1043,9 @@ public class DefaultPlexusContainer
         configuration = systemConfiguration;
 
         PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
-        PlexusConfiguration plexusConfiguration = discoverer.discoverConfiguration(getContext(), plexusRealm);
+        PlexusConfiguration plexusConfiguration = discoverer.discoverConfiguration( getContext(), plexusRealm );
 
-        if(plexusConfiguration != null)
+        if ( plexusConfiguration != null )
         {
             configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
 
@@ -1146,13 +1151,21 @@ public class DefaultPlexusContainer
     private void initializeLoggerManager()
         throws PlexusContainerException
     {
-        try
+        // ----------------------------------------------------------------------
+        // The logger manager may have been set programmatically so we need
+        // to check. If it hasn't
+        // ----------------------------------------------------------------------
+
+        if ( loggerManager == null )
         {
-            loggerManager = (LoggerManager) lookup( LoggerManager.ROLE );
-        }
-        catch ( ComponentLookupException e )
-        {
-            throw new PlexusContainerException( "Unable to locate logger manager", e );
+            try
+            {
+                loggerManager = (LoggerManager) lookup( LoggerManager.ROLE );
+            }
+            catch ( ComponentLookupException e )
+            {
+                throw new PlexusContainerException( "Unable to locate logger manager", e );
+            }
         }
 
         enableLogging( loggerManager.getLoggerForComponent( PlexusContainer.class.getName() ) );
@@ -1177,7 +1190,7 @@ public class DefaultPlexusContainer
 
         c = configuration.getChild( "lifecycle-handler-manager" );
 
-        processCoreComponentConfiguration( "lifecycle-handler-manager",configurator, c );
+        processCoreComponentConfiguration( "lifecycle-handler-manager", configurator, c );
 
         lifecycleHandlerManager.initialize();
 
@@ -1185,7 +1198,7 @@ public class DefaultPlexusContainer
 
         c = configuration.getChild( "component-manager-manager" );
 
-        processCoreComponentConfiguration( "component-manager-manager",configurator,  c );
+        processCoreComponentConfiguration( "component-manager-manager", configurator, c );
 
         componentManagerManager.setLifecycleHandlerManager( lifecycleHandlerManager );
 
@@ -1201,15 +1214,15 @@ public class DefaultPlexusContainer
 
         c = configuration.getChild( "component-factory-manager" );
 
-        processCoreComponentConfiguration(  "component-factory-manager", configurator, c );
+        processCoreComponentConfiguration( "component-factory-manager", configurator, c );
 
-        if( componentFactoryManager instanceof Contextualizable )
+        if ( componentFactoryManager instanceof Contextualizable )
         {
             Context context = getContext();
 
             context.put( PlexusConstants.PLEXUS_KEY, this );
 
-            ((Contextualizable) componentFactoryManager).contextualize( getContext() );
+            ( (Contextualizable) componentFactoryManager ).contextualize( getContext() );
         }
 
         // Component factory manager
@@ -1220,18 +1233,18 @@ public class DefaultPlexusContainer
     }
 
     private void processCoreComponentConfiguration( String role, BasicComponentConfigurator configurator, PlexusConfiguration c )
-            throws ComponentConfigurationException
+        throws ComponentConfigurationException
     {
-        String implementation = c.getAttribute( "implementation", null);
+        String implementation = c.getAttribute( "implementation", null );
 
         if ( implementation == null )
         {
 
-            String msg = "Core component: '"+
-                    role +
-                    "' + which is needed by plexus to function properly cannot " +
-                    "be instantiated. Implementation attribute was not specified in plexus.conf." +
-                    "This is highly irregular, your plexus JAR is most likely corrupt.";
+            String msg = "Core component: '" +
+                role +
+                "' + which is needed by plexus to function properly cannot " +
+                "be instantiated. Implementation attribute was not specified in plexus.conf." +
+                "This is highly irregular, your plexus JAR is most likely corrupt.";
 
             throw new ComponentConfigurationException( msg );
         }
@@ -1337,7 +1350,7 @@ public class DefaultPlexusContainer
         {
             plexusRealm.addConstituent( jar.toURL() );
 
-            if( isStarted() )
+            if ( isStarted() )
             {
                 discoverComponents( plexusRealm );
             }
@@ -1417,9 +1430,9 @@ public class DefaultPlexusContainer
         {
             // the java factory is a special case, without a component manager.
             // Don't bother releasing the java factory.
-            if( StringUtils.isNotEmpty(componentFactoryId) && !"java".equals( componentFactoryId ) )
+            if ( StringUtils.isNotEmpty( componentFactoryId ) && !"java".equals( componentFactoryId ) )
             {
-                release(componentFactory);
+                release( componentFactory );
             }
         }
 
@@ -1444,5 +1457,19 @@ public class DefaultPlexusContainer
     public void removeComponentDiscoveryListener( ComponentDiscoveryListener listener )
     {
         componentDiscovererManager.removeComponentDiscoveryListener( listener );
+    }
+
+    // ----------------------------------------------------------------------
+    // Start of new programmatic API to fully control the container
+    // ----------------------------------------------------------------------
+
+    public void setLoggerManager( LoggerManager loggerManager )
+    {
+        this.loggerManager = loggerManager;
+    }
+
+    public LoggerManager getLoggerManager()
+    {
+        return loggerManager;
     }
 }

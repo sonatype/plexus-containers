@@ -31,10 +31,10 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
  *
  * @author <a href="mailto:mhw@kremvax.net">Mark Wilkinson</a>
  */
-public interface TestService
+public interface PlexusTestService
 {
     /** Component role. */
-    String ROLE = TestService.class.getName();
+    String ROLE = PlexusTestService.class.getName();
 
     String getPlexusName();
 

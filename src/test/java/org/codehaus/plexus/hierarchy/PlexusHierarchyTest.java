@@ -52,7 +52,7 @@ public class PlexusHierarchyTest
 
     private PlexusContainer childPlexus2;
 
-    private TestService testService;
+    private PlexusTestService testService;
 
     protected void setUp()
         throws Exception
@@ -81,9 +81,9 @@ public class PlexusHierarchyTest
     public void testPlexus()
         throws Exception
     {
-        assertTrue( childPlexus.hasComponent( TestService.ROLE ) );
+        assertTrue( childPlexus.hasComponent( PlexusTestService.ROLE ) );
 
-        testService = (TestService) childPlexus.lookup( TestService.ROLE );
+        testService = (PlexusTestService) childPlexus.lookup( PlexusTestService.ROLE );
 
         assertEquals( "ChildPlexusOne", testService.getPlexusName() );
 
@@ -93,9 +93,9 @@ public class PlexusHierarchyTest
     public void testPlexusWithId()
         throws Exception
     {
-        assertTrue( childPlexus2.hasComponent( TestService.ROLE ) );
+        assertTrue( childPlexus2.hasComponent( PlexusTestService.ROLE ) );
 
-        testService = (TestService) childPlexus2.lookup( TestService.ROLE );
+        testService = (PlexusTestService) childPlexus2.lookup( PlexusTestService.ROLE );
 
         assertEquals( "ChildPlexusTwo", testService.getPlexusName() );
 
@@ -111,15 +111,15 @@ public class PlexusHierarchyTest
     public void testSiblingPlexusResolution()
         throws Exception
     {
-        assertTrue( childPlexus.hasComponent( TestService.ROLE ) );
+        assertTrue( childPlexus.hasComponent( PlexusTestService.ROLE ) );
 
-        testService = (TestService) childPlexus.lookup( TestService.ROLE );
+        testService = (PlexusTestService) childPlexus.lookup( PlexusTestService.ROLE );
 
         assertEquals( "see how they run", testService.getSiblingKnownValue( "two" ) );
 
-        assertTrue( childPlexus2.hasComponent( TestService.ROLE ) );
+        assertTrue( childPlexus2.hasComponent( PlexusTestService.ROLE ) );
 
-        testService = (TestService) childPlexus2.lookup( TestService.ROLE );
+        testService = (PlexusTestService) childPlexus2.lookup( PlexusTestService.ROLE );
 
         assertEquals( "three blind mice", testService.getSiblingKnownValue( null ) );
     }
@@ -129,13 +129,13 @@ public class PlexusHierarchyTest
     {
         // Child plexus should override the component with no role-hint
 
-        testService = (TestService) lookup( TestService.ROLE );
+        testService = (PlexusTestService) lookup( PlexusTestService.ROLE );
 
         assertEquals( "cheesy default service", testService.getKnownValue() );
 
         release( testService );
 
-        testService = (TestService) childPlexus.lookup( TestService.ROLE );
+        testService = (PlexusTestService) childPlexus.lookup( PlexusTestService.ROLE );
 
         assertEquals( "three blind mice", testService.getKnownValue() );
 
@@ -143,13 +143,13 @@ public class PlexusHierarchyTest
 
         // Child plexus one should override the hinted component
 
-        testService = (TestService) lookup( TestService.ROLE, "hinted" );
+        testService = (PlexusTestService) lookup( PlexusTestService.ROLE, "hinted" );
 
         assertEquals( "hinted default service", testService.getKnownValue() );
 
         release( testService );
 
-        testService = (TestService) childPlexus.lookup( TestService.ROLE, "hinted" );
+        testService = (PlexusTestService) childPlexus.lookup( PlexusTestService.ROLE, "hinted" );
 
         assertEquals( "plexus one overriding hinted service", testService.getKnownValue() );
 
@@ -157,13 +157,13 @@ public class PlexusHierarchyTest
 
         // Child plexus two should inherit the hinted component
 
-        testService = (TestService) lookup( TestService.ROLE, "hinted" );
+        testService = (PlexusTestService) lookup( PlexusTestService.ROLE, "hinted" );
 
         assertEquals( "hinted default service", testService.getKnownValue() );
 
         release( testService );
 
-        testService = (TestService) childPlexus2.lookup( TestService.ROLE, "hinted" );
+        testService = (PlexusTestService) childPlexus2.lookup( PlexusTestService.ROLE, "hinted" );
 
         assertEquals( "hinted default service", testService.getKnownValue() );
 
@@ -172,13 +172,13 @@ public class PlexusHierarchyTest
         // Child plexus should provide access to global component from
         // parent plexus.
 
-        testService = (TestService) lookup( TestService.ROLE, "global" );
+        testService = (PlexusTestService) lookup( PlexusTestService.ROLE, "global" );
 
         assertEquals( "globally visible service", testService.getKnownValue() );
 
         release( testService );
 
-        testService = (TestService) childPlexus.lookup( TestService.ROLE, "global" );
+        testService = (PlexusTestService) childPlexus.lookup( PlexusTestService.ROLE, "global" );
 
         assertEquals( "globally visible service", testService.getKnownValue() );
 
@@ -189,7 +189,7 @@ public class PlexusHierarchyTest
 
         try
         {
-            testService = (TestService) lookup( TestService.ROLE, "local" );
+            testService = (PlexusTestService) lookup( PlexusTestService.ROLE, "local" );
 
             fail( "found child component through parent container" );
         }
@@ -198,7 +198,7 @@ public class PlexusHierarchyTest
             assertTrue( true );
         }
 
-        testService = (TestService) childPlexus.lookup( TestService.ROLE, "local" );
+        testService = (PlexusTestService) childPlexus.lookup( PlexusTestService.ROLE, "local" );
 
         assertEquals( "plexus one local service", testService.getKnownValue() );
 
@@ -210,15 +210,15 @@ public class PlexusHierarchyTest
     {
         // Root plexus should give us a map containing its components.
 
-        Map componentMap = rootPlexus.lookupMap( TestService.ROLE );
+        Map componentMap = rootPlexus.lookupMap( PlexusTestService.ROLE );
 
         assertEquals( 3, componentMap.size() );
 
-        testService = (TestService) componentMap.get( "global" );
+        testService = (PlexusTestService) componentMap.get( "global" );
 
         assertEquals( "globally visible service", testService.getKnownValue() );
 
-        testService = (TestService) componentMap.get( "hinted" );
+        testService = (PlexusTestService) componentMap.get( "hinted" );
 
         assertEquals( "hinted default service", testService.getKnownValue() );
 
@@ -229,19 +229,19 @@ public class PlexusHierarchyTest
         // Child plexus one should give us a map containing its components
         // and those from its parent.
 
-        componentMap = childPlexus.lookupMap( TestService.ROLE );
+        componentMap = childPlexus.lookupMap( PlexusTestService.ROLE );
 
         assertEquals( 4, componentMap.size() );
 
-        testService = (TestService) componentMap.get( "global" );
+        testService = (PlexusTestService) componentMap.get( "global" );
 
         assertEquals( "globally visible service", testService.getKnownValue() );
 
-        testService = (TestService) componentMap.get( "hinted" );
+        testService = (PlexusTestService) componentMap.get( "hinted" );
 
         assertEquals( "plexus one overriding hinted service", testService.getKnownValue() );
 
-        testService = (TestService) componentMap.get( "local" );
+        testService = (PlexusTestService) componentMap.get( "local" );
 
         assertEquals( "plexus one local service", testService.getKnownValue() );
 
@@ -250,19 +250,19 @@ public class PlexusHierarchyTest
         // Child plexus two should give us a map containing its components
         // and those from its parent.
 
-        componentMap = childPlexus2.lookupMap( TestService.ROLE );
+        componentMap = childPlexus2.lookupMap( PlexusTestService.ROLE );
 
         assertEquals( 4, componentMap.size() );
 
-        testService = (TestService) componentMap.get( "global" );
+        testService = (PlexusTestService) componentMap.get( "global" );
 
         assertEquals( "globally visible service", testService.getKnownValue() );
 
-        testService = (TestService) componentMap.get( "hinted" );
+        testService = (PlexusTestService) componentMap.get( "hinted" );
 
         assertEquals( "hinted default service", testService.getKnownValue() );
 
-        testService = (TestService) componentMap.get( "local" );
+        testService = (PlexusTestService) componentMap.get( "local" );
 
         assertEquals( "plexus two local service", testService.getKnownValue() );
 
@@ -274,7 +274,7 @@ public class PlexusHierarchyTest
     {
         // Root plexus should give us a list containing its components.
 
-        List componentList = rootPlexus.lookupList( TestService.ROLE );
+        List componentList = rootPlexus.lookupList( PlexusTestService.ROLE );
 
         assertEquals( 3, componentList.size() );
 
@@ -289,7 +289,7 @@ public class PlexusHierarchyTest
 
         for ( Iterator i = componentList.iterator(); i.hasNext(); )
         {
-            testService = (TestService) i.next();
+            testService = (PlexusTestService) i.next();
 
             expectedValues.remove( testService.getKnownValue() );
         }
@@ -301,7 +301,7 @@ public class PlexusHierarchyTest
         // Child plexus one should give us a list containing its components
         // and those from its parent.
 
-        componentList = childPlexus.lookupList( TestService.ROLE );
+        componentList = childPlexus.lookupList( PlexusTestService.ROLE );
 
         assertEquals( 4, componentList.size() );
 
@@ -317,7 +317,7 @@ public class PlexusHierarchyTest
 
         for ( Iterator i = componentList.iterator(); i.hasNext(); )
         {
-            testService = (TestService) i.next();
+            testService = (PlexusTestService) i.next();
 
             expectedValues.remove( testService.getKnownValue() );
         }
@@ -329,7 +329,7 @@ public class PlexusHierarchyTest
         // Child plexus two should give us a map containing its components
         // and those from its parent.
 
-        componentList = childPlexus2.lookupList( TestService.ROLE );
+        componentList = childPlexus2.lookupList( PlexusTestService.ROLE );
 
         assertEquals( 4, componentList.size() );
 
@@ -345,7 +345,7 @@ public class PlexusHierarchyTest
 
         for ( Iterator i = componentList.iterator(); i.hasNext(); )
         {
-            testService = (TestService) i.next();
+            testService = (PlexusTestService) i.next();
 
             expectedValues.remove( testService.getKnownValue() );
         }

@@ -34,13 +34,13 @@ import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 /**
- * Simple implementation of the {@link TestService} Component interface.
+ * Simple implementation of the {@link PlexusTestService} Component interface.
  *
  * @author <a href="mailto:mhw@kremvax.net">Mark Wilkinson</a>
  */
 public class
     TestServiceImpl
-    implements TestService, Contextualizable
+    implements PlexusTestService, Contextualizable
 {
     private PlexusContainer parentPlexus;
 
@@ -82,7 +82,7 @@ public class
 
         PlexusContainer siblingContainer = manager.getManagedContainers()[0];
 
-        TestService service = (TestService) siblingContainer.lookup( TestService.ROLE );
+        PlexusTestService service = (PlexusTestService) siblingContainer.lookup( PlexusTestService.ROLE );
 
         return service.getKnownValue();
     }
