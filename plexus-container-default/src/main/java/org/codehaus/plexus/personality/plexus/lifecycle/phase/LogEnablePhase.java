@@ -15,21 +15,17 @@ public class LogEnablePhase
         throws PhaseExecutionException
     {
         LoggerManager loggerManager;
+
         ComponentDescriptor descriptor;
+
         Logger logger;
 
         if ( object instanceof LogEnabled )
         {
-            try
-            {
-                loggerManager = (LoggerManager) componentManager.getContainer().lookup( LoggerManager.ROLE );
-            }
-            catch ( ComponentLookupException e )
-            {
-                throw new PhaseExecutionException( "Unable to locate logger manager", e );
-            }
+            loggerManager = componentManager.getContainer().getLoggerManager();
 
             descriptor = componentManager.getComponentDescriptor();
+
             logger = loggerManager.getLoggerForComponent( descriptor.getRole(), descriptor.getRoleHint() );
 
             ( (LogEnabled) object ).enableLogging( logger );

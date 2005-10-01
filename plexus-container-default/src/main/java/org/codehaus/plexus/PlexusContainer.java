@@ -12,6 +12,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentRepositoryExc
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.LoggerManager;
 
 import java.io.File;
 import java.io.Reader;
@@ -158,4 +159,12 @@ public interface PlexusContainer
 
     /** @deprecated Use getContainerRealm() instead. */
     ClassRealm getComponentRealm( String componentKey );
+
+    // ----------------------------------------------------------------------
+    // Start of new programmatic API to fully control the container
+    // ----------------------------------------------------------------------
+
+    void setLoggerManager( LoggerManager loggerManager );
+    
+    LoggerManager getLoggerManager();
 }

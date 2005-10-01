@@ -9,7 +9,7 @@
 
   <components>
     <component>
-      <role>org.codehaus.plexus.hierarchy.TestService</role>
+      <role>org.codehaus.plexus.hierarchy.PlexusTestService</role>
       <role-hint>default</role-hint>
       <implementation>org.codehaus.plexus.hierarchy.TestServiceImpl</implementation>
       <configuration>
@@ -18,7 +18,7 @@
     </component>
 
     <component>
-      <role>org.codehaus.plexus.hierarchy.TestService</role>
+      <role>org.codehaus.plexus.hierarchy.PlexusTestService</role>
       <role-hint>hinted</role-hint>
       <implementation>org.codehaus.plexus.hierarchy.TestServiceImpl</implementation>
       <configuration>
@@ -27,7 +27,7 @@
     </component>
 
     <component>
-      <role>org.codehaus.plexus.hierarchy.TestService</role>
+      <role>org.codehaus.plexus.hierarchy.PlexusTestService</role>
       <role-hint>local</role-hint>
       <implementation>org.codehaus.plexus.hierarchy.TestServiceImpl</implementation>
       <configuration>
