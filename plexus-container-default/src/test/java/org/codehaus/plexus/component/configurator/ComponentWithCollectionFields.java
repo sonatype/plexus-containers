@@ -24,26 +24,23 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import java.util.Vector;
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Vector;
 
 /**
- *
- *
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
- *
  * @version $Id$
  */
 public class ComponentWithCollectionFields
 {
-    Vector vector;
+    private Vector vector;
 
-    HashSet set;
+    private HashSet set;
 
-    List list;
+    private List list;
 
-    List stringList;
+    private List stringList;
 
     public Vector getVector()
     {

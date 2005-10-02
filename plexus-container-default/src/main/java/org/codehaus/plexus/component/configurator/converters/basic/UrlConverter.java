@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.configurator;
+package org.codehaus.plexus.component.configurator.converters.basic;
 
 /*
  * The MIT License
@@ -24,61 +24,32 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import java.io.File;
+import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * @author <a href="mailto:kenney@codehaus.org">Kenney Westerhof</a>
- * @version $Id$
+ * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
  */
-public class ComponentWithArrayFields
+public class UrlConverter
+    extends AbstractBasicConverter
 {
-    private String[] stringArray;
-
-    private Integer[] integerArray;
-
-    private ImportantThing[] importantThingArray;
-
-    private Object[] objectArray;
-
-    private AbstractThing[] abstractArray;
-
-    private URL[] urlArray;
-
-    private File[] fileArray;
-
-    public String [] getStringArray()
+    public boolean canConvert( Class type )
     {
-        return stringArray;
+        return type.equals( URL.class );
     }
 
-    public Integer [] getIntegerArray()
+    public Object fromString( String str )
+        throws ComponentConfigurationException
     {
-        return integerArray;
-    }
-
-    public ImportantThing [] getImportantThingArray()
-    {
-        return importantThingArray;
-    }
-
-    public Object [] getObjectArray()
-    {
-        return objectArray;
-    }
-
-    public AbstractThing [] getAbstractThingArray()
-    {
-        return abstractArray;
-    }
-
-    public URL[] getUrlArray()
-    {
-        return urlArray;
-    }
-
-    public File[] getFileArray()
-    {
-        return fileArray;
+        try
+        {
+            return new URL( str );
+        }
+        catch ( MalformedURLException e )
+        {
+            throw new ComponentConfigurationException( "Unable to convert '" + str + "' to an URL", e );
+        }
     }
 }
