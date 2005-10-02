@@ -30,8 +30,6 @@ import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
-import javax.security.auth.login.FailedLoginException;
-
 /**
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
@@ -79,7 +77,7 @@ public abstract class AbstractConfigurationConverter
     protected Class loadClass( String classname, ClassLoader classLoader )
         throws ComponentConfigurationException
     {
-        Class retValue = null;
+        Class retValue;
 
         try
         {
@@ -98,15 +96,13 @@ public abstract class AbstractConfigurationConverter
     {
         Class clazz = loadClass( classname, classLoader );
 
-        Object retValue = instantiateObject( clazz );
-
-        return retValue;
+        return instantiateObject( clazz );
     }
 
     protected Object instantiateObject( Class clazz )
         throws ComponentConfigurationException
     {
-        Object retValue = null;
+        Object retValue;
 
         try
         {

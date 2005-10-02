@@ -38,13 +38,13 @@ import org.codehaus.plexus.component.configurator.converters.basic.LongConverter
 import org.codehaus.plexus.component.configurator.converters.basic.ShortConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.StringBufferConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.StringConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.UrlConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.ArrayConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.CollectionConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.MapConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PlexusConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PropertiesConverter;
-import org.codehaus.plexus.component.configurator.converters.special.ClassRealmConverter;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -52,7 +52,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultConverterLookup implements ConverterLookup
+public class DefaultConverterLookup
+    implements ConverterLookup
 {
     private List converters = new LinkedList();
 
@@ -77,19 +78,18 @@ public class DefaultConverterLookup implements ConverterLookup
         converters.add( converter );
     }
 
-    public ConfigurationConverter lookupConverterForType( Class type ) throws ComponentConfigurationException
+    public ConfigurationConverter lookupConverterForType( Class type )
+        throws ComponentConfigurationException
     {
         ConfigurationConverter retValue = null;
 
         if ( converterMap.containsKey( type ) )
         {
-            retValue = ( ConfigurationConverter ) converterMap.get( type );
+            retValue = (ConfigurationConverter) converterMap.get( type );
         }
         else
         {
-            retValue = findConverterForType(
-                customConverters, type
-            );
+            retValue = findConverterForType( customConverters, type );
 
             if ( retValue == null )
             {
@@ -110,7 +110,7 @@ public class DefaultConverterLookup implements ConverterLookup
     {
         for ( Iterator iterator = converters.iterator(); iterator.hasNext(); )
         {
-            ConfigurationConverter converter = ( ConfigurationConverter ) iterator.next();
+            ConfigurationConverter converter = (ConfigurationConverter) iterator.next();
 
             if ( converter.canConvert( type ) )
             {
@@ -150,13 +150,15 @@ public class DefaultConverterLookup implements ConverterLookup
 
         registerDefaultConverter( new FileConverter() );
 
+        registerDefaultConverter( new UrlConverter() );
+
         //registerDefaultConverter( new BigIntegerConverter() );
     }
 
     private void registerDefaultCompositeConverters()
     {
         registerDefaultConverter( new MapConverter() );
-        
+
         registerDefaultConverter( new ArrayConverter() );
 
         registerDefaultConverter( new CollectionConverter() );

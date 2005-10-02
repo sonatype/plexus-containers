@@ -89,13 +89,15 @@ public class CollectionConverter
                 }
                 catch ( IllegalAccessException e )
                 {
-                    String msg = "An attempt to convert configuration entry " + configuration.getName() + "' into " + type + " object failed: " + e.getMessage();
+                    String msg = "An attempt to convert configuration entry " + configuration.getName() + "' into " +
+                        type + " object failed: " + e.getMessage();
 
                     throw new ComponentConfigurationException( msg, e );
                 }
                 catch ( InstantiationException e )
                 {
-                    String msg = "An attempt to convert configuration entry " + configuration.getName() + "' into " + type + " object failed: " + e.getMessage();
+                    String msg = "An attempt to convert configuration entry " + configuration.getName() + "' into " +
+                        type + " object failed: " + e.getMessage();
 
                     throw new ComponentConfigurationException( msg, e );
                 }
@@ -145,11 +147,26 @@ public class CollectionConverter
                 {
                     String basePackage = baseTypeName.substring( 0, lastDot );
 
-                    className = basePackage + "." +
-                        StringUtils.capitalizeFirstLetter( name );
+                    className = basePackage + "." + StringUtils.capitalizeFirstLetter( name );
                 }
 
-                childType = loadClass( className, classLoader );
+                try
+                {
+                    childType = classLoader.loadClass( className );
+                }
+                catch ( ClassNotFoundException e )
+                {
+                    if ( c.getChildCount() == 0 )
+                    {
+                        // If no children, try a String.
+                        // TODO: If we had generics we could try that instead - or could the component descriptor list an impl?
+                        childType = String.class;
+                    }
+                    else
+                    {
+                        throw new ComponentConfigurationException( "Error loading class '" + className + "'", e );
+                    }
+                }
             }
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
