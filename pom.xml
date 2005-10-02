@@ -5,7 +5,7 @@
     <version>1.0.2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>plexus</groupId>
+  <groupId>org.codehaus.plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
   <name>Default Plexus Container</name>
   <version>1.0-alpha-7-SNAPSHOT</version>
@@ -35,8 +35,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude implementation="java.lang.String">**/Test*.java</exclude>
-            <exclude implementation="java.lang.String">**/Abstract*.java</exclude>
+            <exclude>**/Test*.java</exclude>
+            <exclude>**/Abstract*.java</exclude>
           </excludes>
         </configuration>
       </plugin>
