@@ -1,11 +1,10 @@
 <project>
   <parent>
     <artifactId>plexus-containers</artifactId>
-    <groupId>plexus</groupId>
-    <version>1.0.2</version>
+    <groupId>org.codehaus.plexus</groupId>
+    <version>1.0.3</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.codehaus.plexus</groupId>
   <artifactId>plexus-container-default</artifactId>
   <name>Default Plexus Container</name>
   <version>1.0-alpha-8-SNAPSHOT</version>
@@ -13,7 +12,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.0-beta-1</version>
         <configuration>
           <excludes>
             <exclude>**/Test*.java</exclude>
@@ -31,9 +29,9 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>plexus</groupId>
+      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>classworlds</groupId>

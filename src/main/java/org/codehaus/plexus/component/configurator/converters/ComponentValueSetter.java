@@ -8,7 +8,6 @@ import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
