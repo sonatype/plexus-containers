@@ -30,7 +30,6 @@ import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConve
 import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
@@ -53,5 +52,15 @@ public abstract class AbstractComponentConfigurator
         throws ComponentConfigurationException
     {
         configureComponent( component, configuration, expressionEvaluator, containerRealm, null );
+    }
+
+    public void configureComponent( Object component, PlexusConfiguration configuration,
+                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
+                                    ConfigurationListener listener )
+        throws ComponentConfigurationException
+    {
+        // TODO: here so extended classes without the method continue to work. should be removed
+        // this won't hit the method above going into a loop - instead, it will hit the overridden one
+        configureComponent( component, configuration, expressionEvaluator, containerRealm );
     }
 }
