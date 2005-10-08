@@ -3,7 +3,7 @@ package org.codehaus.plexus.component.configurator;
 /*
  * The MIT License
  *
- * Copyright (c) 2004, The Codehaus
+ * Copyright (c) 2004-5, The Codehaus
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,27 +24,28 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * Listen for configuration changes on an object.
+ *
+ * @author <a href="mailto:brett@apache.org">Brett Porter</a>
  * @version $Id$
  */
-public interface ComponentConfigurator
+public interface ConfigurationListener
 {
-    String ROLE = ComponentConfigurator.class.getName();
+    /**
+     * Notify the listener that a field has been set using its setter.
+     * @param fieldName the field
+     * @param value the value set
+     * @param target the target object
+     */
+    void notifyFieldChangeUsingSetter( String fieldName, Object value, Object target );
 
-    void configureComponent( Object component, PlexusConfiguration configuration, ClassRealm containerRealm )
-        throws ComponentConfigurationException;
-
-    void configureComponent( Object component, PlexusConfiguration configuration,
-                             ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm )
-        throws ComponentConfigurationException;
-
-    void configureComponent( Object component, PlexusConfiguration configuration,
-                             ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
-                             ConfigurationListener listener )
-        throws ComponentConfigurationException;
+    /**
+     * Notify the listener that a field has been set using private field injection.
+     * @param fieldName the field
+     * @param value the value set
+     * @param target the target object
+     */
+    void notifyFieldChangeUsingReflection( String fieldName, Object value, Object target );
 }

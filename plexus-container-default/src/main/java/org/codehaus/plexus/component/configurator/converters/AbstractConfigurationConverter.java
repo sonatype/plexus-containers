@@ -25,6 +25,7 @@ package org.codehaus.plexus.component.configurator.converters;
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -189,5 +190,13 @@ public abstract class AbstractConfigurationConverter
             }
         }
         return v;
+    }
+
+    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
+        throws ComponentConfigurationException
+    {
+        return fromConfiguration( converterLookup, configuration, type, baseType, classLoader, expressionEvaluator,
+                                  null );
     }
 }

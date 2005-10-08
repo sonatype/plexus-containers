@@ -25,11 +25,14 @@ package org.codehaus.plexus.component.configurator.converters.basic;
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
-import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.Logger;
+
+import java.awt.event.ComponentListener;
 
 /**
  * @version $Id$
@@ -37,17 +40,18 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 public abstract class AbstractBasicConverter
     extends AbstractConfigurationConverter
 {
-    abstract protected Object fromString( String str )
+    protected abstract Object fromString( String str )
         throws ComponentConfigurationException;
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
         if ( configuration.getChildCount() > 0 )
         {
             throw new ComponentConfigurationException( "When configuring a basic element the configuration cannot " +
-                                                       "contain any child elements. " + "Configuration element '" + configuration.getName() + "'." );
+                "contain any child elements. " + "Configuration element '" + configuration.getName() + "'." );
         }
 
         Object retValue = fromExpression( configuration, expressionEvaluator );
