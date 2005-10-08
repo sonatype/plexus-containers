@@ -25,16 +25,16 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ComponentValueSetter;
-import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Map;
@@ -73,7 +73,8 @@ public class ObjectWithFieldsConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
         Object retValue = fromExpression( configuration, expressionEvaluator, type );
@@ -86,7 +87,8 @@ public class ObjectWithFieldsConverter
 
                 retValue = instantiateObject( implementation );
 
-                processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator );
+                processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator,
+                                      listener );
             }
             catch ( ComponentConfigurationException e )
             {
@@ -94,7 +96,7 @@ public class ObjectWithFieldsConverter
                 {
                     e.setFailedConfiguration( configuration );
                 }
-                
+
                 throw e;
             }
         }
@@ -113,6 +115,14 @@ public class ObjectWithFieldsConverter
                                       PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
+        processConfiguration( converterLookup, object, classLoader, configuration, expressionEvaluator, null );
+    }
+
+    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
+                                      PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator,
+                                      ConfigurationListener listener )
+        throws ComponentConfigurationException
+    {
         int items = configuration.getChildCount();
 
         for ( int i = 0; i < items; i++ )
@@ -121,38 +131,10 @@ public class ObjectWithFieldsConverter
 
             String elementName = childConfiguration.getName();
 
-            ComponentValueSetter valueSetter = new ComponentValueSetter(
-                fromXML( elementName ), object, converterLookup
-            );
+            ComponentValueSetter valueSetter = new ComponentValueSetter( fromXML( elementName ), object,
+                                                                         converterLookup, listener );
 
             valueSetter.configure( childConfiguration, classLoader, expressionEvaluator );
-            /*
-            Object value = valueSetter.getConverter().fromConfiguration(
-                converterLookup, childConfiguration, valueSetter.getValueType(),
-                object.getClass(), classLoader, expressionEvaluator
-            );
-
-            if ( value != null )
-            {
-                valueSetter.setValue( value );
-            }
-            */
         }
-
-    }
-
-    private Field getFieldByName( String fieldName, Class clazz )
-        throws ComponentConfigurationException
-    {
-        Field retValue = ReflectionUtils.getFieldByNameIncludingSuperclasses( fieldName, clazz );
-
-        if ( retValue == null )
-        {
-            String msg = "Class '" + clazz.getName() + "' does not contain a field named '" + fieldName + "'";
-
-            throw new ComponentConfigurationException( msg );
-        }
-
-        return retValue;
     }
 }

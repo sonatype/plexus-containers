@@ -40,7 +40,8 @@ public class BasicComponentConfigurator
     extends AbstractComponentConfigurator
 {
     public void configureComponent( Object component, PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm )
+                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
+                                    ConfigurationListener listener )
         throws ComponentConfigurationException
     {
         // ----------------------------------------------------------------------
@@ -52,7 +53,8 @@ public class BasicComponentConfigurator
 
         ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
 
-        converter.processConfiguration( converterLookup, component, containerRealm.getClassLoader(), configuration, expressionEvaluator );
+        converter.processConfiguration( converterLookup, component, containerRealm.getClassLoader(), configuration,
+                                        expressionEvaluator, listener );
     }
-    
+
 }

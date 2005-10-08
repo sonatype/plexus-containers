@@ -25,11 +25,13 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.lang.reflect.Modifier;
@@ -54,7 +56,8 @@ public class CollectionConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
         Object retValue = fromExpression( configuration, expressionEvaluator, type );
@@ -172,7 +175,7 @@ public class CollectionConverter
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
             Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader,
-                                                         expressionEvaluator );
+                                                         expressionEvaluator, listener );
 
             Collection collection = (Collection) retValue;
             collection.add( object );

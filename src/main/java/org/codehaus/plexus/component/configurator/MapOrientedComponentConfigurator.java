@@ -29,19 +29,21 @@ public class MapOrientedComponentConfigurator
 {
 
     public void configureComponent( Object component, PlexusConfiguration configuration,
-                                   ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm )
+                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
+                                    ConfigurationListener listener )
         throws ComponentConfigurationException
     {
         if ( !( component instanceof MapOrientedComponent ) )
         {
-            throw new ComponentConfigurationException( "This configurator can only process implementations of "
-                + MapOrientedComponent.class.getName() );
+            throw new ComponentConfigurationException(
+                "This configurator can only process implementations of " + MapOrientedComponent.class.getName() );
         }
 
         MapConverter converter = new MapConverter();
 
         Map context = (Map) converter.fromConfiguration( converterLookup, configuration, null, null,
-                                                         containerRealm.getClassLoader(), expressionEvaluator );
+                                                         containerRealm.getClassLoader(), expressionEvaluator,
+                                                         listener );
 
         ( (MapOrientedComponent) component ).setComponentConfiguration( context );
     }

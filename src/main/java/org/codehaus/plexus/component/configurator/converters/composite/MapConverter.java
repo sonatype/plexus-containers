@@ -25,11 +25,12 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
-import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.Logger;
 
 import java.util.Map;
 import java.util.Properties;
@@ -50,12 +51,11 @@ public class MapConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
-        String element = configuration.getName();
-
-        Object retValue = null;
+        Object retValue;
 
         String expression = configuration.getValue( null );
 

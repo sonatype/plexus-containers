@@ -25,10 +25,12 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.Logger;
 
 import java.util.Properties;
 
@@ -39,20 +41,17 @@ import java.util.Properties;
  * @version $Id$
  */
 public class PropertiesConverter
-	extends AbstractConfigurationConverter
+    extends AbstractConfigurationConverter
 {
     public boolean canConvert( Class type )
     {
         return Properties.class.isAssignableFrom( type );
     }
 
-    public Object fromConfiguration( ConverterLookup converterLookup,
-                                     PlexusConfiguration configuration,
-                                     Class type,
-                                     Class baseType,
-                                     ClassLoader classLoader,
-                                     ExpressionEvaluator expressionEvaluator )
-    	throws ComponentConfigurationException
+    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     ConfigurationListener listener )
+        throws ComponentConfigurationException
     {
         String element = configuration.getName();
 
@@ -64,7 +63,7 @@ public class PropertiesConverter
         {
             for ( int i = 0; i < children.length; i++ )
             {
-                PlexusConfiguration child = children[ i ];
+                PlexusConfiguration child = children[i];
 
                 addEntry( retValue, element, child );
             }
@@ -74,7 +73,7 @@ public class PropertiesConverter
     }
 
     private void addEntry( Properties properties, String element, PlexusConfiguration property )
-    	throws ComponentConfigurationException
+        throws ComponentConfigurationException
     {
         String name;
 

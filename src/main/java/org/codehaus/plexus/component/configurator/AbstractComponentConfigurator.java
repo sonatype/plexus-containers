@@ -28,7 +28,9 @@ import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
@@ -39,11 +41,17 @@ public abstract class AbstractComponentConfigurator
 {
     // TODO: configured as a component
     protected ConverterLookup converterLookup = new DefaultConverterLookup();
-    
+
     public void configureComponent( Object component, PlexusConfiguration configuration, ClassRealm containerRealm )
         throws ComponentConfigurationException
     {
         configureComponent( component, configuration, new DefaultExpressionEvaluator(), containerRealm );
     }
 
+    public void configureComponent( Object component, PlexusConfiguration configuration,
+                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm )
+        throws ComponentConfigurationException
+    {
+        configureComponent( component, configuration, expressionEvaluator, containerRealm, null );
+    }
 }

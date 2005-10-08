@@ -25,20 +25,20 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -55,7 +55,8 @@ public class ArrayConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
         Object retValue = fromExpression( configuration, expressionEvaluator, type );
@@ -64,7 +65,7 @@ public class ArrayConverter
             return retValue;
         }
 
-        ArrayList values = new ArrayList();
+        List values = new ArrayList();
 
         for ( int i = 0; i < configuration.getChildCount(); i++ )
         {
@@ -109,8 +110,7 @@ public class ArrayConverter
                 {
                     String basePackage = baseTypeName.substring( 0, lastDot );
 
-                    className = basePackage + "." +
-                        StringUtils.capitalizeFirstLetter( name );
+                    className = basePackage + "." + StringUtils.capitalizeFirstLetter( name );
                 }
 
                 try
@@ -133,12 +133,12 @@ public class ArrayConverter
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
             Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader,
-                                                         expressionEvaluator );
+                                                         expressionEvaluator, listener );
 
             values.add( object );
         }
 
-        return values.toArray( ( Object [] ) Array.newInstance( type.getComponentType(), 0 ) );
+        return values.toArray( (Object []) Array.newInstance( type.getComponentType(), 0 ) );
     }
 
     protected Collection getDefaultCollection( Class collectionType )
