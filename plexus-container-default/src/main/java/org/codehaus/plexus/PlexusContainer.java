@@ -16,19 +16,27 @@ import org.codehaus.plexus.logging.LoggerManager;
 
 import java.io.File;
 import java.io.Reader;
-import java.net.MalformedURLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public interface PlexusContainer
 {
     String ROLE = PlexusContainer.class.getName();
+    
+    // ----------------------------------------------------------------------
+    // Timestamp access
+    // ----------------------------------------------------------------------
+    
+    public Date getCreationDate();
 
     // ----------------------------------------------------------------------
     // Child container access
     // ----------------------------------------------------------------------
 
     boolean hasChildContainer( String name );
+    
+    void removeChildContainer( String name );
     
     PlexusContainer getChildContainer( String name );
     
