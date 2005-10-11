@@ -71,7 +71,6 @@ import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -87,13 +86,14 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.Collection;
 
 /**
  * @todo clarify configuration handling vis-a-vis user vs default values
@@ -144,6 +144,8 @@ public class DefaultPlexusContainer
 
     private boolean initialized = false;
 
+    private final Date creationDate = new Date();
+
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -156,7 +158,16 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     // Container Contract
     // ----------------------------------------------------------------------
-
+    
+    // ----------------------------------------------------------------------
+    // Timestamping Methods
+    // ----------------------------------------------------------------------
+    
+    public Date getCreationDate()
+    {
+        return creationDate;
+    }
+    
     // ----------------------------------------------------------------------
     // Child container access
     // ----------------------------------------------------------------------
@@ -164,6 +175,11 @@ public class DefaultPlexusContainer
     public boolean hasChildContainer( String name )
     {
         return childContainers.get( name ) != null;
+    }
+    
+    public void removeChildContainer( String name )
+    {
+        childContainers.remove( name );
     }
 
     public PlexusContainer getChildContainer( String name )
@@ -776,6 +792,12 @@ public class DefaultPlexusContainer
     public void dispose()
     {
         disposeAllComponents();
+        
+        if ( parentContainer != null )
+        {
+            parentContainer.removeChildContainer( getName() );
+            parentContainer = null;
+        }
 
         this.started = false;
         this.initialized = true;
