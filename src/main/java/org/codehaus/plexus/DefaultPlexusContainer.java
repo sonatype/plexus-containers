@@ -798,6 +798,15 @@ public class DefaultPlexusContainer
             parentContainer.removeChildContainer( getName() );
             parentContainer = null;
         }
+        
+        try
+        {
+            classWorld.disposeRealm( plexusRealm.getId() );
+        }
+        catch ( NoSuchRealmException e )
+        {
+            getLogger().debug( "Failed to dispose realm for exiting container: " + getName(), e );
+        }
 
         this.started = false;
         this.initialized = true;
