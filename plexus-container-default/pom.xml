@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-container-default</artifactId>
   <name>Default Plexus Container</name>
-  <version>1.0-alpha-8</version>
+  <version>1.0-alpha-9-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
