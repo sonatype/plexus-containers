@@ -34,4 +34,6 @@ public interface ComponentManagerManager
     Map getComponentManagers();
 
     void associateComponentWithComponentManager( Object component, ComponentManager componentManager );
+
+    void unassociateComponentWithComponentManager( Object component );
 }

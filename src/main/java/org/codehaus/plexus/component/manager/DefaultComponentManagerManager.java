@@ -30,6 +30,7 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +54,7 @@ public class DefaultComponentManagerManager
 
     private LifecycleHandlerManager lifecycleHandlerManager;
 
-    private Map componentManagersByComponentHashCode = new HashMap();
+    private Map componentManagersByComponentHashCode = Collections.synchronizedMap( new HashMap() );
 
     public void setLifecycleHandlerManager( LifecycleHandlerManager lifecycleHandlerManager )
     {
@@ -149,6 +150,9 @@ public class DefaultComponentManagerManager
     {
         componentManagersByComponentHashCode.put( new Integer( component.hashCode() ), componentManager );
     }
+
+    public void unassociateComponentWithComponentManager( Object component )
+    {
+        componentManagersByComponentHashCode.remove( new Integer( component.hashCode() ) );
+    }
 }
-
-
