@@ -539,6 +539,11 @@ public class DefaultPlexusContainer
         else
         {
             componentManager.release( component );
+
+            if ( componentManager.getConnections() <= 0 )
+            {
+                componentManagerManager.unassociateComponentWithComponentManager( component );
+            }
         }
     }
 
