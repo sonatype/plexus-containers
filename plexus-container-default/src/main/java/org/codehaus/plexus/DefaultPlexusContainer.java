@@ -312,7 +312,11 @@ public class DefaultPlexusContainer
                     return parentContainer.lookup( componentKey );
                 }
 
-                getLogger().error( "Nonexistent component: " + componentKey );
+                // don't need this AND an exception...we'll put it at the debug output level, rather than error...
+                if ( getLogger().isDebugEnabled() )
+                {
+                    getLogger().debug( "Nonexistent component: " + componentKey );
+                }
 
                 String message = "Component descriptor cannot be found in the component repository: " + componentKey + ".";
 
@@ -806,6 +810,7 @@ public class DefaultPlexusContainer
         
         try
         {
+            plexusRealm.setParent( null );
             classWorld.disposeRealm( plexusRealm.getId() );
         }
         catch ( NoSuchRealmException e )
