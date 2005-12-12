@@ -9,6 +9,7 @@
   <name>Default Plexus Container</name>
   <version>1.0-alpha-10-SNAPSHOT</version>
   <build>
+    <finalName>${artifactId}-${version}-selector_enabled</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>

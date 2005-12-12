@@ -28,6 +28,7 @@ import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.DuplicateRealmException;
 import org.codehaus.classworlds.NoSuchRealmException;
+import org.codehaus.plexus.component.ComponentSelector;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
@@ -72,6 +73,10 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
+import org.codehaus.plexus.session.InvalidSessionException;
+import org.codehaus.plexus.session.PlexusContainerSession;
+import org.codehaus.plexus.session.SessionException;
+import org.codehaus.plexus.session.SessionId;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
@@ -93,6 +98,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.WeakHashMap;
 
 /**
@@ -106,7 +112,13 @@ public class DefaultPlexusContainer
     extends AbstractLogEnabled
     implements PlexusContainer
 {
+    private static final int SESSION_ID_LEN = 4;
+    
+    private Random random = new Random();
+    
     private PlexusContainer parentContainer;
+    
+    private Map sessions = new HashMap();
 
     private LoggerManager loggerManager;
 
@@ -1512,5 +1524,168 @@ public class DefaultPlexusContainer
     public LoggerManager getLoggerManager()
     {
         return loggerManager;
+    }
+
+    public SessionId createSession()
+        throws PlexusContainerException
+    {
+        SessionId sessionId = new SessionId( createSessionIdentifier() );
+        
+        sessions.put( sessionId, new PlexusContainerSession( sessionId ) );
+        
+        return sessionId;
+    }
+
+    private String createSessionIdentifier()
+    {
+        StringBuffer buffer = new StringBuffer();
+        
+        for ( int i = 0; i < SESSION_ID_LEN; i++ )
+        {
+            buffer.append( random.nextInt( 16 ) );
+        }
+        
+        return buffer.toString();
+    }
+
+    public void closeSession( SessionId sessionId )
+    {
+        PlexusContainerSession session = (PlexusContainerSession) sessions.get( sessionId );
+        
+        if ( session != null )
+        {
+            session.close();
+            sessions.remove( sessionId );
+        }
+        
+    }
+    
+    private PlexusContainerSession getSession( SessionId sessionId )
+        throws SessionException
+    {
+        PlexusContainerSession session = (PlexusContainerSession) sessions.get( sessionId );
+        
+        if ( session == null )
+        {
+            throw new InvalidSessionException( sessionId );
+        }
+        
+        return session;
+    }
+
+    public void touchSession( SessionId sessionId ) throws SessionException
+    {
+        getSession( sessionId ).touch();
+    }
+
+    public void registerSelector( ComponentSelector selector, SessionId sessionId )
+        throws PlexusContainerException, SessionException
+    {
+        getSession( sessionId ).registerSelector( selector );
+    }
+
+    public void deregisterSelector( ComponentSelector selector, SessionId sessionId )
+        throws PlexusContainerException, SessionException
+    {
+        getSession( sessionId ).deregisterSelector( selector );
+    }
+    
+    private ComponentSelector getSelector( String role, SessionId sessionId, boolean constructDefault ) 
+        throws SessionException, SessionException
+    {
+        ComponentSelector selector = getSession( sessionId ).getSelector( role );
+        
+        if ( constructDefault && selector == null )
+        {
+            selector = new ComponentSelector( role );
+        }
+        
+        return selector;
+    }
+
+    public Object lookup( String role, SessionId sessionId )
+        throws ComponentLookupException, SessionException
+    {
+        ComponentSelector selector = getSelector( role, sessionId, true );
+        
+        ComponentLookupException ex = null;
+        Object result = null;
+        
+        for ( Iterator it = selector.getRoleHints().iterator(); it.hasNext(); )
+        {
+            String hint = (String) it.next();
+            
+            try
+            {
+                result = lookup( role, hint );
+                ex = null;
+                
+                break;
+            }
+            catch ( ComponentLookupException e )
+            {
+                if ( ex == null )
+                {
+                    ex = e;
+                }
+            }
+        }
+        
+        if ( ex != null )
+        {
+            throw ex;
+        }
+        
+        return result;
+    }
+
+    public Map lookupMap( String role, SessionId sessionId )
+        throws ComponentLookupException, SessionException
+    {
+        ComponentSelector selector = getSelector( role, sessionId, false );
+        
+        Map result;
+        if ( selector != null )
+        {
+            result = new HashMap();
+            
+            for ( Iterator it = selector.getRoleHints().iterator(); it.hasNext(); )
+            {
+                String hint = (String) it.next();
+                
+                result.put( hint, lookup( role, hint ) );
+            }
+        }
+        else
+        {
+            result = lookupMap( role );
+        }
+        
+        return result;
+    }
+
+    public List lookupList( String role, SessionId sessionId )
+        throws ComponentLookupException, SessionException
+    {
+        ComponentSelector selector = getSelector( role, sessionId, false );
+        
+        List result;
+        if ( selector != null )
+        {
+            result = new ArrayList();
+            
+            for ( Iterator it = selector.getRoleHints().iterator(); it.hasNext(); )
+            {
+                String hint = (String) it.next();
+                
+                result.add( lookup( role, hint ) );
+            }
+        }
+        else
+        {
+            result = lookupList( role );
+        }
+        
+        return result;
     }
 }
