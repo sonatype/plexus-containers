@@ -1,19 +1,18 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>plexus</groupId>
+    <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus-containers</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
   </parent>
-  <groupId>plexus</groupId>
   <artifactId>plexus-container-artifact</artifactId>
   <name>Plexus Artifact-Enabled Container</name>
   <version>1.0-alpha-4-SNAPSHOT</version>
   <dependencies>
     <dependency>
-      <groupId>plexus</groupId>
+      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-container-default</artifactId>
-      <version>1.0-alpha-4-SNAPSHOT</version>
+      <version>1.0-alpha-9</version>
     </dependency>    
     <dependency>
       <groupId>org.apache.maven</groupId>
