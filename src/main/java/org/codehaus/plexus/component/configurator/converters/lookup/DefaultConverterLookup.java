@@ -29,6 +29,7 @@ import org.codehaus.plexus.component.configurator.converters.ConfigurationConver
 import org.codehaus.plexus.component.configurator.converters.basic.BooleanConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.ByteConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.CharConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.ClassConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.DateConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.DoubleConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.FileConverter;
@@ -149,6 +150,8 @@ public class DefaultConverterLookup
         registerDefaultConverter( new DateConverter() );
 
         registerDefaultConverter( new FileConverter() );
+
+        registerDefaultConverter( new ClassConverter() );
 
         registerDefaultConverter( new UrlConverter() );
 

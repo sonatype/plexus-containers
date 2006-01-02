@@ -281,7 +281,9 @@ public abstract class AbstractComponentConfiguratorTest
             "    <whatever implementation='java.lang.Integer'>303</whatever>" + "  </objectArray>" + "  <urlArray>" +
             "    <url>http://foo.com/bar</url>" + "    <url>file://localhost/c:/windows</url>" + "  </urlArray>" +
             "  <fileArray>" + "    <file>c:/windows</file>" + "    <file>/usr/local/bin/foo.sh</file>" +
-            "  </fileArray>" + "</configuration>";
+            "  </fileArray>" + "  <classArray>" + "    <class>java.lang.String</class>" + 
+            "    <class>org.codehaus.plexus.component.configurator.ComponentWithArrayFields</class>" + 
+            "  </classArray>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -346,6 +348,12 @@ public abstract class AbstractComponentConfiguratorTest
         assertEquals( new File( "c:/windows" ), files[0] );
 
         assertEquals( new File( "/usr/local/bin/foo.sh" ), files[1] );
+
+        Class[] classes = component.getClassArray();
+
+        assertEquals( String.class, classes[0] );
+
+        assertEquals( component.getClass(), classes[1] );
     }
 
     public void testComponentConfigurationWithCompositeFields()

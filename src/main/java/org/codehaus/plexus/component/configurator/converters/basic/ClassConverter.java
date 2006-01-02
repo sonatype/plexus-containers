@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.configurator;
+package org.codehaus.plexus.component.configurator.converters.basic;
 
 /*
  * The MIT License
@@ -24,68 +24,33 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.net.URL;
+import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
+import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
- * @author <a href="mailto:kenney@codehaus.org">Kenney Westerhof</a>
- * @version $Id$
+ * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
  */
-public class ComponentWithArrayFields
+public class ClassConverter
+    extends AbstractBasicConverter
 {
-    private String[] stringArray;
-
-    private Integer[] integerArray;
-
-    private ImportantThing[] importantThingArray;
-
-    private Object[] objectArray;
-
-    private AbstractThing[] abstractArray;
-
-    private URL[] urlArray;
-
-    private File[] fileArray;
-
-    private Class[] classArray;
-
-    public String [] getStringArray()
+    public boolean canConvert( Class type )
     {
-        return stringArray;
+        return type.equals( Class.class );
     }
 
-    public Integer [] getIntegerArray()
+    public Object fromString( String str )
+        throws ComponentConfigurationException
     {
-        return integerArray;
-    }
-
-    public ImportantThing [] getImportantThingArray()
-    {
-        return importantThingArray;
-    }
-
-    public Object [] getObjectArray()
-    {
-        return objectArray;
-    }
-
-    public AbstractThing [] getAbstractThingArray()
-    {
-        return abstractArray;
-    }
-
-    public URL[] getUrlArray()
-    {
-        return urlArray;
-    }
-
-    public File[] getFileArray()
-    {
-        return fileArray;
-    }
-
-    public Class[] getClassArray()
-    {
-        return classArray;
+        try
+        {
+            return Class.forName( str );
+        }
+        catch ( ClassNotFoundException e )
+        {
+            throw new ComponentConfigurationException( "Unable to find class in conversion", e );
+        }
     }
 }
