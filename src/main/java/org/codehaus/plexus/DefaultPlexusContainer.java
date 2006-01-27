@@ -1375,7 +1375,17 @@ public class DefaultPlexusContainer
             }
             catch ( MalformedURLException e )
             {
-                getLogger().error( "Error configuring resource: " + resourceConfigs[i].getName() + "=" + resourceConfigs[i].getValue(), e );
+                String message = "Error configuring resource: " + resourceConfigs[i].getName() + "=" + resourceConfigs[i].getValue();
+                if ( getLogger() != null )
+                {
+                    getLogger().error( message, e );
+                }
+                else
+                {
+                    System.out.println( message );
+
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1433,7 +1443,16 @@ public class DefaultPlexusContainer
         }
         else
         {
-            getLogger().warn( "The specified JAR repository doesn't exist or is not a directory: '" + repository.getAbsolutePath() + "'." );
+            String message = "The specified JAR repository doesn't exist or is not a directory: '" + repository.getAbsolutePath() + "'.";
+
+            if ( getLogger() != null )
+            {
+                getLogger().warn( message );
+            }
+            else
+            {
+                System.out.println( message );
+            }
         }
     }
 
