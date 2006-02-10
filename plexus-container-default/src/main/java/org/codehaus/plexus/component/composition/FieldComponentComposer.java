@@ -142,19 +142,19 @@ public class FieldComponentComposer
         catch ( IllegalArgumentException e )
         {
             throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
-                                            "in object of type " + component.getClass().getName(), e );
+                "in object of type " + component.getClass().getName(), e );
         }
         catch ( IllegalAccessException e )
         {
             throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
-                                            "in object of type " + component.getClass().getName(), e );
+                "in object of type " + component.getClass().getName(), e );
         }
         catch ( ComponentLookupException e )
         {
             throw new CompositionException( "Composition failed of field " + field.getName() + " " +
-                                            "in object of type " +
-                                            component.getClass().getName() +
-                                            " because the requirement " + requirement + " was missing", e );
+                "in object of type " +
+                component.getClass().getName() +
+                " because the requirement " + requirement + " was missing", e );
         }
     }
 
@@ -244,7 +244,7 @@ public class FieldComponentComposer
         }
 
         throw new CompositionException( "There are several fields of type '" + type + "', " +
-                                        "use 'field-name' to select the correct field." );
+            "use 'field-name' to select the correct field." );
     }
 
     protected List getFieldsByTypeIncludingSuperclasses( Class componentClass, Class type,

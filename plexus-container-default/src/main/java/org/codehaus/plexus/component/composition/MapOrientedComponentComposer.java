@@ -34,13 +34,13 @@ public class MapOrientedComponentComposer
     extends AbstractComponentComposer
 {
 
-    private static final String SINGLE_MAPPING_TYPE = "single";
+    private static String SINGLE_MAPPING_TYPE = "single";
 
-    private static final String MAP_MAPPING_TYPE = "map";
+    private static String MAP_MAPPING_TYPE = "map";
 
-    private static final String SET_MAPPING_TYPE = "set";
+    private static String SET_MAPPING_TYPE = "set";
 
-    private static final String DEFAULT_MAPPING_TYPE = SINGLE_MAPPING_TYPE;
+    private static String DEFAULT_MAPPING_TYPE = SINGLE_MAPPING_TYPE;
 
     public List assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
         throws CompositionException
@@ -68,7 +68,7 @@ public class MapOrientedComponentComposer
     }
 
     private List addRequirement( MapOrientedComponent component, PlexusContainer container,
-                                ComponentRequirement requirement )
+                                 ComponentRequirement requirement )
         throws CompositionException
     {
         try
@@ -137,7 +137,7 @@ public class MapOrientedComponentComposer
         catch ( ComponentConfigurationException e )
         {
             throw new CompositionException( "Composition failed in object of type " + component.getClass().getName()
-                                            + " because the requirement " + requirement + " cannot be set on the component.", e );
+                + " because the requirement " + requirement + " cannot be set on the component.", e );
         }
     }
 
