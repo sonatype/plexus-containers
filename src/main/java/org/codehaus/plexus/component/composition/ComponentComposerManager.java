@@ -11,6 +11,6 @@ public interface ComponentComposerManager
 {
     String ROLE = ComponentComposerManager.class.getName();
 
-    void assembleComponent( Object component, final ComponentDescriptor componentDescriptor, final PlexusContainer container )
-            throws CompositionException, UndefinedComponentComposerException;
+    void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+        throws CompositionException, UndefinedComponentComposerException;
 }

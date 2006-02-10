@@ -22,9 +22,7 @@ public interface ComponentComposer
      * @param component
      * @param componentDescriptor
      * @param container
-     *
      * @return List of ComponentDescriptors which were used by ComponentComposer
-
      * @throws CompositionException
      * @throws UndefinedComponentComposerException
      *
@@ -32,5 +30,5 @@ public interface ComponentComposer
     public List assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    PlexusContainer container )
-            throws CompositionException, UndefinedComponentComposerException;
+        throws CompositionException, UndefinedComponentComposerException;
 }

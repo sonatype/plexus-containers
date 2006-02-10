@@ -49,12 +49,12 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
  */
 public class SetterComponentComposer extends AbstractComponentComposer
 {
-    public List assembleComponent( final Object component,
-                                   final ComponentDescriptor descriptor,
-                                   final PlexusContainer container )
+    public List assembleComponent( Object component,
+                                   ComponentDescriptor descriptor,
+                                   PlexusContainer container )
         throws CompositionException, UndefinedComponentComposerException
     {
-        final List requirements = descriptor.getRequirements();
+        List requirements = descriptor.getRequirements();
 
         BeanInfo beanInfo = null;
 
@@ -67,19 +67,19 @@ public class SetterComponentComposer extends AbstractComponentComposer
             reportErrorFailedToIntrospect( descriptor );
         }
 
-        final List retValue = new LinkedList();
+        List retValue = new LinkedList();
 
-        final PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
 
-        for ( final Iterator i = requirements.iterator(); i.hasNext(); )
+        for ( Iterator i = requirements.iterator(); i.hasNext(); )
         {
-            final ComponentRequirement requirement = ( ComponentRequirement ) i.next();
+            ComponentRequirement requirement = (ComponentRequirement) i.next();
 
-            final PropertyDescriptor propertyDescriptor = findMatchingPropertyDescriptor( requirement, propertyDescriptors );
+            PropertyDescriptor propertyDescriptor = findMatchingPropertyDescriptor( requirement, propertyDescriptors );
 
             if ( propertyDescriptor != null )
             {
-                final List descriptors = setProperty( component, descriptor, requirement, propertyDescriptor, container );
+                List descriptors = setProperty( component, descriptor, requirement, propertyDescriptor, container );
 
                 retValue.addAll( descriptors );
             }
@@ -92,71 +92,71 @@ public class SetterComponentComposer extends AbstractComponentComposer
         return retValue;
     }
 
-    private List setProperty( final Object component,
-                              final ComponentDescriptor descriptor,
-                              final ComponentRequirement requirement,
-                              final PropertyDescriptor propertyDescriptor,
-                              final PlexusContainer container ) throws CompositionException
+    private List setProperty( Object component,
+                              ComponentDescriptor descriptor,
+                              ComponentRequirement requirement,
+                              PropertyDescriptor propertyDescriptor,
+                              PlexusContainer container ) throws CompositionException
     {
         List retValue = null;
 
-        final Method writeMethod = propertyDescriptor.getWriteMethod();
+        Method writeMethod = propertyDescriptor.getWriteMethod();
 
-        final String role = requirement.getRole();
+        String role = requirement.getRole();
 
-        final Object[] params = new Object[ 1 ];
+        Object[] params = new Object[ 1 ];
 
-        final Class propertyType = propertyDescriptor.getPropertyType();
+        Class propertyType = propertyDescriptor.getPropertyType();
 
         try
         {
             if ( propertyType.isArray() )
             {
-                final Map dependencies = container.lookupMap( role );
+                Map dependencies = container.lookupMap( role );
 
-                final Object[] array = ( Object[] ) Array.newInstance( propertyType, dependencies.size() );
+                Object[] array = (Object[]) Array.newInstance( propertyType, dependencies.size() );
 
                 retValue = container.getComponentDescriptorList( role );
 
-                params[ 0 ] = dependencies.entrySet().toArray( array );
+                params[0] = dependencies.entrySet().toArray( array );
             }
             else if ( Map.class.isAssignableFrom( propertyType ) )
             {
-                final Map dependencies = container.lookupMap( role );
+                Map dependencies = container.lookupMap( role );
 
                 retValue = container.getComponentDescriptorList( role );
 
-                params[ 0 ] = dependencies;
+                params[0] = dependencies;
             }
             else if ( List.class.isAssignableFrom( propertyType ) )
             {
-//                final Map dependencies = container.lookupMap( role );
+//                 Map dependencies = container.lookupMap( role );
 
                 retValue = container.getComponentDescriptorList( role );
 
-                params[ 0 ] = container.lookupList( role );
+                params[0] = container.lookupList( role );
             }
             else if ( Set.class.isAssignableFrom( propertyType ) )
             {
-                final Map dependencies = container.lookupMap( role );
+                Map dependencies = container.lookupMap( role );
 
                 retValue = container.getComponentDescriptorList( role );
 
-                params[ 0 ] = dependencies.entrySet();
+                params[0] = dependencies.entrySet();
             }
             else //"ordinary" field
             {
-                final String key = requirement.getRequirementKey();
+                String key = requirement.getRequirementKey();
 
-                final Object dependency = container.lookup( key );
+                Object dependency = container.lookup( key );
 
-                final ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
 
                 retValue = new ArrayList( 1 );
 
                 retValue.add( componentDescriptor );
 
-                params[ 0 ] = dependency;
+                params[0] = dependency;
             }
         }
         catch ( ComponentLookupException e )
@@ -164,14 +164,14 @@ public class SetterComponentComposer extends AbstractComponentComposer
             reportErrorCannotLookupRequiredComponent( descriptor, requirement, e );
         }
 
-        final Statement statement = new Statement( component, writeMethod.getName(), params );
+        Statement statement = new Statement( component, writeMethod.getName(), params );
 
         try
         {
             statement.execute();
         }
         catch ( Exception e )
-        {           
+        {
             reportErrorCannotAssignRequiredComponent( descriptor, requirement, e );
         }
 
@@ -182,12 +182,12 @@ public class SetterComponentComposer extends AbstractComponentComposer
      * @param requirement
      * @return
      */
-    protected PropertyDescriptor findMatchingPropertyDescriptor( final ComponentRequirement requirement,
-                                                                 final PropertyDescriptor[] propertyDescriptors )
+    protected PropertyDescriptor findMatchingPropertyDescriptor( ComponentRequirement requirement,
+                                                                 PropertyDescriptor[] propertyDescriptors )
     {
         PropertyDescriptor retValue = null;
 
-        final String property = requirement.getFieldName();
+        String property = requirement.getFieldName();
 
         if ( property != null )
         {
@@ -195,7 +195,7 @@ public class SetterComponentComposer extends AbstractComponentComposer
         }
         else
         {
-            final String role = requirement.getRole();
+            String role = requirement.getRole();
 
             retValue = getPropertyDescriptorByType( role, propertyDescriptors );
         }
@@ -207,14 +207,14 @@ public class SetterComponentComposer extends AbstractComponentComposer
      * @param name
      * @return
      */
-    protected PropertyDescriptor getPropertyDescriptorByName( final String name,
-                                                              final PropertyDescriptor[] propertyDescriptors )
+    protected PropertyDescriptor getPropertyDescriptorByName( String name,
+                                                              PropertyDescriptor[] propertyDescriptors )
     {
         PropertyDescriptor retValue = null;
 
         for ( int i = 0; i < propertyDescriptors.length; i++ )
         {
-            final PropertyDescriptor propertyDescriptor = propertyDescriptors[ i ];
+            PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
 
             if ( name.equals( propertyDescriptor.getName() ) )
             {
@@ -227,14 +227,14 @@ public class SetterComponentComposer extends AbstractComponentComposer
         return retValue;
     }
 
-    protected PropertyDescriptor getPropertyDescriptorByType( final String type,
-                                                              final PropertyDescriptor[] propertyDescriptors )
+    protected PropertyDescriptor getPropertyDescriptorByType( String type,
+                                                              PropertyDescriptor[] propertyDescriptors )
     {
         PropertyDescriptor retValue = null;
 
         for ( int i = 0; i < propertyDescriptors.length; i++ )
         {
-            final PropertyDescriptor propertyDescriptor = propertyDescriptors[ i ];
+            PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
 
             if ( propertyDescriptor.getPropertyType().toString().indexOf( type ) > 0 )
             {
@@ -247,36 +247,36 @@ public class SetterComponentComposer extends AbstractComponentComposer
         return retValue;
     }
 
-    private void reportErrorNoSuchProperty( final ComponentDescriptor descriptor,
-                                            final ComponentRequirement requirement ) throws CompositionException
+    private void reportErrorNoSuchProperty( ComponentDescriptor descriptor,
+                                            ComponentRequirement requirement ) throws CompositionException
     {
 
-        final String causeDescriprion = "Failed to assign requirment using Java Bean introspection mechanism." +
-                                        " No matching property was found in bean class";
+        String causeDescriprion = "Failed to assign requirment using Java Bean introspection mechanism." +
+            " No matching property was found in bean class";
 
-        final String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
+        String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
 
         throw new CompositionException( msg );
     }
 
-    private void reportErrorCannotAssignRequiredComponent( final ComponentDescriptor descriptor,
-                                                           final ComponentRequirement requirement,
-                                                           final Exception e ) throws CompositionException
+    private void reportErrorCannotAssignRequiredComponent( ComponentDescriptor descriptor,
+                                                           ComponentRequirement requirement,
+                                                           Exception e ) throws CompositionException
     {
-        final String causeDescriprion = "Failed to assign requirment using Java Bean introspection mechanism. ";
+        String causeDescriprion = "Failed to assign requirment using Java Bean introspection mechanism. ";
 
-        final String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
+        String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
 
         throw new CompositionException( msg );
     }
 
-    private void reportErrorCannotLookupRequiredComponent( final ComponentDescriptor descriptor,
-                                                           final ComponentRequirement requirement,
-                                                           final Throwable cause ) throws CompositionException
+    private void reportErrorCannotLookupRequiredComponent( ComponentDescriptor descriptor,
+                                                           ComponentRequirement requirement,
+                                                           Throwable cause ) throws CompositionException
     {
-        final String causeDescriprion = "Failed to lookup required component.";
+        String causeDescriprion = "Failed to lookup required component.";
 
-        final String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
+        String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
 
         throw new CompositionException( msg, cause );
     }
@@ -284,18 +284,18 @@ public class SetterComponentComposer extends AbstractComponentComposer
     /**
      * @param descriptor
      */
-    private void reportErrorFailedToIntrospect( final ComponentDescriptor descriptor ) throws CompositionException
+    private void reportErrorFailedToIntrospect( ComponentDescriptor descriptor ) throws CompositionException
     {
-        final String msg = getErrorMessage( descriptor, null, null );
+        String msg = getErrorMessage( descriptor, null, null );
 
         throw new CompositionException( msg );
     }
 
-    private String getErrorMessage( final ComponentDescriptor descriptor,
-                                    final ComponentRequirement requirement,
-                                    final String causeDescription )
+    private String getErrorMessage( ComponentDescriptor descriptor,
+                                    ComponentRequirement requirement,
+                                    String causeDescription )
     {
-        final StringBuffer msg = new StringBuffer( "Component composition failed." );
+        StringBuffer msg = new StringBuffer( "Component composition failed." );
 
         msg.append( "  Failed to resolve requirement for component of role: '" );
 
