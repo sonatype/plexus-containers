@@ -66,10 +66,6 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
         ComponentComposer componentComposer = getComponentComposer( componentComposerId );
 
         componentComposer.assembleComponent( component, componentDescriptor, container );
-
-        // @todo: michal: we need to build the graph of component dependencies
-        // and detect cycles.  Not sure exactly when and how it should happen
-        //assembleComponents( descriptors, container );
     }
 
     protected ComponentComposer getComponentComposer( String id ) throws UndefinedComponentComposerException

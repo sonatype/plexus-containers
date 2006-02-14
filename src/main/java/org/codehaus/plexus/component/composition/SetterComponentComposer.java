@@ -24,30 +24,26 @@ package org.codehaus.plexus.component.composition;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.Statement;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
-public class SetterComponentComposer extends AbstractComponentComposer
+public class SetterComponentComposer
+    extends AbstractComponentComposer
 {
     public List assembleComponent( Object component,
                                    ComponentDescriptor descriptor,
@@ -94,94 +90,36 @@ public class SetterComponentComposer extends AbstractComponentComposer
 
     private List setProperty( Object component,
                               ComponentDescriptor descriptor,
-                              ComponentRequirement requirement,
+                              ComponentRequirement requirementDescriptor,
                               PropertyDescriptor propertyDescriptor,
-                              PlexusContainer container ) throws CompositionException
+                              PlexusContainer container )
+        throws CompositionException
     {
-        List retValue = null;
-
-        Method writeMethod = propertyDescriptor.getWriteMethod();
-
-        String role = requirement.getRole();
-
-        Object[] params = new Object[ 1 ];
-
-        Class propertyType = propertyDescriptor.getPropertyType();
+        Requirement requirement = CompositionUtils.findRequirement( component,
+                                                                    propertyDescriptor.getPropertyType(),
+                                                                    container,
+                                                                    requirementDescriptor );
 
         try
         {
-            if ( propertyType.isArray() )
-            {
-                Map dependencies = container.lookupMap( role );
+            Method writeMethod = propertyDescriptor.getWriteMethod();
 
-                Object[] array = (Object[]) Array.newInstance( propertyType, dependencies.size() );
+            Object[] params = new Object[ 1 ];
 
-                retValue = container.getComponentDescriptorList( role );
+            params[0] = requirement.getAssignment();
 
-                params[0] = dependencies.entrySet().toArray( array );
-            }
-            else if ( Map.class.isAssignableFrom( propertyType ) )
-            {
-                Map dependencies = container.lookupMap( role );
+            Statement statement = new Statement( component, writeMethod.getName(), params );
 
-                retValue = container.getComponentDescriptorList( role );
-
-                params[0] = dependencies;
-            }
-            else if ( List.class.isAssignableFrom( propertyType ) )
-            {
-//                 Map dependencies = container.lookupMap( role );
-
-                retValue = container.getComponentDescriptorList( role );
-
-                params[0] = container.lookupList( role );
-            }
-            else if ( Set.class.isAssignableFrom( propertyType ) )
-            {
-                Map dependencies = container.lookupMap( role );
-
-                retValue = container.getComponentDescriptorList( role );
-
-                params[0] = dependencies.entrySet();
-            }
-            else //"ordinary" field
-            {
-                String key = requirement.getRequirementKey();
-
-                Object dependency = container.lookup( key );
-
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
-
-                retValue = new ArrayList( 1 );
-
-                retValue.add( componentDescriptor );
-
-                params[0] = dependency;
-            }
-        }
-        catch ( ComponentLookupException e )
-        {
-            reportErrorCannotLookupRequiredComponent( descriptor, requirement, e );
-        }
-
-        Statement statement = new Statement( component, writeMethod.getName(), params );
-
-        try
-        {
             statement.execute();
         }
         catch ( Exception e )
         {
-            reportErrorCannotAssignRequiredComponent( descriptor, requirement, e );
+            reportErrorCannotAssignRequiredComponent( descriptor, requirementDescriptor, e );
         }
 
-        return retValue;
+        return requirement.getComponentDescriptors();
     }
 
-    /**
-     * @param requirement
-     * @return
-     */
     protected PropertyDescriptor findMatchingPropertyDescriptor( ComponentRequirement requirement,
                                                                  PropertyDescriptor[] propertyDescriptors )
     {
@@ -203,10 +141,6 @@ public class SetterComponentComposer extends AbstractComponentComposer
         return retValue;
     }
 
-    /**
-     * @param name
-     * @return
-     */
     protected PropertyDescriptor getPropertyDescriptorByName( String name,
                                                               PropertyDescriptor[] propertyDescriptors )
     {
@@ -281,9 +215,6 @@ public class SetterComponentComposer extends AbstractComponentComposer
         throw new CompositionException( msg, cause );
     }
 
-    /**
-     * @param descriptor
-     */
     private void reportErrorFailedToIntrospect( ComponentDescriptor descriptor ) throws CompositionException
     {
         String msg = getErrorMessage( descriptor, null, null );
