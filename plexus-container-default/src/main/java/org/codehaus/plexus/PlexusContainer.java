@@ -175,4 +175,11 @@ public interface PlexusContainer
     void setLoggerManager( LoggerManager loggerManager );
     
     LoggerManager getLoggerManager();
+
+    // ----------------------------------------------------------------------
+    // Autowiring Support
+    // ----------------------------------------------------------------------
+
+    Object autowire( Object component )
+        throws CompositionException;
 }

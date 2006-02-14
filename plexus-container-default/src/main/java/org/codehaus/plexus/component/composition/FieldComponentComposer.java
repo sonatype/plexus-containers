@@ -65,9 +65,6 @@ public class FieldComponentComposer
                 field.setAccessible( true );
             }
 
-            // We have a field to which we should assigning component(s).
-            // Cardinality is determined by field.getType() method
-            // It can be array, map, collection or "ordinary" field
             List descriptors = assignRequirementToField( component, field, container, requirement );
 
             retValue.addAll( descriptors );

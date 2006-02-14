@@ -37,6 +37,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
@@ -48,9 +49,18 @@ public class SetterComponentComposer
     public List assembleComponent( Object component,
                                    ComponentDescriptor descriptor,
                                    PlexusContainer container )
-        throws CompositionException, UndefinedComponentComposerException
+        throws CompositionException
     {
-        List requirements = descriptor.getRequirements();
+        if ( descriptor == null )
+        {
+            // Create a descriptor to keep everything happy when we're trying to autowire.
+
+            descriptor = new ComponentDescriptor();
+
+            descriptor.setImplementation( component.getClass().getName() );
+
+            descriptor.setRole( component.getClass().getName() );
+        }
 
         BeanInfo beanInfo = null;
 
@@ -63,9 +73,16 @@ public class SetterComponentComposer
             reportErrorFailedToIntrospect( descriptor );
         }
 
-        List retValue = new LinkedList();
-
         PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+
+        List requirements = descriptor.getRequirements();
+
+        if ( requirements == null )
+        {
+            requirements = introspectRequirements( container, propertyDescriptors );
+        }
+
+        List retValue = new LinkedList();
 
         for ( Iterator i = requirements.iterator(); i.hasNext(); )
         {
@@ -87,6 +104,34 @@ public class SetterComponentComposer
 
         return retValue;
     }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    private List introspectRequirements( PlexusContainer container, PropertyDescriptor[] propertyDescriptors )
+    {
+        List requirements = new ArrayList();
+
+        for ( int i = 0; i < propertyDescriptors.length; i++ )
+        {
+            PropertyDescriptor pd = propertyDescriptors[i];
+
+            String role = pd.getPropertyType().getName();
+
+            if ( container.getComponentDescriptor( role ) != null )
+            {
+                ComponentRequirement requirement = new ComponentRequirement();
+
+                requirement.setRole( role );
+
+                requirements.add( requirement );
+            }
+        }
+
+        return requirements;
+    }
+
 
     private List setProperty( Object component,
                               ComponentDescriptor descriptor,
@@ -202,17 +247,6 @@ public class SetterComponentComposer
         String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
 
         throw new CompositionException( msg );
-    }
-
-    private void reportErrorCannotLookupRequiredComponent( ComponentDescriptor descriptor,
-                                                           ComponentRequirement requirement,
-                                                           Throwable cause ) throws CompositionException
-    {
-        String causeDescriprion = "Failed to lookup required component.";
-
-        String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
-
-        throw new CompositionException( msg, cause );
     }
 
     private void reportErrorFailedToIntrospect( ComponentDescriptor descriptor ) throws CompositionException

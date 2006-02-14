@@ -31,6 +31,7 @@ import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
+import org.codehaus.plexus.component.composition.SetterComponentComposer;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
@@ -1531,5 +1532,22 @@ public class DefaultPlexusContainer
     public LoggerManager getLoggerManager()
     {
         return loggerManager;
+    }
+
+    // ----------------------------------------------------------------------
+    // Autowire Support
+    // ----------------------------------------------------------------------
+
+    // note:jvz Currently this only works for setters as I'm experimenting for
+    // webwork. I would like the API for autowiring to be simple so we could easily look
+    // for constructors with parameters and use that method of composition before attempting
+    // the use of setters or private fields.
+
+    public Object autowire( Object component )
+        throws CompositionException
+    {
+        SetterComponentComposer composer = new SetterComponentComposer();
+
+        return composer.assembleComponent( component, null, this );
     }
 }
