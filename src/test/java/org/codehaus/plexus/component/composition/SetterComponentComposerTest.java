@@ -92,6 +92,4 @@ public class SetterComponentComposerTest
 
         assertTrue( propertyC.getPropertyType().isArray() );
     }
-
-
 }

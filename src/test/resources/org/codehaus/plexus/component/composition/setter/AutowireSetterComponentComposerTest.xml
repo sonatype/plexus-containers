@@ -1,0 +1,12 @@
+<plexus>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.component.composition.setter.One</role>
+      <implementation>org.codehaus.plexus.component.composition.setter.DefaultOne</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.component.composition.setter.Two</role>
+      <implementation>org.codehaus.plexus.component.composition.setter.DefaultTwo</implementation>
+    </component>
+  </components>
+</plexus>
