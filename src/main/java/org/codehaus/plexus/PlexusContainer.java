@@ -182,4 +182,7 @@ public interface PlexusContainer
 
     Object autowire( Object component )
         throws CompositionException;
+
+    Object createAndAutowire( String clazz )
+        throws CompositionException, ClassNotFoundException, InstantiationException, IllegalAccessException;
 }
