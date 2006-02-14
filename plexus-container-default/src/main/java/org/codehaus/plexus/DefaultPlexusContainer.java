@@ -1550,4 +1550,14 @@ public class DefaultPlexusContainer
 
         return composer.assembleComponent( component, null, this );
     }
+
+    public Object createAndAutowire( String clazz )
+        throws CompositionException, ClassNotFoundException, InstantiationException, IllegalAccessException
+    {
+        Object component = plexusRealm.loadClass( clazz ).newInstance();
+
+        SetterComponentComposer composer = new SetterComponentComposer();
+
+        return composer.assembleComponent( component, null, this );
+    }
 }
