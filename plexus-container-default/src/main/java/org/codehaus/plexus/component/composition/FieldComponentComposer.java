@@ -27,7 +27,6 @@ package org.codehaus.plexus.component.composition;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.ReflectionUtils;
 
 import java.lang.reflect.Array;
@@ -36,8 +35,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -47,7 +44,8 @@ import java.util.Set;
 public class FieldComponentComposer
     extends AbstractComponentComposer
 {
-    public List assembleComponent( Object component, ComponentDescriptor componentDescriptor,
+    public List assembleComponent( Object component,
+                                   ComponentDescriptor componentDescriptor,
                                    PlexusContainer container )
         throws CompositionException
     {
@@ -78,66 +76,19 @@ public class FieldComponentComposer
         return retValue;
     }
 
-    private List assignRequirementToField( Object component, Field field, PlexusContainer container,
-                                           ComponentRequirement requirement )
+    private List assignRequirementToField( Object component,
+                                           Field field,
+                                           PlexusContainer container,
+                                           ComponentRequirement requirementDescriptor )
         throws CompositionException
     {
+        Requirement requirement = CompositionUtils.findRequirement( component, field.getType(), container, requirementDescriptor );
+
         try
         {
-            List retValue;
+            field.set( component, requirement.getAssignment() );
 
-            String role = requirement.getRole();
-
-            if ( field.getType().isArray() )
-            {
-                List dependencies = container.lookupList( role );
-
-                Object[] array = (Object[]) Array.newInstance( field.getType(), dependencies.size() );
-
-                retValue = container.getComponentDescriptorList( role );
-
-                field.set( component, dependencies.toArray( array ) );
-            }
-            else if ( Map.class.isAssignableFrom( field.getType() ) )
-            {
-                Map dependencies = container.lookupMap( role );
-
-                retValue = container.getComponentDescriptorList( role );
-
-                field.set( component, dependencies );
-            }
-            else if ( List.class.isAssignableFrom( field.getType() ) )
-            {
-                List dependencies = container.lookupList( role );
-
-                retValue = container.getComponentDescriptorList( role );
-
-                field.set( component, dependencies );
-            }
-            else if ( Set.class.isAssignableFrom( field.getType() ) )
-            {
-                Map dependencies = container.lookupMap( role );
-
-                retValue = container.getComponentDescriptorList( role );
-
-                field.set( component, dependencies.entrySet() );
-            }
-            else //"ordinary" field
-            {
-                String key = requirement.getRequirementKey();
-
-                Object dependency = container.lookup( key );
-
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
-
-                retValue = new ArrayList( 1 );
-
-                retValue.add( componentDescriptor );
-
-                field.set( component, dependency );
-            }
-
-            return retValue;
+            return requirement.getComponentDescriptors();
         }
         catch ( IllegalArgumentException e )
         {
@@ -149,17 +100,12 @@ public class FieldComponentComposer
             throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
                 "in object of type " + component.getClass().getName(), e );
         }
-        catch ( ComponentLookupException e )
-        {
-            throw new CompositionException( "Composition failed of field " + field.getName() + " " +
-                "in object of type " +
-                component.getClass().getName() +
-                " because the requirement " + requirement + " was missing", e );
-        }
     }
 
-    protected Field findMatchingField( Object component, ComponentDescriptor componentDescriptor,
-                                       ComponentRequirement requirement, PlexusContainer container )
+    protected Field findMatchingField( Object component,
+                                       ComponentDescriptor componentDescriptor,
+                                       ComponentRequirement requirement,
+                                       PlexusContainer container )
         throws CompositionException
     {
         String fieldName = requirement.getFieldName();
