@@ -34,19 +34,19 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.Statement;
 import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
+ * @author Jason van Zyl
  * @version $Id$
  */
 public class SetterComponentComposer
     extends AbstractComponentComposer
 {
-    public List assembleComponent( Object component,
+    public void assembleComponent( Object component,
                                    ComponentDescriptor descriptor,
                                    PlexusContainer container )
         throws CompositionException
@@ -82,8 +82,6 @@ public class SetterComponentComposer
             requirements = introspectRequirements( container, propertyDescriptors );
         }
 
-        List retValue = new LinkedList();
-
         for ( Iterator i = requirements.iterator(); i.hasNext(); )
         {
             ComponentRequirement requirement = (ComponentRequirement) i.next();
@@ -92,17 +90,13 @@ public class SetterComponentComposer
 
             if ( propertyDescriptor != null )
             {
-                List descriptors = setProperty( component, descriptor, requirement, propertyDescriptor, container );
-
-                retValue.addAll( descriptors );
+                setProperty( component, descriptor, requirement, propertyDescriptor, container );
             }
             else
             {
                 reportErrorNoSuchProperty( descriptor, requirement );
             }
         }
-
-        return retValue;
     }
 
     // ----------------------------------------------------------------------
@@ -240,7 +234,8 @@ public class SetterComponentComposer
 
     private void reportErrorCannotAssignRequiredComponent( ComponentDescriptor descriptor,
                                                            ComponentRequirement requirement,
-                                                           Exception e ) throws CompositionException
+                                                           Exception e )
+        throws CompositionException
     {
         String causeDescriprion = "Failed to assign requirment using Java Bean introspection mechanism. ";
 
