@@ -34,6 +34,7 @@ import java.util.List;
 
 
 /**
+ * @author Jason van Zyl
  * @author <a href="mailto:michal.maczka@dimatics.com">Michal Maczka</a>
  * @version $Id$
  */

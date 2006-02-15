@@ -3,8 +3,8 @@ package org.codehaus.plexus.component.composition;
 import java.util.List;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id:$
+ * @author Jason van Zyl
+ * @version $Revision: Requirement.java 3041 2006-02-14 17:14:36Z jvanzyl $
  */
 public class Requirement
 {

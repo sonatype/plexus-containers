@@ -35,8 +35,9 @@ import java.beans.PropertyDescriptor;
 import java.beans.Statement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
@@ -46,21 +47,12 @@ import java.util.List;
 public class SetterComponentComposer
     extends AbstractComponentComposer
 {
-    public void assembleComponent( Object component,
-                                   ComponentDescriptor descriptor,
-                                   PlexusContainer container )
+    public static final String PROPERTY_DESCRIPTORS = SetterComponentComposer.class.getName() + ":property.descriptors";
+
+    public Map createCompositionContext( Object component, ComponentDescriptor descriptor )
         throws CompositionException
     {
-        if ( descriptor == null )
-        {
-            // Create a descriptor to keep everything happy when we're trying to autowire.
-
-            descriptor = new ComponentDescriptor();
-
-            descriptor.setImplementation( component.getClass().getName() );
-
-            descriptor.setRole( component.getClass().getName() );
-        }
+        Map compositionContext = new HashMap();
 
         BeanInfo beanInfo = null;
 
@@ -73,29 +65,29 @@ public class SetterComponentComposer
             reportErrorFailedToIntrospect( descriptor );
         }
 
-        PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+        compositionContext.put( PROPERTY_DESCRIPTORS, beanInfo.getPropertyDescriptors() );
 
-        List requirements = descriptor.getRequirements();
+        return compositionContext;
+    }
 
-        if ( requirements == null )
+    public void assignRequirement( Object component,
+                                   ComponentDescriptor descriptor,
+                                   ComponentRequirement requirement,
+                                   PlexusContainer container,
+                                   Map compositionContext )
+        throws CompositionException
+    {
+        PropertyDescriptor[] propertyDescriptors = (PropertyDescriptor[]) compositionContext.get( PROPERTY_DESCRIPTORS );
+
+        PropertyDescriptor propertyDescriptor = findMatchingPropertyDescriptor( requirement, propertyDescriptors );
+
+        if ( propertyDescriptor != null )
         {
-            requirements = introspectRequirements( container, propertyDescriptors );
+            setProperty( component, descriptor, requirement, propertyDescriptor, container );
         }
-
-        for ( Iterator i = requirements.iterator(); i.hasNext(); )
+        else
         {
-            ComponentRequirement requirement = (ComponentRequirement) i.next();
-
-            PropertyDescriptor propertyDescriptor = findMatchingPropertyDescriptor( requirement, propertyDescriptors );
-
-            if ( propertyDescriptor != null )
-            {
-                setProperty( component, descriptor, requirement, propertyDescriptor, container );
-            }
-            else
-            {
-                reportErrorNoSuchProperty( descriptor, requirement );
-            }
+            reportErrorNoSuchProperty( descriptor, requirement );
         }
     }
 
