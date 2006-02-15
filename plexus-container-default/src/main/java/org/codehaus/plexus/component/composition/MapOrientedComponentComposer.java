@@ -10,9 +10,8 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -30,10 +29,13 @@ import java.util.List;
  * limitations under the License.
  */
 
+/**
+ * @author John Casey
+ * @author Jason van Zyl
+ */
 public class MapOrientedComponentComposer
     extends AbstractComponentComposer
 {
-
     private static String SINGLE_MAPPING_TYPE = "single";
 
     private static String MAP_MAPPING_TYPE = "map";
@@ -42,7 +44,11 @@ public class MapOrientedComponentComposer
 
     private static String DEFAULT_MAPPING_TYPE = SINGLE_MAPPING_TYPE;
 
-    public void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
+    public void verifyComponentSuitability( Object component )
         throws CompositionException
     {
         if ( !( component instanceof MapOrientedComponent ) )
@@ -50,16 +56,20 @@ public class MapOrientedComponentComposer
             throw new CompositionException( "Cannot compose component: " + component.getClass().getName()
                 + "; it does not implement " + MapOrientedComponent.class.getName() );
         }
-
-        List requirements = componentDescriptor.getRequirements();
-
-        for ( Iterator i = requirements.iterator(); i.hasNext(); )
-        {
-            ComponentRequirement requirement = (ComponentRequirement) i.next();
-
-            addRequirement( (MapOrientedComponent) component, container, requirement );
-        }
     }
+
+    public void assignRequirement( Object component,
+                                   ComponentDescriptor componentDescriptor,
+                                   ComponentRequirement requirement,
+                                   PlexusContainer container, Map compositionContext )
+        throws CompositionException
+    {
+        addRequirement( (MapOrientedComponent) component, container, requirement );
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
 
     private List addRequirement( MapOrientedComponent component, PlexusContainer container,
                                  ComponentRequirement requirement )

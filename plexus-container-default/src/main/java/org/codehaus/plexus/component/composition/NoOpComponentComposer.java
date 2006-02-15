@@ -25,9 +25,10 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.PlexusContainer;
 
-import java.util.Collections;
+import java.util.Map;
 
 /**
  * No Op component composer. It's meant to be used with component
@@ -44,7 +45,10 @@ public class NoOpComponentComposer
         return null;
     }
 
-    public void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+    public void assignRequirement( Object component,
+                                   ComponentDescriptor componentDescriptor,
+                                   ComponentRequirement requirement,
+                                   PlexusContainer container, Map compositionContext )
     {
     }
 }

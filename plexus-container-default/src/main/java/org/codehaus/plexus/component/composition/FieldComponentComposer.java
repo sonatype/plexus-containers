@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jason van Zyl
@@ -44,27 +45,22 @@ import java.util.List;
 public class FieldComponentComposer
     extends AbstractComponentComposer
 {
-    public void assembleComponent( Object component,
+    public void assignRequirement( Object component,
                                    ComponentDescriptor componentDescriptor,
-                                   PlexusContainer container )
+                                   ComponentRequirement requirement,
+                                   PlexusContainer container,
+                                   Map compositionContext )
         throws CompositionException
     {
-        List requirements = componentDescriptor.getRequirements();
+        Field field = findMatchingField( component, componentDescriptor, requirement, container );
 
-        for ( Iterator i = requirements.iterator(); i.hasNext(); )
+        // we want to use private fields.
+        if ( !field.isAccessible() )
         {
-            ComponentRequirement requirement = (ComponentRequirement) i.next();
-
-            Field field = findMatchingField( component, componentDescriptor, requirement, container );
-
-            // we want to use private fields.
-            if ( !field.isAccessible() )
-            {
-                field.setAccessible( true );
-            }
-
-            assignRequirementToField( component, field, container, requirement );
+            field.setAccessible( true );
         }
+
+        assignRequirementToField( component, field, container, requirement );
     }
 
     private List assignRequirementToField( Object component,

@@ -1,7 +1,10 @@
 package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.PlexusContainer;
+
+import java.util.Map;
 
 /**
  * note:jvz This really indicates there is a flaw in the design of the component composer as constructors will not work. If the
@@ -13,17 +16,14 @@ import org.codehaus.plexus.PlexusContainer;
  * @version $Id$
  */
 public class ConstructorComponentComposer
-    implements ComponentComposer
+    extends AbstractComponentComposer
 {
-    public String getId()
-    {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void assembleComponent( Object component,
+    public void assignRequirement( Object component,
                                    ComponentDescriptor componentDescriptor,
-                                   PlexusContainer container )
-        throws CompositionException, UndefinedComponentComposerException
+                                   ComponentRequirement requirement,
+                                   PlexusContainer container,
+                                   Map compositionContext )
+        throws CompositionException
     {
     }
 }
