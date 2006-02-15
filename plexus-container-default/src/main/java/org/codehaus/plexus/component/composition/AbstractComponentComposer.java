@@ -85,7 +85,7 @@ public abstract class AbstractComponentComposer
         {
             ComponentRequirement requirement = (ComponentRequirement) i.next();
 
-            assignRequirement( component, componentDescriptor, requirement, container, null );
+            assignRequirement( component, componentDescriptor, requirement, container, compositionContext );
         }
     }
 
