@@ -27,7 +27,7 @@ public interface ComponentComposer
      * @throws UndefinedComponentComposerException
      *
      */
-    public List assembleComponent( Object component,
+    public void assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    PlexusContainer container )
         throws CompositionException, UndefinedComponentComposerException;

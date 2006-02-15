@@ -3,8 +3,6 @@ package org.codehaus.plexus.component.composition;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.PlexusContainer;
 
-import java.util.List;
-
 /**
  * note:jvz This really indicates there is a flaw in the design of the component composer as constructors will not work. If the
  * component has no default constructor then the component must be created with using the constructor that has requirements
@@ -12,7 +10,7 @@ import java.util.List;
  * information and create and compose.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id:$
+ * @version $Id$
  */
 public class ConstructorComponentComposer
     implements ComponentComposer
@@ -22,11 +20,10 @@ public class ConstructorComponentComposer
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List assembleComponent( Object component,
+    public void assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    PlexusContainer container )
         throws CompositionException, UndefinedComponentComposerException
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -37,20 +37,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
 public class FieldComponentComposer
     extends AbstractComponentComposer
 {
-    public List assembleComponent( Object component,
+    public void assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    PlexusContainer container )
         throws CompositionException
     {
-        List retValue = new LinkedList();
-
         List requirements = componentDescriptor.getRequirements();
 
         for ( Iterator i = requirements.iterator(); i.hasNext(); )
@@ -65,12 +63,8 @@ public class FieldComponentComposer
                 field.setAccessible( true );
             }
 
-            List descriptors = assignRequirementToField( component, field, container, requirement );
-
-            retValue.addAll( descriptors );
+            assignRequirementToField( component, field, container, requirement );
         }
-
-        return retValue;
     }
 
     private List assignRequirementToField( Object component,

@@ -42,7 +42,7 @@ public class MapOrientedComponentComposer
 
     private static String DEFAULT_MAPPING_TYPE = SINGLE_MAPPING_TYPE;
 
-    public List assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+    public void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
         throws CompositionException
     {
         if ( !( component instanceof MapOrientedComponent ) )
@@ -51,20 +51,14 @@ public class MapOrientedComponentComposer
                 + "; it does not implement " + MapOrientedComponent.class.getName() );
         }
 
-        List retValue = new LinkedList();
-
         List requirements = componentDescriptor.getRequirements();
 
         for ( Iterator i = requirements.iterator(); i.hasNext(); )
         {
             ComponentRequirement requirement = (ComponentRequirement) i.next();
 
-            List descriptors = addRequirement( (MapOrientedComponent) component, container, requirement );
-
-            retValue.addAll( descriptors );
+            addRequirement( (MapOrientedComponent) component, container, requirement );
         }
-
-        return retValue;
     }
 
     private List addRequirement( MapOrientedComponent component, PlexusContainer container,

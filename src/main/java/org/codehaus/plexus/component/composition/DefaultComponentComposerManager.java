@@ -34,9 +34,11 @@ import java.util.Map;
 
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
+ * @author Jason van Zyl
  * @version $Id$
  */
-public class DefaultComponentComposerManager implements ComponentComposerManager
+public class DefaultComponentComposerManager
+    implements ComponentComposerManager
 {
     private Map composerMap = new HashMap();
 
@@ -68,7 +70,8 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
         componentComposer.assembleComponent( component, componentDescriptor, container );
     }
 
-    protected ComponentComposer getComponentComposer( String id ) throws UndefinedComponentComposerException
+    protected ComponentComposer getComponentComposer( String id )
+        throws UndefinedComponentComposerException
     {
         ComponentComposer retValue = null;
 

@@ -1548,7 +1548,9 @@ public class DefaultPlexusContainer
     {
         SetterComponentComposer composer = new SetterComponentComposer();
 
-        return composer.assembleComponent( component, null, this );
+        composer.assembleComponent( component, null, this );
+
+        return component;
     }
 
     public Object createAndAutowire( String clazz )
@@ -1558,6 +1560,8 @@ public class DefaultPlexusContainer
 
         SetterComponentComposer composer = new SetterComponentComposer();
 
-        return composer.assembleComponent( component, null, this );
+        composer.assembleComponent( component, null, this );
+
+        return component;
     }
 }
