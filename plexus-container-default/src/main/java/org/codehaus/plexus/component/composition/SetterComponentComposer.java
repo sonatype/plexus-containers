@@ -95,8 +95,10 @@ public class SetterComponentComposer
     //
     // ----------------------------------------------------------------------
 
-    private List introspectRequirements( PlexusContainer container, PropertyDescriptor[] propertyDescriptors )
+    public List gleanAutowiringRequirements( Map compositionContext, PlexusContainer container )
     {
+        PropertyDescriptor[] propertyDescriptors = (PropertyDescriptor[]) compositionContext.get( PROPERTY_DESCRIPTORS );
+
         List requirements = new ArrayList();
 
         for ( int i = 0; i < propertyDescriptors.length; i++ )

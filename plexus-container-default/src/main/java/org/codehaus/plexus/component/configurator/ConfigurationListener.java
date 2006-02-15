@@ -34,7 +34,7 @@ package org.codehaus.plexus.component.configurator;
 public interface ConfigurationListener
 {
     /**
-     * Notify the listener that a field has been set using its setter.
+     * Notify the listener that a field has been set using its autowire.
      * @param fieldName the field
      * @param value the value set
      * @param target the target object
