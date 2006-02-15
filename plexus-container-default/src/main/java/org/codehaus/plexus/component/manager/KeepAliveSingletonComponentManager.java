@@ -63,9 +63,6 @@ public class KeepAliveSingletonComponentManager
     {
         synchronized( lock )
         {
-            //wait for all the clients to return all the components
-            //Do we do this in a seperate thread? or block the current thread??
-            //TODO
             if ( singleton != null )
             {
                 endComponentLifecycle( singleton );
