@@ -66,7 +66,7 @@ public class ComponentValueSetter
         if ( setter == null && field == null )
         {
             throw new ComponentConfigurationException(
-                "Cannot find setter nor field in " + object.getClass().getName() + " for '" + fieldName + "'" );
+                "Cannot find autowire nor field in " + object.getClass().getName() + " for '" + fieldName + "'" );
         }
 
         if ( setterTypeConverter == null && fieldTypeConverter == null )
@@ -161,7 +161,7 @@ public class ComponentValueSetter
     {
         if ( setterParamType == null || setter == null )
         {
-            throw new ComponentConfigurationException( "No setter found" );
+            throw new ComponentConfigurationException( "No autowire found" );
         }
 
         String exceptionInfo = object.getClass().getName() + "." + setter.getName() + "( " +
@@ -198,7 +198,7 @@ public class ComponentValueSetter
     {
         Object value = null;
 
-        // try setter converter + method first
+        // try autowire converter + method first
 
         if ( setterTypeConverter != null )
         {
