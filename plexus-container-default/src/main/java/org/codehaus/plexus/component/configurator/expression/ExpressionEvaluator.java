@@ -34,6 +34,8 @@ import java.io.File;
  */
 public interface ExpressionEvaluator
 {
+    String ROLE = ExpressionEvaluator.class.getName();
+    
     /**
      * Evaluate an expression.
      *
