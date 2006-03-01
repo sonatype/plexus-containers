@@ -185,4 +185,12 @@ public interface PlexusContainer
 
     Object createAndAutowire( String clazz )
         throws CompositionException, ClassNotFoundException, InstantiationException, IllegalAccessException;
+
+    // ----------------------------------------------------------------------
+    // Reloading
+    // ----------------------------------------------------------------------
+
+    void setReloadingEnabled( boolean reloadingEnabled );
+
+    boolean isReloadingEnabled();
 }
