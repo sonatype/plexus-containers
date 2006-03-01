@@ -3,6 +3,7 @@ package org.codehaus.plexus.component.composition;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.PlexusContainer;
 
 import java.util.List;
@@ -79,6 +80,16 @@ public abstract class AbstractComponentComposer
             requirements = gleanAutowiringRequirements( compositionContext, container );
 
             componentDescriptor.addRequirements( requirements );
+
+            try
+            {
+                container.addComponentDescriptor( componentDescriptor );
+            }
+            catch ( ComponentRepositoryException e )
+            {
+                // this should never happen, we never took into account creating component
+                // descriptors on the fly by gleaning information.
+            }
         }
         else
         {
