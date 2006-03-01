@@ -200,6 +200,11 @@ public class ComponentDescriptor
         getRequirements().add( requirement );
     }
 
+    public void addRequirements( List requirements )
+    {
+        getRequirements().addAll( requirements );
+    }
+
     public List getRequirements()
     {
         if ( requirements == null )
