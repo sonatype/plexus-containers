@@ -107,7 +107,9 @@ public class SetterComponentComposer
 
             String role = pd.getPropertyType().getName();
 
-            if ( container.getComponentDescriptor( role ) != null )
+            ComponentDescriptor componentDescriptor = container.getComponentDescriptor( role );
+
+            if ( componentDescriptor != null )
             {
                 ComponentRequirement requirement = new ComponentRequirement();
 

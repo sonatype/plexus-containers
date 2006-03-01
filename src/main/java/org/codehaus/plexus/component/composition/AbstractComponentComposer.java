@@ -77,6 +77,8 @@ public abstract class AbstractComponentComposer
             componentDescriptor.setRole( component.getClass().getName() );
 
             requirements = gleanAutowiringRequirements( compositionContext, container );
+
+            componentDescriptor.addRequirements( requirements );
         }
         else
         {
