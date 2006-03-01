@@ -302,9 +302,10 @@ public class DefaultPlexusContainer
         ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentKey( componentKey );
 
         // The first time we lookup a component a component manager will not exist so we ask the
-        // component manager manager to create a component manager for us.
+        // component manager manager to create a component manager for us. Also if we are reloading
+        // components then we'll also get a new component manager.
 
-        if ( componentManager == null )
+        if ( reloadingEnabled || componentManager == null )
         {
             ComponentDescriptor descriptor = componentRepository.getComponentDescriptor( componentKey );
 
@@ -1570,7 +1571,7 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     // Reloading
     // ----------------------------------------------------------------------
-    
+
     public void setReloadingEnabled( boolean reloadingEnabled )
     {
         this.reloadingEnabled = reloadingEnabled;
