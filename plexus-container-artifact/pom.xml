@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus-containers</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
   </parent>
   <artifactId>plexus-container-artifact</artifactId>
   <name>Plexus Artifact-Enabled Container</name>
