@@ -34,6 +34,7 @@ import java.util.List;
 
 
 /**
+ * @author Jason van Zyl
  * @author <a href="mailto:michal.maczka@dimatics.com">Michal Maczka</a>
  * @version $Id$
  */
@@ -43,16 +44,16 @@ public class DefaultCompositionResolver
     private DAG dag = new DAG();
 
 
-    public void addComponentDescriptor( final ComponentDescriptor componentDescriptor )
+    public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
-        final String componentKey = componentDescriptor.getComponentKey();
+        String componentKey = componentDescriptor.getComponentKey();
 
-        final List requirements = componentDescriptor.getRequirements();
+        List requirements = componentDescriptor.getRequirements();
 
-        for ( final Iterator iterator = requirements.iterator(); iterator.hasNext(); )
+        for ( Iterator iterator = requirements.iterator(); iterator.hasNext(); )
         {
-            final ComponentRequirement requirement = (ComponentRequirement) iterator.next();
+            ComponentRequirement requirement = (ComponentRequirement) iterator.next();
 
             try
             {
@@ -68,7 +69,7 @@ public class DefaultCompositionResolver
     /**
      * @see org.codehaus.plexus.component.composition.CompositionResolver#getRequirements(java.lang.String)
      */
-    public List getRequirements( final String componentKey )
+    public List getRequirements( String componentKey )
     {
         return dag.getChildLabels( componentKey );
     }
@@ -77,7 +78,7 @@ public class DefaultCompositionResolver
     /**
      * @see org.codehaus.plexus.component.composition.CompositionResolver#findRequirements(java.lang.String)
      */
-    public List findRequirements( final String componentKey )
+    public List findRequirements( String componentKey )
     {
         return dag.getParentLabels( componentKey );
     }

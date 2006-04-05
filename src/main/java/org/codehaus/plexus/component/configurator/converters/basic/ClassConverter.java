@@ -1,6 +1,4 @@
-package org.codehaus.plexus.component.configurator.expression;
-
-import java.io.File;
+package org.codehaus.plexus.component.configurator.converters.basic;
 
 /*
  * The MIT License
@@ -26,30 +24,33 @@ import java.io.File;
  * SOFTWARE.
  */
 
-/**
- * Evaluate an expression.
- *
- * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
- * @version $Id$
- */
-public interface ExpressionEvaluator
-{
-    String ROLE = ExpressionEvaluator.class.getName();
-    
-    /**
-     * Evaluate an expression.
-     *
-     * @param expression the expression
-     * @return the value of the expression
-     */
-    Object evaluate( String expression )
-        throws ExpressionEvaluationException;
+import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
+import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
-    /**
-     * Align a given path to the base directory that can be evaluated by this expression evaluator, if known.
-     *
-     * @param file the file
-     * @return the aligned file
-     */
-    File alignToBaseDirectory( File file );
+/**
+ * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
+ */
+public class ClassConverter
+    extends AbstractBasicConverter
+{
+    public boolean canConvert( Class type )
+    {
+        return type.equals( Class.class );
+    }
+
+    public Object fromString( String str )
+        throws ComponentConfigurationException
+    {
+        try
+        {
+            return Class.forName( str );
+        }
+        catch ( ClassNotFoundException e )
+        {
+            throw new ComponentConfigurationException( "Unable to find class in conversion", e );
+        }
+    }
 }

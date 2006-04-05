@@ -2,15 +2,15 @@ package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
 
 import java.util.List;
+import java.util.Map;
 
 /**
+ * @author Jason van Zyl
  * @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
  * @version $Revision$
- * @todo michal:  I think that ideally component composer should somehow participate in parsing of
- * requiremnts section of configuration file
- * as this section tells how to do the composition
  */
 public interface ComponentComposer
 {
@@ -18,19 +18,23 @@ public interface ComponentComposer
 
     String getId();
 
-    /**
-     * @param component
-     * @param componentDescriptor
-     * @param container
-     *
-     * @return List of ComponentDescriptors which were used by ComponentComposer
+    void assembleComponent( Object component,
+                            ComponentDescriptor componentDescriptor,
+                            PlexusContainer container )
+        throws CompositionException;
 
-     * @throws CompositionException
-     * @throws UndefinedComponentComposerException
-     *
-     */
-    public List assembleComponent( Object component,
-                                   ComponentDescriptor componentDescriptor,
-                                   PlexusContainer container )
-            throws CompositionException, UndefinedComponentComposerException;
+    void verifyComponentSuitability( Object component )
+        throws CompositionException;
+
+    Map createCompositionContext( Object component, ComponentDescriptor descriptor )
+        throws CompositionException;
+
+    List gleanAutowiringRequirements( Map compositionContext, PlexusContainer container )
+        throws CompositionException;
+
+    void assignRequirement( Object component,
+                            ComponentDescriptor componentDescriptor,
+                            ComponentRequirement componentRequirement,
+                            PlexusContainer container, Map compositionContext )
+        throws CompositionException;
 }

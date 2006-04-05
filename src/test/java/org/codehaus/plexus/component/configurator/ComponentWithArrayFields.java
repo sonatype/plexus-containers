@@ -47,6 +47,8 @@ public class ComponentWithArrayFields
 
     private File[] fileArray;
 
+    private Class[] classArray;
+
     public String [] getStringArray()
     {
         return stringArray;
@@ -80,5 +82,10 @@ public class ComponentWithArrayFields
     public File[] getFileArray()
     {
         return fileArray;
+    }
+
+    public Class[] getClassArray()
+    {
+        return classArray;
     }
 }

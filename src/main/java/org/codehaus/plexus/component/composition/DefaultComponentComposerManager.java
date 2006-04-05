@@ -34,9 +34,11 @@ import java.util.Map;
 
 /**
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
+ * @author Jason van Zyl
  * @version $Id$
  */
-public class DefaultComponentComposerManager implements ComponentComposerManager
+public class DefaultComponentComposerManager
+    implements ComponentComposerManager
 {
     private Map composerMap = new HashMap();
 
@@ -44,9 +46,9 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
 
     private String defaultComponentComposerId = "field";
 
-    public void assembleComponent( final Object component,
-                                   final ComponentDescriptor componentDescriptor,
-                                   final PlexusContainer container )
+    public void assembleComponent( Object component,
+                                   ComponentDescriptor componentDescriptor,
+                                   PlexusContainer container )
         throws UndefinedComponentComposerException, CompositionException
     {
 
@@ -60,25 +62,22 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
 
         if ( componentComposerId == null || componentComposerId.trim().length() == 0 )
         {
-            componentComposerId = defaultComponentComposerId ;
+            componentComposerId = defaultComponentComposerId;
         }
 
-        final ComponentComposer componentComposer = getComponentComposer( componentComposerId );
+        ComponentComposer componentComposer = getComponentComposer( componentComposerId );
 
         componentComposer.assembleComponent( component, componentDescriptor, container );
-
-        // @todo: michal: we need to build the graph of component dependencies
-        // and detect cycles.  Not sure exactly when and how it should happen
-        //assembleComponents( descriptors, container );
     }
 
-    protected ComponentComposer getComponentComposer( final String id ) throws UndefinedComponentComposerException
+    protected ComponentComposer getComponentComposer( String id )
+        throws UndefinedComponentComposerException
     {
         ComponentComposer retValue = null;
 
         if ( composerMap.containsKey( id ) )
         {
-            retValue = ( ComponentComposer ) composerMap.get( id );
+            retValue = (ComponentComposer) composerMap.get( id );
         }
         else
         {
@@ -93,13 +92,13 @@ public class DefaultComponentComposerManager implements ComponentComposerManager
         return retValue;
     }
 
-    private ComponentComposer findComponentComposer( final String id )
+    private ComponentComposer findComponentComposer( String id )
     {
         ComponentComposer retValue = null;
 
         for ( Iterator iterator = componentComposers.iterator(); iterator.hasNext(); )
         {
-            final ComponentComposer componentComposer = ( ComponentComposer ) iterator.next();
+            ComponentComposer componentComposer = (ComponentComposer) iterator.next();
 
             if ( componentComposer.getId().equals( id ) )
             {

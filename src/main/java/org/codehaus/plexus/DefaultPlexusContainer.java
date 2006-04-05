@@ -31,6 +31,7 @@ import org.codehaus.classworlds.NoSuchRealmException;
 import org.codehaus.plexus.component.ComponentSelector;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.composition.CompositionException;
+import org.codehaus.plexus.component.composition.SetterComponentComposer;
 import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
@@ -157,6 +158,8 @@ public class DefaultPlexusContainer
     private boolean initialized = false;
 
     private final Date creationDate = new Date();
+
+    private boolean reloadingEnabled;
 
     // ----------------------------------------------------------------------
     //  Constructors
@@ -311,9 +314,10 @@ public class DefaultPlexusContainer
         ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentKey( componentKey );
 
         // The first time we lookup a component a component manager will not exist so we ask the
-        // component manager manager to create a component manager for us.
+        // component manager manager to create a component manager for us. Also if we are reloading
+        // components then we'll also get a new component manager.
 
-        if ( componentManager == null )
+        if ( reloadingEnabled || componentManager == null )
         {
             ComponentDescriptor descriptor = componentRepository.getComponentDescriptor( componentKey );
 
@@ -1387,7 +1391,17 @@ public class DefaultPlexusContainer
             }
             catch ( MalformedURLException e )
             {
-                getLogger().error( "Error configuring resource: " + resourceConfigs[i].getName() + "=" + resourceConfigs[i].getValue(), e );
+                String message = "Error configuring resource: " + resourceConfigs[i].getName() + "=" + resourceConfigs[i].getValue();
+                if ( getLogger() != null )
+                {
+                    getLogger().error( message, e );
+                }
+                else
+                {
+                    System.out.println( message );
+
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1445,7 +1459,16 @@ public class DefaultPlexusContainer
         }
         else
         {
-            getLogger().warn( "The specified JAR repository doesn't exist or is not a directory: '" + repository.getAbsolutePath() + "'." );
+            String message = "The specified JAR repository doesn't exist or is not a directory: '" + repository.getAbsolutePath() + "'.";
+
+            if ( getLogger() != null )
+            {
+                getLogger().warn( message );
+            }
+            else
+            {
+                System.out.println( message );
+            }
         }
     }
 
@@ -1687,5 +1710,50 @@ public class DefaultPlexusContainer
         }
         
         return result;
+    }
+
+    // ----------------------------------------------------------------------
+    // Autowire Support
+    // ----------------------------------------------------------------------
+
+    // note:jvz Currently this only works for setters as I'm experimenting for
+    // webwork. I would like the API for autowiring to be simple so we could easily look
+    // for constructors with parameters and use that method of composition before attempting
+    // the use of setters or private fields.
+
+    public Object autowire( Object component )
+        throws CompositionException
+    {
+        SetterComponentComposer composer = new SetterComponentComposer();
+
+        composer.assembleComponent( component, null, this );
+
+        return component;
+    }
+
+    public Object createAndAutowire( String clazz )
+        throws CompositionException, ClassNotFoundException, InstantiationException, IllegalAccessException
+    {
+        Object component = plexusRealm.loadClass( clazz ).newInstance();
+
+        SetterComponentComposer composer = new SetterComponentComposer();
+
+        composer.assembleComponent( component, null, this );
+
+        return component;
+    }
+
+    // ----------------------------------------------------------------------
+    // Reloading
+    // ----------------------------------------------------------------------
+
+    public void setReloadingEnabled( boolean reloadingEnabled )
+    {
+        this.reloadingEnabled = reloadingEnabled;
+    }
+
+    public boolean isReloadingEnabled()
+    {
+        return reloadingEnabled;
     }
 }

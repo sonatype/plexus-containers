@@ -35,6 +35,9 @@
       <component-manager implementation="org.codehaus.plexus.component.manager.KeepAliveSingletonComponentManager">
         <id>singleton-keep-alive</id>
       </component-manager>
+      <component-manager implementation="org.codehaus.plexus.component.manager.ContainerComponentManager">
+        <id>container</id>
+      </component-manager>
     </component-managers>
   </component-manager-manager>
 
@@ -144,6 +147,12 @@
       <configuration>
         <threshold>info</threshold>
       </configuration>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.PlexusContainer</role>
+      <implementation>org.codehaus.plexus.DefaultPlexusContainer</implementation>
+      <lifecycle-handler>passive</lifecycle-handler>
+      <instantiation-strategy>container</instantiation-strategy>
     </component>
     <!-- Component configurator -->
     <component>

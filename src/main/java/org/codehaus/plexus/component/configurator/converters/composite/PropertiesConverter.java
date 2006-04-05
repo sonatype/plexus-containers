@@ -30,7 +30,6 @@ import org.codehaus.plexus.component.configurator.converters.AbstractConfigurati
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.logging.Logger;
 
 import java.util.Properties;
 
@@ -65,14 +64,15 @@ public class PropertiesConverter
             {
                 PlexusConfiguration child = children[i];
 
-                addEntry( retValue, element, child );
+                addEntry( retValue, element, child, expressionEvaluator );
             }
         }
 
         return retValue;
     }
 
-    private void addEntry( Properties properties, String element, PlexusConfiguration property )
+    private void addEntry( Properties properties, String element, PlexusConfiguration property,
+                           ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
         String name;
@@ -87,7 +87,9 @@ public class PropertiesConverter
             throw new ComponentConfigurationException( msg );
         }
 
-        String value = property.getChild( "value" ).getValue( "" );
+        Object rawValue = fromExpression( property.getChild( "value" ), expressionEvaluator );
+        
+        String value = String.valueOf( rawValue );
 
         properties.put( name, value );
     }

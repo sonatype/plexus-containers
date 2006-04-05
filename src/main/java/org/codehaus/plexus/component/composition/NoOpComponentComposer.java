@@ -25,10 +25,10 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.PlexusContainer;
 
-import java.util.List;
-import java.util.Collections;
+import java.util.Map;
 
 /**
  * No Op component composer. It's meant to be used with component
@@ -37,15 +37,18 @@ import java.util.Collections;
  * @author <a href="michal@codehaus.pl">Michal Maczka</a>
  * @version $Id$
  */
-public class NoOpComponentComposer extends AbstractComponentComposer
+public class NoOpComponentComposer
+    extends AbstractComponentComposer
 {
     public String getId()
     {
         return null;
     }
 
-    public List assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+    public void assignRequirement( Object component,
+                                   ComponentDescriptor componentDescriptor,
+                                   ComponentRequirement requirement,
+                                   PlexusContainer container, Map compositionContext )
     {
-        return Collections.EMPTY_LIST;
     }
 }

@@ -10,9 +10,8 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -30,19 +29,26 @@ import java.util.List;
  * limitations under the License.
  */
 
+/**
+ * @author John Casey
+ * @author Jason van Zyl
+ */
 public class MapOrientedComponentComposer
     extends AbstractComponentComposer
 {
+    private static String SINGLE_MAPPING_TYPE = "single";
 
-    private static final String SINGLE_MAPPING_TYPE = "single";
+    private static String MAP_MAPPING_TYPE = "map";
 
-    private static final String MAP_MAPPING_TYPE = "map";
+    private static String SET_MAPPING_TYPE = "set";
 
-    private static final String SET_MAPPING_TYPE = "set";
+    private static String DEFAULT_MAPPING_TYPE = SINGLE_MAPPING_TYPE;
 
-    private static final String DEFAULT_MAPPING_TYPE = SINGLE_MAPPING_TYPE;
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
 
-    public List assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+    public void verifyComponentSuitability( Object component )
         throws CompositionException
     {
         if ( !( component instanceof MapOrientedComponent ) )
@@ -50,25 +56,23 @@ public class MapOrientedComponentComposer
             throw new CompositionException( "Cannot compose component: " + component.getClass().getName()
                 + "; it does not implement " + MapOrientedComponent.class.getName() );
         }
-
-        List retValue = new LinkedList();
-
-        List requirements = componentDescriptor.getRequirements();
-
-        for ( Iterator i = requirements.iterator(); i.hasNext(); )
-        {
-            ComponentRequirement requirement = (ComponentRequirement) i.next();
-
-            List descriptors = addRequirement( (MapOrientedComponent) component, container, requirement );
-
-            retValue.addAll( descriptors );
-        }
-
-        return retValue;
     }
 
+    public void assignRequirement( Object component,
+                                   ComponentDescriptor componentDescriptor,
+                                   ComponentRequirement requirement,
+                                   PlexusContainer container, Map compositionContext )
+        throws CompositionException
+    {
+        addRequirement( (MapOrientedComponent) component, container, requirement );
+    }
+
+    // ----------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------
+
     private List addRequirement( MapOrientedComponent component, PlexusContainer container,
-                                ComponentRequirement requirement )
+                                 ComponentRequirement requirement )
         throws CompositionException
     {
         try
@@ -137,7 +141,7 @@ public class MapOrientedComponentComposer
         catch ( ComponentConfigurationException e )
         {
             throw new CompositionException( "Composition failed in object of type " + component.getClass().getName()
-                                            + " because the requirement " + requirement + " cannot be set on the component.", e );
+                + " because the requirement " + requirement + " cannot be set on the component.", e );
         }
     }
 
