@@ -82,7 +82,7 @@ public class DefaultConverterLookup
     public ConfigurationConverter lookupConverterForType( Class type )
         throws ComponentConfigurationException
     {
-        ConfigurationConverter retValue = null;
+        ConfigurationConverter retValue;
 
         if ( converterMap.containsKey( type ) )
         {
@@ -123,7 +123,6 @@ public class DefaultConverterLookup
 
         return null;
     }
-
 
     private void registerDefaultBasicConverters()
     {
@@ -173,5 +172,4 @@ public class DefaultConverterLookup
         // this converter should be always registred as the last one
         registerDefaultConverter( new ObjectWithFieldsConverter() );
     }
-
 }
