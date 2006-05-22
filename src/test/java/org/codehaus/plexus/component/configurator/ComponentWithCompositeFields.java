@@ -35,10 +35,18 @@ public class ComponentWithCompositeFields
 {
     private ThingInterface thing;
 
+    private ThingInterface importantThing;
+
     public ThingInterface getThing()
     {
         return thing;
     }
+
+    public ThingInterface getImportantThing()
+    {
+        return importantThing;
+    }
+
 }
 
 

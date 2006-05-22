@@ -362,7 +362,12 @@ public abstract class AbstractComponentConfiguratorTest
 
         String xml = "<configuration>" +
             "  <thing implementation=\"org.codehaus.plexus.component.configurator.ImportantThing\">" +
-            "     <name>I am not abstract!</name>" + "  </thing>" + "</configuration>";
+            "     <name>I am not abstract!</name>" +
+            "  </thing>" +
+            "  <importantThing>" +
+            "     <name>I am not abstract either!</name>" +
+            "  </importantThing>" +
+            "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -386,6 +391,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "I am not abstract!", component.getThing().getName() );
 
+        assertEquals( "I am not abstract either!", component.getImportantThing().getName() );
     }
 
     public void testInvalidComponentConfiguration()
