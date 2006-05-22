@@ -75,6 +75,111 @@ public abstract class AbstractConfigurationConverter
         return retValue;
     }
 
+    protected Class getImplementationClass( Class type, Class baseType, PlexusConfiguration configuration, ClassLoader classLoader )
+        throws ComponentConfigurationException
+    {
+        // if there's an implementation hint, try that.
+
+        Class childType = getClassForImplementationHint( null, configuration, classLoader );
+
+        if ( childType != null )
+        {
+            return childType;
+        }
+
+        // try using the fieldname to determine the implementation.
+
+        String configEntry = configuration.getName();
+
+        String name = fromXML( configEntry );
+
+        // First, see whether the fieldname might be a fully qualified classname
+
+        if ( name.indexOf( '.' ) > 0 )
+        {
+            try
+            {
+                return classLoader.loadClass( name );
+            }
+            catch ( ClassNotFoundException e )
+            {
+                // not found, continue processing
+            }
+        }
+
+        // Next, try to find a class in the package of the object we're configuring
+
+        String className = constructClassName( baseType, name );
+
+        Exception lastException = null;
+
+        try
+        {
+            return classLoader.loadClass( className );
+        }
+        catch ( ClassNotFoundException e )
+        {
+            // the guessed class does not exist. Store exception for later use. Continue processing.
+            lastException = e;
+        }
+
+        // if the given type is not null, just return that
+
+        if ( type != null )
+        {
+            return type;
+        }
+        else
+        {
+            // type is only null if we have a Collection and this method is called
+            // for the compound type of that collection.
+
+            if ( configuration.getChildCount() == 0 )
+            {
+                // If the configuration has no children but only text, try a String.
+                // TODO: If we had generics we could try that instead - or could the component descriptor list an impl?
+                return String.class;
+            }
+            else
+            {
+                // there are no options left. Our best guess is that the fieldname
+                // indicates a class in the component's package, so report that.
+
+                throw new ComponentConfigurationException( "Error loading class '" + className + "'", lastException );
+            }
+        }
+    }
+
+    /**
+     * Constructs a classname from a class and a fieldname.
+     * For example, baseType is 'package.Component',
+     * field is 'someThing', then it constructs 'package.SomeThing'.
+     *
+     */
+    private String constructClassName( Class baseType, String name )
+    {
+        String baseTypeName = baseType.getName();
+
+        // Some classloaders don't create Package objects for classes
+        // so we have to resort to slicing up the class name
+
+        int lastDot = baseTypeName.lastIndexOf( '.' );
+
+        String className;
+
+        if ( lastDot == -1 )
+        {
+            className = name;
+        }
+        else
+        {
+            String basePackage = baseTypeName.substring( 0, lastDot );
+
+            className = basePackage + "." + StringUtils.capitalizeFirstLetter( name );
+        }
+
+        return className;
+    }
 
     protected Class loadClass( String classname, ClassLoader classLoader )
         throws ComponentConfigurationException

@@ -111,66 +111,8 @@ public class CollectionConverter
         for ( int i = 0; i < configuration.getChildCount(); i++ )
         {
             PlexusConfiguration c = configuration.getChild( i );
-            //Object o = null;
 
-            String configEntry = c.getName();
-
-            String name = fromXML( configEntry );
-
-            Class childType = getClassForImplementationHint( null, c, classLoader );
-
-            if ( childType == null && name.indexOf( '.' ) > 0 )
-            {
-                try
-                {
-                    childType = classLoader.loadClass( name );
-                }
-                catch ( ClassNotFoundException e )
-                {
-                    // not found, continue processing
-                }
-            }
-
-            if ( childType == null )
-            {
-                // Some classloaders don't create Package objects for classes
-                // so we have to resort to slicing up the class name
-
-                String baseTypeName = baseType.getName();
-
-                int lastDot = baseTypeName.lastIndexOf( '.' );
-
-                String className;
-
-                if ( lastDot == -1 )
-                {
-                    className = name;
-                }
-                else
-                {
-                    String basePackage = baseTypeName.substring( 0, lastDot );
-
-                    className = basePackage + "." + StringUtils.capitalizeFirstLetter( name );
-                }
-
-                try
-                {
-                    childType = classLoader.loadClass( className );
-                }
-                catch ( ClassNotFoundException e )
-                {
-                    if ( c.getChildCount() == 0 )
-                    {
-                        // If no children, try a String.
-                        // TODO: If we had generics we could try that instead - or could the component descriptor list an impl?
-                        childType = String.class;
-                    }
-                    else
-                    {
-                        throw new ComponentConfigurationException( "Error loading class '" + className + "'", e );
-                    }
-                }
-            }
+            Class childType = getImplementationClass( null, baseType, c, classLoader );
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 

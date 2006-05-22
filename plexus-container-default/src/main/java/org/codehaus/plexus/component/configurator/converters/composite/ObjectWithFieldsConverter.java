@@ -83,7 +83,7 @@ public class ObjectWithFieldsConverter
             try
             {
                 // it is a "composite" - we compose it from its children. It does not have a value of its own
-                Class implementation = getClassForImplementationHint( type, configuration, classLoader );
+                Class implementation = getImplementationClass( type, baseType, configuration, classLoader );
 
                 retValue = instantiateObject( implementation );
 
