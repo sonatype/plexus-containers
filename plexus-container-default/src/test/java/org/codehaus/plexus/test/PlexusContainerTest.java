@@ -33,6 +33,7 @@ import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
+import org.codehaus.classworlds.ClassWorld;
 //import org.codehaus.plexus.util.AbstractTestThread;
 //import org.codehaus.plexus.util.TestThreadManager;
 

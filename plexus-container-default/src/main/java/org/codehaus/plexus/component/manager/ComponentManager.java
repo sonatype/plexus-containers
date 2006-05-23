@@ -1,7 +1,7 @@
 package org.codehaus.plexus.component.manager;
 
 
-import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -25,7 +25,7 @@ public interface ComponentManager
 
     String getId();
 
-    void setup( PlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor );
+    void setup( MutablePlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor );
 
     void initialize();
 
@@ -50,5 +50,5 @@ public interface ComponentManager
 
     ComponentDescriptor getComponentDescriptor();
 
-    PlexusContainer getContainer();
+    MutablePlexusContainer getContainer();
 }

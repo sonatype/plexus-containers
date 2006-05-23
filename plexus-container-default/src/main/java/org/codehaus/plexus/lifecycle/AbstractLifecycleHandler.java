@@ -98,6 +98,7 @@ public abstract class AbstractLifecycleHandler
         for ( Iterator i = getBeginSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
+
             phase.execute( component, manager );
         }
     }
@@ -113,6 +114,7 @@ public abstract class AbstractLifecycleHandler
         for ( Iterator i = getSuspendSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
+
             phase.execute( component, manager );
         }
     }
@@ -128,6 +130,7 @@ public abstract class AbstractLifecycleHandler
         for ( Iterator i = getResumeSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
+
             phase.execute( component, manager );
         }
     }
@@ -146,6 +149,7 @@ public abstract class AbstractLifecycleHandler
         for ( Iterator i = getEndSegment().iterator(); i.hasNext(); )
         {
             Phase phase = (Phase) i.next();
+
             phase.execute( component, manager );
         }
     }

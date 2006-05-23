@@ -39,10 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @todo We need to process component descriptors from a specified configuration file in addition
- * to component descriptors that are stored in the JAR along with the component. So we need to be
- * able to process a directory of components as we now can package any number of components
- * in a JAR which will all be described by a components.xml file in the top-level of the JAR.
+ * @author Jason van Zyl
  */
 public class DefaultComponentRepository
     extends AbstractLogEnabled

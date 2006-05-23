@@ -110,6 +110,14 @@ public class PlexusConfigurationMerger
         }
 
         // ----------------------------------------------------------------------
+        // Container initialization phases
+        // ----------------------------------------------------------------------
+
+        mergedConfiguration.addChild( system.getChild( "container-initialization") );
+
+        mergedConfiguration.addChild( system.getChild( "component-lookup-manager") );
+
+        // ----------------------------------------------------------------------
         // Component repository
         // ----------------------------------------------------------------------
 

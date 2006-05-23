@@ -1,14 +1,14 @@
 package org.codehaus.plexus.component.composition;
 
-import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 
-import java.util.List;
-import java.util.Iterator;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**

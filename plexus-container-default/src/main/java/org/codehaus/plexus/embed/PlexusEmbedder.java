@@ -4,10 +4,10 @@ package org.codehaus.plexus.embed;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
-import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.logging.LoggerManager;
 
 import java.io.File;
 import java.io.IOException;

@@ -2,17 +2,13 @@ package org.codehaus.plexus;
 
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
-import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
-import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.LoggerManager;
 
 import java.io.File;
 import java.io.Reader;
@@ -23,37 +19,33 @@ import java.util.Map;
 public interface PlexusContainer
 {
     String ROLE = PlexusContainer.class.getName();
-    
-    // ----------------------------------------------------------------------
-    // Timestamp access
-    // ----------------------------------------------------------------------
-    
+
+    String getName();
+
     public Date getCreationDate();
 
-    // ----------------------------------------------------------------------
-    // Child container access
-    // ----------------------------------------------------------------------
-
     boolean hasChildContainer( String name );
-    
-    void removeChildContainer( String name );
-    
-    PlexusContainer getChildContainer( String name );
-    
-    PlexusContainer createChildContainer( String name, List classpathJars, Map context )
-        throws PlexusContainerException;
-    
-    PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
-    throws PlexusContainerException;
 
-    // ----------------------------------------------------------------------
-    // Component lookup
-    // ----------------------------------------------------------------------
+    void removeChildContainer( String name );
+
+    PlexusContainer getChildContainer( String name );
+
+    PlexusContainer createChildContainer( String name,
+                                          List classpathJars,
+                                          Map context )
+        throws PlexusContainerException;
+
+    PlexusContainer createChildContainer( String name,
+                                          List classpathJars,
+                                          Map context,
+                                          List discoveryListeners )
+        throws PlexusContainerException;
 
     Object lookup( String componentKey )
         throws ComponentLookupException;
 
-    Object lookup( String role, String roleHint )
+    Object lookup( String role,
+                   String roleHint )
         throws ComponentLookupException;
 
     Map lookupMap( String role )
@@ -75,10 +67,6 @@ public interface PlexusContainer
     void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws ComponentRepositoryException;
 
-    // ----------------------------------------------------------------------
-    // Component release
-    // ----------------------------------------------------------------------
-
     void release( Object component )
         throws ComponentLifecycleException;
 
@@ -88,17 +76,10 @@ public interface PlexusContainer
     void releaseAll( List components )
         throws ComponentLifecycleException;
 
-    // ----------------------------------------------------------------------
-    // Component discovery
-    // ----------------------------------------------------------------------
-
     boolean hasComponent( String componentKey );
 
-    boolean hasComponent( String role, String roleHint );
-
-    // ----------------------------------------------------------------------
-    // Component replacement
-    // ----------------------------------------------------------------------
+    boolean hasComponent( String role,
+                          String roleHint );
 
     void suspend( Object component )
         throws ComponentLifecycleException;
@@ -106,19 +87,11 @@ public interface PlexusContainer
     void resume( Object component )
         throws ComponentLifecycleException;
 
-    // ----------------------------------------------------------------------
-    // Lifecycle
-    // ----------------------------------------------------------------------
-
     void initialize()
         throws PlexusContainerException;
-    
-    boolean isInitialized();
 
     void start()
         throws PlexusContainerException;
-    
-    boolean isStarted();
 
     void dispose();
 
@@ -128,24 +101,19 @@ public interface PlexusContainer
 
     Context getContext();
 
+    ClassRealm getContainerRealm();
+
     // ----------------------------------------------------------------------
     // Container setup
     // ----------------------------------------------------------------------
 
-    void setParentPlexusContainer( PlexusContainer parentContainer );
+    //TODO: remove, make the PlexusContainer interface mostly immutable
+    void addContextValue( Object key,
+                          Object value );
 
-    void addContextValue( Object key, Object value );
-
+    //TODO: remove, make the PlexusContainer interface mostly immutable
     void setConfigurationResource( Reader configuration )
         throws PlexusConfigurationResourceException;
-
-    Logger getLogger();
-
-    Object createComponentInstance( ComponentDescriptor componentDescriptor )
-        throws ComponentInstantiationException, ComponentLifecycleException;
-
-    void composeComponent( Object component, ComponentDescriptor componentDescriptor )
-        throws CompositionException, UndefinedComponentComposerException;
 
     // ----------------------------------------------------------------------
     // Discovery
@@ -155,26 +123,10 @@ public interface PlexusContainer
 
     void removeComponentDiscoveryListener( ComponentDiscoveryListener listener );
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
     void addJarRepository( File repository );
-    
-    void addJarResource( File resource ) throws PlexusContainerException;
 
-    ClassRealm getContainerRealm();
-
-    /** @deprecated Use getContainerRealm() instead. */
-    ClassRealm getComponentRealm( String componentKey );
-
-    // ----------------------------------------------------------------------
-    // Start of new programmatic API to fully control the container
-    // ----------------------------------------------------------------------
-
-    void setLoggerManager( LoggerManager loggerManager );
-    
-    LoggerManager getLoggerManager();
+    void addJarResource( File resource )
+        throws PlexusContainerException;
 
     // ----------------------------------------------------------------------
     // Autowiring Support

@@ -1,12 +1,12 @@
 package org.codehaus.plexus.component.factory.java;
 
-import java.lang.reflect.Modifier;
-
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.factory.AbstractComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+
+import java.lang.reflect.Modifier;
 
 /**
  * Component Factory for components written in Java Language which have default no parameter constructor

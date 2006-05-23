@@ -1,6 +1,5 @@
 package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.manager.ComponentManager;
@@ -18,15 +17,18 @@ public class CompositionPhase
     public void execute( Object object, ComponentManager manager )
         throws PhaseExecutionException
     {
-        // We only need to assemble a component if it specifies requirements.
-
-        PlexusContainer container = manager.getContainer();
-
         ComponentDescriptor descriptor = manager.getComponentDescriptor();
+
+        // We only need to perform assembly if the component has requirements
+
+        if ( descriptor.getRequirements() == null )
+        {
+            return;
+        }
 
         try
         {
-            container.composeComponent( object, descriptor );
+            manager.getContainer().getComponentComposerManager().assembleComponent( object, descriptor, manager.getContainer() );
         }
         catch ( CompositionException e )
         {

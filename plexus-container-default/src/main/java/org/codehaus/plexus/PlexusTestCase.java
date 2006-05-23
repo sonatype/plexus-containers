@@ -32,7 +32,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
@@ -42,26 +42,7 @@ public abstract class PlexusTestCase
 {
     protected PlexusContainer container;
 
-    /**
-     * @deprecated Use getBasedir(); instead of accessing this variable directly.
-     *
-     * When removing this variable rename basedirPath to basedir. Trygve.
-     */
-    protected String basedir;
-
-    private static String basedirPath;
-
-    public PlexusTestCase()
-    {
-    }
-
-    /**
-     * @deprecated Use the no arg contstructor.
-     */
-    public PlexusTestCase( String testName )
-    {
-        super( testName );
-    }
+    private static String basedir;
 
     protected void setUp()
         throws Exception
@@ -92,9 +73,6 @@ public abstract class PlexusTestCase
 
         container.addContextValue( "basedir", getBasedir() );
 
-        // this method was deprecated
-        customizeContext();
-
         customizeContext( getContext() );
 
         boolean hasPlexusHome = getContext().contains( "plexus.home" );
@@ -122,6 +100,7 @@ public abstract class PlexusTestCase
     }
 
     protected PlexusContainer createContainerInstance()
+        throws PlexusContainerException
     {
         return new DefaultPlexusContainer();
     }
@@ -130,17 +109,6 @@ public abstract class PlexusTestCase
     {
         return container.getContext();
     }
-
-    //!!! this should probably take a context as a parameter so that the
-    //    user is not forced to do getContainer().addContextValue(..)
-    //    this would require a change to PlexusContainer in order to get
-    //    hold of the context ...
-    // @deprecated use void customizeContext( Context context )
-    protected void customizeContext()
-        throws Exception
-    {
-    }
-
 
     protected void customizeContext( Context context )
         throws Exception
@@ -261,18 +229,18 @@ public abstract class PlexusTestCase
 
     public static String getBasedir()
     {
-        if ( basedirPath != null )
+        if ( basedir != null )
         {
-            return basedirPath;
+            return basedir;
         }
 
-        basedirPath = System.getProperty( "basedir" );
+        basedir = System.getProperty( "basedir" );
 
-        if ( basedirPath == null )
+        if ( basedir == null )
         {
-            basedirPath = new File( "" ).getAbsolutePath();
+            basedir = new File( "" ).getAbsolutePath();
         }
 
-        return basedirPath;
+        return basedir;
     }
 }
