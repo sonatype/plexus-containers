@@ -1,6 +1,6 @@
 package org.codehaus.plexus.component.manager;
 
-import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
@@ -28,7 +28,7 @@ public interface ComponentManagerManager
 
     ComponentManager findComponentManagerByComponentInstance( Object component );
 
-    ComponentManager createComponentManager( ComponentDescriptor descriptor, PlexusContainer container )
+    ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException;
 
     Map getComponentManagers();

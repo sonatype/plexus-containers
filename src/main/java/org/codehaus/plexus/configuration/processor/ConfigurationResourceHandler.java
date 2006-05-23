@@ -1,8 +1,8 @@
 package org.codehaus.plexus.configuration.processor;
 
-import java.util.Map;
-
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+
+import java.util.Map;
 
 /*
  * The MIT License

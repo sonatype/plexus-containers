@@ -62,7 +62,6 @@ public interface Context
 
     boolean contains( Object key );
 
-
     /**
      * Adds the item to the context.
      *
@@ -71,7 +70,6 @@ public interface Context
      * @throws java.lang.IllegalStateException if context is read only
      */
     public void put( Object key, Object value )throws IllegalStateException;
-    
 
     /**
      * Hides the item in the context.
@@ -84,7 +82,6 @@ public interface Context
      */
     void hide( Object key )
         throws IllegalStateException;
-    
 
     /**
      * Make the context read-only.
@@ -92,6 +89,4 @@ public interface Context
      * will result in an IllegalStateException.
      */
     void makeReadOnly();
-    
-    
 }

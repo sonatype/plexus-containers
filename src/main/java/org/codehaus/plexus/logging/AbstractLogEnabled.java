@@ -1,7 +1,5 @@
 package org.codehaus.plexus.logging;
 
-import org.codehaus.plexus.logging.console.ConsoleLogger;
-
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>

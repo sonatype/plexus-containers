@@ -1,8 +1,8 @@
 package org.codehaus.plexus.component.composition;
 
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.PlexusContainer;
 
 import java.util.Map;
 

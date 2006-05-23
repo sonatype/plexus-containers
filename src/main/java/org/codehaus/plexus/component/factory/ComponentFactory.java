@@ -1,8 +1,8 @@
 package org.codehaus.plexus.component.factory;
 
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /** A <code>ServiceFactory</code> is responsible for instantiating a component.
  *

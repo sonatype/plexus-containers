@@ -1,18 +1,21 @@
 package org.codehaus.plexus.component.manager;
 
 
-import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
+import org.codehaus.plexus.component.factory.UndefinedComponentFactoryException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
+import org.codehaus.plexus.util.StringUtils;
 
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
 {
-    private PlexusContainer container;
+    private MutablePlexusContainer container;
 
     private ComponentDescriptor componentDescriptor;
 
@@ -76,10 +79,12 @@ public abstract class AbstractComponentManager
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    public void setup( PlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor )
+    public void setup( MutablePlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor )
     {
         this.container = container;
+
         this.lifecycleHandler = lifecycleHandler;
+
         this.componentDescriptor = componentDescriptor;
     }
 
@@ -90,7 +95,7 @@ public abstract class AbstractComponentManager
     protected Object createComponentInstance()
         throws ComponentInstantiationException, ComponentLifecycleException
     {
-        Object component = container.createComponentInstance( componentDescriptor );
+        Object component = createComponentInstance( componentDescriptor );
 
         startComponentLifecycle( component );
 
@@ -149,7 +154,7 @@ public abstract class AbstractComponentManager
         }
     }
 
-    public PlexusContainer getContainer()
+    public MutablePlexusContainer getContainer()
     {
         return container;
     }
@@ -157,5 +162,45 @@ public abstract class AbstractComponentManager
     public Logger getLogger()
     {
         return container.getLogger();
+    }
+
+    protected Object createComponentInstance( ComponentDescriptor componentDescriptor )
+        throws ComponentInstantiationException, ComponentLifecycleException
+    {
+        String componentFactoryId = componentDescriptor.getComponentFactory();
+
+        ComponentFactory componentFactory = null;
+
+        Object component = null;
+
+        try
+        {
+            if ( componentFactoryId != null )
+            {
+                componentFactory = container.getComponentFactoryManager().findComponentFactory( componentFactoryId );
+            }
+            else
+            {
+                componentFactory = container.getComponentFactoryManager().getDefaultComponentFactory();
+            }
+
+            component = componentFactory.newInstance( componentDescriptor, container.getContainerRealm(), container );
+        }
+        catch ( UndefinedComponentFactoryException e )
+        {
+            throw new ComponentInstantiationException(
+                "Unable to create component as factory '" + componentFactoryId + "' could not be found", e );
+        }
+        finally
+        {
+            // the java factory is a special case, without a component manager.
+            // Don't bother releasing the java factory.
+            if ( StringUtils.isNotEmpty( componentFactoryId ) && !"java".equals( componentFactoryId ) )
+            {
+                release( componentFactory );
+            }
+        }
+
+        return component;
     }
 }

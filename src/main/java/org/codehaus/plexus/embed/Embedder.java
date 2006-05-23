@@ -28,10 +28,10 @@ import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
-import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.PropertyUtils;
 
 import java.io.File;
@@ -43,7 +43,8 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
-public class Embedder implements PlexusEmbedder
+public class Embedder
+    implements PlexusEmbedder
 {
 
     private Reader configurationReader;
@@ -58,8 +59,16 @@ public class Embedder implements PlexusEmbedder
     private boolean embedderStopped = false;
 
     public Embedder()
+        throws EmbedderException
     {
-        container = new DefaultPlexusContainer();
+        try
+        {
+            container = new DefaultPlexusContainer();
+        }
+        catch ( PlexusContainerException e )
+        {
+            throw new EmbedderException( "Error creating embedder.", e );
+        }
     }
 
     public synchronized PlexusContainer getContainer()

@@ -332,6 +332,5 @@ public class ComponentDescriptor
         }
         
         return result;
-    }
-
+    }    
 }

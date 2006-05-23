@@ -1,16 +1,29 @@
 <plexus>
 
-  <!--
-   | o Should probably move the composition resolver out of the component repository, we'll
-   |   just let the repository deal with storing and validating the component descriptors.
-   |   The composition resolution should probably be made part of the composer proper. You
-   |   can see there is some funny business as the resolver is part of the component repository
-   |   currently and the composer is a normal component down there at the bottom. That doesn't
-   |   look right.
-   -->
+  <!-- Remember if you add anything to this file make sure you deal with the additions in the configuration mergere. -->
+
+  <container-initialization>
+    <initialization-phases>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeResourcesPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeContextPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase"/>
+      <initialization-phase implementation="org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase"/>
+    </initialization-phases>
+  </container-initialization>
 
   <!-- Bootstrap components -->
-  <!-- default-component-factory-id>java</default-component-factory-id -->
+
+  <component-lookup-manager implementation="org.codehaus.plexus.DefaultComponentLookupManager"/>
 
   <component-repository implementation="org.codehaus.plexus.component.repository.DefaultComponentRepository">
     <composition-resolver implementation="org.codehaus.plexus.component.composition.DefaultCompositionResolver"/>

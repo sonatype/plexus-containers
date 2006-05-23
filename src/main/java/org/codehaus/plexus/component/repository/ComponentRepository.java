@@ -8,21 +8,17 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Like the avalon component manager. Central point to get the components from.
- * 
- * TODO: Enhance the ComponentRepository so that it can take entire 
- *       ComponentSetDescriptors instead of just ComponentDescriptors.
- */
 public interface ComponentRepository
 {
     void configure( PlexusConfiguration configuration );
 
-    void initialize() throws ComponentRepositoryException;
+    void initialize()
+        throws ComponentRepositoryException;
 
     boolean hasComponent( String role );
 
-    boolean hasComponent( String role, String id );
+    boolean hasComponent( String role,
+                          String id );
 
     void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws ComponentRepositoryException;
