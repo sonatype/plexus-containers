@@ -892,7 +892,7 @@ public class DefaultPlexusContainer
             }
         }
     }
-
+                     
     public Logger getLogger()
     {
         return super.getLogger();
