@@ -9,6 +9,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.logging.LoggerManager;
 
 import java.io.File;
 import java.io.Reader;
@@ -145,4 +146,11 @@ public interface PlexusContainer
     void setReloadingEnabled( boolean reloadingEnabled );
 
     boolean isReloadingEnabled();
+
+    // ----------------------------------------------------------------------------
+    // Required for compatibility
+    // ----------------------------------------------------------------------------
+
+    // Required by maven
+    LoggerManager getLoggerManager();
 }
