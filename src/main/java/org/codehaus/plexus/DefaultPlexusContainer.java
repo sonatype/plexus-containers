@@ -85,6 +85,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.WeakHashMap;
 
 /**
@@ -533,7 +534,13 @@ public class DefaultPlexusContainer
     public void initialize()
         throws PlexusContainerException
     {
-        containerRealm = (ClassRealm) classWorld.getRealms().iterator().next();
+        try
+        {
+            containerRealm = (ClassRealm) classWorld.getRealms().iterator().next();
+        }
+        catch ( NoSuchElementException e )
+        {
+        }
 
         try
         {
@@ -607,6 +614,13 @@ public class DefaultPlexusContainer
     {
         disposeAllComponents();
 
+        boolean needToDisposeRealm = true;
+
+        if ( parentContainer != null && containerRealm.getId() == parentContainer.getContainerRealm().getId() )
+        {
+            needToDisposeRealm = false;
+        }
+
         if ( parentContainer != null )
         {
             parentContainer.removeChildContainer( getName() );
@@ -618,7 +632,10 @@ public class DefaultPlexusContainer
         {
             containerRealm.setParent( null );
 
-            classWorld.disposeRealm( containerRealm.getId() );
+            if ( needToDisposeRealm )
+            {
+                classWorld.disposeRealm( containerRealm.getId() );
+            }
         }
         catch ( NoSuchRealmException e )
         {
