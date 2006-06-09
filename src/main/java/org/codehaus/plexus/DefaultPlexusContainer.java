@@ -610,7 +610,7 @@ public class DefaultPlexusContainer
 
         boolean needToDisposeRealm = true;
 
-        if ( parentContainer != null && containerRealm.getId() == parentContainer.getContainerRealm().getId() )
+        if ( parentContainer != null && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) )
         {
             needToDisposeRealm = false;
         }
