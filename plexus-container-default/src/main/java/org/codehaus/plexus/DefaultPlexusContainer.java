@@ -534,13 +534,7 @@ public class DefaultPlexusContainer
     public void initialize()
         throws PlexusContainerException
     {
-        try
-        {
-            containerRealm = (ClassRealm) classWorld.getRealms().iterator().next();
-        }
-        catch ( NoSuchElementException e )
-        {
-        }
+        containerRealm = (ClassRealm) classWorld.getRealms().iterator().next();
 
         try
         {
