@@ -6,7 +6,7 @@ package org.codehaus.plexus;
  * Copyright (c) 2004, The Codehaus
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
-f * this software and associated documentation files (the "Software"), to deal in
+ * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
  * of the Software, and to permit persons to whom the Software is furnished to do
@@ -43,8 +43,8 @@ import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
@@ -85,7 +85,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.WeakHashMap;
 
 /**
@@ -93,8 +92,8 @@ import java.util.WeakHashMap;
  * //todo register live components so they can be wired
  * //keep track of the interfaces for components
  * //todo allow setting of a live configuraton so applications that embed plexus
- *   can use whatever configuration mechanism they like. They just have to
- *   adapt it into something plexus can understand.
+ * can use whatever configuration mechanism they like. They just have to
+ * adapt it into something plexus can understand.
  * //todo make a typesafe configuration model for the container
  * //todo pico like registration
  * //todo need loggers per execution like in the maven embedder
@@ -179,8 +178,7 @@ public class DefaultPlexusContainer
         this( name, new ClassWorld( "plexus.core", Thread.currentThread().getContextClassLoader() ) );
     }
 
-    public DefaultPlexusContainer( String name,
-                                   ClassLoader classLoader )
+    public DefaultPlexusContainer( String name, ClassLoader classLoader )
         throws PlexusContainerException
     {
         this( name, new ClassWorld( "plexus.core", classLoader ) );
@@ -194,8 +192,7 @@ public class DefaultPlexusContainer
         this.parentContainer = parentContainer;
     }
 
-    public DefaultPlexusContainer( String name,
-                                   ClassWorld classWorld )
+    public DefaultPlexusContainer( String name, ClassWorld classWorld )
         throws PlexusContainerException
     {
         this.name = name;
@@ -231,8 +228,7 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookupList( role );
     }
 
-    public Object lookup( String role,
-                          String roleHint )
+    public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
         return componentLookupManager.lookup( role, roleHint );
@@ -266,18 +262,13 @@ public class DefaultPlexusContainer
         return (PlexusContainer) childContainers.get( name );
     }
 
-    public PlexusContainer createChildContainer( String name,
-                                                 List classpathJars,
-                                                 Map context )
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context )
         throws PlexusContainerException
     {
         return createChildContainer( name, classpathJars, context, Collections.EMPTY_LIST );
     }
 
-    public PlexusContainer createChildContainer( String name,
-                                                 List classpathJars,
-                                                 Map context,
-                                                 List discoveryListeners )
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
         throws PlexusContainerException
     {
         if ( hasChildContainer( name ) )
@@ -493,8 +484,7 @@ public class DefaultPlexusContainer
         return componentRepository.hasComponent( componentKey );
     }
 
-    public boolean hasComponent( String role,
-                                 String roleHint )
+    public boolean hasComponent( String role, String roleHint )
     {
         return componentRepository.hasComponent( role, roleHint );
     }
@@ -656,14 +646,14 @@ public class DefaultPlexusContainer
         componentManagerManager.getComponentManagers().clear();
     }
 
-    public void addContextValue( Object key,
-                                 Object value )
+    public void addContextValue( Object key, Object value )
     {
         context.put( key, value );
     }
 
     /**
      * //todo don't hold this reference - the reader will remain open forever
+     *
      * @see PlexusContainer#setConfigurationResource(Reader)
      */
     public void setConfigurationResource( Reader configuration )
@@ -795,7 +785,7 @@ public class DefaultPlexusContainer
         String s = configuration.getChild( "configurations-directory" ).getValue( null );
 
         if ( s != null )
-          {
+        {
             PlexusConfiguration componentsConfiguration = configuration.getChild( "components" );
 
             File configurationsDirectory = new File( s );
@@ -903,7 +893,7 @@ public class DefaultPlexusContainer
             }
         }
     }
-                     
+
     public Logger getLogger()
     {
         return super.getLogger();
