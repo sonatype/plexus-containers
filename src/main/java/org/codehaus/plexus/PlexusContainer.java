@@ -9,6 +9,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 
 import java.io.File;
@@ -153,4 +154,9 @@ public interface PlexusContainer
 
     // Required by maven
     LoggerManager getLoggerManager();
+
+    /**
+     * @deprecated
+     */
+    Logger getLogger();
 }
