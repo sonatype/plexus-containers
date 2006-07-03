@@ -4,7 +4,6 @@ package org.codehaus.plexus.component.repository;
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a> 
  * 
  * @version $Id$ 
- * @todo Maybe hashCode and equals should use only 'role' 
  */
 public final class ComponentRequirement
 {
@@ -21,7 +20,7 @@ public final class ComponentRequirement
         return fieldName;
     }
 
-    public void setFieldName( final String fieldName )
+    public void setFieldName( String fieldName )
     {
         this.fieldName = fieldName;
     }
@@ -31,7 +30,7 @@ public final class ComponentRequirement
         return role;
     }
 
-    public void setRole( final String role )
+    public void setRole( String role )
     {
         this.role = role;
     }
@@ -41,7 +40,7 @@ public final class ComponentRequirement
         return roleHint;
     }
 
-    public void setRoleHint( final String roleHint )
+    public void setRoleHint( String roleHint )
     {
         this.roleHint = roleHint;
     }
@@ -56,54 +55,6 @@ public final class ComponentRequirement
         return getRole();
     }
 
-
-
-    public String toString()
-    {
-        return "ComponentRequirement{" +
-               "role='" + role + "'" +
-               ", roleHint='" + roleHint + "'" +
-               ", fieldName='" + fieldName + "'" +
-               "}";
-    }
-
-    /**
-     * 
-     */
-    public String getHumanReadableKey()
-    {
-        StringBuffer key = new StringBuffer();
-
-        key.append( "role: '");
-        
-        key.append( getRole() );
-
-        key.append( "'" );
-
-        if ( getRoleHint() != null )
-        {
-            key.append( ", role-hint: '" );
-
-            key.append( getRoleHint() );
-
-            key.append( "'. " );
-        }
-
-        if ( getFieldName() != null )
-        {
-            key.append( ", field name: '" );
-
-            key.append( getFieldName() );
-
-            key.append( "' " );
-        }
-        
-        String retValue = key.toString();
-        
-        return retValue;
-       
-    }
-
     public String getFieldMappingType()
     {
         return fieldMappingType;
@@ -113,7 +64,35 @@ public final class ComponentRequirement
     {
         this.fieldMappingType = fieldType;
     }
-    
+
+    public String toString()
+    {
+        return "ComponentRequirement{" +
+            "role='" + role + "'" + ", " +
+            "roleHint='" + roleHint + "', " +
+            "fieldName='" + fieldName + "'" +
+            "}";
+    }
+
+    public String getHumanReadableKey()
+    {
+        StringBuffer key = new StringBuffer();
+
+        key.append( "role: '").append( getRole() ).append( "'" );
+
+        if ( getRoleHint() != null )
+        {
+            key.append( ", role-hint: '" ).append( getRoleHint() ).append( "'. " );
+        }
+
+        if ( getFieldName() != null )
+        {
+            key.append( ", field name: '" ).append( getFieldName() ).append( "' " );
+        }
+
+        return key.toString();
+    }
+
     public boolean equals( Object other )
     {
         if ( other instanceof ComponentRequirement )
@@ -133,6 +112,4 @@ public final class ComponentRequirement
     {
         return ( role + ":" + roleHint ).hashCode();
     }
-
-
 }
