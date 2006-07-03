@@ -388,7 +388,7 @@ public class DefaultPlexusContainer
 
     public List getComponentDescriptorList( String role )
     {
-        List result = null;
+        List result;
 
         Map componentDescriptorsByHint = getComponentDescriptorMap( role );
 
@@ -768,10 +768,7 @@ public class DefaultPlexusContainer
 
     protected Reader getInterpolationConfigurationReader( Reader reader )
     {
-        InterpolationFilterReader interpolationFilterReader =
-            new InterpolationFilterReader( reader, new ContextMapAdapter( context ) );
-
-        return interpolationFilterReader;
+        return new InterpolationFilterReader( reader, new ContextMapAdapter( context ) );
     }
 
     /**
@@ -792,7 +789,7 @@ public class DefaultPlexusContainer
 
             if ( configurationsDirectory.exists() && configurationsDirectory.isDirectory() )
             {
-                List componentConfigurationFiles = null;
+                List componentConfigurationFiles;
                 try
                 {
                     componentConfigurationFiles =
