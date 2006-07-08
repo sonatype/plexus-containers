@@ -22,6 +22,10 @@ public class DefaultComponentLookupManager
 {
     private MutablePlexusContainer container;
 
+    private Map mapOfComponentMaps;
+
+    private Map mapOfComponentLists;
+
     // ----------------------------------------------------------------------
     // Component Lookup
     // ----------------------------------------------------------------------
@@ -120,7 +124,9 @@ public class DefaultComponentLookupManager
     }
 
     /**
-     * //todo Change this to include components looked up from parents as well...
+     * Return a Map of components for a given role keyed by the component role hint.
+     *
+     * @todo Change this to include components looked up from parents as well...
      */
     public Map lookupMap( String role )
         throws ComponentLookupException
@@ -131,8 +137,6 @@ public class DefaultComponentLookupManager
 
         if ( componentDescriptors != null )
         {
-            // Now we have a map of component descriptors keyed by role hint.
-
             for ( Iterator i = componentDescriptors.keySet().iterator(); i.hasNext(); )
             {
                 String roleHint = (String) i.next();
@@ -147,7 +151,9 @@ public class DefaultComponentLookupManager
     }
 
     /**
-     * //todo Change this to include components looked up from parents as well...
+     * Return a List of components for a given role.
+     *
+     * @todo Change this to include components looked up from parents as well...
      */
     public List lookupList( String role )
         throws ComponentLookupException
@@ -158,8 +164,6 @@ public class DefaultComponentLookupManager
 
         if ( componentDescriptors != null )
         {
-            // Now we have a list of component descriptors.
-
             for ( Iterator i = componentDescriptors.iterator(); i.hasNext(); )
             {
                 ComponentDescriptor descriptor = (ComponentDescriptor) i.next();
