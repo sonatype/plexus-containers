@@ -33,7 +33,7 @@ public class InitializeResourcesPhase
 
                     if ( directory.exists() && directory.isDirectory() )
                     {
-                        context.getContainer().getContainerRealm().addConstituent( directory.toURL() );
+                        context.getContainer().getContainerRealm().addConstituent( directory.toURI().toURL() );
                     }
                 }
                 else
