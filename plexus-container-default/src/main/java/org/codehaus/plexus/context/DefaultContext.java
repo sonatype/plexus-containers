@@ -33,7 +33,7 @@ import java.util.Map;
  * 
  * This implementation is a static hierarchial store. It has the normal <code>get()</code>
  * and <code>put</code> methods. The <code>hide</code> method will hide a property. When
- * a property has been hidden the context will not search in the parent context for the value.
+ * a property has been hidden the containerContext will not search in the parent containerContext for the value.
  *
  * @author <a href="mailto:dev@avalon.codehaus.org">Avalon Development Team</a>
  * @version $Id$
@@ -50,13 +50,13 @@ public class DefaultContext
     /** Parent Context. */
     private Context parent;
 
-    /** Is the context read only. */
+    /** Is the containerContext read only. */
     private boolean readOnly;
 
     /**
      * Create a Context with specified data and parent.
      *
-     * @param contextData the context data
+     * @param contextData the containerContext data
      * @param parent the parent Context (may be null)
      */
     public DefaultContext( Map contextData, Context parent )
@@ -69,7 +69,7 @@ public class DefaultContext
     /**
      * Create a empty Context with specified data.
      *
-     * @param contextData the context data
+     * @param contextData the containerContext data
      */
     public DefaultContext( Map contextData )
     {
@@ -151,7 +151,7 @@ public class DefaultContext
         if ( parent == null )
         {
             // There was no parent, and no data
-            throw new ContextException( "Unable to resolve context key: " + key );
+            throw new ContextException( "Unable to resolve containerContext key: " + key );
         }
 
         return parent.get( key );
@@ -162,7 +162,7 @@ public class DefaultContext
      *
      * @param key the items key
      * @param value the item
-     * @throws java.lang.IllegalStateException if context is read only
+     * @throws java.lang.IllegalStateException if containerContext is read only
      */
     public void put( Object key, Object value )
         throws IllegalStateException
@@ -180,14 +180,14 @@ public class DefaultContext
     }
 
     /**
-     * Hides the item in the context.
+     * Hides the item in the containerContext.
      * 
      * After remove(key) has been called, a get(key)
-     * will always fail, even if the parent context
+     * will always fail, even if the parent containerContext
      * has such a mapping.
      *
      * @param key the items key
-     * @throws java.lang.IllegalStateException if context is read only
+     * @throws java.lang.IllegalStateException if containerContext is read only
      */
     public void hide( Object key )
         throws IllegalStateException
@@ -197,9 +197,9 @@ public class DefaultContext
     }
 
     /**
-     * Utility method to retrieve context data.
+     * Utility method to retrieve containerContext data.
      *
-     * @return the context data
+     * @return the containerContext data
      */
     protected Map getContextData()
     {
@@ -207,7 +207,7 @@ public class DefaultContext
     }
 
     /**
-     * Get parent context if any.
+     * Get parent containerContext if any.
      *
      * @return the parent Context (may be null)
      */
@@ -217,8 +217,8 @@ public class DefaultContext
     }
 
     /**
-     * Make the context read-only.
-     * Any attempt to write to the context via put()
+     * Make the containerContext read-only.
+     * Any attempt to write to the containerContext via put()
      * will result in an IllegalStateException.
      */
     public void makeReadOnly()
@@ -227,9 +227,9 @@ public class DefaultContext
     }
 
     /**
-     * Utility method to check if context is writeable and if not throw exception.
+     * Utility method to check if containerContext is writeable and if not throw exception.
      *
-     * @throws java.lang.IllegalStateException if context is read only
+     * @throws java.lang.IllegalStateException if containerContext is read only
      */
     protected void checkWriteable()
         throws IllegalStateException

@@ -2,6 +2,7 @@ package org.codehaus.plexus.component.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -76,5 +77,23 @@ public class ComponentSetDescriptor
     public void setId( String id )
     {
         this.id = id;
+    }
+
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append( "Component Descriptor: " );
+
+        for ( Iterator i = components.iterator(); i.hasNext(); )
+        {
+            ComponentDescriptor cd = (ComponentDescriptor) i.next();
+
+            sb.append( cd.getHumanReadableKey() ).append( "\n" );
+        }
+
+        sb.append( "---" );
+
+        return sb.toString();
     }
 }

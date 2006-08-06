@@ -24,46 +24,42 @@ package org.codehaus.plexus.embed;
  * SOFTWARE.
  */
 
-import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.util.PropertyUtils;
+import org.codehaus.classworlds.ClassWorld;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
+import java.util.Map;
 
 public class Embedder
     implements PlexusEmbedder
 {
+    protected static final String DEFAULT_CONTAINER_NAME = "embedder";
 
-    private Reader configurationReader;
-
-    /** Context properties */
-    private Properties properties;
-
-    private final DefaultPlexusContainer container;
-
-    private boolean embedderStarted = false;
-
-    private boolean embedderStopped = false;
+    private final MutablePlexusContainer container;
 
     public Embedder()
         throws EmbedderException
     {
+        this( null, null );
+    }
+
+    public Embedder( Map context, String configuration )
+        throws EmbedderException
+    {
+        this( context, configuration, null );
+    }
+
+    public Embedder( Map context, String configuration, ClassWorld classWorld )
+        throws EmbedderException
+    {
         try
         {
-            container = new DefaultPlexusContainer();
+            container = new DefaultPlexusContainer( DEFAULT_CONTAINER_NAME, context, configuration, classWorld );
         }
         catch ( PlexusContainerException e )
         {
@@ -73,11 +69,6 @@ public class Embedder
 
     public synchronized PlexusContainer getContainer()
     {
-        if ( !embedderStarted )
-        {
-            throw new IllegalStateException( "Embedder must be started" );
-        }
-
         return container;
     }
 
@@ -109,54 +100,6 @@ public class Embedder
         getContainer().release( service );
     }
 
-    //public synchronized void setClassLoader( ClassLoader classLoader )
-    //{
-    //    container.setClassLoader( classLoader );
-    //}
-
-    public synchronized void setClassWorld( ClassWorld classWorld )
-    {
-        container.setClassWorld( classWorld );
-    }
-
-    public synchronized void setConfiguration( URL configuration ) throws IOException {
-        if ( embedderStarted || embedderStopped )
-        {
-            throw new IllegalStateException( "Embedder has already been started" );
-        }
-
-        this.configurationReader = new InputStreamReader(configuration.openStream());
-    }
-
-    public synchronized void setConfiguration( Reader configuration ) throws IOException {
-        if ( embedderStarted || embedderStopped )
-        {
-            throw new IllegalStateException( "Embedder has already been started" );
-        }
-
-        this.configurationReader = configuration;
-    }
-
-    public synchronized void addContextValue( Object key, Object value )
-    {
-        if ( embedderStarted || embedderStopped )
-        {
-            throw new IllegalStateException( "Embedder has already been started" );
-        }
-
-        container.addContextValue( key, value );
-    }
-
-    public synchronized void setProperties( Properties properties )
-    {
-         this.properties = properties;
-    }
-
-    public synchronized void setProperties( File file )
-    {
-        properties = PropertyUtils.loadProperties( file );
-    }
-
     // ----------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------
@@ -166,85 +109,8 @@ public class Embedder
         container.setLoggerManager( loggerManager );
     }
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
-    protected synchronized void initializeContext()
-    {
-        Set keys = properties.keySet();
-
-        for ( Iterator iter = keys.iterator(); iter.hasNext(); )
-        {
-            String key = ( String ) iter.next();
-
-            String value = properties.getProperty( key );
-
-            container.addContextValue( key, value );
-        }
-    }
-
-    public synchronized void start( ClassWorld classWorld )
-        throws PlexusContainerException
-    {
-        container.setClassWorld( classWorld );
-
-        start();
-    }
-
-    public synchronized void start()
-        throws PlexusContainerException
-    {
-        if ( embedderStarted )
-        {
-            throw new IllegalStateException( "Embedder already started" );
-        }
-
-        if ( embedderStopped )
-        {
-            throw new IllegalStateException( "Embedder cannot be restarted" );
-        }
-
-        if ( configurationReader != null )
-        {
-            try
-            {
-                container.setConfigurationResource( configurationReader );
-            }
-            catch ( PlexusConfigurationResourceException e )
-            {
-                throw new PlexusContainerException( "Error loading from configuration reader", e );
-            }
-        }
-
-        if ( properties != null)
-        {
-            initializeContext();
-        }
-
-        container.initialize();
-
-        embedderStarted = true;
-
-        container.start();
-    }
-
     public synchronized void stop()
     {
-        if ( embedderStopped )
-        {
-            throw new IllegalStateException( "Embedder already stopped" );
-        }
-
-        if ( !embedderStarted )
-        {
-            throw new IllegalStateException( "Embedder not started" );
-        }
-
         container.dispose();
-
-        embedderStarted = false;
-
-        embedderStopped = true;
     }
 }

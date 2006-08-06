@@ -26,10 +26,13 @@ package org.codehaus.plexus;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.DefaultContext;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.net.URL;
 
 /**
  * @author Jason van Zyl
@@ -42,40 +45,26 @@ public abstract class PlexusTestCase
 {
     protected PlexusContainer container;
 
+    protected Map context;
+
     private static String basedir;
 
     protected void setUp()
         throws Exception
     {
-        InputStream configuration = null;
-
-        try
-        {
-            configuration = getCustomConfiguration();
-
-            if ( configuration == null )
-            {
-                configuration = getConfiguration();
-            }
-        }
-        catch ( Exception e )
-        {
-            System.out.println( "Error with configuration:" );
-
-            System.out.println( "configuration = " + configuration );
-
-            fail( e.getMessage() );
-        }
-
         basedir = getBasedir();
 
-        container = createContainerInstance();
+        // ----------------------------------------------------------------------------
+        // Context Setup
+        // ----------------------------------------------------------------------------
 
-        container.addContextValue( "basedir", getBasedir() );
+        context = new HashMap();
 
-        customizeContext( getContext() );
+        context.put( "basedir", getBasedir() );
 
-        boolean hasPlexusHome = getContext().contains( "plexus.home" );
+        customizeContext( new DefaultContext( context ) );
+
+        boolean hasPlexusHome = context.containsKey( "plexus.home" );
 
         if ( !hasPlexusHome )
         {
@@ -86,40 +75,61 @@ public abstract class PlexusTestCase
                 f.mkdir();
             }
 
-            getContext().put( "plexus.home", f.getAbsolutePath() );
+            context.put( "plexus.home", f.getAbsolutePath() );
         }
 
-        if ( configuration != null )
+        // ----------------------------------------------------------------------------
+        // Configuration
+        // ----------------------------------------------------------------------------
+
+        String config = getCustomConfigurationName();
+
+        if ( config != null )
         {
-            container.setConfigurationResource( new InputStreamReader( configuration ) );
+            InputStream is = getClassLoader().getResourceAsStream( config );
+
+            if ( is == null )
+            {
+                throw new Exception( "The custom configuration specified is null: " + config );
+            }
+
+        }
+        else
+        {
+            config = getConfigurationName( null );
         }
 
-        container.initialize();
+        // Look for a configuration associated with this test but return null if we
+        // can't find one so the container doesn't look for a configuration that we
+        // know doesn't exist. Not all tests have an associated Foo.xml for testing.
 
-        container.start();
+        InputStream is = getClassLoader().getResourceAsStream( config );
+
+        if ( is == null )
+        {
+            config = null;
+        }
+        else
+        {
+            is.close();
+        }
+
+        // ----------------------------------------------------------------------------
+        // Create the container
+        // ----------------------------------------------------------------------------
+
+        container = createContainerInstance( context, config );
     }
 
-    protected PlexusContainer createContainerInstance()
+    protected PlexusContainer createContainerInstance( Map context, String configuration )
         throws PlexusContainerException
     {
-        return new DefaultPlexusContainer();
-    }
-
-    private Context getContext()
-    {
-        return container.getContext();
+        return new DefaultPlexusContainer( "test", context, configuration );
     }
 
     protected void customizeContext( Context context )
         throws Exception
     {
-    }
-
-
-    protected InputStream getCustomConfiguration()
-        throws Exception
-    {
-        return null;
     }
 
     protected void tearDown()
@@ -144,24 +154,18 @@ public abstract class PlexusTestCase
     protected InputStream getConfiguration( String subname )
         throws Exception
     {
-        String className = getClass().getName();
+        return getResourceAsStream( getConfigurationName( subname ) );
+    }
 
-        String base = className.substring( className.lastIndexOf( "." ) + 1 );
+    protected String getCustomConfigurationName()
+    {
+        return null;
+    }
 
-        String config = null;
-
-        if ( subname == null || subname.equals( "" ) )
-        {
-            config = base + ".xml";
-        }
-        else
-        {
-            config = base + "-" + subname + ".xml";
-        }
-        
-        InputStream configStream = getResourceAsStream( config );
-
-        return configStream;
+    protected String getConfigurationName( String subname )
+        throws Exception
+    {
+        return getClass().getName().replace( '.', '/' ) + ".xml";
     }
 
     protected InputStream getResourceAsStream( String resource )
@@ -242,5 +246,19 @@ public abstract class PlexusTestCase
         }
 
         return basedir;
+    }
+
+    public String getTestConfiguration()
+    {
+        return getTestConfiguration( getClass() );
+    }
+
+    public static String getTestConfiguration( Class clazz )
+    {
+        String s = clazz.getName().replace( '.', '/' );
+
+        System.out.println( "s = " + s );
+
+        return s.substring( 0, s.indexOf( "$" ) ) + ".xml";
     }
 }

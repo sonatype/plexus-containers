@@ -30,11 +30,9 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.test.DefaultLoadOnStartService;
 
 import java.io.File;
-import java.io.InputStream;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
  * @version $Id$
  */
 public class PlexusTestCaseTest
@@ -45,17 +43,19 @@ public class PlexusTestCaseTest
     public void setUp()
     {
         basedir = System.getProperty( "basedir" );
-        
-        if(basedir == null)
+
+        if ( basedir == null )
         {
-            basedir = new File(".").getAbsolutePath();
+            basedir = new File( "." ).getAbsolutePath();
         }
     }
 
     public void testPlexusTestCase()
         throws Exception
     {
-        PlexusTestCase tc = new PlexusTestCase() {};
+        PlexusTestCase tc = new PlexusTestCase()
+        {
+        };
 
         tc.setUp();
 
@@ -85,15 +85,11 @@ public class PlexusTestCaseTest
     public void testLoadOnStartComponents()
         throws Exception
     {
-        final InputStream is = this.getClass().getClassLoader().getResourceAsStream( "org/codehaus/plexus/PlexusTestCaseTest.xml" );
-
-        assertNotNull( "Missing configuration", is );
-
-        PlexusTestCase tc = new PlexusTestCase() {
-            protected InputStream getConfiguration()
-                throws Exception
+        PlexusTestCase tc = new PlexusTestCase()
+        {
+            protected String getCustomConfigurationName()
             {
-                return is;
+                return PlexusTestCase.getTestConfiguration( getClass() );
             }
         };
 

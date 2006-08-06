@@ -61,7 +61,7 @@ package org.codehaus.plexus.context;
  *
  * This can be thrown by Context object when a entry is not
  * found. It can also be thrown manually in contextualize()
- * when Component detects a malformed context value.
+ * when Component detects a malformed containerContext value.
  *
  * @author <a href="mailto:dev@avalon.apache.org">Avalon Development Team</a>
  * @version CVS $Revision$ $Date$

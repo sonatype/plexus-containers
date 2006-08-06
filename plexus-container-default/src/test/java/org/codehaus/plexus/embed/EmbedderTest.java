@@ -27,6 +27,8 @@ package org.codehaus.plexus.embed;
 import junit.framework.TestCase;
 
 import java.util.Properties;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author Ben Walding
@@ -39,30 +41,19 @@ public class EmbedderTest
     public void testConfigurationByURL()
         throws Exception
     {
-        PlexusEmbedder embed = new Embedder();
+        Map context = new HashMap();
 
-        embed.setConfiguration( getClass().getResource( "EmbedderTest.xml" ) );
+        context.put( "foo", "bar" );
 
-        embed.addContextValue( "foo", "bar" );
+        context.put( "property1", "value1" );
 
-        Properties contextProperties = new Properties();
+        context.put( "property2", "value2" );
 
-        contextProperties.setProperty( "property1", "value1" );
+        String configuration = getClass().getName().replace( '.', '/' ) + ".xml";
 
-        contextProperties.setProperty( "property2", "value2" );
+        System.out.println( "configuration = " + configuration );
 
-        embed.start();
-
-        try
-        {
-            embed.setConfiguration( getClass().getResource( "EmbedderTest.xml" ) );
-
-            fail();
-        }
-        catch ( IllegalStateException e )
-        {
-            assertTrue( true );
-        }
+        PlexusEmbedder embed = new Embedder( context, configuration );
 
         Object o = embed.lookup( MockComponent.ROLE );
 

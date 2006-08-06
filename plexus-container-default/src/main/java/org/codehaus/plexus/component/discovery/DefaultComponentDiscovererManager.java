@@ -27,15 +27,17 @@ package org.codehaus.plexus.component.discovery;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class DefaultComponentDiscovererManager
     implements ComponentDiscovererManager
 {
     private List componentDiscoverers;
 
-    private List componentDiscoveryListeners;
-
     private List listeners;
+
+    private Map componentDiscoveryListeners;
 
     public List getComponentDiscoverers()
     {
@@ -46,10 +48,13 @@ public class DefaultComponentDiscovererManager
     {
         if ( componentDiscoveryListeners == null )
         {
-            componentDiscoveryListeners = new ArrayList();
+            componentDiscoveryListeners = new LinkedHashMap();
         }
 
-        componentDiscoveryListeners.add( listener );
+        if ( !componentDiscoveryListeners.containsKey( listener.getId() ) )
+        {
+            componentDiscoveryListeners.put( listener.getId(), listener );
+        }
     }
 
     public void removeComponentDiscoveryListener( ComponentDiscoveryListener listener )
@@ -64,7 +69,7 @@ public class DefaultComponentDiscovererManager
     {
         if ( componentDiscoveryListeners != null )
         {
-            for ( Iterator i = componentDiscoveryListeners.iterator(); i.hasNext(); )
+            for ( Iterator i = componentDiscoveryListeners.values().iterator(); i.hasNext(); )
             {
                 ComponentDiscoveryListener listener = (ComponentDiscoveryListener) i.next();
 
@@ -73,7 +78,7 @@ public class DefaultComponentDiscovererManager
         }
     }
 
-    public List getListenerDescriptors()
+    public List getListeners()
     {
         return listeners;
     }

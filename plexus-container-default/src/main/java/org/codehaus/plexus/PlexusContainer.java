@@ -7,16 +7,15 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 
 import java.io.File;
-import java.io.Reader;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface PlexusContainer
 {
@@ -33,14 +32,9 @@ public interface PlexusContainer
     PlexusContainer getChildContainer( String name );
 
     PlexusContainer createChildContainer( String name,
-                                          List classpathJars,
-                                          Map context )
-        throws PlexusContainerException;
-
-    PlexusContainer createChildContainer( String name,
-                                          List classpathJars,
                                           Map context,
-                                          List discoveryListeners )
+                                          String configuration,
+                                          Set jars )
         throws PlexusContainerException;
 
     Object lookup( String componentKey )
@@ -89,33 +83,17 @@ public interface PlexusContainer
     void resume( Object component )
         throws ComponentLifecycleException;
 
-    void initialize()
-        throws PlexusContainerException;
-
-    void start()
-        throws PlexusContainerException;
-
     void dispose();
 
     // ----------------------------------------------------------------------
     // Context
     // ----------------------------------------------------------------------
 
+    void addContextValue( Object key, Object value );
+
     Context getContext();
 
     ClassRealm getContainerRealm();
-
-    // ----------------------------------------------------------------------
-    // Container setup
-    // ----------------------------------------------------------------------
-
-    //TODO: remove, make the PlexusContainer interface mostly immutable
-    void addContextValue( Object key,
-                          Object value );
-
-    //TODO: remove, make the PlexusContainer interface mostly immutable
-    void setConfigurationResource( Reader configuration )
-        throws PlexusConfigurationResourceException;
 
     // ----------------------------------------------------------------------
     // Discovery
@@ -151,6 +129,8 @@ public interface PlexusContainer
     // ----------------------------------------------------------------------------
     // Required for compatibility
     // ----------------------------------------------------------------------------
+
+    void setLoggerManager( LoggerManager loggerManager );
 
     // Required by maven
     LoggerManager getLoggerManager();

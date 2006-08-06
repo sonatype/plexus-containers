@@ -56,10 +56,9 @@ public class JavaComponentFactoryTest
         ClassWorld classWorld = new ClassWorld();
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
-        
-        Embedder embedder = new Embedder();
-        embedder.start( classWorld );
-        
+
+        Embedder embedder = new Embedder( null, null, classWorld );
+
         Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), embedder.getContainer() );
 
         assertNotNull( component );
@@ -80,9 +79,8 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        Embedder embedder = new Embedder();
-        embedder.start( classWorld );
-        
+        Embedder embedder = new Embedder( null, null, classWorld );
+
         factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), embedder.getContainer() );
     }
 
@@ -101,11 +99,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        Embedder embedder = new Embedder();
-        
-        embedder.start( classWorld );
-
-//        container.
+        Embedder embedder = new Embedder( null, null, classWorld );
 
         try
         {
