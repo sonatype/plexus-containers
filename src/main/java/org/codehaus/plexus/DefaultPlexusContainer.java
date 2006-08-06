@@ -279,7 +279,7 @@ public class DefaultPlexusContainer
 
         this.loggerManager = parentContainer.getLoggerManager();
 
-        this.classWorld =  parentContainer.getClassWorld();
+        //this.classWorld =  parentContainer.getClassWorld();
 
         this.containerRealm.setParent( parentContainer.getContainerRealm() );
     }
