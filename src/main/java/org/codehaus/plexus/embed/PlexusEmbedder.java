@@ -20,7 +20,6 @@ import java.util.Properties;
  */
 public interface PlexusEmbedder
 {
-
     PlexusContainer getContainer();
 
     Object lookup( String role ) throws ComponentLookupException;
@@ -33,24 +32,6 @@ public interface PlexusEmbedder
 
     void release( Object service )
         throws ComponentLifecycleException;
-
-    void setClassWorld( ClassWorld classWorld );
-
-    void setConfiguration( URL configuration ) throws IOException;
-
-    void setConfiguration( Reader configuration ) throws IOException;
-
-    void addContextValue( Object key, Object value );
-
-    void setProperties( Properties properties );
-
-    void setProperties( File file );
-
-    void start( ClassWorld classWorld )
-        throws PlexusContainerException, PlexusConfigurationResourceException;
-
-    void start()
-        throws PlexusContainerException, PlexusConfigurationResourceException;
 
     void stop();
 

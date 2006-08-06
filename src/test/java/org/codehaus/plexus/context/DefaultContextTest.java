@@ -61,7 +61,7 @@ public class DefaultContextTest
         // Test removal
         context.put( "name", null );
 
-        // There is no data and no parent context.
+        // There is no data and no parent containerContext.
         try
         {
             context.get( "name" );
@@ -122,7 +122,7 @@ public class DefaultContextTest
         try
         {
             context.get( "test" );
-            fail( "The item \"test\" was hidden in the child context, but could still be retrieved via get()." );
+            fail( "The item \"test\" was hidden in the child containerContext, but could still be retrieved via get()." );
         }
         catch ( ContextException ce )
         {
@@ -134,7 +134,7 @@ public class DefaultContextTest
         try
         {
             child.hide( "test" );
-            fail( "hide() did not throw an exception, even though the context is supposed to be read-only." );
+            fail( "hide() did not throw an exception, even though the containerContext is supposed to be read-only." );
         }
         catch ( IllegalStateException ise )
         {

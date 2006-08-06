@@ -63,29 +63,29 @@ public interface Context
     boolean contains( Object key );
 
     /**
-     * Adds the item to the context.
+     * Adds the item to the containerContext.
      *
      * @param key the key of the item
      * @param value the item
-     * @throws java.lang.IllegalStateException if context is read only
+     * @throws java.lang.IllegalStateException if containerContext is read only
      */
     public void put( Object key, Object value )throws IllegalStateException;
 
     /**
-     * Hides the item in the context.
+     * Hides the item in the containerContext.
      * After remove(key) has been called, a get(key)
-     * will always fail, even if the parent context
+     * will always fail, even if the parent containerContext
      * has such a mapping.
      *
      * @param key the items key
-     * @throws java.lang.IllegalStateException if context is read only
+     * @throws java.lang.IllegalStateException if containerContext is read only
      */
     void hide( Object key )
         throws IllegalStateException;
 
     /**
-     * Make the context read-only.
-     * Any attempt to write to the context via put()
+     * Make the containerContext read-only.
+     * Any attempt to write to the containerContext via put()
      * will result in an IllegalStateException.
      */
     void makeReadOnly();

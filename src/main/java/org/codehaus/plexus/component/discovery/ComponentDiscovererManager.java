@@ -14,5 +14,5 @@ public interface ComponentDiscovererManager
 
     void initialize();
 
-    List getListenerDescriptors();
+    List getListeners();
 }

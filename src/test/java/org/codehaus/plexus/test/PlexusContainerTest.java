@@ -26,19 +26,14 @@ package org.codehaus.plexus.test;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.DefaultPlexusContainer;
-//import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
-import org.codehaus.classworlds.ClassWorld;
-//import org.codehaus.plexus.util.AbstractTestThread;
-//import org.codehaus.plexus.util.TestThreadManager;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,9 +42,9 @@ public class PlexusContainerTest
 {
     private String basedir;
 
-    private InputStream configurationStream;
-
     private ClassLoader classLoader;
+
+    private String configuration;
 
     private DefaultPlexusContainer container;
 
@@ -65,23 +60,21 @@ public class PlexusContainerTest
 
         classLoader = getClass().getClassLoader();
 
-        configurationStream = PlexusContainerTest.class.getResourceAsStream( "PlexusContainerTest.xml" );
-
-        assertNotNull( configurationStream );
+        configuration = getClass().getName().replace( '.', '/' ) + ".xml";
 
         assertNotNull( classLoader );
 
-        container = new DefaultPlexusContainer();
+        // ----------------------------------------------------------------------------
+        // Context
+        // ----------------------------------------------------------------------------
 
-        container.addContextValue( "basedir", basedir );
+        Map context = new HashMap();
 
-        container.addContextValue( "plexus.home", basedir + "/target/plexus-home" );
+        context.put( "basedir", basedir );
 
-        container.setConfigurationResource( new InputStreamReader( configurationStream ) );
+        context.put( "plexus.home", basedir + "/target/plexus-home" );
 
-        container.initialize();
-
-        container.start();
+        container = new DefaultPlexusContainer( "test", context, configuration );
     }
 
     public void tearDown()

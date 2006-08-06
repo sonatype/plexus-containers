@@ -35,16 +35,9 @@ import java.io.InputStream;
 public class DefaultComponentComposerManagerTest
     extends PlexusTestCase
 {
-    protected InputStream getCustomConfiguration()
-        throws Exception
+    protected String getCustomConfigurationName()
     {
-        System.out.println( "Reading custom configuration" );
-
-        final InputStream retValue = getResourceAsStream( "/org/codehaus/plexus/component/composition/components.xml" );
-
-        assertNotNull( retValue );
-
-        return retValue;
+        return "org/codehaus/plexus/component/composition/components.xml";
     }
 
     public void testComposition()

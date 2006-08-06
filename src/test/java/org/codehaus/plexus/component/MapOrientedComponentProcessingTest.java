@@ -56,7 +56,6 @@ public class MapOrientedComponentProcessingTest
         descriptor.setConfiguration( configuration );
 
         Embedder embedder = new Embedder();
-        embedder.start();
 
         embedder.getContainer().addComponentDescriptor( descriptor );
 
@@ -64,10 +63,10 @@ public class MapOrientedComponentProcessingTest
 
         Map context = component.getContext();
 
-        assertTrue( "requirement (LogManager) missing from context.",
+        assertTrue( "requirement (LogManager) missing from containerContext.",
                     ( context.get( "testRequirement" ) instanceof LoggerManager ) );
         
-        assertEquals( "parameter missing from context.", "testValue", context.get( "testParameter" ) );
+        assertEquals( "parameter missing from containerContext.", "testValue", context.get( "testParameter" ) );
     }
 
 }

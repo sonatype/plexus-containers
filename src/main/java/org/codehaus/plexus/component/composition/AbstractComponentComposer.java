@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Jason van Zyl
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
- * @todo just pass around a context {component,descriptor,container}
+ * @todo just pass around a containerContext {component,descriptor,container}
  * @todo cleanup error messaging, pull out of autowire composer and generalize
  */
 public abstract class AbstractComponentComposer
