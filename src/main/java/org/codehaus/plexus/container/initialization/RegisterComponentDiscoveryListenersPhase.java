@@ -27,12 +27,6 @@ public class RegisterComponentDiscoveryListenersPhase
 
                 String role = listenerDescriptor.getRole();
 
-                System.out.println( "containerContext.getContainer() = " + context.getContainer() );
-
-                System.out.println( "containerContext.getContainer().getName() = " + context.getContainer().getName() );
-
-                System.out.println( "role = " + role );
-
                 try
                 {
                     MutablePlexusContainer container = context.getContainer();
@@ -43,8 +37,6 @@ public class RegisterComponentDiscoveryListenersPhase
                     {
                         listener = (ComponentDiscoveryListener) container.getParentContainer().lookup( role );
 
-                        System.out.println( "listener from parent = " + listener );
-
                         if ( listener == null )
                         {
                             listener = (ComponentDiscoveryListener) container.lookup( role );
@@ -54,9 +46,6 @@ public class RegisterComponentDiscoveryListenersPhase
                     {
                         listener = (ComponentDiscoveryListener) container.lookup( role );
                     }
-
-                    System.out.println( "listener this container = " + listener );
-
 
                     container.getComponentDiscovererManager().registerComponentDiscoveryListener( listener );
                 }

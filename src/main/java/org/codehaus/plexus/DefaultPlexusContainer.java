@@ -86,6 +86,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.LinkedList;
 
 /**
  * //todo move lookup code to a separate component
@@ -174,7 +175,7 @@ public class DefaultPlexusContainer
     public DefaultPlexusContainer()
         throws PlexusContainerException
     {
-        this( DEFAULT_CONTAINER_NAME, null );
+        this( DEFAULT_CONTAINER_NAME, null, null, null );
     }
 
     public DefaultPlexusContainer( String name,
@@ -212,7 +213,15 @@ public class DefaultPlexusContainer
             this.classWorld = new ClassWorld( DEFAULT_REALM_NAME, Thread.currentThread().getContextClassLoader() );
         }
 
-        containerRealm = (ClassRealm) this.classWorld.getRealms().iterator().next();
+        try
+        {
+            containerRealm = this.classWorld.getRealm( DEFAULT_REALM_NAME );
+        }
+        catch ( NoSuchRealmException e )
+        {
+            List realms = new LinkedList( this.classWorld.getRealms() );
+            containerRealm = (ClassRealm) realms.get( 0 );
+        }
 
         // ----------------------------------------------------------------------------
         // Context
@@ -238,23 +247,14 @@ public class DefaultPlexusContainer
         // initialization
         if ( configuration != null )
         {
-            try
+            InputStream is = containerRealm.getResourceAsStream( configuration );
+
+            if ( is == null )
             {
-                InputStream is;
-
-                is = this.classWorld.getRealm( DEFAULT_REALM_NAME ).getResourceAsStream( configuration );
-
-                if ( is == null )
-                {
-                    throw new PlexusContainerException( "The specified user configuration '" + configuration + "' is null." );
-                }
-
-                configurationReader = new InputStreamReader( is );
+                throw new PlexusContainerException( "The specified user configuration '" + configuration + "' is null." );
             }
-            catch ( NoSuchRealmException e )
-            {
-                // won't happen
-            }
+
+            configurationReader = new InputStreamReader( is );
         }
 
         initialize();
@@ -394,8 +394,6 @@ public class DefaultPlexusContainer
 
             child.addJarResource( jar );
         }
-
-        child.getContainerRealm().display();
 
         childContainers.put( name, child );
 
@@ -762,8 +760,6 @@ public class DefaultPlexusContainer
         // System userConfiguration
 
         InputStream is = containerRealm.getResourceAsStream( PlexusConstants.BOOTSTRAP_CONFIGURATION );
-
-        containerRealm.display();
 
         if ( is == null )
         {

@@ -257,8 +257,6 @@ public abstract class PlexusTestCase
     {
         String s = clazz.getName().replace( '.', '/' );
 
-        System.out.println( "s = " + s );
-
         return s.substring( 0, s.indexOf( "$" ) ) + ".xml";
     }
 }
