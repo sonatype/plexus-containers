@@ -833,7 +833,7 @@ public class DefaultPlexusContainer
     {
         try
         {
-            containerRealm.addConstituent( jar.toURL() );
+            containerRealm.addConstituent( jar.toURI().toURL() );
 
             //TODO: might not necessarily want to discover components here.
             discoverComponents( containerRealm );
