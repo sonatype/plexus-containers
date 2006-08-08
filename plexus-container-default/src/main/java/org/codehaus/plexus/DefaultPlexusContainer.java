@@ -341,10 +341,124 @@ public class DefaultPlexusContainer
         return (PlexusContainer) childContainers.get( name );
     }
 
+    // ----------------------------------------------------------------------------
+    // The method from alpha-9 for creating child containers
+    // ----------------------------------------------------------------------------
+
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context )
+        throws PlexusContainerException
+    {
+        return createChildContainer( name, classpathJars, context, Collections.EMPTY_LIST );
+    }
+
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
+        throws PlexusContainerException
+    {
+        if ( hasChildContainer( name ) )
+        {
+            throw new DuplicateChildContainerException( getName(), name );
+        }
+
+        DefaultPlexusContainer child = new DefaultPlexusContainer();
+
+        child.classWorld = classWorld;
+
+        ClassRealm childRealm = null;
+
+        String childRealmId = getName() + ".child-container[" + name + "]";
+        try
+        {
+            childRealm = classWorld.getRealm( childRealmId );
+        }
+        catch ( NoSuchRealmException e )
+        {
+            try
+            {
+                childRealm = classWorld.newRealm( childRealmId );
+            }
+            catch ( DuplicateRealmException impossibleError )
+            {
+                getLogger().error( "An impossible error has occurred. After getRealm() failed, newRealm() " +
+                    "produced duplication error on same id!", impossibleError );
+            }
+        }
+
+        //childRealm.setParent( plexusRealm );
+        childRealm.setParent( containerRealm );
+
+        //child.coreRealm = childRealm;
+        child.containerRealm = childRealm;
+
+        //child.plexusRealm = childRealm;
+
+        child.setName( name );
+
+        child.setParentPlexusContainer( this );
+
+        // ----------------------------------------------------------------------
+        // Set all the child elements from the parent that were set
+        // programmatically.
+        // ----------------------------------------------------------------------
+
+        child.setLoggerManager( loggerManager );
+
+        for ( Iterator it = context.entrySet().iterator(); it.hasNext(); )
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+
+            child.addContextValue( entry.getKey(), entry.getValue() );
+        }
+
+        child.initialize();
+
+        for ( Iterator it = classpathJars.iterator(); it.hasNext(); )
+        {
+            Object next = it.next();
+
+            File jar = (File) next;
+
+            child.addJarResource( jar );
+        }
+
+        for ( Iterator it = discoveryListeners.iterator(); it.hasNext(); )
+        {
+            ComponentDiscoveryListener listener = (ComponentDiscoveryListener) it.next();
+
+            child.registerComponentDiscoveryListener( listener );
+        }
+
+        child.start();
+
+        childContainers.put( name, child );
+
+        return child;
+    }
+
+    public void setName( String name )
+    {
+        this.name = name;
+    }
+
+    public void setParentPlexusContainer( PlexusContainer container )
+    {
+        this.parentContainer = container;
+    }
+
+    // ----------------------------------------------------------------------------
+    //
+    // ----------------------------------------------------------------------------
+
+
+
     // A child container should have it's own classworld and not be attached to the parent
     // classloader or we're going to run into severe classloading problems. John started this
     // and must have run into problems as the parent is attached to the child which is not
     // what was intended.
+
+    /*
+
+    Maybe this could be strategized for experiementation. jvz.
+
     public PlexusContainer createChildContainer( String name,
                                                  Map context,
                                                  String configuration,
@@ -399,6 +513,8 @@ public class DefaultPlexusContainer
 
         return child;
     }
+
+    */
 
     // ----------------------------------------------------------------------
     // Component Descriptor Lookup

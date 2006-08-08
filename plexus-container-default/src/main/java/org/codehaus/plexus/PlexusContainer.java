@@ -15,7 +15,6 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface PlexusContainer
 {
@@ -31,11 +30,13 @@ public interface PlexusContainer
 
     PlexusContainer getChildContainer( String name );
 
+    /*
     PlexusContainer createChildContainer( String name,
                                           Map context,
                                           String configuration,
                                           Set jars )
         throws PlexusContainerException;
+    */
 
     Object lookup( String componentKey )
         throws ComponentLookupException;
@@ -139,4 +140,16 @@ public interface PlexusContainer
      * @deprecated
      */
     Logger getLogger();
+
+    // Taken from alpha-9 to keep things working
+
+    void setName( String name );
+
+    void setParentPlexusContainer( PlexusContainer container );
+
+    PlexusContainer createChildContainer( String name, List classpathJars, Map context )
+        throws PlexusContainerException;
+
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
+        throws PlexusContainerException;
 }

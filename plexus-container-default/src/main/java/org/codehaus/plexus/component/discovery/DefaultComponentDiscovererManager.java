@@ -51,9 +51,13 @@ public class DefaultComponentDiscovererManager
             componentDiscoveryListeners = new LinkedHashMap();
         }
 
-        if ( !componentDiscoveryListeners.containsKey( listener.getId() ) )
+        //TODO: want to know the listener by id, but this creates an API incompatibility with maven 2.0.4
+
+        //if ( !componentDiscoveryListeners.containsKey( listener.getId() ) )
+        if ( !componentDiscoveryListeners.containsKey( listener ) )
         {
-            componentDiscoveryListeners.put( listener.getId(), listener );
+            componentDiscoveryListeners.put( listener, listener );
+            //componentDiscoveryListeners.put( listener.getId(), listener );
         }
     }
 
