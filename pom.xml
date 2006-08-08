@@ -7,7 +7,7 @@
   </parent>
   <artifactId>plexus-container-default</artifactId>
   <name>Default Plexus Container</name>
-  <version>1.0-alpha-10-SNAPSHOT</version>
+  <version>1.0-beta-1-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
