@@ -11,9 +11,6 @@
   <name>Parent Plexus Container POM</name>
   <version>1.0.5</version>
   <modules>
-<!-- Broken build
-    <module>plexus-container-artifact</module>
--->
     <module>plexus-container-default</module>
   </modules>
 </project>
