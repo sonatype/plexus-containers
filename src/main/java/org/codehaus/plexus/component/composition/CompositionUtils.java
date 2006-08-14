@@ -7,6 +7,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +41,26 @@ public class CompositionUtils
 
                 componentDescriptors = container.getComponentDescriptorList( role );
 
-                assignment = dependencies.toArray( array );
+                try
+                {
+                    assignment = dependencies.toArray( array );
+                }
+                catch ( ArrayStoreException e )
+                {
+                    Iterator it = dependencies.iterator();
+                    while ( it.hasNext() )
+                    {
+                        Class dependencyClass = it.next().getClass();
+                        if ( !clazz.isAssignableFrom( dependencyClass ) )
+                        {
+                            throw new CompositionException( "Dependency of class " + dependencyClass.getName()
+                                + " in requirement " + requirement + " is not assignable in field of class "
+                                + clazz.getComponentType().getName(), e );
+                        }
+                    }
+                    // never gets here
+                    throw e;
+                }
             }
             else if ( Map.class.isAssignableFrom( clazz ) )
             {

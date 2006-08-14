@@ -37,6 +37,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -136,10 +137,23 @@ public class ArrayConverter
 
             values.add( object );
         }
+        
+        Class componentType = type.getComponentType();
 
-        return values.toArray( (Object []) Array.newInstance( type.getComponentType(), 0 ) );
+        if ( componentType.isPrimitive() && !values.isEmpty() )
+        {
+            Iterator it = values.iterator();
+            while ( it.hasNext() )
+            {
+                it.next().getClass().getName();
+                throw new ComponentConfigurationException( "Can't convert " + it.next().getClass().getName()
+                    + " List to " + componentType.getName() + " array" );
+            }
+        }
+
+        return values.toArray( (Object[]) Array.newInstance( componentType, 0 ) );
     }
-
+    
     protected Collection getDefaultCollection( Class collectionType )
     {
         Collection retValue = null;
