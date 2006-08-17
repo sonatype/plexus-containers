@@ -139,7 +139,7 @@
       <component-composer implementation="org.codehaus.plexus.component.composition.FieldComponentComposer">
         <id>field</id>
       </component-composer>
-      <component-composer implementation="org.codehaus.plexus.component.composition.SetterComponentComposer">
+      <component-composer implementation="org.codehaus.plexus.component.composition.setter.SetterComponentComposer">
         <id>setter</id>
       </component-composer>
       <component-composer implementation="org.codehaus.plexus.component.composition.MapOrientedComponentComposer">

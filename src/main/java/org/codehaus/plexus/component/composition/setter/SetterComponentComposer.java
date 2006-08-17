@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.composition;
+package org.codehaus.plexus.component.composition.setter;
 
 /*
  * The MIT License
@@ -27,6 +27,10 @@ package org.codehaus.plexus.component.composition;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.codehaus.plexus.component.composition.AbstractComponentComposer;
+import org.codehaus.plexus.component.composition.CompositionException;
+import org.codehaus.plexus.component.composition.Requirement;
+import org.codehaus.plexus.component.composition.CompositionUtils;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
