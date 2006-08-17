@@ -64,7 +64,7 @@ public class SetterComponentComposer
         {
             reportErrorFailedToIntrospect( descriptor );
         }
-
+                
         compositionContext.put( PROPERTY_DESCRIPTORS, beanInfo.getPropertyDescriptors() );
 
         return compositionContext;
