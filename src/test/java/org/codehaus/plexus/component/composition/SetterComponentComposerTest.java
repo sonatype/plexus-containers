@@ -31,6 +31,12 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
+import org.codehaus.plexus.component.composition.ComponentF;
+import org.codehaus.plexus.component.composition.SetterComponentComposer;
+import org.codehaus.plexus.component.composition.ComponentA;
+import org.codehaus.plexus.component.composition.ComponentB;
+import org.codehaus.plexus.component.composition.ComponentC;
+
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
