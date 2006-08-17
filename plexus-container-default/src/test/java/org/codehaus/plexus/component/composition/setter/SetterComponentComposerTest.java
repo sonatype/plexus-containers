@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.composition;
+package org.codehaus.plexus.component.composition.setter;
 
 /*
  * The MIT License
@@ -32,7 +32,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
 import org.codehaus.plexus.component.composition.ComponentF;
-import org.codehaus.plexus.component.composition.SetterComponentComposer;
+import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
 import org.codehaus.plexus.component.composition.ComponentA;
 import org.codehaus.plexus.component.composition.ComponentB;
 import org.codehaus.plexus.component.composition.ComponentC;

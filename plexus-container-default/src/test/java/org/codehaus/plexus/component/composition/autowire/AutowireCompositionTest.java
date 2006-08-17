@@ -2,7 +2,7 @@ package org.codehaus.plexus.component.composition.autowire;
 
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.composition.SetterComponentComposer;
+import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
 import org.codehaus.plexus.component.composition.ComponentComposer;
 
 /**

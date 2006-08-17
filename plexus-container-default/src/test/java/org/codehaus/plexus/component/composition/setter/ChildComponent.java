@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.composition;
+package org.codehaus.plexus.component.composition.setter;
 
 /**
  * @author Jason van Zyl
