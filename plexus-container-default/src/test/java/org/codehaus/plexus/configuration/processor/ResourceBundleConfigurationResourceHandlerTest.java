@@ -9,7 +9,7 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
  * @author <a href="mailto:andy@handyande.co.uk">Andrew Williams</a>
- * @version $Id: PropertyConfigurationResourceHandlerTest.java 1747 2005-04-19 05:38:54Z brett $
+ * @version $Id: ResourceBundleConfigurationResourceHandlerTest.java 3657 $
  */
 public class ResourceBundleConfigurationResourceHandlerTest
     extends TestCase

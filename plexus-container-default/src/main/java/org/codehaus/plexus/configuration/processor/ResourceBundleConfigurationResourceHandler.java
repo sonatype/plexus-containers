@@ -6,8 +6,8 @@ import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import java.util.*;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id: FileConfigurationResourceHandler.java 3329 2006-05-23 06:47:54Z jvanzyl $
+ * @author <a href="mailto:andy@handyande.co.uk">Andrew Williams</a>
+ * @version $Id: ResourceBundleConfigurationResourceHandler.java 3657 $
  */
 public class ResourceBundleConfigurationResourceHandler
     extends AbstractConfigurationResourceHandler
