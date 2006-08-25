@@ -184,10 +184,10 @@ public class DefaultPlexusContainer
         this( name, new ClassWorld( "plexus.core", classLoader ) );
     }
 
-    public DefaultPlexusContainer( String name, ClassLoader classLoader, Reader configurationReader )
+    public DefaultPlexusContainer( String name, ClassLoader classLoader, Reader configurationReader, Map context )
         throws PlexusContainerException
     {
-        this( name, new ClassWorld( "plexus.core", classLoader ), configurationReader );
+        this( name, new ClassWorld( "plexus.core", classLoader ), configurationReader, context );
     }
 
     public DefaultPlexusContainer( String name, ClassWorld classWorld, PlexusContainer parentContainer )
@@ -201,10 +201,10 @@ public class DefaultPlexusContainer
     public DefaultPlexusContainer( String name, ClassWorld classWorld )
         throws PlexusContainerException
     {
-        this( name, classWorld, (Reader) null );
+        this( name, classWorld, null, null );
     }
 
-    private DefaultPlexusContainer( String name, ClassWorld classWorld, Reader configurationReader )
+    private DefaultPlexusContainer( String name, ClassWorld classWorld, Reader configurationReader, Map context )
         throws PlexusContainerException
     {
         this.name = name;
@@ -212,6 +212,16 @@ public class DefaultPlexusContainer
         this.classWorld = classWorld;
 
         this.context = new DefaultContext();
+
+        if ( context != null )
+        {
+            for ( Iterator i = context.entrySet().iterator(); i.hasNext(); )
+            {
+                Map.Entry entry = (Map.Entry) i.next();
+    
+                this.context.put( entry.getKey(), entry.getValue() );
+            }
+        }
 
         this.configurationReader = configurationReader;
 
