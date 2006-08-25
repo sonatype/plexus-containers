@@ -184,6 +184,12 @@ public class DefaultPlexusContainer
         this( name, new ClassWorld( "plexus.core", classLoader ) );
     }
 
+    public DefaultPlexusContainer( String name, ClassLoader classLoader, Reader configurationReader )
+        throws PlexusContainerException
+    {
+        this( name, new ClassWorld( "plexus.core", classLoader ), configurationReader );
+    }
+
     public DefaultPlexusContainer( String name, ClassWorld classWorld, PlexusContainer parentContainer )
         throws PlexusContainerException
     {
@@ -195,11 +201,19 @@ public class DefaultPlexusContainer
     public DefaultPlexusContainer( String name, ClassWorld classWorld )
         throws PlexusContainerException
     {
+        this( name, classWorld, (Reader) null );
+    }
+
+    private DefaultPlexusContainer( String name, ClassWorld classWorld, Reader configurationReader )
+        throws PlexusContainerException
+    {
         this.name = name;
 
         this.classWorld = classWorld;
 
         this.context = new DefaultContext();
+
+        this.configurationReader = configurationReader;
 
         initialize();
 
