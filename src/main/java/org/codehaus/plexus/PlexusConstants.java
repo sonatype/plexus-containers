@@ -2,6 +2,9 @@ package org.codehaus.plexus;
 
 public abstract class PlexusConstants
 {
+    /** Context key for the variable that determines whether to load the container configuration file. */
+    public static final String IGNORE_CONTAINER_CONFIGURATION = "plexus.ignoreContainerConfiguration";
+
     /** Location of plexus bootstrap configuration file. */
     public static final String BOOTSTRAP_CONFIGURATION = "org/codehaus/plexus/plexus-bootstrap.xml";
 
