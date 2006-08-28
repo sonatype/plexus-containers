@@ -716,6 +716,11 @@ e.printStackTrace();
         return containerRealm;
     }
 
+    public void setContainerRealm( ClassRealm containerRealm )
+    {
+        this.containerRealm = containerRealm;
+    }
+
     // ----------------------------------------------------------------------
     // Context
     // ----------------------------------------------------------------------
