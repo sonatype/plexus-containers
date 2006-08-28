@@ -85,6 +85,7 @@
         <id>basic</id>
         <begin-segment>
           <phase implementation="org.codehaus.plexus.personality.plexus.lifecycle.phase.LogEnablePhase"/>
+          <phase implementation="org.codehaus.plexus.personality.plexus.lifecycle.phase.ContextualizePhase"/>
           <phase implementation="org.codehaus.plexus.personality.plexus.lifecycle.phase.AutoConfigurePhase"/>
           <phase implementation="org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializePhase"/>
           <phase implementation="org.codehaus.plexus.personality.plexus.lifecycle.phase.StartPhase"/>
@@ -127,11 +128,6 @@
   <component-factory-manager implementation="org.codehaus.plexus.component.factory.DefaultComponentFactoryManager">
     <default-component-factory-id>java</default-component-factory-id>
     <default-component-factory implementation="org.codehaus.plexus.component.factory.java.JavaComponentFactory"/>
-    <!-- component-factories>
-      <component-factory implementation="org.codehaus.plexus.component.factory.java.JavaComponentFactory">
-        <id>java</id>
-      </component-factory>
-    </component-factories -->
   </component-factory-manager>
 
   <component-composer-manager implementation="org.codehaus.plexus.component.composition.DefaultComponentComposerManager">

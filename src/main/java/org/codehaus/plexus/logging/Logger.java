@@ -110,11 +110,6 @@ public interface Logger
 
     boolean isFatalErrorEnabled();
 
-    /**
-     * This one probably shouldn't be deprecated after all. One useful use case is when
-     * you have a server that creates a lot of threads and would like to create a child
-     * logger pr thread.
-     */
     Logger getChildLogger( String name );
 
     int getThreshold();
