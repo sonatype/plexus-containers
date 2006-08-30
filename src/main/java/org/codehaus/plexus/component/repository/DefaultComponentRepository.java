@@ -176,8 +176,8 @@ public class DefaultComponentRepository
                 ComponentDescriptor desc = (ComponentDescriptor) componentDescriptors.get( role );
                 if ( desc.getRoleHint() == null )
                 {
-                    String message = "Component descriptor " + componentDescriptor.getHumanReadableKey() +
-                        " has a hint, but there are other implementations that don't";
+                    String message = "Component descriptor " + componentDescriptor.getHumanReadableKey()
+                        + " has a hint, but implementation " + desc.getImplementation() + " doesn't";
                     throw new ComponentRepositoryException( message );
                 }
             }
