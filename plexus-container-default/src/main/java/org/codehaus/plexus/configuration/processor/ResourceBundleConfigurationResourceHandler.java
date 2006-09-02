@@ -14,7 +14,7 @@ public class ResourceBundleConfigurationResourceHandler
 {
     public String getId()
     {
-        return "property-configuration-resource";
+        return "resourcebundle-configuration-resource";
     }
 
     public PlexusConfiguration[] handleRequest( Map parameters )
