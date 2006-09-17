@@ -231,10 +231,6 @@ public class DefaultPlexusContainer
         }
 
         this.configurationReader = configurationReader;
-
-        //initialize();
-
-        //start();
     }
 
     // ----------------------------------------------------------------------------
