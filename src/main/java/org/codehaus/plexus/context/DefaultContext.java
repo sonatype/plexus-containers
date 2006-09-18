@@ -201,7 +201,7 @@ public class DefaultContext
      *
      * @return the context data
      */
-    protected Map getContextData()
+    public Map getContextData()
     {
         return contextData;
     }

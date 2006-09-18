@@ -26,10 +26,14 @@ package org.codehaus.plexus;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.DefaultContext;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Jason van Zyl
@@ -47,6 +51,38 @@ public abstract class PlexusTestCase
     protected void setUp()
         throws Exception
     {
+        basedir = getBasedir();
+
+        // ----------------------------------------------------------------------------
+        // Context Setup
+        // ----------------------------------------------------------------------------
+
+        Map context = new HashMap();
+
+        context.put( "basedir", getBasedir() );
+
+        boolean hasPlexusHome = context.containsKey( "plexus.home" );
+
+        if ( !hasPlexusHome )
+        {
+            File f = getTestFile( "target/plexus-home" );
+
+            if ( !f.isDirectory() )
+            {
+                f.mkdir();
+            }
+
+            context.put( "plexus.home", f.getAbsolutePath() );
+        }
+
+        DefaultContext ctx = new DefaultContext( context );
+
+        customizeContext( ctx );
+
+        // ----------------------------------------------------------------------------
+        // Configuration
+        // ----------------------------------------------------------------------------
+
         InputStream configuration = null;
 
         try
@@ -67,42 +103,24 @@ public abstract class PlexusTestCase
             fail( e.getMessage() );
         }
 
-        basedir = getBasedir();
+        // ----------------------------------------------------------------------------
+        // Create the container
+        // ----------------------------------------------------------------------------
 
-        container = createContainerInstance();
+        container = createContainerInstance( ctx.getContextData(), configuration );
+    }
 
-        container.addContextValue( "basedir", getBasedir() );
-
-        customizeContext( getContext() );
-
-        boolean hasPlexusHome = getContext().contains( "plexus.home" );
-
-        if ( !hasPlexusHome )
-        {
-            File f = getTestFile( "target/plexus-home" );
-
-            if ( !f.isDirectory() )
-            {
-                f.mkdir();
-            }
-
-            getContext().put( "plexus.home", f.getAbsolutePath() );
-        }
+    protected PlexusContainer createContainerInstance( Map context, InputStream configuration )
+        throws PlexusContainerException
+    {
+        Reader reader = null;
 
         if ( configuration != null )
         {
-            container.setConfigurationResource( new InputStreamReader( configuration ) );
+            reader = new InputStreamReader( configuration );
         }
 
-        container.initialize();
-
-        container.start();
-    }
-
-    protected PlexusContainer createContainerInstance()
-        throws PlexusContainerException
-    {
-        return new DefaultPlexusContainer();
+        return new DefaultPlexusContainer( reader, context );
     }
 
     private Context getContext()

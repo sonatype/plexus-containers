@@ -173,10 +173,10 @@ public class DefaultPlexusContainer
         this( "default" );
     }
 
-    public DefaultPlexusContainer( Reader configurationReader )
+    public DefaultPlexusContainer( Reader configurationReader, Map context )
         throws PlexusContainerException
     {
-        this( "default", Thread.currentThread().getContextClassLoader(), configurationReader, null );
+        this( "default", Thread.currentThread().getContextClassLoader(), configurationReader, context );
     }
 
     public DefaultPlexusContainer( String name )
@@ -231,6 +231,10 @@ public class DefaultPlexusContainer
         }
 
         this.configurationReader = configurationReader;
+
+        initialize();
+
+        start();
     }
 
     // ----------------------------------------------------------------------------
