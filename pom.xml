@@ -3,13 +3,13 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus</artifactId>
-    <version>1.0.8-SNAPSHOT</version>
+    <version>1.0.8</version>
   </parent>
   <groupId>org.codehaus.plexus</groupId>
   <artifactId>plexus-containers</artifactId>
   <packaging>pom</packaging>
   <name>Parent Plexus Container POM</name>
-  <version>1.0.6-SNAPSHOT</version>
+  <version>1.0.6</version>
   <modules>
     <module>plexus-container-default</module>
   </modules>
