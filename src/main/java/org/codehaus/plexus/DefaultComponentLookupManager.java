@@ -195,6 +195,31 @@ public class DefaultComponentLookupManager
         return lookup( role + roleHint );
     }
 
+    public Object lookup( Class componentClass )
+        throws ComponentLookupException
+    {
+        return lookup( componentClass.getName() );
+    }
+
+    public Map lookupMap( Class role )
+        throws ComponentLookupException
+    {
+        return lookupMap( role.getName() );
+    }
+
+    public List lookupList( Class role )
+        throws ComponentLookupException
+    {
+        return lookupList( role.getName() );
+    }
+
+    public Object lookup( Class role,
+                   String roleHint )
+        throws ComponentLookupException
+    {
+        return lookup( role.getName(), roleHint );
+    }
+
     public void setContainer( MutablePlexusContainer container )
     {
         this.container = container;
