@@ -313,6 +313,31 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookup( role, roleHint );
     }
 
+    public Object lookup( Class componentClass )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookup( componentClass );
+    }
+
+    public Map lookupMap( Class role )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupMap( role );
+    }
+
+    public List lookupList( Class role )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupList( role );
+    }
+
+    public Object lookup( Class role,
+                          String roleHint )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookup( role, roleHint );
+    }
+
     // ----------------------------------------------------------------------
     // Timestamping Methods
     // ----------------------------------------------------------------------

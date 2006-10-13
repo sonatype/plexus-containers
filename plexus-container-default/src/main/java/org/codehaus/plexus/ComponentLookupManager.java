@@ -25,5 +25,18 @@ public interface ComponentLookupManager
                    String roleHint )
         throws ComponentLookupException;
 
+    Object lookup( Class componentClass )
+        throws ComponentLookupException;
+
+    Map lookupMap( Class role )
+        throws ComponentLookupException;
+
+    List lookupList( Class role )
+        throws ComponentLookupException;
+
+    Object lookup( Class role,
+                   String roleHint )
+        throws ComponentLookupException;
+
     void setContainer( MutablePlexusContainer container );
 }

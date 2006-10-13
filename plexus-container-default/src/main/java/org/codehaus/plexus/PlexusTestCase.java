@@ -194,6 +194,18 @@ public abstract class PlexusTestCase
         return getContainer().lookup( role, id );
     }
 
+    protected Object lookup( Class componentClass )
+        throws Exception
+    {
+        return getContainer().lookup( componentClass );
+    }
+
+    protected Object lookup( Class role, String id )
+        throws Exception
+    {
+        return getContainer().lookup( role, id );
+    }
+
     protected void release( Object component )
         throws Exception
     {
