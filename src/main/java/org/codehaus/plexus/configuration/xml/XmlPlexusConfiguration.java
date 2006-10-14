@@ -219,72 +219,71 @@ public class XmlPlexusConfiguration
 
     private void display( PlexusConfiguration c, StringBuffer sb, int depth )
     {
-        sb.append( indent( depth ) ).
-            append( '<' ).
-            append( c.getName() );
-
-        attributes( c, sb );
-
-        sb.append( '>' ).
-            append( '\n' );
-
         int count = c.getChildCount();
 
-        for ( int i = 0; i < count; i++ )
+        if (count == 0)
         {
-            PlexusConfiguration child = c.getChild( i );
-
-            int childCount = child.getChildCount();
-
-            depth++;
-
-            if ( childCount > 0 )
-            {
-                display( child, sb, depth );
-            }
-            else
-            {
-                String value = child.getValue( null );
-
-                if ( value != null )
-                {
-                    sb.append( indent( depth ) ).
-                        append( '<' ).
-                        append( child.getName() );
-
-                    attributes( child, sb );
-
-                    sb.append( '>' ).
-                        append( child.getValue( null ) ).
-                        append( '<' ).
-                        append( '/' ).
-                        append( child.getName() ).
-                        append( '>' ).
-                        append( '\n' );
-                }
-                else
-                {
-                    sb.append( indent( depth ) ).
-                        append( '<' ).
-                        append( child.getName() );
-
-                    attributes( child, sb );
-
-                    sb.append( '/' ).
-                        append( '>' ).
-                        append( "\n" );
-                }
-            }
-
-            depth--;
+            displayTag( c, sb, depth );
         }
+        else
+        {
+            sb.append( indent( depth ) ).
+                append( '<' ).
+                append( c.getName() );
 
-        sb.append( indent( depth ) ).
-            append( '<' ).
-            append( '/' ).
-            append( c.getName() ).
-            append( '>' ).
-            append( '\n' );
+            attributes( c, sb );
+
+            sb.append( '>' ).
+                append( '\n' );
+
+            for ( int i = 0; i < count; i++ )
+            {
+                PlexusConfiguration child = c.getChild( i );
+
+                display( child, sb, depth + 1 );
+            }
+
+            sb.append( indent( depth ) ).
+                append( '<' ).
+                append( '/' ).
+                append( c.getName() ).
+                append( '>' ).
+                append( '\n' );
+        }
+    }
+
+    private void displayTag( PlexusConfiguration c, StringBuffer sb, int depth )
+    {
+        String value = c.getValue( null );
+
+        if ( value != null )
+        {
+            sb.append( indent( depth ) ).
+                append( '<' ).
+                append( c.getName() );
+
+            attributes( c, sb );
+
+            sb.append( '>' ).
+                append( c.getValue( null ) ).
+                append( '<' ).
+                append( '/' ).
+                append( c.getName() ).
+                append( '>' ).
+                append( '\n' );
+        }
+        else
+        {
+            sb.append( indent( depth ) ).
+                append( '<' ).
+                append( c.getName() );
+
+            attributes( c, sb );
+
+            sb.append( '/' ).
+                append( '>' ).
+                append( "\n" );
+        }
     }
 
     private void attributes( PlexusConfiguration c, StringBuffer sb )

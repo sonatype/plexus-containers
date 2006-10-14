@@ -95,7 +95,9 @@ public final class XmlPlexusConfigurationTest
     {
         PlexusConfiguration c = ConfigurationTestHelper.getTestConfiguration();
 
-        assertEquals( "<string string=\"string\">\n</string>\n", c.getChild( "string" ).toString() );
+        assertEquals( "<string string=\"string\">string</string>\n", c.getChild( "string" ).toString() );
+
+        assertEquals( "<singleton attribute=\"attribute\"/>\n", c.getChild( "singleton" ).toString() );
     }
 }
 

@@ -46,6 +46,7 @@ public abstract class ConfigurationTestHelper
     {
         return "<configuration>" +
                "<empty-element></empty-element>" +
+               "<singleton attribute='attribute' />" +
                "<string string='string'>string</string>" +
                "<number number='0'>0</number>" +
                "<not-a-number not-a-number='foo'>not-a-number</not-a-number>" +
@@ -62,6 +63,8 @@ public abstract class ConfigurationTestHelper
 
         // Values
 
+        assertNull( c.getChild( "singleton" ).getValue( null ) );
+
         // String
 
         assertEquals( "string", c.getValue( "string" ) );
@@ -75,5 +78,11 @@ public abstract class ConfigurationTestHelper
         assertEquals( "''", "'" + c.getChild( "empty-element" ).getValue() + "'" );
 
         assertEquals( "", c.getChild( "empty-element" ).getValue( null ) );
+
+        // Attributes
+
+        assertEquals( "string", c.getChild( "string" ).getAttribute( "string" ));
+
+        assertEquals( "attribute", c.getChild( "singleton" ).getAttribute( "attribute" ));
     }
 }
