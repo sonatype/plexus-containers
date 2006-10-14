@@ -89,5 +89,13 @@ public final class XmlPlexusConfigurationTest
 
         assertEquals( 1, configuration.getChildCount() );
     }
+
+    public void testToString()
+       throws Exception
+    {
+        PlexusConfiguration c = ConfigurationTestHelper.getTestConfiguration();
+
+        assertEquals( "<string string=\"string\">\n</string>\n", c.getChild( "string" ).toString() );
+    }
 }
 
