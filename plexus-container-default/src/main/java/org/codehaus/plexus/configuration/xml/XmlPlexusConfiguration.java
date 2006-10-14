@@ -221,8 +221,11 @@ public class XmlPlexusConfiguration
     {
         sb.append( indent( depth ) ).
             append( '<' ).
-            append( c.getName() ).
-            append( '>' ).
+            append( c.getName() );
+
+        attributes( c, sb );
+
+        sb.append( '>' ).
             append( '\n' );
 
         int count = c.getChildCount();
