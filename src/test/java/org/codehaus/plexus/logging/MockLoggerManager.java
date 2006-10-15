@@ -35,7 +35,7 @@ public class MockLoggerManager
     {
     }
 
-    public void setAllThresholds(int threshold)
+    public void setThresholds(int threshold)
     {
     }
 

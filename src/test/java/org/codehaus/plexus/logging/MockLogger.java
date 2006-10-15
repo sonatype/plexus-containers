@@ -118,4 +118,8 @@ class MockLogger
     {
         return 0;
     }
+
+    public void setThreshold( int threshold )
+    {
+    }
 }
