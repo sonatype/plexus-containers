@@ -51,7 +51,7 @@ public final class ConsoleLoggerManagerTest
         Logger logger = manager.getLoggerForComponent( "test" );
         assertEquals( logger.getThreshold(), Logger.LEVEL_ERROR );
 
-        manager.setAllThresholds( Logger.LEVEL_DEBUG );
+        manager.setThresholds( Logger.LEVEL_DEBUG );
         assertEquals( logger.getThreshold(), Logger.LEVEL_DEBUG );
     }
 }
