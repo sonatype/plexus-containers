@@ -86,7 +86,7 @@ public class ConsoleLoggerManager
         this.currentThreshold = currentThreshold;
     }
 
-    public void setAllThresholds( int currentThreshold )
+    public void setThresholds( int currentThreshold )
     {
         this.currentThreshold = currentThreshold;
 
