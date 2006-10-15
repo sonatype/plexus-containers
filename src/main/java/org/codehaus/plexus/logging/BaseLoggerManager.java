@@ -4,6 +4,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Iterator;
 
 /**
  * Base class for all LoggerManagers which use cache of Loggers.
@@ -69,6 +70,24 @@ public abstract class BaseLoggerManager
     public void setThreshold( int currentThreshold )
     {
         this.currentThreshold = currentThreshold;
+    }
+
+    /**
+     * Sets the threshold for all new loggers. It will NOT affect the existing loggers.
+     * <p/>
+     * This is usually only set once while the logger manager is configured.
+     *
+     * @param currentThreshold The new threshold.
+     */
+    public void setAllThresholds( int currentThreshold )
+    {
+        this.currentThreshold = currentThreshold;
+
+        for ( Iterator logs = loggerCache.values().iterator(); logs.hasNext(); )
+        {
+            Logger logger = (Logger) logs.next();
+            logger.setThreshold( currentThreshold );
+        }
     }
 
     /**

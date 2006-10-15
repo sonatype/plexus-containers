@@ -114,5 +114,7 @@ public interface Logger
 
     int getThreshold();
 
+    void setThreshold( int threshold );
+
     String getName();
 }
