@@ -7,6 +7,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Iterator;
 
 /**
  * This is a simple logger manager that will only write the logging statements to the console.
@@ -83,6 +84,17 @@ public class ConsoleLoggerManager
     public void setThreshold( int currentThreshold )
     {
         this.currentThreshold = currentThreshold;
+    }
+
+    public void setAllThresholds( int currentThreshold )
+    {
+        this.currentThreshold = currentThreshold;
+
+        for ( Iterator logs = loggers.values().iterator(); logs.hasNext(); )
+        {
+            ConsoleLogger logger = (ConsoleLogger) logs.next();
+            logger.setThreshold( currentThreshold );
+        }
     }
 
     /**

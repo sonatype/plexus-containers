@@ -26,6 +26,7 @@ package org.codehaus.plexus.logging.console;
 
 import org.codehaus.plexus.logging.AbstractLoggerManagerTest;
 import org.codehaus.plexus.logging.LoggerManager;
+import org.codehaus.plexus.logging.Logger;
 
 /**
  * Test for {@link org.codehaus.plexus.logging.console.ConsoleLoggerManager} and 
@@ -40,5 +41,17 @@ public final class ConsoleLoggerManagerTest
     protected LoggerManager createLoggerManager() throws Exception
     {
         return (LoggerManager)lookup(LoggerManager.ROLE);
+    }
+
+    public void testSetAllThresholds() throws Exception
+    {
+        LoggerManager manager = createLoggerManager();
+        manager.setThreshold( Logger.LEVEL_ERROR );
+
+        Logger logger = manager.getLoggerForComponent( "test" );
+        assertEquals( logger.getThreshold(), Logger.LEVEL_ERROR );
+
+        manager.setAllThresholds( Logger.LEVEL_DEBUG );
+        assertEquals( logger.getThreshold(), Logger.LEVEL_DEBUG );
     }
 }

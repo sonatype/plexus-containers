@@ -25,6 +25,14 @@ public interface LoggerManager
      */
     int getThreshold();
 
+    /**
+     * Sets the threshold for all loggers. It affects all the existing loggers
+     * as well as future loggers.
+     *
+     * @param threshold The new threshold.
+     */
+    void setAllThresholds( int threshold );
+
     // The new stuff
     void setThreshold( String role, int threshold );
 
