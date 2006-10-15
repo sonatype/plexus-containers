@@ -35,6 +35,10 @@ public class MockLoggerManager
     {
     }
 
+    public void setAllThresholds(int threshold)
+    {
+    }
+
     public int getThreshold()
     {
         return 0;
