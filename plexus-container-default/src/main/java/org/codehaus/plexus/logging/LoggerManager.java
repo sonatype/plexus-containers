@@ -31,7 +31,7 @@ public interface LoggerManager
      *
      * @param threshold The new threshold.
      */
-    void setAllThresholds( int threshold );
+    void setThresholds( int threshold );
 
     // The new stuff
     void setThreshold( String role, int threshold );

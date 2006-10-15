@@ -79,7 +79,7 @@ public abstract class BaseLoggerManager
      *
      * @param currentThreshold The new threshold.
      */
-    public void setAllThresholds( int currentThreshold )
+    public void setThresholds( int currentThreshold )
     {
         this.currentThreshold = currentThreshold;
 
