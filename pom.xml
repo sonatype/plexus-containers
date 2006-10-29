@@ -11,6 +11,7 @@
   <name>Parent Plexus Container POM</name>
   <version>1.0.6</version>
   <modules>
+    <module>plexus-component-api</module>
     <module>plexus-container-default</module>
   </modules>
 </project>
