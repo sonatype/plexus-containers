@@ -92,7 +92,7 @@ public class ConsoleLoggerManager
 
         for ( Iterator logs = loggers.values().iterator(); logs.hasNext(); )
         {
-            ConsoleLogger logger = (ConsoleLogger) logs.next();
+            Logger logger = (Logger) logs.next();
             logger.setThreshold( currentThreshold );
         }
     }
