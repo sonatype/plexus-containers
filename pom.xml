@@ -9,7 +9,11 @@
   <artifactId>plexus-containers</artifactId>
   <packaging>pom</packaging>
   <name>Parent Plexus Container POM</name>
-  <version>1.0.6</version>
+  <version>1.0.7-SNAPSHOT</version>
+  <scm>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/trunk/</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/trunk</developerConnection>
+  </scm>
   <modules>
     <module>plexus-component-api</module>
     <module>plexus-container-default</module>
