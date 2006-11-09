@@ -33,12 +33,12 @@ public class JavaComponentFactory
 
             if ( Modifier.isInterface( modifiers ) )
             {
-                throw new ComponentInstantiationException( "Cannot instanciate implementation '" + implementation + "' because the class is a interface." );
+                throw new ComponentInstantiationException( "Cannot instantiate implementation '" + implementation + "' because the class is a interface." );
             }
 
             if ( Modifier.isAbstract( modifiers ) )
             {
-                throw new ComponentInstantiationException( "Cannot instanciate implementation '" + implementation + "' because the class is abstract." );
+                throw new ComponentInstantiationException( "Cannot instantiate implementation '" + implementation + "' because the class is abstract." );
             }
 
             Object instance = implementationClass.newInstance();
@@ -72,7 +72,7 @@ public class JavaComponentFactory
 
         componentClassRealm.display();
 
-        String msg = "Could not instanciate component: " + componentDescriptor.getHumanReadableKey();
+        String msg = "Could not instantiate component: " + componentDescriptor.getHumanReadableKey();
 
         return new ComponentInstantiationException( msg, e );
     }
