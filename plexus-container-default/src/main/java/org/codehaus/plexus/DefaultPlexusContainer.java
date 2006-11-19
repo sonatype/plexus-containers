@@ -1030,7 +1030,7 @@ public class DefaultPlexusContainer
     {
         try
         {
-            containerRealm.addConstituent( jar.toURI().toURL() );
+            containerRealm.addURL( jar.toURI().toURL() );
 
             //TODO: might not necessarily want to discover components here.
             discoverComponents( containerRealm );
