@@ -56,7 +56,7 @@ public class ComponentDiscovererTest
 
         File testClasses = new File( System.getProperty( "basedir" ), "target/test-classes" );
 
-        core.addConstituent( testClasses.toURL() );
+        core.addURL( testClasses.toURL() );
 
         List componentSetDescriptors = componentDiscoverer.findComponents( new DefaultContext(), core );
 

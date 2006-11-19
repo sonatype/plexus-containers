@@ -147,7 +147,7 @@ public class PlexusXmlComponentDiscoverer
                 catch ( PlexusConfigurationException e )
                 {
                     throw new PlexusConfigurationException( "Cannot build component descriptor from resource found in:\n" +
-                                         Arrays.asList( classRealm.getConstituents() ), e );
+                                         Arrays.asList( classRealm.getURLs() ), e );
                 }
 
                 componentDescriptor.setComponentType( "plexus" );
