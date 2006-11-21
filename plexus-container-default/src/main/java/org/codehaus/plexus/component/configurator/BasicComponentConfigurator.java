@@ -39,8 +39,10 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 public class BasicComponentConfigurator
     extends AbstractComponentConfigurator
 {
-    public void configureComponent( Object component, PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
+    public void configureComponent( Object component,
+                                    PlexusConfiguration configuration,
+                                    ExpressionEvaluator expressionEvaluator,
+                                    ClassRealm containerRealm,
                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -53,8 +55,8 @@ public class BasicComponentConfigurator
 
         ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
 
-        converter.processConfiguration( converterLookup, component, containerRealm.getClassLoader(), configuration,
-                                        expressionEvaluator, listener );
+        converter.processConfiguration( converterLookup, component, containerRealm, configuration, expressionEvaluator,
+                                        listener );
     }
 
 }

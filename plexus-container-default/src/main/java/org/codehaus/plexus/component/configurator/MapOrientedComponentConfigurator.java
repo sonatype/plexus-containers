@@ -42,7 +42,7 @@ public class MapOrientedComponentConfigurator
         MapConverter converter = new MapConverter();
 
         Map context = (Map) converter.fromConfiguration( converterLookup, configuration, null, null,
-                                                         containerRealm.getClassLoader(), expressionEvaluator,
+                                                         containerRealm, expressionEvaluator,
                                                          listener );
 
         ( (MapOrientedComponent) component ).setComponentConfiguration( context );

@@ -44,7 +44,7 @@ public class ClassRealmConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -55,7 +55,7 @@ public class ClassRealmConverter
             return retValue;
         }
 
-        return classRealm;
+        return this.classRealm;
     }
 
 }

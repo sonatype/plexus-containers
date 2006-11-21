@@ -9,6 +9,7 @@ import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLoo
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.ReflectionUtils;
+import org.codehaus.classworlds.ClassRealm;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -193,7 +194,7 @@ public class ComponentValueSetter
         }
     }
 
-    public void configure( PlexusConfiguration config, ClassLoader cl, ExpressionEvaluator evaluator )
+    public void configure( PlexusConfiguration config, ClassRealm classRealm, ExpressionEvaluator evaluator )
         throws ComponentConfigurationException
     {
         Object value = null;
@@ -204,7 +205,7 @@ public class ComponentValueSetter
         {
             try
             {
-                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), cl,
+                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), classRealm,
                                                                evaluator, listener );
 
                 if ( value != null )
@@ -244,7 +245,7 @@ public class ComponentValueSetter
         // either no value or setting went wrong. Try
         // new converter.
 
-        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), cl, evaluator,
+        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), classRealm, evaluator,
                                                       listener );
 
         if ( value != null )

@@ -41,26 +41,52 @@ public class EmbedderTest
     public void testConfigurationByURL()
         throws Exception
     {
-        Map context = new HashMap();
+        try
+        {
+            Map context = new HashMap();
 
-        context.put( "foo", "bar" );
+            context.put( "foo", "bar" );
 
-        context.put( "property1", "value1" );
+            context.put( "property1", "value1" );
 
-        context.put( "property2", "value2" );
+            context.put( "property2", "value2" );
 
-        String configuration = getClass().getName().replace( '.', '/' ) + ".xml";
+            String configuration = getClass().getName().replace( '.', '/' ) + ".xml";
 
-        System.out.println( "configuration = " + configuration );
+            System.out.println( "configuration = " + configuration );
 
-        PlexusEmbedder embed = new Embedder( context, configuration );
+            PlexusEmbedder embed = new Embedder( context, configuration );
 
-        Object o = embed.lookup( MockComponent.ROLE );
+            Object o = embed.lookup( MockComponent.ROLE );
 
-        assertEquals( "I AM MOCKCOMPONENT", o.toString() );
+            assertEquals( "I AM MOCKCOMPONENT", o.toString() );
 
-        assertNotNull( getClass().getResource( "/test.txt" ) );
+            assertNotNull( getClass().getResource( "/test.txt" ) );
 
-        embed.stop();
+            //while ( true )
+            //{
+            // infinite loop generate an StackTrace stackOverflow 
+            // due to recreation of component for each lookup
+            // Try it by removing comments but not commit this ;-)
+
+            Object m = embed.lookup( MockComponent.ROLE );
+
+            assertEquals( "not same hashCode for singleton component", o.hashCode(), m.hashCode() );
+
+            Object l = embed.lookup( MockComponent.ROLE );
+
+            assertEquals( "not same hashCode for singleton component", l.hashCode(), m.hashCode() );
+
+            assertEquals( "not same hashCode for singleton component", l.hashCode(), m.hashCode() );
+
+            //}
+            embed.stop();
+        }
+        catch ( Exception e )
+        {
+            System.out.println( "msg  = " + e.getMessage() );
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
     }
 }

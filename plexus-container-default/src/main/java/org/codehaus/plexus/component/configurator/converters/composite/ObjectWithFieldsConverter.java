@@ -24,6 +24,7 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  * SOFTWARE.
  */
 
+import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
@@ -70,7 +71,7 @@ public class ObjectWithFieldsConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -80,11 +81,11 @@ public class ObjectWithFieldsConverter
             try
             {
                 // it is a "composite" - we compose it from its children. It does not have a value of its own
-                Class implementation = getImplementationClass( type, baseType, configuration, classLoader );
+                Class implementation = getImplementationClass( type, baseType, configuration, classRealm );
 
                 retValue = instantiateObject( implementation );
 
-                processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator,
+                processConfiguration( converterLookup, retValue, classRealm, configuration, expressionEvaluator,
                                       listener );
             }
             catch ( ComponentConfigurationException e )
@@ -101,21 +102,21 @@ public class ObjectWithFieldsConverter
     }
 
 
-    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
+    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassRealm classRealm,
                                       PlexusConfiguration configuration )
         throws ComponentConfigurationException
     {
-        processConfiguration( converterLookup, object, classLoader, configuration, null );
+        processConfiguration( converterLookup, object, classRealm, configuration, null );
     }
 
-    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
+    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassRealm classRealm,
                                       PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
-        processConfiguration( converterLookup, object, classLoader, configuration, expressionEvaluator, null );
+        processConfiguration( converterLookup, object, classRealm, configuration, expressionEvaluator, null );
     }
 
-    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
+    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassRealm classRealm,
                                       PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator,
                                       ConfigurationListener listener )
         throws ComponentConfigurationException
@@ -131,7 +132,7 @@ public class ObjectWithFieldsConverter
             ComponentValueSetter valueSetter = new ComponentValueSetter( fromXML( elementName ), object,
                                                                          converterLookup, listener );
 
-            valueSetter.configure( childConfiguration, classLoader, expressionEvaluator );
+            valueSetter.configure( childConfiguration, classRealm, expressionEvaluator );
         }
     }
 }

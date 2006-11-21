@@ -24,6 +24,7 @@ package org.codehaus.plexus.component.configurator.converters;
  * SOFTWARE.
  */
 
+import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
@@ -47,7 +48,7 @@ public abstract class AbstractConfigurationConverter
      * If we are unable to do so error will be reported
      */
     protected Class getClassForImplementationHint( Class type, PlexusConfiguration configuration,
-                                                   ClassLoader classLoader )
+                                                   ClassRealm classRealm )
         throws ComponentConfigurationException
     {
         Class retValue = type;
@@ -58,7 +59,7 @@ public abstract class AbstractConfigurationConverter
         {
             try
             {
-                retValue = classLoader.loadClass( implementation );
+                retValue = classRealm.loadClass( implementation );
 
             }
             catch ( ClassNotFoundException e )
@@ -74,12 +75,12 @@ public abstract class AbstractConfigurationConverter
         return retValue;
     }
 
-    protected Class getImplementationClass( Class type, Class baseType, PlexusConfiguration configuration, ClassLoader classLoader )
+    protected Class getImplementationClass( Class type, Class baseType, PlexusConfiguration configuration, ClassRealm classRealm )
         throws ComponentConfigurationException
     {
         // if there's an implementation hint, try that.
 
-        Class childType = getClassForImplementationHint( null, configuration, classLoader );
+        Class childType = getClassForImplementationHint( null, configuration, classRealm );
 
         if ( childType != null )
         {
@@ -98,7 +99,7 @@ public abstract class AbstractConfigurationConverter
         {
             try
             {
-                return classLoader.loadClass( name );
+                return classRealm.loadClass( name );
             }
             catch ( ClassNotFoundException e )
             {
@@ -114,7 +115,7 @@ public abstract class AbstractConfigurationConverter
 
         try
         {
-            return classLoader.loadClass( className );
+            return classRealm.loadClass( className );
         }
         catch ( ClassNotFoundException e )
         {
@@ -298,10 +299,10 @@ public abstract class AbstractConfigurationConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
+                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
-        return fromConfiguration( converterLookup, configuration, type, baseType, classLoader, expressionEvaluator,
+        return fromConfiguration( converterLookup, configuration, type, baseType, classRealm, expressionEvaluator,
                                   null );
     }
 }

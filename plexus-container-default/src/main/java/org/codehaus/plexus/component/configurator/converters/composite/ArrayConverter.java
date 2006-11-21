@@ -32,6 +32,7 @@ import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLoo
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.classworlds.ClassRealm;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class ArrayConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -75,7 +76,7 @@ public class ArrayConverter
 
             String name = fromXML( configEntry );
 
-            Class childType = getClassForImplementationHint( null, c, classLoader );
+            Class childType = getClassForImplementationHint( null, c, classRealm );
 
             // check if the name is a fully qualified classname
 
@@ -83,7 +84,7 @@ public class ArrayConverter
             {
                 try
                 {
-                    childType = classLoader.loadClass( name );
+                    childType = classRealm.loadClass( name );
                 }
                 catch ( ClassNotFoundException e )
                 {
@@ -115,7 +116,7 @@ public class ArrayConverter
 
                 try
                 {
-                    childType = classLoader.loadClass( className );
+                    childType = classRealm.loadClass( className );
                 }
                 catch ( ClassNotFoundException e )
                 {
@@ -132,7 +133,7 @@ public class ArrayConverter
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
-            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader,
+            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classRealm,
                                                          expressionEvaluator, listener );
 
             values.add( object );

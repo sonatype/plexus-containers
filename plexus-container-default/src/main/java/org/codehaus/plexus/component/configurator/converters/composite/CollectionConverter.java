@@ -24,6 +24,7 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  * SOFTWARE.
  */
 
+import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
@@ -31,7 +32,6 @@ import org.codehaus.plexus.component.configurator.converters.ConfigurationConver
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.util.StringUtils;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class CollectionConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -65,7 +65,7 @@ public class CollectionConverter
             return retValue;
         }
 
-        Class implementation = getClassForImplementationHint( null, configuration, classLoader );
+        Class implementation = getClassForImplementationHint( null, configuration, classRealm );
 
         if ( implementation != null )
         {
@@ -111,11 +111,11 @@ public class CollectionConverter
         {
             PlexusConfiguration c = configuration.getChild( i );
 
-            Class childType = getImplementationClass( null, baseType, c, classLoader );
+            Class childType = getImplementationClass( null, baseType, c, classRealm );
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
-            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader,
+            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classRealm,
                                                          expressionEvaluator, listener );
 
             Collection collection = (Collection) retValue;

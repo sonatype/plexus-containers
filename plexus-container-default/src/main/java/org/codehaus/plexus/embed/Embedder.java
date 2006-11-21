@@ -63,7 +63,7 @@ public class Embedder
         }
         catch ( PlexusContainerException e )
         {
-            throw new EmbedderException( "Error creating embedder.", e );
+            throw new EmbedderException( "Error creating embedder. " + e.getMessage(), e );
         }
     }
 

@@ -30,6 +30,7 @@ import org.codehaus.plexus.component.configurator.converters.AbstractConfigurati
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.classworlds.ClassRealm;
 
 import java.util.Map;
 import java.util.Properties;
@@ -50,7 +51,7 @@ public class MapConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
