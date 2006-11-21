@@ -1,6 +1,6 @@
 package org.codehaus.plexus.component.discovery;
 
-import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
 

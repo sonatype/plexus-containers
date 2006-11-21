@@ -24,7 +24,7 @@ package org.codehaus.plexus.component.repository;
  * SOFTWARE.
  */
 
-import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
