@@ -24,10 +24,10 @@ package org.codehaus.plexus;
  * SOFTWARE.
  */
 
-import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.DuplicateRealmException;
-import org.codehaus.classworlds.NoSuchRealmException;
+import org.codehaus.classworlds.realm.ClassRealm;
+import org.codehaus.classworlds.realm.DuplicateRealmException;
+import org.codehaus.classworlds.realm.NoSuchRealmException;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
