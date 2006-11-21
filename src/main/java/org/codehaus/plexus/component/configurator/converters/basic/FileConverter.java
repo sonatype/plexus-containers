@@ -29,6 +29,7 @@ import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.classworlds.ClassRealm;
 
 import java.io.File;
 
@@ -49,11 +50,11 @@ public class FileConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
-        File f = (File) super.fromConfiguration( converterLookup, configuration, type, baseType, classLoader,
+        File f = (File) super.fromConfiguration( converterLookup, configuration, type, baseType, classRealm,
                                                  expressionEvaluator, listener );
 
         if ( f != null )

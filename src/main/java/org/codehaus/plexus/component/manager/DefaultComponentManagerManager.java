@@ -29,6 +29,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -79,7 +80,8 @@ public class DefaultComponentManagerManager
         throw new UndefinedComponentManagerException( "Specified component manager cannot be found: " + id );
     }
 
-    public ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container )
+    public ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
+                                                    String componentKey )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException
     {
         String componentManagerId = descriptor.getInstantiationStrategy();
@@ -97,8 +99,14 @@ public class DefaultComponentManagerManager
 
         componentManager.initialize();
 
-        activeComponentManagers.put( descriptor.getComponentKey(), componentManager );
-
+        if ( StringUtils.equals( componentKey, descriptor.getComponentKey() ) )
+        {
+            activeComponentManagers.put( descriptor.getComponentKey(), componentManager );
+        }
+        else
+        {
+            activeComponentManagers.put( componentKey, componentManager );
+        }
         return componentManager;
     }
 

@@ -28,7 +28,8 @@ public interface ComponentManagerManager
 
     ComponentManager findComponentManagerByComponentInstance( Object component );
 
-    ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container )
+    ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
+                                             String componentKey )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException;
 
     Map getComponentManagers();

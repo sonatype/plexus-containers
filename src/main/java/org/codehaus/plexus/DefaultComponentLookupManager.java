@@ -48,7 +48,8 @@ public class DefaultComponentLookupManager
     {
         Object component = null;
 
-        ComponentManager componentManager = container.getComponentManagerManager().findComponentManagerByComponentKey( componentKey );
+        ComponentManager componentManager = container.getComponentManagerManager()
+            .findComponentManagerByComponentKey( componentKey );
 
         // The first time we lookup a component a component manager will not exist so we ask the
         // component manager manager to create a component manager for us. Also if we are reloading
@@ -67,13 +68,13 @@ public class DefaultComponentLookupManager
 
                 container.getLogger().debug( "Nonexistent component: " + componentKey );
 
-                String message =
-                    "Component descriptor cannot be found in the component repository: " + componentKey + ".";
+                String message = "Component descriptor cannot be found in the component repository: " + componentKey
+                    + ".";
 
                 throw new ComponentLookupException( message );
             }
 
-            componentManager = createComponentManager( descriptor );
+            componentManager = createComponentManager( descriptor, componentKey );
         }
 
         try
@@ -82,13 +83,13 @@ public class DefaultComponentLookupManager
         }
         catch ( ComponentInstantiationException e )
         {
-            throw new ComponentLookupException(
-                "Unable to lookup component '" + componentKey + "', it could not be created", e );
+            throw new ComponentLookupException( "Unable to lookup component '" + componentKey
+                + "', it could not be created", e );
         }
         catch ( ComponentLifecycleException e )
         {
-            throw new ComponentLookupException(
-                "Unable to lookup component '" + componentKey + "', it could not be started", e );
+            throw new ComponentLookupException( "Unable to lookup component '" + componentKey
+                + "', it could not be started", e );
         }
 
         container.getComponentManagerManager().associateComponentWithComponentManager( component, componentManager );
@@ -96,26 +97,27 @@ public class DefaultComponentLookupManager
         return component;
     }
 
-    private ComponentManager createComponentManager( ComponentDescriptor descriptor )
+    private ComponentManager createComponentManager( ComponentDescriptor descriptor, String componentKey )
         throws ComponentLookupException
     {
         ComponentManager componentManager;
 
         try
         {
-            componentManager = container.getComponentManagerManager().createComponentManager( descriptor, container );
+            componentManager = container.getComponentManagerManager().createComponentManager( descriptor, container,
+                                                                                              componentKey );
         }
         catch ( UndefinedComponentManagerException e )
         {
-            String message = "Cannot create component manager for " + descriptor.getComponentKey() +
-                ", so we cannot provide a component instance.";
+            String message = "Cannot create component manager for " + descriptor.getComponentKey()
+                + ", so we cannot provide a component instance.";
 
             throw new ComponentLookupException( message, e );
         }
         catch ( UndefinedLifecycleHandlerException e )
         {
-            String message = "Cannot create component manager for " + descriptor.getComponentKey() +
-                ", so we cannot provide a component instance.";
+            String message = "Cannot create component manager for " + descriptor.getComponentKey()
+                + ", so we cannot provide a component instance.";
 
             throw new ComponentLookupException( message, e );
         }
@@ -188,8 +190,7 @@ public class DefaultComponentLookupManager
         return components;
     }
 
-    public Object lookup( String role,
-                          String roleHint )
+    public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
         return lookup( role + roleHint );
@@ -213,8 +214,7 @@ public class DefaultComponentLookupManager
         return lookupList( role.getName() );
     }
 
-    public Object lookup( Class role,
-                   String roleHint )
+    public Object lookup( Class role, String roleHint )
         throws ComponentLookupException
     {
         return lookup( role.getName(), roleHint );
