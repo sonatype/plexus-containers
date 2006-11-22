@@ -281,8 +281,8 @@ public abstract class AbstractComponentConfiguratorTest
             "    <whatever implementation='java.lang.Integer'>303</whatever>" + "  </objectArray>" + "  <urlArray>" +
             "    <url>http://foo.com/bar</url>" + "    <url>file://localhost/c:/windows</url>" + "  </urlArray>" +
             "  <fileArray>" + "    <file>c:/windows</file>" + "    <file>/usr/local/bin/foo.sh</file>" +
-            "  </fileArray>" + "  <classArray>" + "    <class>java.lang.String</class>" + 
-            "    <class>org.codehaus.plexus.component.configurator.ComponentWithArrayFields</class>" + 
+            "  </fileArray>" + "  <classArray>" + "    <class>java.lang.String</class>" +
+            "    <class>org.codehaus.plexus.component.configurator.ComponentWithArrayFields</class>" +
             "  </classArray>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
@@ -303,7 +303,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         cc.configureComponent( component, configuration, realm );
 
-        String [] stringArray = component.getStringArray();
+        String[] stringArray = component.getStringArray();
 
         assertEquals( 2, stringArray.length );
 
@@ -311,7 +311,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "value2", stringArray[1] );
 
-        Integer [] integerArray = component.getIntegerArray();
+        Integer[] integerArray = component.getIntegerArray();
 
         assertEquals( 2, integerArray.length );
 
@@ -319,7 +319,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( new Integer( 69 ), integerArray[1] );
 
-        ImportantThing [] importantThingArray = component.getImportantThingArray();
+        ImportantThing[] importantThingArray = component.getImportantThingArray();
 
         assertEquals( 2, importantThingArray.length );
 
@@ -327,7 +327,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "World!", importantThingArray[1].getName() );
 
-        Object [] objectArray = component.getObjectArray();
+        Object[] objectArray = component.getObjectArray();
 
         assertEquals( 3, objectArray.length );
 
@@ -362,12 +362,8 @@ public abstract class AbstractComponentConfiguratorTest
 
         String xml = "<configuration>" +
             "  <thing implementation=\"org.codehaus.plexus.component.configurator.ImportantThing\">" +
-            "     <name>I am not abstract!</name>" +
-            "  </thing>" +
-            "  <importantThing>" +
-            "     <name>I am not abstract either!</name>" +
-            "  </importantThing>" +
-            "</configuration>";
+            "     <name>I am not abstract!</name>" + "  </thing>" + "  <importantThing>" +
+            "     <name>I am not abstract either!</name>" + "  </importantThing>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -402,18 +398,18 @@ public abstract class AbstractComponentConfiguratorTest
 
         try
         {
-            PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test-Invalid>",
-                                                                                new StringReader( xml ) );
+            PlexusTools.buildConfiguration( "<Test-Invalid>", new StringReader( xml ) );
 
             fail( "Should have caused an error because of the invalid XML." );
         }
         catch ( PlexusConfigurationException e )
         {
             // should catch this...
-            System.out.println( "Error Message:\n\n" + e.getLocalizedMessage() + "\n\n" );
-            System.err.println( "Error with stacktrace:\n\n" );
-            e.printStackTrace();
-            System.err.println( "\n\n" );
+            //TODO Don't spew this out into the system.out capture it somewhere. It's very distracting in the test output.
+            //System.out.println( "Error Message:\n\n" + e.getLocalizedMessage() + "\n\n" );
+            //System.err.println( "Error with stacktrace:\n\n" );
+            //e.printStackTrace();
+            //System.err.println( "\n\n" );
         }
         catch ( Exception e )
         {

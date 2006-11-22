@@ -44,8 +44,6 @@ public class SetterComponentComposerUsingSuperclassesTest
             {
                 setterFound = true;
             }
-
-            System.out.println( "clazz = " + clazz );
         }
 
         if ( !setterFound )

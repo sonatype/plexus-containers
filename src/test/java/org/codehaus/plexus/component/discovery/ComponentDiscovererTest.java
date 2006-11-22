@@ -60,8 +60,6 @@ public class ComponentDiscovererTest
 
         List componentSetDescriptors = componentDiscoverer.findComponents( new DefaultContext(), core );
 
-        System.out.println( componentSetDescriptors.get( 0 ) );
-
         assertEquals( 1, componentSetDescriptors.size() );
 
         assertEquals( ComponentSetDescriptor.class.getName(), componentSetDescriptors.get( 0 ).getClass().getName() );
