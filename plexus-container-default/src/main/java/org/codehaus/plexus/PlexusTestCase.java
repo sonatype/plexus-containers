@@ -88,8 +88,6 @@ public abstract class PlexusTestCase
         {
             InputStream is = getClassLoader().getResourceAsStream( config );
 
-            //InputStream is = getClassLoader().getResourceAsStream( config );
-
             if ( is == null )
             {
                 throw new Exception( "The custom configuration specified is null: " + config );
