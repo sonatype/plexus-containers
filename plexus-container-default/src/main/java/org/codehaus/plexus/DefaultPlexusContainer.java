@@ -247,6 +247,8 @@ public class DefaultPlexusContainer
         // initialization
         if ( configuration != null )
         {
+            //containerRealm.display();
+
             InputStream is = containerRealm.getResourceAsStream( configuration );
 
             if ( is == null )
