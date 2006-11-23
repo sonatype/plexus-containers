@@ -26,6 +26,7 @@ package org.codehaus.plexus.configuration.processor;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.PlexusTestCase;
 
 import java.io.File;
 import java.util.HashMap;
@@ -36,12 +37,12 @@ import java.util.Map;
  * @version $Id$
  */
 public class DirectoryConfigurationResourceHandlerTest
-    extends TestCase
+    extends PlexusTestCase
 {
     public void testFileConfigurationResourceHandler()
         throws Exception
     {
-        String basedir = System.getProperty( "basedir" );
+        String basedir = getBasedir();
 
         ConfigurationResourceHandler h = new DirectoryConfigurationResourceHandler();
 

@@ -120,7 +120,8 @@ public abstract class PlexusTestCase
         container = createContainerInstance( context, config );
     }
 
-    protected PlexusContainer createContainerInstance( Map context, String configuration )
+    protected PlexusContainer createContainerInstance( Map context,
+                                                       String configuration )
         throws PlexusContainerException
     {
         return new DefaultPlexusContainer( "test", context, configuration );
@@ -134,9 +135,12 @@ public abstract class PlexusTestCase
     protected void tearDown()
         throws Exception
     {
-        container.dispose();
+        if ( container != null )
+        {
+            container.dispose();
 
-        container = null;
+            container = null;
+        }
     }
 
     protected PlexusContainer getContainer()
@@ -187,7 +191,8 @@ public abstract class PlexusTestCase
         return getContainer().lookup( componentKey );
     }
 
-    protected Object lookup( String role, String id )
+    protected Object lookup( String role,
+                             String id )
         throws Exception
     {
         return getContainer().lookup( role, id );
@@ -199,7 +204,8 @@ public abstract class PlexusTestCase
         return getContainer().lookup( componentClass );
     }
 
-    protected Object lookup( Class role, String id )
+    protected Object lookup( Class role,
+                             String id )
         throws Exception
     {
         return getContainer().lookup( role, id );
@@ -220,11 +226,12 @@ public abstract class PlexusTestCase
         return new File( getBasedir(), path );
     }
 
-    public static File getTestFile( String basedir, String path )
+    public static File getTestFile( String basedir,
+                                    String path )
     {
         File basedirFile = new File( basedir );
 
-        if ( ! basedirFile.isAbsolute() )
+        if ( !basedirFile.isAbsolute() )
         {
             basedirFile = getTestFile( basedir );
         }
@@ -237,7 +244,8 @@ public abstract class PlexusTestCase
         return getTestFile( path ).getAbsolutePath();
     }
 
-    public static String getTestPath( String basedir, String path )
+    public static String getTestPath( String basedir,
+                                      String path )
     {
         return getTestFile( basedir, path ).getAbsolutePath();
     }
