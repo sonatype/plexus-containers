@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus-containers</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.7-SNAPSHOT</version>
   </parent>
   <artifactId>plexus-component-api</artifactId>
   <name>Plexus Component API</name>
@@ -25,7 +25,6 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-classworlds</artifactId>
-      <version>1.2-alpha-2-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
