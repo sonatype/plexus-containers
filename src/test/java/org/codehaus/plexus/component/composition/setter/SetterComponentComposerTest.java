@@ -25,17 +25,15 @@ package org.codehaus.plexus.component.composition.setter;
  */
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.component.composition.ComponentA;
+import org.codehaus.plexus.component.composition.ComponentB;
+import org.codehaus.plexus.component.composition.ComponentC;
+import org.codehaus.plexus.component.composition.ComponentF;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-
-import org.codehaus.plexus.component.composition.ComponentF;
-import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
-import org.codehaus.plexus.component.composition.ComponentA;
-import org.codehaus.plexus.component.composition.ComponentB;
-import org.codehaus.plexus.component.composition.ComponentC;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>

@@ -2,8 +2,8 @@ package org.codehaus.plexus;
 
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jason van Zyl

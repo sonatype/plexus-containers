@@ -32,7 +32,8 @@ import org.codehaus.plexus.component.factory.ComponentImplB;
 import org.codehaus.plexus.component.factory.ComponentImplC;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.embed.Embedder;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.DefaultPlexusContainer;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -57,9 +58,9 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        Embedder embedder = new Embedder( null, null, classWorld );
+        PlexusContainer container = new DefaultPlexusContainer( null, null, null, classWorld );
 
-        Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), embedder.getContainer() );
+        Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), container );
 
         assertNotNull( component );
     }
@@ -79,9 +80,9 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        Embedder embedder = new Embedder( null, null, classWorld );
+        PlexusContainer container = new DefaultPlexusContainer( null, null, null, classWorld );
 
-        factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), embedder.getContainer() );
+        factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), container );
     }
 
     public void testInstanciationOfAAbstractComponent()
@@ -99,11 +100,11 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        Embedder embedder = new Embedder( null, null, classWorld );
+        PlexusContainer container = new DefaultPlexusContainer( null, null, null, classWorld );
 
         try
         {
-            factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), embedder.getContainer() );
+            factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), container );
 
             fail( "Expected ComponentInstantiationException when instanciating a abstract class." );
         }

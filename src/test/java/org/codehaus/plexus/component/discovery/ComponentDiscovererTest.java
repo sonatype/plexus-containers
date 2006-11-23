@@ -24,16 +24,15 @@ package org.codehaus.plexus.component.discovery;
  * SOFTWARE.
  */
 
-import java.io.File;
-import java.util.List;
-
 import junit.framework.TestCase;
-
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.context.DefaultContext;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>

@@ -25,11 +25,10 @@ package org.codehaus.plexus.logging.console;
  */
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
