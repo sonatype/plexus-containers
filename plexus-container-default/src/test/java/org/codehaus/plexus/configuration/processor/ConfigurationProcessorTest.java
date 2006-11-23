@@ -3,6 +3,7 @@ package org.codehaus.plexus.configuration.processor;
 import junit.framework.TestCase;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.PlexusTestCase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,7 @@ import java.util.Map;
  * @version $Id$
  */
 public class ConfigurationProcessorTest
-    extends TestCase
+    extends PlexusTestCase
 {
     private Map variables;
 
@@ -44,7 +45,7 @@ public class ConfigurationProcessorTest
     {
         variables = new HashMap();
 
-        variables.put( "basedir", System.getProperty( "basedir" ) );
+        variables.put( "basedir", getBasedir() );
 
         variables.put( "occupation", "slacker" );
     }
