@@ -275,7 +275,7 @@ public class DefaultPlexusContainer
 
         //this.classWorld =  parentContainer.getClassWorld();
 
-        this.containerRealm.setParent( parentContainer.getContainerRealm() );
+        this.containerRealm.setParentRealm( parentContainer.getContainerRealm() );
     }
 
     // ----------------------------------------------------------------------------
@@ -403,7 +403,7 @@ public class DefaultPlexusContainer
         }
 
         //childRealm.setParent( plexusRealm );
-        childRealm.setParent( containerRealm );
+        childRealm.setParentRealm( containerRealm );
 
         //child.coreRealm = childRealm;
         child.containerRealm = childRealm;
@@ -813,7 +813,7 @@ public class DefaultPlexusContainer
 
         try
         {
-            containerRealm.setParent( null );
+            containerRealm.setParentRealm( null );
 
             if ( needToDisposeRealm )
             {
