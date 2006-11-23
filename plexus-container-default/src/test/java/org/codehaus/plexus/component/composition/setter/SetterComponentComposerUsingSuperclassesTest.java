@@ -1,14 +1,11 @@
 package org.codehaus.plexus.component.composition.setter;
 
 import junit.framework.TestCase;
-
-import java.util.Map;
-import java.beans.PropertyDescriptor;
-
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
-import org.codehaus.plexus.component.composition.setter.ChildComponent;
 import org.codehaus.plexus.component.composition.ComponentA;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+
+import java.beans.PropertyDescriptor;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>

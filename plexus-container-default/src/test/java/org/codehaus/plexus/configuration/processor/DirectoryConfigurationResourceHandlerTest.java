@@ -25,12 +25,11 @@ package org.codehaus.plexus.configuration.processor;
  */
 
 import junit.framework.TestCase;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.io.File;
-
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>

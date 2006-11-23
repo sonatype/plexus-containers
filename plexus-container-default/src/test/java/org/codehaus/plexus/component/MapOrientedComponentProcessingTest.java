@@ -16,16 +16,16 @@ package org.codehaus.plexus.component;
  * limitations under the License.
  */
 
+import junit.framework.TestCase;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.embed.Embedder;
 import org.codehaus.plexus.logging.LoggerManager;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.DefaultPlexusContainer;
 
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 public class MapOrientedComponentProcessingTest
     extends TestCase
@@ -55,9 +55,9 @@ public class MapOrientedComponentProcessingTest
 
         descriptor.setConfiguration( configuration );
 
-        Embedder embedder = new Embedder();
+        PlexusContainer embedder = new DefaultPlexusContainer();
 
-        embedder.getContainer().addComponentDescriptor( descriptor );
+        embedder.addComponentDescriptor( descriptor );
 
         TestMapOrientedComponent component = (TestMapOrientedComponent) embedder.lookup( TestMapOrientedComponent.ROLE );
 

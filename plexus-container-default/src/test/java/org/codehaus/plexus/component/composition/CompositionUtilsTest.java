@@ -24,13 +24,13 @@ package org.codehaus.plexus.component.composition;
  * SOFTWARE.
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test for {@link CompositionUtils}

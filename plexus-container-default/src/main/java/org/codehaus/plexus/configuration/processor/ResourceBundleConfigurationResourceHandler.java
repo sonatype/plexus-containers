@@ -3,7 +3,10 @@ package org.codehaus.plexus.configuration.processor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * @author <a href="mailto:andy@handyande.co.uk">Andrew Williams</a>

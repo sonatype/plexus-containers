@@ -26,8 +26,6 @@ package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.PlexusTestCase;
 
-import java.io.InputStream;
-
 /**
  * @author <a href="mailto:mma@imtf.ch">Michal Maczka</a>
  * @version $Id$

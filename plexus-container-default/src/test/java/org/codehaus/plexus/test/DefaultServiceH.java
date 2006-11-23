@@ -24,11 +24,11 @@ package org.codehaus.plexus.test;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.test.lifecycle.phase.Eeny;
 import org.codehaus.plexus.test.lifecycle.phase.Meeny;
 import org.codehaus.plexus.test.lifecycle.phase.Miny;
 import org.codehaus.plexus.test.lifecycle.phase.Mo;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /** This component implements the custom lifecycle defined by the phases
  *

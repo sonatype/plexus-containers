@@ -32,7 +32,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URL;
 
 /**
  * @author Jason van Zyl

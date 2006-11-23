@@ -24,13 +24,12 @@ package org.codehaus.plexus.configuration;
  * SOFTWARE.
  */
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import junit.framework.TestCase;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 
-import junit.framework.TestCase;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  *

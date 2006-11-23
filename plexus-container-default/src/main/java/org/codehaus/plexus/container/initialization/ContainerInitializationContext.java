@@ -1,7 +1,7 @@
 package org.codehaus.plexus.container.initialization;
 
-import org.codehaus.classworlds.realm.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 

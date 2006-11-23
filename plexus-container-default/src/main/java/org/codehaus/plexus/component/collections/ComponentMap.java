@@ -1,8 +1,8 @@
 package org.codehaus.plexus.component.collections;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collection;
 
 /**
  * @author Jason van Zyl
