@@ -1,11 +1,7 @@
 package org.codehaus.plexus.component.factory;
 
-import org.codehaus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-
 /*
- * Copyright 2001-2005 The Apache Software Foundation.
+ * Copyright 2001-2006 Codehaus Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +15,10 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import org.codehaus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 public class TestComponentFactory2
     implements ComponentFactory
