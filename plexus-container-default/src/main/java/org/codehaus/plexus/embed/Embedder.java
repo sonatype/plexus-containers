@@ -87,7 +87,6 @@ public class Embedder
     }
 
     public Embedder()
-        throws EmbedderException
     {
     }
 
