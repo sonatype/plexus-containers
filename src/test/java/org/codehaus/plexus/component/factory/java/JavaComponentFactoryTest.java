@@ -17,7 +17,7 @@ package org.codehaus.plexus.component.factory.java;
  */
 
 import junit.framework.TestCase;
-import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.factory.Component;
 import org.codehaus.plexus.component.factory.ComponentImplA;
 import org.codehaus.plexus.component.factory.ComponentImplB;
