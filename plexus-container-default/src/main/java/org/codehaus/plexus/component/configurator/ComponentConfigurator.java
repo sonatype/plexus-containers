@@ -16,7 +16,7 @@ package org.codehaus.plexus.component.configurator;
  * limitations under the License.
  */
 
-import org.codehaus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 

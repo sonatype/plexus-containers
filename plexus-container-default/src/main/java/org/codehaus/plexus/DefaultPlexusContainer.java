@@ -16,10 +16,10 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.realm.ClassRealm;
-import org.codehaus.classworlds.realm.DuplicateRealmException;
-import org.codehaus.classworlds.realm.NoSuchRealmException;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
+import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;

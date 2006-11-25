@@ -17,8 +17,8 @@ package org.codehaus.plexus.component.discovery;
  */
 
 import junit.framework.TestCase;
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.context.DefaultContext;

@@ -16,7 +16,7 @@ package org.codehaus.plexus.component.discovery;
  * limitations under the License.
  */
 
-import org.codehaus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;

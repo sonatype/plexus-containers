@@ -18,8 +18,8 @@ package org.codehaus.plexus.component.configurator;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
