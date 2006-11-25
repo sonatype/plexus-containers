@@ -24,7 +24,9 @@ package org.codehaus.plexus.embed;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.ClassWorldAdapter;
+import org.codehaus.classworlds.ClassWorldReverseAdapter;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
@@ -49,9 +51,6 @@ public class Embedder
 {
     private Reader configurationReader;
 
-    /**
-     * Context properties
-     */
     private Properties properties;
 
     private DefaultPlexusContainer container;
@@ -61,6 +60,10 @@ public class Embedder
     private boolean embedderStopped = false;
 
     private Map context = new HashMap();
+
+    public Embedder()
+    {
+    }
 
     public Embedder( Map context,
                      String configuration )
@@ -76,7 +79,15 @@ public class Embedder
     {
         try
         {
-            container = new DefaultPlexusContainer( "plexus", context, configuration, classWorld );
+            if ( classWorld == null )
+            {
+                container = new DefaultPlexusContainer( "plexus", context, configuration, null );
+            }
+            else
+            {
+                container = new DefaultPlexusContainer( "plexus", context, configuration,
+                                                        ClassWorldReverseAdapter.getInstance( classWorld ) );
+            }
 
             embedderStarted = true;
         }
@@ -84,10 +95,6 @@ public class Embedder
         {
             throw new EmbedderException( "Error creating embedder. " + e.getMessage(), e );
         }
-    }
-
-    public Embedder()
-    {
     }
 
     public synchronized PlexusContainer getContainer()
@@ -137,7 +144,7 @@ public class Embedder
 
     public synchronized void setClassWorld( ClassWorld classWorld )
     {
-        container.setClassWorld( classWorld );
+        container.setClassWorld( ClassWorldReverseAdapter.getInstance( classWorld ) );
     }
 
     public synchronized void setConfiguration( URL configuration )
@@ -213,7 +220,7 @@ public class Embedder
     public synchronized void start( ClassWorld classWorld )
         throws PlexusContainerException
     {
-        container.setClassWorld( classWorld );
+        container.setClassWorld( ClassWorldReverseAdapter.getInstance( classWorld ) );
 
         start();
     }
