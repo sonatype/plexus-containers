@@ -1,7 +1,7 @@
 /* Created on Oct 7, 2004 */
 package org.codehaus.plexus.embed;
 
-import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
