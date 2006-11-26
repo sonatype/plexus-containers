@@ -54,7 +54,7 @@ public class DefaultComponentDiscoverer
         {
             PlexusConfiguration componentConfiguration = componentConfigurations[i];
 
-            ComponentDescriptor componentDescriptor = null;
+            ComponentDescriptor componentDescriptor;
 
             try
             {

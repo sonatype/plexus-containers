@@ -18,6 +18,7 @@ package org.codehaus.plexus.component.discovery;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
@@ -32,6 +33,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -49,7 +51,8 @@ public abstract class AbstractComponentDiscoverer
 
     protected abstract String getComponentDescriptorLocation();
 
-    protected abstract ComponentSetDescriptor createComponentDescriptors( Reader reader, String source )
+    protected abstract ComponentSetDescriptor createComponentDescriptors( Reader reader,
+                                                                          String source )
         throws PlexusConfigurationException;
 
     // ----------------------------------------------------------------------
@@ -61,7 +64,8 @@ public abstract class AbstractComponentDiscoverer
         this.manager = manager;
     }
 
-    public List findComponents( Context context, ClassRealm classRealm )
+    public List findComponents( Context context,
+                                ClassRealm classRealm )
         throws PlexusConfigurationException
     {
         List componentSetDescriptors = new ArrayList();
@@ -84,14 +88,25 @@ public abstract class AbstractComponentDiscoverer
             try
             {
                 URLConnection conn = url.openConnection();
+
                 conn.setUseCaches( false );
+
                 conn.connect();
 
                 reader = new InputStreamReader( conn.getInputStream() );
-                InterpolationFilterReader input = new InterpolationFilterReader( reader,
-                                                                                 new ContextMapAdapter( context ) );
 
-                ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( input, url.toString() );
+                InterpolationFilterReader interpolationFilterReader =
+                    new InterpolationFilterReader( reader, new ContextMapAdapter( context ) );
+
+                ComponentSetDescriptor componentSetDescriptor =
+                    createComponentDescriptors( interpolationFilterReader, url.toString() );
+
+                for ( Iterator i = componentSetDescriptor.getComponents().iterator(); i.hasNext(); )
+                {
+                    ComponentDescriptor cd = (ComponentDescriptor) i.next();
+
+                    cd.setRealmId( classRealm.getId() );
+                }
 
                 componentSetDescriptors.add( componentSetDescriptor );
 

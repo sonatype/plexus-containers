@@ -1,23 +1,23 @@
 package org.codehaus.plexus.component.manager;
 
-
 /*
- * Copyright 2001-2006 Codehaus Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2001-2006 Codehaus Foundation.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.factory.UndefinedComponentFactoryException;
@@ -29,7 +29,8 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionExce
 import org.codehaus.plexus.util.StringUtils;
 
 public abstract class AbstractComponentManager
-    implements ComponentManager, Cloneable
+    implements ComponentManager,
+    Cloneable
 {
     private MutablePlexusContainer container;
 
@@ -95,7 +96,9 @@ public abstract class AbstractComponentManager
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    public void setup( MutablePlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor )
+    public void setup( MutablePlexusContainer container,
+                       LifecycleHandler lifecycleHandler,
+                       ComponentDescriptor componentDescriptor )
     {
         this.container = container;
 
@@ -200,7 +203,15 @@ public abstract class AbstractComponentManager
                 componentFactory = container.getComponentFactoryManager().getDefaultComponentFactory();
             }
 
-            component = componentFactory.newInstance( componentDescriptor, container.getContainerRealm(), container );
+            ClassRealm componentRealm = container.getComponentRealm( componentDescriptor.getRealmId() );
+
+            if ( componentRealm == null )
+            {
+                // The core components need the container realm.
+                componentRealm = container.getContainerRealm();
+            }
+
+            component = componentFactory.newInstance( componentDescriptor, componentRealm, container );
         }
         catch ( UndefinedComponentFactoryException e )
         {

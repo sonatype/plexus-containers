@@ -245,7 +245,8 @@ public class DefaultPlexusContainer
 
             if ( is == null )
             {
-                throw new PlexusContainerException( "The specified user configuration '" + configuration + "' is null." );
+                throw new PlexusContainerException(
+                    "The specified user configuration '" + configuration + "' is null." );
             }
 
             configurationReader = new InputStreamReader( is );
@@ -361,16 +362,92 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------------
+    // Requirements
+    // ----------------------------------------------------------------------------
+    // o discover all components that are present in the artifact
+    // o create a separate realm for the components
+    // o retrieve all the dependencies for the artifact: this last part unfortunately
+    //   only works in Maven where artifacts are downloaded
+    // ----------------------------------------------------------------------------
+    public ClassRealm createComponentRealm( String id,
+                                            List jars )
+        throws PlexusContainerException
+    {
+        ClassRealm componentRealm;
+
+        try
+        {
+            return classWorld.getRealm( id );
+        }
+        catch ( NoSuchRealmException e )
+        {
+        }
+
+        try
+        {
+            componentRealm = containerRealm.createChildRealm( id );
+        }
+        catch ( DuplicateRealmException e )
+        {
+            throw new PlexusContainerException( "Error creating child realm.", e );
+        }
+
+        try
+        {
+            for ( Iterator it = jars.iterator(); it.hasNext(); )
+            {
+                Object next = it.next();
+
+                File jar = (File) next;
+
+                componentRealm.addURL( jar.toURI().toURL() );
+            }
+        }
+        catch ( MalformedURLException e )
+        {
+            throw new PlexusContainerException( "Error adding JARs to realm.", e );
+        }
+
+        // ----------------------------------------------------------------------------
+        // Discover the components that are present in the new componentRealm.
+        // ----------------------------------------------------------------------------
+
+        // are all the discoverers are present: YES
+        // are all the listeners present: YES the PluginCollector appears to be there
+        // we are not discovering the clean plugin
+
+        try
+        {
+            discoverComponents( componentRealm );
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            throw new PlexusContainerException( "Error configuring discovered component.", e );
+        }
+        catch ( ComponentRepositoryException e )
+        {
+            throw new PlexusContainerException( "Error resolving discovered component.", e );
+        }
+
+        return componentRealm;
+    }
+
+    // ----------------------------------------------------------------------------
     // The method from alpha-9 for creating child containers
     // ----------------------------------------------------------------------------
 
-    public PlexusContainer createChildContainer( String name, List classpathJars, Map context )
+    public PlexusContainer createChildContainer( String name,
+                                                 List classpathJars,
+                                                 Map context )
         throws PlexusContainerException
     {
         return createChildContainer( name, classpathJars, context, Collections.EMPTY_LIST );
     }
 
-    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
+    public PlexusContainer createChildContainer( String name,
+                                                 List classpathJars,
+                                                 Map context,
+                                                 List discoveryListeners )
         throws PlexusContainerException
     {
         if ( hasChildContainer( name ) )
@@ -378,13 +455,14 @@ public class DefaultPlexusContainer
             throw new DuplicateChildContainerException( getName(), name );
         }
 
-        DefaultPlexusContainer child = new DefaultPlexusContainer();
+        DefaultPlexusContainer child = new DefaultPlexusContainer( name, context, null, null );
 
         child.classWorld = classWorld;
 
         ClassRealm childRealm = null;
 
         String childRealmId = getName() + ".child-container[" + name + "]";
+
         try
         {
             childRealm = classWorld.getRealm( childRealmId );
@@ -462,78 +540,6 @@ public class DefaultPlexusContainer
     {
         this.parentContainer = container;
     }
-
-    // ----------------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------------
-
-
-
-    // A child container should have it's own classworld and not be attached to the parent
-    // classloader or we're going to run into severe classloading problems. John started this
-    // and must have run into problems as the parent is attached to the child which is not
-    // what was intended.
-
-    /*
-
-    Maybe this could be strategized for experiementation. jvz.
-
-    public PlexusContainer createChildContainer( String name,
-                                                 Map context,
-                                                 String configuration,
-                                                 Set jars )
-        throws PlexusContainerException
-    {
-        if ( hasChildContainer( name ) )
-        {
-            throw new DuplicateChildContainerException( getName(), name );
-        }
-
-        DefaultPlexusContainer child = new DefaultPlexusContainer( name, context, configuration, jars, this );
-
-          //TODO: The child uses the same classworld as the parent, this is probably not correct. Every container
-        //      should have its own classworld.
-        child.classWorld = classWorld;
-
-        ClassRealm childRealm = null;
-
-        try
-        {
-            childRealm = classWorld.getRealm( name );
-        }
-        catch ( NoSuchRealmException e )
-        {
-            try
-            {
-                childRealm = classWorld.newRealm( name );
-            }
-            catch ( DuplicateRealmException impossibleError )
-            {
-                getLogger().error( "An impossible error has occurred. After getRealm() failed, newRealm() " +
-                    "produced duplication error on same id!", impossibleError );
-            }
-        }
-
-        childRealm.setParent( containerRealm );
-
-        child.containerRealm = childRealm;
-
-
-        for ( Iterator it = jars.iterator(); it.hasNext(); )
-        {
-            Object next = it.next();
-
-            File jar = (File) next;
-
-            child.addJarResource( jar );
-        }
-
-        childContainers.put( name, child );
-
-        return child;
-    }
-
-    */
 
     // ----------------------------------------------------------------------
     // Component Descriptor Lookup
@@ -784,7 +790,7 @@ public class DefaultPlexusContainer
     public List discoverComponents( ClassRealm classRealm )
         throws PlexusConfigurationException, ComponentRepositoryException
     {
-        return ComponentDiscoveryPhase.discoverComponents( this );
+        return ComponentDiscoveryPhase.discoverComponents( this, classRealm );
     }
 
     protected void start()
@@ -889,6 +895,7 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     //TODO: put this in a separate helper class and turn into a component if possible, too big.
+
     protected void initializeConfiguration()
         throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException
     {
@@ -1247,5 +1254,26 @@ public class DefaultPlexusContainer
     public PlexusContainer getParentContainer()
     {
         return parentContainer;
+    }
+
+    // ----------------------------------------------------------------------------
+    // Component Realms
+    // ----------------------------------------------------------------------------
+
+    public ClassRealm getComponentRealm( String realmId )
+    {
+        ClassRealm realm = null;
+
+        try
+        {
+            realm = classWorld.getRealm( realmId );
+        }
+        catch ( NoSuchRealmException e )
+        {
+            // This should never happen: when a component is discovered, it is discovered from a realm and
+            // it is at that point the realm id is assigned to the component descriptor.
+        }
+
+        return realm;
     }
 }

@@ -17,10 +17,13 @@ package org.codehaus.plexus.component.discovery;
  */
 
 import java.util.List;
+import java.util.Map;
 
 public interface ComponentDiscovererManager
 {
     List getComponentDiscoverers();
+
+    Map getComponentDiscoveryListeners();
 
     void registerComponentDiscoveryListener( ComponentDiscoveryListener listener);
 
