@@ -46,13 +46,9 @@ public interface PlexusContainer
 
     PlexusContainer getChildContainer( String name );
 
-    /*
-    PlexusContainer createChildContainer( String name,
-                                          Map context,
-                                          String configuration,
-                                          Set jars )
-        throws PlexusContainerException;
-    */
+    // ----------------------------------------------------------------------------
+    // Lookup
+    // ----------------------------------------------------------------------------
 
     Object lookup( String componentKey )
         throws ComponentLookupException;
@@ -119,7 +115,8 @@ public interface PlexusContainer
     // Context
     // ----------------------------------------------------------------------
 
-    void addContextValue( Object key, Object value );
+    void addContextValue( Object key,
+                          Object value );
 
     Context getContext();
 
@@ -176,9 +173,22 @@ public interface PlexusContainer
 
     void setParentPlexusContainer( PlexusContainer container );
 
-    PlexusContainer createChildContainer( String name, List classpathJars, Map context )
+    PlexusContainer createChildContainer( String name,
+                                          List classpathJars,
+                                          Map context )
         throws PlexusContainerException;
 
-    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
+    public PlexusContainer createChildContainer( String name,
+                                                 List classpathJars,
+                                                 Map context,
+                                                 List discoveryListeners )
+        throws PlexusContainerException;
+
+    // ----------------------------------------------------------------------------
+    // Component/Plugin ClassRealm creation
+    // ----------------------------------------------------------------------------
+
+    public ClassRealm createComponentRealm( String id,
+                                            List jars )
         throws PlexusContainerException;
 }

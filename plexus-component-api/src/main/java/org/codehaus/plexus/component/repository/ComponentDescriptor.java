@@ -61,6 +61,8 @@ public class ComponentDescriptor
 
     private String description;
 
+    private String realmId;
+
     // ----------------------------------------------------------------------
     // These two fields allow for the specification of an isolated class realm
     // and dependencies that might be specified in a component configuration
@@ -303,7 +305,17 @@ public class ComponentDescriptor
     {
         this.componentConfigurator = componentConfigurator;
     }
-    
+
+    public String getRealmId()
+    {
+        return realmId;
+    }
+
+    public void setRealmId( String realmId )
+    {
+        this.realmId = realmId;
+    }
+
     // Component identity established here!
     public boolean equals(Object other)
     {

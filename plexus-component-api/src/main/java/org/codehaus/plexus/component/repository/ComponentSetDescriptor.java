@@ -27,6 +27,7 @@ import java.util.Iterator;
  */
 public class ComponentSetDescriptor
 {
+    // ComponentDescriptor list
     private List components;
 
     private List dependencies;
