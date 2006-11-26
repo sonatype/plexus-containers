@@ -3,11 +3,11 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus-containers</artifactId>
-    <version>1.0.7-alpha-1</version>
+    <version>1.0.7-alpha-2-SNAPSHOT</version>
   </parent>
   <artifactId>plexus-component-api</artifactId>
   <name>Plexus Component API</name>
-  <version>1.0-alpha-11</version>
+  <version>1.0-alpha-12-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
