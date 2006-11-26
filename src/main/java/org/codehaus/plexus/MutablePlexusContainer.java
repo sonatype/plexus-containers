@@ -25,6 +25,7 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 /**
  * @author Jason van Zyl
@@ -77,4 +78,6 @@ public interface MutablePlexusContainer
     // Parent Container
 
     PlexusContainer getParentContainer();
+
+    ClassRealm getComponentRealm( String realmId );
 }

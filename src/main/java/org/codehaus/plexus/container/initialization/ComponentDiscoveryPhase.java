@@ -17,6 +17,7 @@ package org.codehaus.plexus.container.initialization;
  */
 
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
@@ -38,7 +39,7 @@ public class ComponentDiscoveryPhase
     {
         try
         {
-            discoverComponents( context.getContainer() );
+            discoverComponents( context.getContainer(), context.getContainer().getContainerRealm() );
         }
         catch ( PlexusConfigurationException e )
         {
@@ -50,7 +51,7 @@ public class ComponentDiscoveryPhase
         }
     }
 
-    public static List discoverComponents( DefaultPlexusContainer container )
+    public static List discoverComponents( DefaultPlexusContainer container, ClassRealm realm )
         throws PlexusConfigurationException, ComponentRepositoryException
     {
         // We are assuming that any component which is designated as a component discovery
@@ -63,7 +64,7 @@ public class ComponentDiscoveryPhase
         {
             ComponentDiscoverer componentDiscoverer = (ComponentDiscoverer) i.next();
 
-            List componentSetDescriptors = componentDiscoverer.findComponents( container.getContext(), container.getContainerRealm() );
+            List componentSetDescriptors = componentDiscoverer.findComponents( container.getContext(), realm );
 
             for ( Iterator j = componentSetDescriptors.iterator(); j.hasNext(); )
             {
