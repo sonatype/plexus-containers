@@ -30,7 +30,7 @@ import java.util.List;
  * @version $Id$
  */
 public abstract class AbstractCompositionResolverTest
-    extends TestCase
+    extends TestCase           
 {
 
     /**
