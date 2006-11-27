@@ -28,15 +28,46 @@ public interface ComponentConfigurator
 {
     String ROLE = ComponentConfigurator.class.getName();
 
-    void configureComponent( Object component, PlexusConfiguration configuration, ClassRealm containerRealm )
+    void configureComponent( Object component,
+                             PlexusConfiguration configuration,
+                             ClassRealm classRealm )
         throws ComponentConfigurationException;
 
-    void configureComponent( Object component, PlexusConfiguration configuration,
-                             ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm )
+    /**
+     * @deprecated
+     */
+    void configureComponent( Object component,
+                             PlexusConfiguration configuration,
+                             ClassLoader classLoader )
         throws ComponentConfigurationException;
 
-    void configureComponent( Object component, PlexusConfiguration configuration,
-                             ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
+    void configureComponent( Object component,
+                             PlexusConfiguration configuration,
+                             ExpressionEvaluator expressionEvaluator,
+                             ClassRealm classRealm )
+        throws ComponentConfigurationException;
+
+    /**
+     * @deprecated
+     */
+    void configureComponent( Object component,
+                             PlexusConfiguration configuration,
+                             ExpressionEvaluator expressionEvaluator,
+                             ClassLoader classLoader )
+        throws ComponentConfigurationException;
+
+    void configureComponent( Object component,
+                             PlexusConfiguration configuration,
+                             ExpressionEvaluator expressionEvaluator,
+                             ClassRealm classRealm,
+                             ConfigurationListener listener )
+        throws ComponentConfigurationException;
+
+    /** @deprecated */
+    void configureComponent( Object component,
+                             PlexusConfiguration configuration,
+                             ExpressionEvaluator expressionEvaluator,
+                             ClassLoader classLoader,
                              ConfigurationListener listener )
         throws ComponentConfigurationException;
 }
