@@ -48,6 +48,16 @@ public interface ConfigurationConverter
                               ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException;
 
+    /** @deprecated */
+    Object fromConfiguration( ConverterLookup converterLookup,
+                              PlexusConfiguration configuration,
+                              Class type,
+                              Class baseType,
+                              ClassLoader classLoader,
+                              ExpressionEvaluator expressionEvaluator )
+        throws ComponentConfigurationException;
+
+
     /**
      * @param converterLookup     Repository of available converters
      * @param configuration
@@ -68,4 +78,15 @@ public interface ConfigurationConverter
                               ExpressionEvaluator expressionEvaluator,
                               ConfigurationListener listener )
         throws ComponentConfigurationException;
+
+    /** @deprecated */
+    Object fromConfiguration( ConverterLookup converterLookup,
+                              PlexusConfiguration configuration,
+                              Class type,
+                              Class baseType,
+                              ClassLoader classLoader,
+                              ExpressionEvaluator expressionEvaluator,
+                              ConfigurationListener listener )
+        throws ComponentConfigurationException;
+
 }

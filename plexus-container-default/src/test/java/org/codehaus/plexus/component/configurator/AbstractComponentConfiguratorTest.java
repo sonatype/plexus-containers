@@ -24,6 +24,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.PlexusTestCase;
 
 import java.io.File;
 import java.io.StringReader;
@@ -40,14 +41,15 @@ import java.util.Vector;
  * @version $Id$
  */
 public abstract class AbstractComponentConfiguratorTest
-    extends TestCase
+    extends PlexusTestCase
 {
-    public AbstractComponentConfiguratorTest( String s )
-    {
-        super( s );
-    }
+    protected abstract String getRoleHint();
 
-    protected abstract ComponentConfigurator getComponentConfigurator();
+    protected ComponentConfigurator getComponentConfigurator()
+        throws Exception
+    {
+        return (ComponentConfigurator) lookup( ComponentConfigurator.ROLE, getRoleHint() );
+    }
 
     public void testComponentConfigurator()
         throws Exception

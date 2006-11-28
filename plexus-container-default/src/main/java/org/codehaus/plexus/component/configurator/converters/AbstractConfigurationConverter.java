@@ -18,11 +18,14 @@ package org.codehaus.plexus.component.configurator.converters;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.ConfigurationListener;
+import org.codehaus.plexus.component.configurator.AbstractComponentConfigurator;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.MutablePlexusContainer;
 
 /**
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
@@ -31,7 +34,28 @@ import org.codehaus.plexus.util.StringUtils;
 public abstract class AbstractConfigurationConverter
     implements ConfigurationConverter
 {
+    protected MutablePlexusContainer container;
+
+    protected AbstractConfigurationConverter()
+    {
+    }
+
+    protected AbstractConfigurationConverter( MutablePlexusContainer conatiner )
+    {
+        this.container = conatiner;
+    }
+
     private static final String IMPLEMENTATION = "implementation";
+
+
+    protected Class getClassForImplementationHint( Class type,
+                                                   PlexusConfiguration configuration,
+                                                   ClassLoader classLoader )
+        throws ComponentConfigurationException
+    {
+        return getClassForImplementationHint( type, configuration, AbstractComponentConfigurator.createClassRealm(
+            container, classLoader ) );
+    }
 
     /**
      * We will check if user has provided a hint which class should be used for given field.
@@ -39,7 +63,8 @@ public abstract class AbstractConfigurationConverter
      * If 'implementation' hint was provided we will try to load correspoding class
      * If we are unable to do so error will be reported
      */
-    protected Class getClassForImplementationHint( Class type, PlexusConfiguration configuration,
+    protected Class getClassForImplementationHint( Class type,
+                                                   PlexusConfiguration configuration,
                                                    ClassRealm classRealm )
         throws ComponentConfigurationException
     {
@@ -67,7 +92,10 @@ public abstract class AbstractConfigurationConverter
         return retValue;
     }
 
-    protected Class getImplementationClass( Class type, Class baseType, PlexusConfiguration configuration, ClassRealm classRealm )
+    protected Class getImplementationClass( Class type,
+                                            Class baseType,
+                                            PlexusConfiguration configuration,
+                                            ClassRealm classRealm )
         throws ComponentConfigurationException
     {
         // if there's an implementation hint, try that.
@@ -146,9 +174,9 @@ public abstract class AbstractConfigurationConverter
      * Constructs a classname from a class and a fieldname.
      * For example, baseType is 'package.Component',
      * field is 'someThing', then it constructs 'package.SomeThing'.
-     *
      */
-    private String constructClassName( Class baseType, String name )
+    private String constructClassName( Class baseType,
+                                       String name )
     {
         String baseTypeName = baseType.getName();
 
@@ -173,7 +201,8 @@ public abstract class AbstractConfigurationConverter
         return className;
     }
 
-    protected Class loadClass( String classname, ClassLoader classLoader )
+    protected Class loadClass( String classname,
+                               ClassLoader classLoader )
         throws ComponentConfigurationException
     {
         Class retValue;
@@ -190,7 +219,8 @@ public abstract class AbstractConfigurationConverter
         return retValue;
     }
 
-    protected Object instantiateObject( String classname, ClassLoader classLoader )
+    protected Object instantiateObject( String classname,
+                                        ClassLoader classLoader )
         throws ComponentConfigurationException
     {
         Class clazz = loadClass( classname, classLoader );
@@ -232,7 +262,8 @@ public abstract class AbstractConfigurationConverter
         return StringUtils.addAndDeHump( fieldName );
     }
 
-    protected Object fromExpression( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator,
+    protected Object fromExpression( PlexusConfiguration configuration,
+                                     ExpressionEvaluator expressionEvaluator,
                                      Class type )
         throws ComponentConfigurationException
     {
@@ -249,7 +280,8 @@ public abstract class AbstractConfigurationConverter
         return v;
     }
 
-    protected Object fromExpression( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
+    protected Object fromExpression( PlexusConfiguration configuration,
+                                     ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
         Object v = null;
@@ -290,11 +322,52 @@ public abstract class AbstractConfigurationConverter
         return v;
     }
 
-    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator )
+    public Object fromConfiguration( ConverterLookup converterLookup,
+                                     PlexusConfiguration configuration,
+                                     Class type,
+                                     Class baseType,
+                                     ClassRealm classRealm,
+                                     ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
         return fromConfiguration( converterLookup, configuration, type, baseType, classRealm, expressionEvaluator,
                                   null );
+    }
+
+    // ----------------------------------------------------------------------------
+    // Backward compat
+    // ----------------------------------------------------------------------------
+
+    /**
+     * @deprecated
+     */
+    public Object fromConfiguration( ConverterLookup converterLookup,
+                                     PlexusConfiguration configuration,
+                                     Class type,
+                                     Class baseType,
+                                     ClassLoader classLoader,
+                                     ExpressionEvaluator expressionEvaluator )
+        throws ComponentConfigurationException
+    {
+        return fromConfiguration( converterLookup, configuration, type, baseType,
+                                  AbstractComponentConfigurator.createClassRealm( container, classLoader ),
+                                  expressionEvaluator );
+    }
+
+    /**
+     * @deprecated
+     */
+    public Object fromConfiguration( ConverterLookup converterLookup,
+                                     PlexusConfiguration configuration,
+                                     Class type,
+                                     Class baseType,
+                                     ClassLoader classLoader,
+                                     ExpressionEvaluator expressionEvaluator,
+                                     ConfigurationListener listener )
+        throws ComponentConfigurationException
+    {
+        return fromConfiguration( converterLookup, configuration, type, baseType,
+                                  AbstractComponentConfigurator.createClassRealm( container, classLoader ),
+                                  expressionEvaluator, listener );
     }
 }

@@ -16,6 +16,8 @@ package org.codehaus.plexus.component.configurator;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
@@ -24,14 +26,13 @@ import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConve
 import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 /**
  * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
+ * @author Jason van Zyl
  * @version $Id$
  */
 public abstract class AbstractComponentConfigurator
@@ -39,7 +40,6 @@ public abstract class AbstractComponentConfigurator
 {
     protected MutablePlexusContainer container;
 
-    // TODO: configured as a component
     protected ConverterLookup converterLookup = new DefaultConverterLookup();
 
     public void configureComponent( Object component,
@@ -55,7 +55,7 @@ public abstract class AbstractComponentConfigurator
                                     ClassLoader classLoader )
         throws ComponentConfigurationException
     {
-        configureComponent( component, configuration, createClassRealm( classLoader ) );
+        configureComponent( component, configuration, createClassRealm( container, classLoader ) );
     }
 
     public void configureComponent( Object component,
@@ -73,7 +73,7 @@ public abstract class AbstractComponentConfigurator
                                     ClassLoader classLoader )
         throws ComponentConfigurationException
     {
-        configureComponent( component, configuration, expressionEvaluator, createClassRealm( classLoader ) );
+        configureComponent( component, configuration, expressionEvaluator, createClassRealm( container, classLoader ) );
     }
 
     public void configureComponent( Object component,
@@ -95,10 +95,12 @@ public abstract class AbstractComponentConfigurator
                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
-        configureComponent( component, configuration, expressionEvaluator, createClassRealm( classLoader ), listener );
+        configureComponent( component, configuration, expressionEvaluator, createClassRealm( container, classLoader ),
+                            listener );
     }
 
-    private ClassRealm createClassRealm( ClassLoader classLoader )
+    public static ClassRealm createClassRealm( MutablePlexusContainer container,
+                                               ClassLoader classLoader )
         throws ComponentConfigurationException
     {
         try

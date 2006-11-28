@@ -22,6 +22,7 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.context.DefaultContext;
+import org.codehaus.plexus.PlexusTestCase;
 
 import java.io.File;
 import java.util.List;
@@ -32,7 +33,7 @@ import java.util.List;
  * @version $Id$
  */
 public class ComponentDiscovererTest
-    extends TestCase
+    extends PlexusTestCase
 {
     public void testDefaultComponentDiscoverer()
         throws Exception
@@ -45,7 +46,7 @@ public class ComponentDiscovererTest
 
         ClassRealm core = classWorld.newRealm( "core" );
 
-        File testClasses = new File( System.getProperty( "basedir" ), "target/test-classes" );
+        File testClasses = new File( getBasedir(), "target/test-classes" );
 
         core.addURL( testClasses.toURL() );
 

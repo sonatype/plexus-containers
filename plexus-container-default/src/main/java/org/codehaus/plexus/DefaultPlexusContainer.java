@@ -759,6 +759,8 @@ public class DefaultPlexusContainer
         ContainerInitializationContext initializationContext =
             new ContainerInitializationContext( this, classWorld, containerRealm, configuration );
 
+        //PLXAPI: I think we might only ever need one of these so maybe we can create it with a constructor
+        //        and store it.
         ComponentConfigurator c = new BasicComponentConfigurator();
 
         try
@@ -1272,6 +1274,12 @@ public class DefaultPlexusContainer
         {
             // This should never happen: when a component is discovered, it is discovered from a realm and
             // it is at that point the realm id is assigned to the component descriptor.
+        }
+
+        if ( realm == null )
+        {
+            // The core components need the container realm.
+            realm = containerRealm;
         }
 
         return realm;

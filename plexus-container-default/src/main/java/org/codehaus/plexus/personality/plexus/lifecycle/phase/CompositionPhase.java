@@ -35,8 +35,6 @@ public class CompositionPhase
     {
         ComponentDescriptor descriptor = manager.getComponentDescriptor();
 
-        // We only need to perform assembly if the component has requirements
-
         if ( descriptor.getRequirements() == null )
         {
             return;

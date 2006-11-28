@@ -5,19 +5,29 @@
   <container-initialization>
     <initialization-phases>
       <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeResourcesPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase"/>
       <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase"/>
       <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeContextPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase"/>
       <initialization-phase implementation="org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase"/>
+      <initialization-phase
+          implementation="org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase"/>
     </initialization-phases>
   </container-initialization>
 
@@ -29,7 +39,8 @@
     <composition-resolver implementation="org.codehaus.plexus.component.composition.DefaultCompositionResolver"/>
   </component-repository>
 
-  <component-discoverer-manager implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager">
+  <component-discoverer-manager
+      implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager">
     <component-discoverers>
       <component-discoverer implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscoverer"/>
       <component-discoverer implementation="org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer"/>
@@ -122,6 +133,18 @@
       <lifecycle-handler implementation="org.codehaus.plexus.lifecycle.PassiveLifecycleHandler">
         <id>passive</id>
       </lifecycle-handler>
+      <lifecycle-handler implementation="org.codehaus.plexus.lifecycle.PassiveLifecycleHandler">
+        <id>passive</id>
+      </lifecycle-handler>
+      <lifecycle-handler implementation="org.codehaus.plexus.lifecycle.BootstrapLifecycleHandler">
+        <id>bootstrap</id>
+        <begin-segment>
+          <!--
+          <phase implementation="org.codehaus.plexus.personality.plexus.lifecycle.phase.CompositionPhase"/>
+          -->
+          <phase implementation="org.codehaus.plexus.personality.plexus.lifecycle.phase.ContextualizePhase"/>
+        </begin-segment>
+      </lifecycle-handler>
     </lifecycle-handlers>
   </lifecycle-handler-manager>
 
@@ -130,7 +153,8 @@
     <default-component-factory implementation="org.codehaus.plexus.component.factory.java.JavaComponentFactory"/>
   </component-factory-manager>
 
-  <component-composer-manager implementation="org.codehaus.plexus.component.composition.DefaultComponentComposerManager">
+  <component-composer-manager
+      implementation="org.codehaus.plexus.component.composition.DefaultComponentComposerManager">
     <component-composers>
       <component-composer implementation="org.codehaus.plexus.component.composition.FieldComponentComposer">
         <id>field</id>
@@ -168,8 +192,7 @@
       <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
       <role-hint>basic</role-hint>
       <implementation>org.codehaus.plexus.component.configurator.BasicComponentConfigurator</implementation>
-      <lifecycle-handler>passive</lifecycle-handler>
-      <!-- TODO: the converters should be components -->
+      <lifecycle-handler>bootstrap</lifecycle-handler>
       <requirements>
         <requirement>
           <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
@@ -181,7 +204,7 @@
       <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
       <role-hint>map-oriented</role-hint>
       <implementation>org.codehaus.plexus.component.configurator.MapOrientedComponentConfigurator</implementation>
-      <lifecycle-handler>passive</lifecycle-handler>
+      <lifecycle-handler>bootstrap</lifecycle-handler>
       <!-- TODO: the converters should be components -->
       <requirements>
         <requirement>
@@ -193,7 +216,8 @@
     <component>
       <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
       <role-hint>default</role-hint>
-      <implementation>org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup</implementation>
+      <implementation>org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup
+      </implementation>
       <requirements>
         <requirement>
           <role>org.codehaus.plexus.component.configurator.converters.ConfigurationConverter</role>

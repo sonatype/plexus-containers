@@ -24,7 +24,7 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
  */
@@ -45,7 +45,7 @@ public class BasicComponentConfigurator
 
         converterLookup.registerConverter( new ClassRealmConverter( containerRealm ) );
 
-        ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
+        ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter( container );
 
         converter.processConfiguration( converterLookup, component, containerRealm, configuration, expressionEvaluator,
                                         listener );
