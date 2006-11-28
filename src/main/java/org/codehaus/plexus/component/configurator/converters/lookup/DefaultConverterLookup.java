@@ -38,6 +38,11 @@ import org.codehaus.plexus.component.configurator.converters.composite.MapConver
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PlexusConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PropertiesConverter;
+import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.context.ContextException;
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,13 +51,15 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultConverterLookup
-    implements ConverterLookup
+    implements ConverterLookup, Contextualizable
 {
     private List converters = new LinkedList();
 
     private List customConverters = new LinkedList();
 
     private Map converterMap = new HashMap();
+
+    private MutablePlexusContainer container;
 
     public DefaultConverterLookup()
     {
@@ -145,8 +152,6 @@ public class DefaultConverterLookup
         registerDefaultConverter( new ClassConverter() );
 
         registerDefaultConverter( new UrlConverter() );
-
-        //registerDefaultConverter( new BigIntegerConverter() );
     }
 
     private void registerDefaultCompositeConverters()
@@ -162,6 +167,16 @@ public class DefaultConverterLookup
         registerDefaultConverter( new PlexusConfigurationConverter() );
 
         // this converter should be always registred as the last one
-        registerDefaultConverter( new ObjectWithFieldsConverter() );
+        registerDefaultConverter( new ObjectWithFieldsConverter( container ) );
     }
+
+    // ----------------------------------------------------------------------------
+    // Lifecycle
+    // ----------------------------------------------------------------------------
+
+    public void contextualize( Context context )
+        throws ContextException
+    {
+        container = (MutablePlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
+    }    
 }

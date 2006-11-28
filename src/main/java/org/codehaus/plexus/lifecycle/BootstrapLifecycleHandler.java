@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.configurator;
+package org.codehaus.plexus.lifecycle;
 
 /*
  * Copyright 2001-2006 Codehaus Foundation.
@@ -16,11 +16,11 @@ package org.codehaus.plexus.component.configurator;
  * limitations under the License.
  */
 
-public class BasicComponentConfiguratorTest
-    extends AbstractComponentConfiguratorTest
+public class BootstrapLifecycleHandler
+    extends AbstractLifecycleHandler
 {
-    protected String getRoleHint()
+    /** @see org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable#initialize */
+    public void initialize()
     {
-        return "basic";
     }
 }

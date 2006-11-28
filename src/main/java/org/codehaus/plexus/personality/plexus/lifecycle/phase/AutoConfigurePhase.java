@@ -23,6 +23,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 public class AutoConfigurePhase
     extends AbstractPhase
@@ -47,11 +48,14 @@ public class AutoConfigurePhase
             ComponentConfigurator componentConfigurator =
                 (ComponentConfigurator) manager.getContainer().lookup( ComponentConfigurator.ROLE, configuratorId );
 
-            if ( manager.getComponentDescriptor().hasConfiguration() )
+            if ( descriptor.hasConfiguration() )
             {
+                ClassRealm realm =
+                    manager.getContainer().getComponentRealm( manager.getComponentDescriptor().getRealmId() );
+
                 //PLXAPI: we should probably be using the component realm.
                 componentConfigurator.configureComponent( object, manager.getComponentDescriptor().getConfiguration(),
-                                                          manager.getContainer().getContainerRealm() );
+                                                          realm );
             }
         }
         catch ( ComponentLookupException e )

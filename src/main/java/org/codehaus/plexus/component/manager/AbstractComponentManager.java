@@ -205,12 +205,6 @@ public abstract class AbstractComponentManager
 
             ClassRealm componentRealm = container.getComponentRealm( componentDescriptor.getRealmId() );
 
-            if ( componentRealm == null )
-            {
-                // The core components need the container realm.
-                componentRealm = container.getContainerRealm();
-            }
-
             component = componentFactory.newInstance( componentDescriptor, componentRealm, container );
         }
         catch ( UndefinedComponentFactoryException e )

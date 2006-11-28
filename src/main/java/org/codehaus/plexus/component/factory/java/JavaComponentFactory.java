@@ -34,7 +34,9 @@ import java.lang.reflect.Modifier;
 public class JavaComponentFactory
     extends AbstractComponentFactory
 {
-    public Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm, PlexusContainer container )
+    public Object newInstance( ComponentDescriptor componentDescriptor,
+                               ClassRealm classRealm,
+                               PlexusContainer container )
         throws ComponentInstantiationException
     {
         Class implementationClass = null;
@@ -49,12 +51,14 @@ public class JavaComponentFactory
 
             if ( Modifier.isInterface( modifiers ) )
             {
-                throw new ComponentInstantiationException( "Cannot instantiate implementation '" + implementation + "' because the class is a interface." );
+                throw new ComponentInstantiationException(
+                    "Cannot instantiate implementation '" + implementation + "' because the class is a interface." );
             }
 
             if ( Modifier.isAbstract( modifiers ) )
             {
-                throw new ComponentInstantiationException( "Cannot instantiate implementation '" + implementation + "' because the class is abstract." );
+                throw new ComponentInstantiationException(
+                    "Cannot instantiate implementation '" + implementation + "' because the class is abstract." );
             }
 
             Object instance = implementationClass.newInstance();
@@ -63,32 +67,46 @@ public class JavaComponentFactory
         }
         catch ( InstantiationException e )
         {
+            //PLXAPI: most probably cause of this is the implementation class not having
+            //        a default constructor.
             throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
         catch ( ClassNotFoundException e )
         {
             throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
-        catch( IllegalAccessException e )
+        catch ( IllegalAccessException e )
         {
             throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
-        catch( LinkageError e )
+        catch ( LinkageError e )
         {
             throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
     }
 
-    private ComponentInstantiationException makeException( ClassRealm componentClassRealm, ComponentDescriptor componentDescriptor, Class implementationClass, Throwable e )
+    private ComponentInstantiationException makeException( ClassRealm componentClassRealm,
+                                                           ComponentDescriptor componentDescriptor,
+                                                           Class implementationClass,
+                                                           Throwable e )
     {
         // ----------------------------------------------------------------------
         // Display the realm when there is an error, We should probably return a string here so we
         // can incorporate this into the error message for easy debugging.
         // ----------------------------------------------------------------------
 
-        componentClassRealm.display();
+        String msg;
 
-        String msg = "Could not instantiate component: " + componentDescriptor.getHumanReadableKey();
+        if ( componentClassRealm == null )
+        {
+            msg = "classRealm is null for " + componentDescriptor;
+        }
+        else
+        {
+            //componentClassRealm.display();
+
+            msg = "Could not instantiate component: " + componentDescriptor.getHumanReadableKey();
+        }
 
         return new ComponentInstantiationException( msg, e );
     }

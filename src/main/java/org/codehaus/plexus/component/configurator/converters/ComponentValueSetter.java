@@ -19,10 +19,12 @@ package org.codehaus.plexus.component.configurator.converters;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
+import org.codehaus.plexus.component.configurator.AbstractComponentConfigurator;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.ReflectionUtils;
+import org.codehaus.plexus.MutablePlexusContainer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,7 +34,7 @@ import java.lang.reflect.Method;
 /**
  * @author <a href="mailto:kenney@codehaus.org">Kenney Westerhof</a>
  */
-public class ComponentValueSetter
+public class ComponentValueSetter    
 {
     private Object object;
 
@@ -54,15 +56,18 @@ public class ComponentValueSetter
 
     private ConfigurationListener listener;
 
-    public ComponentValueSetter( String fieldName, Object object, ConverterLookup lookup )
+    private MutablePlexusContainer container;
+
+    public ComponentValueSetter( MutablePlexusContainer container, String fieldName, Object object, ConverterLookup lookup )
         throws ComponentConfigurationException
     {
-        this( fieldName, object, lookup, null );
+        this( container, fieldName, object, lookup, null );
     }
 
-    public ComponentValueSetter( String fieldName, Object object, ConverterLookup lookup, ConfigurationListener listener )
+    public ComponentValueSetter( MutablePlexusContainer container, String fieldName, Object object, ConverterLookup lookup, ConfigurationListener listener )
         throws ComponentConfigurationException
     {
+        this.container = container;
         this.fieldName = fieldName;
         this.object = object;
         this.lookup = lookup;
@@ -207,6 +212,71 @@ public class ComponentValueSetter
         }
     }
 
+    public void configure( PlexusConfiguration config, ClassLoader classLoader, ExpressionEvaluator evaluator )
+        throws ComponentConfigurationException
+    {
+        Object value = null;
+
+        // try autowire converter + method first
+
+        if ( setterTypeConverter != null )
+        {
+            try
+            {
+                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), classLoader,
+                                                               evaluator, listener );
+
+                if ( value != null )
+                {
+                    setValueUsingSetter( value );
+                    return;
+                }
+            }
+            catch ( ComponentConfigurationException e )
+            {
+                if ( fieldTypeConverter == null ||
+                    fieldTypeConverter.getClass().equals( setterTypeConverter.getClass() ) )
+                {
+                    throw e;
+                }
+            }
+        }
+
+        // try setting field using value found with method
+        // converter, if present.
+
+        ComponentConfigurationException savedEx = null;
+
+        if ( value != null )
+        {
+            try
+            {
+                setValueUsingField( value );
+                return;
+            }
+            catch ( ComponentConfigurationException e )
+            {
+                savedEx = e;
+            }
+        }
+
+        // either no value or setting went wrong. Try
+        // new converter.
+
+        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), classLoader, evaluator,
+                                                      listener );
+
+        if ( value != null )
+        {
+            setValueUsingField( value );
+        }
+        // FIXME: need this?
+        else if ( savedEx != null )
+        {
+            throw savedEx;
+        }
+    }
+
     public void configure( PlexusConfiguration config, ClassRealm classRealm, ExpressionEvaluator evaluator )
         throws ComponentConfigurationException
     {
@@ -271,5 +341,4 @@ public class ComponentValueSetter
             throw savedEx;
         }
     }
-
 }

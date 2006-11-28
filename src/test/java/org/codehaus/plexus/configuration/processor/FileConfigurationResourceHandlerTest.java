@@ -34,13 +34,11 @@ public class FileConfigurationResourceHandlerTest
     public void testFileConfigurationResourceHandler()
         throws Exception
     {
-        String basedir = getBasedir();
-
         FileConfigurationResourceHandler h = new FileConfigurationResourceHandler();
 
         Map parameters = new HashMap();
 
-        parameters.put( "source", new File( basedir, "src/test/resources/inline-configuration.xml" ).getPath() );
+        parameters.put( "source", new File( getBasedir(), "src/test/resources/inline-configuration.xml" ).getPath() );
 
         PlexusConfiguration[] processed = h.handleRequest( parameters );
 

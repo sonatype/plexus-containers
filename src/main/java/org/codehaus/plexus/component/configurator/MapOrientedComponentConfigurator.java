@@ -27,7 +27,6 @@ import java.util.Map;
 public class MapOrientedComponentConfigurator
     extends AbstractComponentConfigurator
 {
-
     public void configureComponent( Object component, PlexusConfiguration configuration,
                                     ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
                                     ConfigurationListener listener )
