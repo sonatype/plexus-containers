@@ -3,11 +3,11 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus-containers</artifactId>
-    <version>1.0.7-alpha-3-SNAPSHOT</version>
+    <version>1.0.7-alpha-3</version>
   </parent>
   <artifactId>plexus-container-default</artifactId>
   <name>Default Plexus Container</name>
-  <version>1.0-alpha-13-SNAPSHOT</version>
+  <version>1.0-alpha-13</version>
   <build>
     <plugins>
       <plugin>
@@ -27,7 +27,7 @@
             <descriptorRef>jar-with-dependencies</descriptorRef>                                                                                                                       
           </descriptorRefs>
           <finalName>plexus</finalName>
-          <classifier></classifier>
+          <classifier />
         </configuration>
       </plugin>
     </plugins>
