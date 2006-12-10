@@ -9,15 +9,15 @@
   <artifactId>plexus-containers</artifactId>
   <packaging>pom</packaging>
   <name>Parent Plexus Container POM</name>
-  <version>1.0.7-alpha-3-SNAPSHOT</version>
+  <version>1.0.7-alpha-3</version>
   <modules>
     <module>plexus-component-api</module>
     <module>plexus-container-default</module>
   </modules>
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/trunk</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/trunk</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/trunk/</url>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0.7-alpha-3</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0.7-alpha-3</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/tags/plexus-containers-1.0.7-alpha-3</url>
   </scm>
   <dependencies>
     <dependency>
@@ -37,7 +37,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-api</artifactId>
-        <version>1.0-alpha-13-SNAPSHOT</version>
+        <version>1.0-alpha-13</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
