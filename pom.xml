@@ -15,7 +15,7 @@
     <module>plexus-container-default</module>
   </modules>
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/trunk/</connection>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/trunk</connection>
     <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/trunk</developerConnection>
     <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/trunk/</url>
   </scm>
@@ -32,7 +32,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-classworlds</artifactId>
-        <version>1.2-alpha-5</version>
+        <version>1.2-alpha-6-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
