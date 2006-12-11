@@ -382,6 +382,6 @@ public abstract class AbstractConfigurationConverter
     {
         /* don't do anything - this is here so that modern ComfigurationConverters don't have to implement these
          * deprecated methods. Deprecated / old plugins may. however, make use of this callback */
-        return null;
+        return configuration;
     }
 }
