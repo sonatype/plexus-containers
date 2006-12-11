@@ -334,6 +334,21 @@ public abstract class AbstractConfigurationConverter
                                   null );
     }
 
+    public Object fromConfiguration( ConverterLookup converterLookup,
+                                     PlexusConfiguration configuration,
+                                     Class type,
+                                     Class baseType,
+                                     ClassRealm classRealm,
+                                     ExpressionEvaluator expressionEvaluator,
+                                     ConfigurationListener listener )
+        throws ComponentConfigurationException
+    {
+        /* invoke deprecated ConfigurationConverters - this should go at some point
+         * NOTE: this will not be called if the ConfigurationConverter extending is not deprecated - this is GOOD :) */
+        return fromConfiguration( converterLookup, configuration, type, baseType, (ClassLoader) classRealm,
+                                  expressionEvaluator, listener );
+    }
+
     // ----------------------------------------------------------------------------
     // Backward compat
     // ----------------------------------------------------------------------------
@@ -349,9 +364,8 @@ public abstract class AbstractConfigurationConverter
                                      ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
-        return fromConfiguration( converterLookup, configuration, type, baseType,
-                                  AbstractComponentConfigurator.createClassRealm( container, classLoader ),
-                                  expressionEvaluator );
+        return fromConfiguration( converterLookup, configuration, type, baseType, classLoader, expressionEvaluator,
+                                  null);
     }
 
     /**
@@ -366,8 +380,8 @@ public abstract class AbstractConfigurationConverter
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
-        return fromConfiguration( converterLookup, configuration, type, baseType,
-                                  AbstractComponentConfigurator.createClassRealm( container, classLoader ),
-                                  expressionEvaluator, listener );
+        /* don't do anything - this is here so that modern ComfigurationConverters don't have to implement these
+         * deprecated methods. Deprecated / old plugins may. however, make use of this callback */
+        return null;
     }
 }
