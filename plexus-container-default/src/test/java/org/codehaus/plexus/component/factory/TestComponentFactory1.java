@@ -16,7 +16,6 @@ package org.codehaus.plexus.component.factory;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
@@ -29,7 +28,7 @@ public class TestComponentFactory1
         return "testFactory1";
     }
 
-    public Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm, PlexusContainer container )
+    public Object newInstance( ComponentDescriptor componentDescriptor, ClassLoader classLoader, PlexusContainer container )
         throws ComponentInstantiationException
     {
         return new TestFactoryResultComponent(getId());

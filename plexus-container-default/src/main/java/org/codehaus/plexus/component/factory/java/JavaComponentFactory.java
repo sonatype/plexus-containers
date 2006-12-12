@@ -35,7 +35,7 @@ public class JavaComponentFactory
     extends AbstractComponentFactory
 {
     public Object newInstance( ComponentDescriptor componentDescriptor,
-                               ClassRealm classRealm,
+                               ClassLoader classLoader,
                                PlexusContainer container )
         throws ComponentInstantiationException
     {
@@ -45,7 +45,7 @@ public class JavaComponentFactory
         {
             String implementation = componentDescriptor.getImplementation();
 
-            implementationClass = classRealm.loadClass( implementation );
+            implementationClass = classLoader.loadClass( implementation );
 
             int modifiers = implementationClass.getModifiers();
 
@@ -69,23 +69,23 @@ public class JavaComponentFactory
         {
             //PLXAPI: most probably cause of this is the implementation class not having
             //        a default constructor.
-            throw makeException( classRealm, componentDescriptor, implementationClass, e );
+            throw makeException( classLoader, componentDescriptor, implementationClass, e );
         }
         catch ( ClassNotFoundException e )
         {
-            throw makeException( classRealm, componentDescriptor, implementationClass, e );
+            throw makeException( classLoader, componentDescriptor, implementationClass, e );
         }
         catch ( IllegalAccessException e )
         {
-            throw makeException( classRealm, componentDescriptor, implementationClass, e );
+            throw makeException( classLoader, componentDescriptor, implementationClass, e );
         }
         catch ( LinkageError e )
         {
-            throw makeException( classRealm, componentDescriptor, implementationClass, e );
+            throw makeException( classLoader, componentDescriptor, implementationClass, e );
         }
     }
 
-    private ComponentInstantiationException makeException( ClassRealm componentClassRealm,
+    private ComponentInstantiationException makeException( ClassLoader componentClassRealm,
                                                            ComponentDescriptor componentDescriptor,
                                                            Class implementationClass,
                                                            Throwable e )

@@ -301,7 +301,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         cc.configureComponent( component, configuration, realm );
 
-        String [] stringArray = component.getStringArray();
+        String[] stringArray = component.getStringArray();
 
         assertEquals( 2, stringArray.length );
 
@@ -309,7 +309,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "value2", stringArray[1] );
 
-        Integer [] integerArray = component.getIntegerArray();
+        Integer[] integerArray = component.getIntegerArray();
 
         assertEquals( 2, integerArray.length );
 
@@ -317,7 +317,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( new Integer( 69 ), integerArray[1] );
 
-        ImportantThing [] importantThingArray = component.getImportantThingArray();
+        ImportantThing[] importantThingArray = component.getImportantThingArray();
 
         assertEquals( 2, importantThingArray.length );
 
@@ -325,7 +325,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "World!", importantThingArray[1].getName() );
 
-        Object [] objectArray = component.getObjectArray();
+        Object[] objectArray = component.getObjectArray();
 
         assertEquals( 3, objectArray.length );
 
@@ -388,18 +388,13 @@ public abstract class AbstractComponentConfiguratorTest
 
         try
         {
-            PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test-Invalid>",
-                                                                                new StringReader( xml ) );
+            PlexusTools.buildConfiguration( "<Test-Invalid>", new StringReader( xml ) );
 
             fail( "Should have caused an error because of the invalid XML." );
         }
         catch ( PlexusConfigurationException e )
         {
-            // should catch this...
-            System.out.println( "Error Message:\n\n" + e.getLocalizedMessage() + "\n\n" );
-            System.err.println( "Error with stacktrace:\n\n" );
-            e.printStackTrace();
-            System.err.println( "\n\n" );
+            // Error should be caught here.
         }
         catch ( Exception e )
         {
