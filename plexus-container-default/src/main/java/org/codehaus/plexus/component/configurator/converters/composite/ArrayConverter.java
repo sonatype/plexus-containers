@@ -1,22 +1,29 @@
 package org.codehaus.plexus.component.configurator.converters.composite;
 
 /*
- * Copyright 2001-2006 Codehaus Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, The Codehaus
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
@@ -24,13 +31,13 @@ import org.codehaus.plexus.component.configurator.converters.ConfigurationConver
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +55,7 @@ public class ArrayConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator,
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -68,7 +75,7 @@ public class ArrayConverter
 
             String name = fromXML( configEntry );
 
-            Class childType = getClassForImplementationHint( null, c, classRealm );
+            Class childType = getClassForImplementationHint( null, c, classLoader );
 
             // check if the name is a fully qualified classname
 
@@ -76,7 +83,7 @@ public class ArrayConverter
             {
                 try
                 {
-                    childType = classRealm.loadClass( name );
+                    childType = classLoader.loadClass( name );
                 }
                 catch ( ClassNotFoundException e )
                 {
@@ -108,7 +115,7 @@ public class ArrayConverter
 
                 try
                 {
-                    childType = classRealm.loadClass( className );
+                    childType = classLoader.loadClass( className );
                 }
                 catch ( ClassNotFoundException e )
                 {
@@ -125,28 +132,15 @@ public class ArrayConverter
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
-            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classRealm,
+            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader,
                                                          expressionEvaluator, listener );
 
             values.add( object );
         }
-        
-        Class componentType = type.getComponentType();
 
-        if ( componentType.isPrimitive() && !values.isEmpty() )
-        {
-            Iterator it = values.iterator();
-            while ( it.hasNext() )
-            {
-                it.next().getClass().getName();
-                throw new ComponentConfigurationException( "Can't convert " + it.next().getClass().getName()
-                    + " List to " + componentType.getName() + " array" );
-            }
-        }
-
-        return values.toArray( (Object[]) Array.newInstance( componentType, 0 ) );
+        return values.toArray( (Object []) Array.newInstance( type.getComponentType(), 0 ) );
     }
-    
+
     protected Collection getDefaultCollection( Class collectionType )
     {
         Collection retValue = null;

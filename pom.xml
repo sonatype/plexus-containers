@@ -9,7 +9,7 @@
   <artifactId>plexus-containers</artifactId>
   <packaging>pom</packaging>
   <name>Parent Plexus Container POM</name>
-  <version>1.0.7-alpha-4-SNAPSHOT</version>
+  <version>1.0-alpha-14-SNAPSHOT</version>
   <modules>
     <module>plexus-component-api</module>
     <module>plexus-container-default</module>
