@@ -1,30 +1,37 @@
 package org.codehaus.plexus.component.configurator;
 
 /*
- * Copyright 2001-2006 Codehaus Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, The Codehaus
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
-import org.codehaus.plexus.PlexusTestCase;
 
 import java.io.File;
 import java.io.StringReader;
@@ -41,15 +48,14 @@ import java.util.Vector;
  * @version $Id$
  */
 public abstract class AbstractComponentConfiguratorTest
-    extends PlexusTestCase
+    extends TestCase
 {
-    protected abstract String getRoleHint();
-
-    protected ComponentConfigurator getComponentConfigurator()
-        throws Exception
+    public AbstractComponentConfiguratorTest( String s )
     {
-        return (ComponentConfigurator) lookup( ComponentConfigurator.ROLE, getRoleHint() );
+        super( s );
     }
+
+    protected abstract ComponentConfigurator getComponentConfigurator();
 
     public void testComponentConfigurator()
         throws Exception
@@ -275,9 +281,7 @@ public abstract class AbstractComponentConfiguratorTest
             "    <whatever implementation='java.lang.Integer'>303</whatever>" + "  </objectArray>" + "  <urlArray>" +
             "    <url>http://foo.com/bar</url>" + "    <url>file://localhost/c:/windows</url>" + "  </urlArray>" +
             "  <fileArray>" + "    <file>c:/windows</file>" + "    <file>/usr/local/bin/foo.sh</file>" +
-            "  </fileArray>" + "  <classArray>" + "    <class>java.lang.String</class>" +
-            "    <class>org.codehaus.plexus.component.configurator.ComponentWithArrayFields</class>" +
-            "  </classArray>" + "</configuration>";
+            "  </fileArray>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -297,7 +301,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         cc.configureComponent( component, configuration, realm );
 
-        String[] stringArray = component.getStringArray();
+        String [] stringArray = component.getStringArray();
 
         assertEquals( 2, stringArray.length );
 
@@ -305,7 +309,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "value2", stringArray[1] );
 
-        Integer[] integerArray = component.getIntegerArray();
+        Integer [] integerArray = component.getIntegerArray();
 
         assertEquals( 2, integerArray.length );
 
@@ -313,7 +317,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( new Integer( 69 ), integerArray[1] );
 
-        ImportantThing[] importantThingArray = component.getImportantThingArray();
+        ImportantThing [] importantThingArray = component.getImportantThingArray();
 
         assertEquals( 2, importantThingArray.length );
 
@@ -321,7 +325,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "World!", importantThingArray[1].getName() );
 
-        Object[] objectArray = component.getObjectArray();
+        Object [] objectArray = component.getObjectArray();
 
         assertEquals( 3, objectArray.length );
 
@@ -342,12 +346,6 @@ public abstract class AbstractComponentConfiguratorTest
         assertEquals( new File( "c:/windows" ), files[0] );
 
         assertEquals( new File( "/usr/local/bin/foo.sh" ), files[1] );
-
-        Class[] classes = component.getClassArray();
-
-        assertEquals( String.class, classes[0] );
-
-        assertEquals( component.getClass(), classes[1] );
     }
 
     public void testComponentConfigurationWithCompositeFields()
@@ -356,8 +354,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         String xml = "<configuration>" +
             "  <thing implementation=\"org.codehaus.plexus.component.configurator.ImportantThing\">" +
-            "     <name>I am not abstract!</name>" + "  </thing>" + "  <importantThing>" +
-            "     <name>I am not abstract either!</name>" + "  </importantThing>" + "</configuration>";
+            "     <name>I am not abstract!</name>" + "  </thing>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -381,7 +378,6 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "I am not abstract!", component.getThing().getName() );
 
-        assertEquals( "I am not abstract either!", component.getImportantThing().getName() );
     }
 
     public void testInvalidComponentConfiguration()
@@ -392,18 +388,18 @@ public abstract class AbstractComponentConfiguratorTest
 
         try
         {
-            PlexusTools.buildConfiguration( "<Test-Invalid>", new StringReader( xml ) );
+            PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test-Invalid>",
+                                                                                new StringReader( xml ) );
 
             fail( "Should have caused an error because of the invalid XML." );
         }
         catch ( PlexusConfigurationException e )
         {
             // should catch this...
-            //TODO Don't spew this out into the system.out capture it somewhere. It's very distracting in the test output.
-            //System.out.println( "Error Message:\n\n" + e.getLocalizedMessage() + "\n\n" );
-            //System.err.println( "Error with stacktrace:\n\n" );
-            //e.printStackTrace();
-            //System.err.println( "\n\n" );
+            System.out.println( "Error Message:\n\n" + e.getLocalizedMessage() + "\n\n" );
+            System.err.println( "Error with stacktrace:\n\n" );
+            e.printStackTrace();
+            System.err.println( "\n\n" );
         }
         catch ( Exception e )
         {

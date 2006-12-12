@@ -1,19 +1,27 @@
 package org.codehaus.plexus.component.configurator.converters.lookup;
 
 /*
- * Copyright 2001-2006 Codehaus Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, The Codehaus
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
@@ -21,7 +29,6 @@ import org.codehaus.plexus.component.configurator.converters.ConfigurationConver
 import org.codehaus.plexus.component.configurator.converters.basic.BooleanConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.ByteConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.CharConverter;
-import org.codehaus.plexus.component.configurator.converters.basic.ClassConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.DateConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.DoubleConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.FileConverter;
@@ -38,11 +45,6 @@ import org.codehaus.plexus.component.configurator.converters.composite.MapConver
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PlexusConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PropertiesConverter;
-import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.context.ContextException;
-import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,15 +53,13 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultConverterLookup
-    implements ConverterLookup, Contextualizable
+    implements ConverterLookup
 {
     private List converters = new LinkedList();
 
     private List customConverters = new LinkedList();
 
     private Map converterMap = new HashMap();
-
-    private MutablePlexusContainer container;
 
     public DefaultConverterLookup()
     {
@@ -81,7 +81,7 @@ public class DefaultConverterLookup
     public ConfigurationConverter lookupConverterForType( Class type )
         throws ComponentConfigurationException
     {
-        ConfigurationConverter retValue;
+        ConfigurationConverter retValue = null;
 
         if ( converterMap.containsKey( type ) )
         {
@@ -123,6 +123,7 @@ public class DefaultConverterLookup
         return null;
     }
 
+
     private void registerDefaultBasicConverters()
     {
         registerDefaultConverter( new BooleanConverter() );
@@ -149,9 +150,9 @@ public class DefaultConverterLookup
 
         registerDefaultConverter( new FileConverter() );
 
-        registerDefaultConverter( new ClassConverter() );
-
         registerDefaultConverter( new UrlConverter() );
+
+        //registerDefaultConverter( new BigIntegerConverter() );
     }
 
     private void registerDefaultCompositeConverters()
@@ -167,16 +168,7 @@ public class DefaultConverterLookup
         registerDefaultConverter( new PlexusConfigurationConverter() );
 
         // this converter should be always registred as the last one
-        registerDefaultConverter( new ObjectWithFieldsConverter( container ) );
+        registerDefaultConverter( new ObjectWithFieldsConverter() );
     }
 
-    // ----------------------------------------------------------------------------
-    // Lifecycle
-    // ----------------------------------------------------------------------------
-
-    public void contextualize( Context context )
-        throws ContextException
-    {
-        container = (MutablePlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
-    }    
 }

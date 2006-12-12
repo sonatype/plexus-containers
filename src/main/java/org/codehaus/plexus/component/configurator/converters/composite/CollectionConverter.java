@@ -1,22 +1,29 @@
 package org.codehaus.plexus.component.configurator.converters.composite;
 
 /*
- * Copyright 2001-2006 Codehaus Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, The Codehaus
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
@@ -24,6 +31,8 @@ import org.codehaus.plexus.component.configurator.converters.ConfigurationConver
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -47,7 +56,7 @@ public class CollectionConverter
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassRealm classRealm, ExpressionEvaluator expressionEvaluator,
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -57,7 +66,7 @@ public class CollectionConverter
             return retValue;
         }
 
-        Class implementation = getClassForImplementationHint( null, configuration, classRealm );
+        Class implementation = getClassForImplementationHint( null, configuration, classLoader );
 
         if ( implementation != null )
         {
@@ -102,12 +111,70 @@ public class CollectionConverter
         for ( int i = 0; i < configuration.getChildCount(); i++ )
         {
             PlexusConfiguration c = configuration.getChild( i );
+            //Object o = null;
 
-            Class childType = getImplementationClass( null, baseType, c, classRealm );
+            String configEntry = c.getName();
+
+            String name = fromXML( configEntry );
+
+            Class childType = getClassForImplementationHint( null, c, classLoader );
+
+            if ( childType == null && name.indexOf( '.' ) > 0 )
+            {
+                try
+                {
+                    childType = classLoader.loadClass( name );
+                }
+                catch ( ClassNotFoundException e )
+                {
+                    // not found, continue processing
+                }
+            }
+
+            if ( childType == null )
+            {
+                // Some classloaders don't create Package objects for classes
+                // so we have to resort to slicing up the class name
+
+                String baseTypeName = baseType.getName();
+
+                int lastDot = baseTypeName.lastIndexOf( '.' );
+
+                String className;
+
+                if ( lastDot == -1 )
+                {
+                    className = name;
+                }
+                else
+                {
+                    String basePackage = baseTypeName.substring( 0, lastDot );
+
+                    className = basePackage + "." + StringUtils.capitalizeFirstLetter( name );
+                }
+
+                try
+                {
+                    childType = classLoader.loadClass( className );
+                }
+                catch ( ClassNotFoundException e )
+                {
+                    if ( c.getChildCount() == 0 )
+                    {
+                        // If no children, try a String.
+                        // TODO: If we had generics we could try that instead - or could the component descriptor list an impl?
+                        childType = String.class;
+                    }
+                    else
+                    {
+                        throw new ComponentConfigurationException( "Error loading class '" + className + "'", e );
+                    }
+                }
+            }
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
 
-            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classRealm,
+            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader,
                                                          expressionEvaluator, listener );
 
             Collection collection = (Collection) retValue;

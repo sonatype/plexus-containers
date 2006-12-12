@@ -1,31 +1,36 @@
 package org.codehaus.plexus.component.configurator.converters;
 
 /*
- * Copyright 2001-2006 Codehaus Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, The Codehaus
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
-import org.codehaus.plexus.component.configurator.AbstractComponentConfigurator;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.MutablePlexusContainer;
 
 /**
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
@@ -34,28 +39,7 @@ import org.codehaus.plexus.MutablePlexusContainer;
 public abstract class AbstractConfigurationConverter
     implements ConfigurationConverter
 {
-    protected MutablePlexusContainer container;
-
-    protected AbstractConfigurationConverter()
-    {
-    }
-
-    protected AbstractConfigurationConverter( MutablePlexusContainer conatiner )
-    {
-        this.container = conatiner;
-    }
-
     private static final String IMPLEMENTATION = "implementation";
-
-
-    protected Class getClassForImplementationHint( Class type,
-                                                   PlexusConfiguration configuration,
-                                                   ClassLoader classLoader )
-        throws ComponentConfigurationException
-    {
-        return getClassForImplementationHint( type, configuration, AbstractComponentConfigurator.createClassRealm(
-            container, classLoader ) );
-    }
 
     /**
      * We will check if user has provided a hint which class should be used for given field.
@@ -63,9 +47,8 @@ public abstract class AbstractConfigurationConverter
      * If 'implementation' hint was provided we will try to load correspoding class
      * If we are unable to do so error will be reported
      */
-    protected Class getClassForImplementationHint( Class type,
-                                                   PlexusConfiguration configuration,
-                                                   ClassRealm classRealm )
+    protected Class getClassForImplementationHint( Class type, PlexusConfiguration configuration,
+                                                   ClassLoader classLoader )
         throws ComponentConfigurationException
     {
         Class retValue = type;
@@ -76,7 +59,7 @@ public abstract class AbstractConfigurationConverter
         {
             try
             {
-                retValue = classRealm.loadClass( implementation );
+                retValue = classLoader.loadClass( implementation );
 
             }
             catch ( ClassNotFoundException e )
@@ -92,117 +75,8 @@ public abstract class AbstractConfigurationConverter
         return retValue;
     }
 
-    protected Class getImplementationClass( Class type,
-                                            Class baseType,
-                                            PlexusConfiguration configuration,
-                                            ClassRealm classRealm )
-        throws ComponentConfigurationException
-    {
-        // if there's an implementation hint, try that.
 
-        Class childType = getClassForImplementationHint( null, configuration, classRealm );
-
-        if ( childType != null )
-        {
-            return childType;
-        }
-
-        // try using the fieldname to determine the implementation.
-
-        String configEntry = configuration.getName();
-
-        String name = fromXML( configEntry );
-
-        // First, see whether the fieldname might be a fully qualified classname
-
-        if ( name.indexOf( '.' ) > 0 )
-        {
-            try
-            {
-                return classRealm.loadClass( name );
-            }
-            catch ( ClassNotFoundException e )
-            {
-                // not found, continue processing
-            }
-        }
-
-        // Next, try to find a class in the package of the object we're configuring
-
-        String className = constructClassName( baseType, name );
-
-        Exception lastException = null;
-
-        try
-        {
-            return classRealm.loadClass( className );
-        }
-        catch ( ClassNotFoundException e )
-        {
-            // the guessed class does not exist. Store exception for later use. Continue processing.
-            lastException = e;
-        }
-
-        // if the given type is not null, just return that
-
-        if ( type != null )
-        {
-            return type;
-        }
-        else
-        {
-            // type is only null if we have a Collection and this method is called
-            // for the compound type of that collection.
-
-            if ( configuration.getChildCount() == 0 )
-            {
-                // If the configuration has no children but only text, try a String.
-                // TODO: If we had generics we could try that instead - or could the component descriptor list an impl?
-                return String.class;
-            }
-            else
-            {
-                // there are no options left. Our best guess is that the fieldname
-                // indicates a class in the component's package, so report that.
-
-                throw new ComponentConfigurationException( "Error loading class '" + className + "'", lastException );
-            }
-        }
-    }
-
-    /**
-     * Constructs a classname from a class and a fieldname.
-     * For example, baseType is 'package.Component',
-     * field is 'someThing', then it constructs 'package.SomeThing'.
-     */
-    private String constructClassName( Class baseType,
-                                       String name )
-    {
-        String baseTypeName = baseType.getName();
-
-        // Some classloaders don't create Package objects for classes
-        // so we have to resort to slicing up the class name
-
-        int lastDot = baseTypeName.lastIndexOf( '.' );
-
-        String className;
-
-        if ( lastDot == -1 )
-        {
-            className = name;
-        }
-        else
-        {
-            String basePackage = baseTypeName.substring( 0, lastDot );
-
-            className = basePackage + "." + StringUtils.capitalizeFirstLetter( name );
-        }
-
-        return className;
-    }
-
-    protected Class loadClass( String classname,
-                               ClassLoader classLoader )
+    protected Class loadClass( String classname, ClassLoader classLoader )
         throws ComponentConfigurationException
     {
         Class retValue;
@@ -219,8 +93,7 @@ public abstract class AbstractConfigurationConverter
         return retValue;
     }
 
-    protected Object instantiateObject( String classname,
-                                        ClassLoader classLoader )
+    protected Object instantiateObject( String classname, ClassLoader classLoader )
         throws ComponentConfigurationException
     {
         Class clazz = loadClass( classname, classLoader );
@@ -262,8 +135,7 @@ public abstract class AbstractConfigurationConverter
         return StringUtils.addAndDeHump( fieldName );
     }
 
-    protected Object fromExpression( PlexusConfiguration configuration,
-                                     ExpressionEvaluator expressionEvaluator,
+    protected Object fromExpression( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator,
                                      Class type )
         throws ComponentConfigurationException
     {
@@ -280,8 +152,7 @@ public abstract class AbstractConfigurationConverter
         return v;
     }
 
-    protected Object fromExpression( PlexusConfiguration configuration,
-                                     ExpressionEvaluator expressionEvaluator )
+    protected Object fromExpression( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
         Object v = null;
@@ -322,66 +193,11 @@ public abstract class AbstractConfigurationConverter
         return v;
     }
 
-    public Object fromConfiguration( ConverterLookup converterLookup,
-                                     PlexusConfiguration configuration,
-                                     Class type,
-                                     Class baseType,
-                                     ClassRealm classRealm,
-                                     ExpressionEvaluator expressionEvaluator )
-        throws ComponentConfigurationException
-    {
-        return fromConfiguration( converterLookup, configuration, type, baseType, classRealm, expressionEvaluator,
-                                  null );
-    }
-
-    public Object fromConfiguration( ConverterLookup converterLookup,
-                                     PlexusConfiguration configuration,
-                                     Class type,
-                                     Class baseType,
-                                     ClassRealm classRealm,
-                                     ExpressionEvaluator expressionEvaluator,
-                                     ConfigurationListener listener )
-        throws ComponentConfigurationException
-    {
-        /* invoke deprecated ConfigurationConverters - this should go at some point
-         * NOTE: this will not be called if the ConfigurationConverter extending is not deprecated - this is GOOD :) */
-        return fromConfiguration( converterLookup, configuration, type, baseType, (ClassLoader) classRealm,
-                                  expressionEvaluator, listener );
-    }
-
-    // ----------------------------------------------------------------------------
-    // Backward compat
-    // ----------------------------------------------------------------------------
-
-    /**
-     * @deprecated
-     */
-    public Object fromConfiguration( ConverterLookup converterLookup,
-                                     PlexusConfiguration configuration,
-                                     Class type,
-                                     Class baseType,
-                                     ClassLoader classLoader,
-                                     ExpressionEvaluator expressionEvaluator )
+    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
         return fromConfiguration( converterLookup, configuration, type, baseType, classLoader, expressionEvaluator,
-                                  null);
-    }
-
-    /**
-     * @deprecated
-     */
-    public Object fromConfiguration( ConverterLookup converterLookup,
-                                     PlexusConfiguration configuration,
-                                     Class type,
-                                     Class baseType,
-                                     ClassLoader classLoader,
-                                     ExpressionEvaluator expressionEvaluator,
-                                     ConfigurationListener listener )
-        throws ComponentConfigurationException
-    {
-        /* don't do anything - this is here so that modern ComfigurationConverters don't have to implement these
-         * deprecated methods. Deprecated / old plugins may. however, make use of this callback */
-        return configuration;
+                                  null );
     }
 }

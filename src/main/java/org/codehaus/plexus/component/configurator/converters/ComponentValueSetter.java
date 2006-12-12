@@ -1,30 +1,14 @@
+/*
+ * Copyright (c) 2005 Your Corporation. All Rights Reserved.
+ */
 package org.codehaus.plexus.component.configurator.converters;
 
-/*
- * Copyright 2001-2006 Codehaus Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
-import org.codehaus.plexus.component.configurator.AbstractComponentConfigurator;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.ReflectionUtils;
-import org.codehaus.plexus.MutablePlexusContainer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +18,7 @@ import java.lang.reflect.Method;
 /**
  * @author <a href="mailto:kenney@codehaus.org">Kenney Westerhof</a>
  */
-public class ComponentValueSetter    
+public class ComponentValueSetter
 {
     private Object object;
 
@@ -56,18 +40,15 @@ public class ComponentValueSetter
 
     private ConfigurationListener listener;
 
-    private MutablePlexusContainer container;
-
-    public ComponentValueSetter( MutablePlexusContainer container, String fieldName, Object object, ConverterLookup lookup )
+    public ComponentValueSetter( String fieldName, Object object, ConverterLookup lookup )
         throws ComponentConfigurationException
     {
-        this( container, fieldName, object, lookup, null );
+        this( fieldName, object, lookup, null );
     }
 
-    public ComponentValueSetter( MutablePlexusContainer container, String fieldName, Object object, ConverterLookup lookup, ConfigurationListener listener )
+    public ComponentValueSetter( String fieldName, Object object, ConverterLookup lookup, ConfigurationListener listener )
         throws ComponentConfigurationException
     {
-        this.container = container;
         this.fieldName = fieldName;
         this.object = object;
         this.lookup = lookup;
@@ -85,7 +66,7 @@ public class ComponentValueSetter
         if ( setter == null && field == null )
         {
             throw new ComponentConfigurationException(
-                "Cannot find autowire nor field in " + object.getClass().getName() + " for '" + fieldName + "'" );
+                "Cannot find setter nor field in " + object.getClass().getName() + " for '" + fieldName + "'" );
         }
 
         if ( setterTypeConverter == null && fieldTypeConverter == null )
@@ -180,7 +161,7 @@ public class ComponentValueSetter
     {
         if ( setterParamType == null || setter == null )
         {
-            throw new ComponentConfigurationException( "No autowire found" );
+            throw new ComponentConfigurationException( "No setter found" );
         }
 
         String exceptionInfo = object.getClass().getName() + "." + setter.getName() + "( " +
@@ -212,18 +193,18 @@ public class ComponentValueSetter
         }
     }
 
-    public void configure( PlexusConfiguration config, ClassLoader classLoader, ExpressionEvaluator evaluator )
+    public void configure( PlexusConfiguration config, ClassLoader cl, ExpressionEvaluator evaluator )
         throws ComponentConfigurationException
     {
         Object value = null;
 
-        // try autowire converter + method first
+        // try setter converter + method first
 
         if ( setterTypeConverter != null )
         {
             try
             {
-                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), classLoader,
+                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), cl,
                                                                evaluator, listener );
 
                 if ( value != null )
@@ -263,7 +244,7 @@ public class ComponentValueSetter
         // either no value or setting went wrong. Try
         // new converter.
 
-        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), classLoader, evaluator,
+        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), cl, evaluator,
                                                       listener );
 
         if ( value != null )
@@ -277,68 +258,4 @@ public class ComponentValueSetter
         }
     }
 
-    public void configure( PlexusConfiguration config, ClassRealm classRealm, ExpressionEvaluator evaluator )
-        throws ComponentConfigurationException
-    {
-        Object value = null;
-
-        // try autowire converter + method first
-
-        if ( setterTypeConverter != null )
-        {
-            try
-            {
-                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), classRealm,
-                                                               evaluator, listener );
-
-                if ( value != null )
-                {
-                    setValueUsingSetter( value );
-                    return;
-                }
-            }
-            catch ( ComponentConfigurationException e )
-            {
-                if ( fieldTypeConverter == null ||
-                    fieldTypeConverter.getClass().equals( setterTypeConverter.getClass() ) )
-                {
-                    throw e;
-                }
-            }
-        }
-
-        // try setting field using value found with method
-        // converter, if present.
-
-        ComponentConfigurationException savedEx = null;
-
-        if ( value != null )
-        {
-            try
-            {
-                setValueUsingField( value );
-                return;
-            }
-            catch ( ComponentConfigurationException e )
-            {
-                savedEx = e;
-            }
-        }
-
-        // either no value or setting went wrong. Try
-        // new converter.
-
-        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), classRealm, evaluator,
-                                                      listener );
-
-        if ( value != null )
-        {
-            setValueUsingField( value );
-        }
-        // FIXME: need this?
-        else if ( savedEx != null )
-        {
-            throw savedEx;
-        }
-    }
 }
