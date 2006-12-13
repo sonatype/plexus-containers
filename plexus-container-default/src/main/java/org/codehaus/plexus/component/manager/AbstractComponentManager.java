@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.manager;
 */
 
 import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
@@ -27,10 +28,12 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.classworlds.ClassRealmAdapter;
+
+import java.lang.reflect.Method;
 
 public abstract class AbstractComponentManager
-    implements ComponentManager,
-    Cloneable
+    implements ComponentManager, Cloneable
 {
     private MutablePlexusContainer container;
 
@@ -188,9 +191,9 @@ public abstract class AbstractComponentManager
     {
         String componentFactoryId = componentDescriptor.getComponentFactory();
 
-        ComponentFactory componentFactory = null;
+        ComponentFactory componentFactory;
 
-        Object component = null;
+        Object component;
 
         try
         {
@@ -205,21 +208,38 @@ public abstract class AbstractComponentManager
 
             ClassRealm componentRealm = container.getComponentRealm( componentDescriptor.getRealmId() );
 
-            component = componentFactory.newInstance( componentDescriptor, componentRealm, container );
+            try
+            {
+                component = componentFactory.newInstance( componentDescriptor, componentRealm, container );
+            }
+            catch ( AbstractMethodError e )
+            {
+                // ----------------------------------------------------------------------------
+                // For compatibility with old ComponentFactories that use old ClassWorlds
+                // ----------------------------------------------------------------------------
+
+                org.codehaus.classworlds.ClassRealm cr = ClassRealmAdapter.getInstance( componentRealm );
+
+                Method method;
+
+                try
+                {
+                    method = componentFactory.getClass().getMethod( "newInstance", new Class[]{
+                        ComponentDescriptor.class, org.codehaus.classworlds.ClassRealm.class, PlexusContainer.class} );
+
+                    component = method.invoke( componentFactory, new Object[]{componentDescriptor, cr, container} );
+                }
+                catch ( Exception mnfe )
+                {
+                    throw new ComponentInstantiationException(
+                        "Unable to create component as factory '" + componentFactoryId + "' could not be found", e );
+                }
+            }
         }
         catch ( UndefinedComponentFactoryException e )
         {
             throw new ComponentInstantiationException(
                 "Unable to create component as factory '" + componentFactoryId + "' could not be found", e );
-        }
-        finally
-        {
-            // the java factory is a special case, without a component manager.
-            // Don't bother releasing the java factory.
-            if ( StringUtils.isNotEmpty( componentFactoryId ) && !"java".equals( componentFactoryId ) )
-            {
-                release( componentFactory );
-            }
         }
 
         return component;

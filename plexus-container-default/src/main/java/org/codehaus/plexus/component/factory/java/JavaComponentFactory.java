@@ -35,7 +35,7 @@ public class JavaComponentFactory
     extends AbstractComponentFactory
 {
     public Object newInstance( ComponentDescriptor componentDescriptor,
-                               ClassLoader classLoader,
+                               ClassRealm classRealm,
                                PlexusContainer container )
         throws ComponentInstantiationException
     {
@@ -45,7 +45,7 @@ public class JavaComponentFactory
         {
             String implementation = componentDescriptor.getImplementation();
 
-            implementationClass = classLoader.loadClass( implementation );
+            implementationClass = classRealm.loadClass( implementation );
 
             int modifiers = implementationClass.getModifiers();
 
@@ -69,19 +69,19 @@ public class JavaComponentFactory
         {
             //PLXAPI: most probably cause of this is the implementation class not having
             //        a default constructor.
-            throw makeException( classLoader, componentDescriptor, implementationClass, e );
+            throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
         catch ( ClassNotFoundException e )
         {
-            throw makeException( classLoader, componentDescriptor, implementationClass, e );
+            throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
         catch ( IllegalAccessException e )
         {
-            throw makeException( classLoader, componentDescriptor, implementationClass, e );
+            throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
         catch ( LinkageError e )
         {
-            throw makeException( classLoader, componentDescriptor, implementationClass, e );
+            throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
     }
 

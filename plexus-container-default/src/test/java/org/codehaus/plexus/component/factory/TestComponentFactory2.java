@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.factory;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 public class TestComponentFactory2
@@ -28,7 +29,7 @@ public class TestComponentFactory2
         return "testFactory2";
     }
 
-    public Object newInstance( ComponentDescriptor componentDescriptor, ClassLoader classLoader, PlexusContainer container )
+    public Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm, PlexusContainer container )
         throws ComponentInstantiationException
     {
         return new TestFactoryResultComponent(getId());
