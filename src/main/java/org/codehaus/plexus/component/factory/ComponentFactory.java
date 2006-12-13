@@ -34,6 +34,6 @@ public interface ComponentFactory
 
     String getId();
 
-    Object newInstance( ComponentDescriptor componentDescriptor, ClassLoader classLoader, PlexusContainer container )
+    Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm, PlexusContainer container )
         throws ComponentInstantiationException;
 }
