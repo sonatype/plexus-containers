@@ -1,27 +1,35 @@
 package org.codehaus.plexus.component.configurator.converters;
 
 /*
- * Copyright 2001-2006 Codehaus Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, The Codehaus
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.logging.Logger;
 
 
 public interface ConfigurationConverter
@@ -29,64 +37,33 @@ public interface ConfigurationConverter
     boolean canConvert( Class type );
 
     /**
-     * @param converterLookup     Repository of available converters
+     * @param converterLookup Repository of available converters
      * @param configuration
-     * @param type                the type of object to read
-     * @param baseType            the type of object the the source is
-     * @param classRealm          ClassRealm which should be used for loading classes
+     * @param type the type of object to read
+     * @param baseType the type of object the the source is
+     * @param classLoader ClassLoader which should be used for loading classes
      * @param expressionEvaluator the expression evaluator to use for expressions
      * @return the object
      * @throws ComponentConfigurationException
-     *
      * @todo a better way, instead of baseType, would be to pass in a factory for new classes that could be based from the given package
      */
-    Object fromConfiguration( ConverterLookup converterLookup,
-                              PlexusConfiguration configuration,
-                              Class type,
-                              Class baseType,
-                              ClassRealm classRealm,
-                              ExpressionEvaluator expressionEvaluator )
+    Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                              Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException;
-
-    /** @deprecated */
-    Object fromConfiguration( ConverterLookup converterLookup,
-                              PlexusConfiguration configuration,
-                              Class type,
-                              Class baseType,
-                              ClassLoader classLoader,
-                              ExpressionEvaluator expressionEvaluator )
-        throws ComponentConfigurationException;
-
 
     /**
-     * @param converterLookup     Repository of available converters
+     * @param converterLookup Repository of available converters
      * @param configuration
-     * @param type                the type of object to read
-     * @param baseType            the type of object the the source is
-     * @param classRealm          ClassRealm which should be used for loading classes
+     * @param type the type of object to read
+     * @param baseType the type of object the the source is
+     * @param classLoader ClassLoader which should be used for loading classes
      * @param expressionEvaluator the expression evaluator to use for expressions
      * @return the object
      * @throws ComponentConfigurationException
-     *
      * @todo a better way, instead of baseType, would be to pass in a factory for new classes that could be based from the given package
      */
-    Object fromConfiguration( ConverterLookup converterLookup,
-                              PlexusConfiguration configuration,
-                              Class type,
-                              Class baseType,
-                              ClassRealm classRealm,
-                              ExpressionEvaluator expressionEvaluator,
+    Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                              Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
                               ConfigurationListener listener )
         throws ComponentConfigurationException;
-
-    /** @deprecated */
-    Object fromConfiguration( ConverterLookup converterLookup,
-                              PlexusConfiguration configuration,
-                              Class type,
-                              Class baseType,
-                              ClassLoader classLoader,
-                              ExpressionEvaluator expressionEvaluator,
-                              ConfigurationListener listener )
-        throws ComponentConfigurationException;
-
 }

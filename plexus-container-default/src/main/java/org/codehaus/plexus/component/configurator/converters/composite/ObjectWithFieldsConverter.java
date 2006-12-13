@@ -1,32 +1,40 @@
 package org.codehaus.plexus.component.configurator.converters.composite;
 
 /*
- * Copyright 2001-2006 Codehaus Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, The Codehaus
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
-import org.codehaus.plexus.component.configurator.AbstractComponentConfigurator;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ComponentValueSetter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Map;
@@ -38,11 +46,6 @@ import java.util.Map;
 public class ObjectWithFieldsConverter
     extends AbstractConfigurationConverter
 {
-    public ObjectWithFieldsConverter( MutablePlexusContainer conatiner )
-    {
-        super( conatiner );
-    }
-
     /**
      * @param type
      * @return
@@ -69,12 +72,8 @@ public class ObjectWithFieldsConverter
         return retValue;
     }
 
-    public Object fromConfiguration( ConverterLookup converterLookup,
-                                     PlexusConfiguration configuration,
-                                     Class type,
-                                     Class baseType,
-                                     ClassRealm classRealm,
-                                     ExpressionEvaluator expressionEvaluator,
+    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
+                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -84,11 +83,11 @@ public class ObjectWithFieldsConverter
             try
             {
                 // it is a "composite" - we compose it from its children. It does not have a value of its own
-                Class implementation = getImplementationClass( type, baseType, configuration, classRealm );
+                Class implementation = getClassForImplementationHint( type, configuration, classLoader );
 
                 retValue = instantiateObject( implementation );
 
-                processConfiguration( converterLookup, retValue, classRealm, configuration, expressionEvaluator,
+                processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator,
                                       listener );
             }
             catch ( ComponentConfigurationException e )
@@ -105,30 +104,22 @@ public class ObjectWithFieldsConverter
     }
 
 
-    public void processConfiguration( ConverterLookup converterLookup,
-                                      Object object,
-                                      ClassRealm classRealm,
+    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
                                       PlexusConfiguration configuration )
         throws ComponentConfigurationException
     {
-        processConfiguration( converterLookup, object, classRealm, configuration, null );
+        processConfiguration( converterLookup, object, classLoader, configuration, null );
     }
 
-    public void processConfiguration( ConverterLookup converterLookup,
-                                      Object object,
-                                      ClassRealm classRealm,
-                                      PlexusConfiguration configuration,
-                                      ExpressionEvaluator expressionEvaluator )
+    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
+                                      PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
-        processConfiguration( converterLookup, object, classRealm, configuration, expressionEvaluator, null );
+        processConfiguration( converterLookup, object, classLoader, configuration, expressionEvaluator, null );
     }
 
-    public void processConfiguration( ConverterLookup converterLookup,
-                                      Object object,
-                                      ClassRealm classRealm,
-                                      PlexusConfiguration configuration,
-                                      ExpressionEvaluator expressionEvaluator,
+    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
+                                      PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator,
                                       ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -140,31 +131,8 @@ public class ObjectWithFieldsConverter
 
             String elementName = childConfiguration.getName();
 
-            ComponentValueSetter valueSetter =
-                new ComponentValueSetter( container, fromXML( elementName ), object, converterLookup, listener );
-
-            valueSetter.configure( childConfiguration, classRealm, expressionEvaluator );
-        }
-    }
-
-    public void processConfiguration( ConverterLookup converterLookup,
-                                      Object object,
-                                      ClassLoader classLoader,
-                                      PlexusConfiguration configuration,
-                                      ExpressionEvaluator expressionEvaluator,
-                                      ConfigurationListener listener )
-        throws ComponentConfigurationException
-    {
-        int items = configuration.getChildCount();
-
-        for ( int i = 0; i < items; i++ )
-        {
-            PlexusConfiguration childConfiguration = configuration.getChild( i );
-
-            String elementName = childConfiguration.getName();
-
-            ComponentValueSetter valueSetter =
-                new ComponentValueSetter( container, fromXML( elementName ), object, converterLookup, listener );
+            ComponentValueSetter valueSetter = new ComponentValueSetter( fromXML( elementName ), object,
+                                                                         converterLookup, listener );
 
             valueSetter.configure( childConfiguration, classLoader, expressionEvaluator );
         }

@@ -1,7 +1,15 @@
 package org.codehaus.plexus.component.configurator;
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.MapOrientedComponent;
+import org.codehaus.plexus.component.configurator.converters.composite.MapConverter;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+
+import java.util.Map;
+
 /*
- * Copyright 2001-2006 Codehaus Foundation.
+ * Copyright 2001-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +24,10 @@ package org.codehaus.plexus.component.configurator;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.MapOrientedComponent;
-import org.codehaus.plexus.component.configurator.converters.composite.MapConverter;
-import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-
-import java.util.Map;
-
 public class MapOrientedComponentConfigurator
     extends AbstractComponentConfigurator
 {
+
     public void configureComponent( Object component, PlexusConfiguration configuration,
                                     ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
                                     ConfigurationListener listener )

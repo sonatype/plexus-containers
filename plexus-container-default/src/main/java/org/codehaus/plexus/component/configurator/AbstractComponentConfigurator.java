@@ -1,141 +1,98 @@
 package org.codehaus.plexus.component.configurator;
 
 /*
- * Copyright 2001-2006 Codehaus Foundation.
+ * The MIT License
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (c) 2004, The Codehaus
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
-import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.context.ContextException;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.classworlds.ClassRealmAdapter;
+
+import java.lang.reflect.Method;
 
 /**
  * @author <a href="mailto:brett@codehaus.org">Brett Porter</a>
- * @author Jason van Zyl
  * @version $Id$
  */
 public abstract class AbstractComponentConfigurator
-    implements ComponentConfigurator, Contextualizable
+    implements ComponentConfigurator
 {
-    protected MutablePlexusContainer container;
-
+    // TODO: configured as a component
     protected ConverterLookup converterLookup = new DefaultConverterLookup();
 
     public void configureComponent( Object component,
                                     PlexusConfiguration configuration,
-                                    ClassRealm classRealm )
+                                    ClassRealm containerRealm )
         throws ComponentConfigurationException
     {
-        configureComponent( component, configuration, new DefaultExpressionEvaluator(), classRealm );
-    }
-
-    public void configureComponent( Object component,
-                                    PlexusConfiguration configuration,
-                                    ClassLoader classLoader )
-        throws ComponentConfigurationException
-    {
-        configureComponent( component, configuration, createClassRealm( container, classLoader ) );
+        configureComponent( component, configuration, new DefaultExpressionEvaluator(), containerRealm );
     }
 
     public void configureComponent( Object component,
                                     PlexusConfiguration configuration,
                                     ExpressionEvaluator expressionEvaluator,
-                                    ClassRealm classRealm )
+                                    ClassRealm containerRealm )
         throws ComponentConfigurationException
     {
-        configureComponent( component, configuration, expressionEvaluator, classRealm, null );
+        configureComponent( component, configuration, expressionEvaluator, containerRealm, null );
     }
 
     public void configureComponent( Object component,
                                     PlexusConfiguration configuration,
                                     ExpressionEvaluator expressionEvaluator,
-                                    ClassLoader classLoader )
-        throws ComponentConfigurationException
-    {
-        configureComponent( component, configuration, expressionEvaluator, createClassRealm( container, classLoader ) );
-    }
-
-    public void configureComponent( Object component,
-                                    PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator,
-                                    ClassRealm classRealm,
+                                    ClassRealm containerRealm,
                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
-        // TODO: here so extended classes without the method continue to work. should be removed
-        // this won't hit the method above going into a loop - instead, it will hit the overridden one
-        configureComponent( component, configuration, expressionEvaluator, classRealm );
-    }
+        // ----------------------------------------------------------------------------
+        // For compatibility with old ComponentFactories that use old ClassWorlds
+        // ----------------------------------------------------------------------------
 
-    public void configureComponent( Object component,
-                                    PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator,
-                                    ClassLoader classLoader,
-                                    ConfigurationListener listener )
-        throws ComponentConfigurationException
-    {
-        configureComponent( component, configuration, expressionEvaluator, createClassRealm( container, classLoader ),
-                            listener );
-    }
+        org.codehaus.classworlds.ClassRealm cr = ClassRealmAdapter.getInstance( containerRealm );
 
-    public static ClassRealm createClassRealm( MutablePlexusContainer container,
-                                               ClassLoader classLoader )
-        throws ComponentConfigurationException
-    {
+        Method method;
+
         try
         {
-            ClassRealm realm = null;
+            method = getClass().getMethod( "configureComponent", new Class[]{Object.class, PlexusConfiguration.class,
+                ExpressionEvaluator.class, org.codehaus.classworlds.ClassRealm.class, ConfigurationListener.class} );
 
-            try
-            {
-                realm = container.getClassWorld().getRealm( classLoader.toString() );
-            }
-            catch ( NoSuchRealmException e )
-            {
-                //
-            }
-
-            if ( realm == null )
-            {
-                realm = container.getClassWorld().newRealm( classLoader.toString(), classLoader );
-            }
-
-            return realm;
+            method.invoke( this, new Object[]{component, configuration, expressionEvaluator, cr, listener} );
         }
-        catch ( DuplicateRealmException e )
+        catch ( Exception mnfe )
         {
-            throw new ComponentConfigurationException( "Error converting ClassLoader to a ClassRealm.", e );
+            // do nothing
         }
-    }
 
-    // ----------------------------------------------------------------------------
-    // Lifecycle
-    // ----------------------------------------------------------------------------
-
-    public void contextualize( Context context )
-        throws ContextException
-    {
-        container = (MutablePlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
+        // TODO: here so extended classes without the method continue to work. should be removed
+        // this won't hit the method above going into a loop - instead, it will hit the overridden one
+        //configureComponent( component, configuration, expressionEvaluator, containerRealm );
     }
 }

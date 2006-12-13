@@ -85,7 +85,7 @@ public class JavaComponentFactory
         }
     }
 
-    private ComponentInstantiationException makeException( ClassRealm componentClassRealm,
+    private ComponentInstantiationException makeException( ClassLoader componentClassRealm,
                                                            ComponentDescriptor componentDescriptor,
                                                            Class implementationClass,
                                                            Throwable e )
