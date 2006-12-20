@@ -22,6 +22,8 @@ import org.codehaus.plexus.context.DefaultContext;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,14 +76,25 @@ public abstract class PlexusTestCase
         // ----------------------------------------------------------------------------
 
         String config = getCustomConfigurationName();
+        InputStream is = null;
 
         if ( config != null )
         {
-            InputStream is = getClassLoader().getResourceAsStream( config );
+            is = getClassLoader().getResourceAsStream( config );
 
             if ( is == null )
             {
-                throw new Exception( "The custom configuration specified is null: " + config );
+                try
+                {
+                    File configFile = new File( config );
+
+                    if ( configFile.exists() )
+                    {
+                        is = new FileInputStream( configFile );
+                    }
+                } catch ( IOException e ) {
+                    throw new Exception( "The custom configuration specified is null: " + config );
+                }
             }
 
         }
@@ -93,8 +106,6 @@ public abstract class PlexusTestCase
         // Look for a configuration associated with this test but return null if we
         // can't find one so the container doesn't look for a configuration that we
         // know doesn't exist. Not all tests have an associated Foo.xml for testing.
-
-        InputStream is = getClassLoader().getResourceAsStream( config );
 
         if ( is == null )
         {
@@ -227,7 +238,7 @@ public abstract class PlexusTestCase
         {
             basedirFile = getTestFile( basedir );
         }
-
+        System.out.println( "getTestFile: " + new File( basedirFile, path ) );
         return new File( basedirFile, path );
     }
 
@@ -250,7 +261,6 @@ public abstract class PlexusTestCase
         }
 
         basedir = System.getProperty( "basedir" );
-
         if ( basedir == null )
         {
             basedir = new File( "" ).getAbsolutePath();
