@@ -68,6 +68,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -245,11 +246,24 @@ public class DefaultPlexusContainer
 
             if ( is == null )
             {
-                throw new PlexusContainerException(
-                    "The specified user configuration '" + configuration + "' is null." );
+                try
+                {
+                    File configurationFile = new File( configuration );
+
+                    if ( configurationFile.exists() )
+                    {
+                        is = new FileInputStream( configuration );
+                    }
+                } catch ( IOException e ) {
+                    throw new PlexusContainerException(
+                        "The specified user configuration '" + configuration + "' is null." );
+                }
             }
 
-            configurationReader = new InputStreamReader( is );
+            if ( is != null )
+            {
+                configurationReader = new InputStreamReader( is );
+            }
         }
 
         initialize();
