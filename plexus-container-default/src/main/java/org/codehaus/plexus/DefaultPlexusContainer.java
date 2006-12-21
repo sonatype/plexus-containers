@@ -897,6 +897,10 @@ public class DefaultPlexusContainer
         return containerRealm;
     }
 
+    public void setContainerRealm( ClassRealm containerRealm )
+    {
+        this.containerRealm = containerRealm;
+    }
     // ----------------------------------------------------------------------
     // Context
     // ----------------------------------------------------------------------
