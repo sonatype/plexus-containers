@@ -53,6 +53,7 @@ import org.codehaus.plexus.container.initialization.ContainerInitializationPhase
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
+import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
@@ -749,6 +750,10 @@ public class DefaultPlexusContainer
 
             initializePhases();
         }
+        catch ( ContextException e )
+        {
+            throw new PlexusContainerException( "Error processing configuration", e );
+        }
         catch ( ConfigurationProcessingException e )
         {
             throw new PlexusContainerException( "Error processing configuration", e );
@@ -917,7 +922,8 @@ public class DefaultPlexusContainer
     //TODO: put this in a separate helper class and turn into a component if possible, too big.
 
     protected void initializeConfiguration()
-        throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException
+        throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException,
+        ContextException
     {
         // System userConfiguration
 
@@ -941,29 +947,32 @@ public class DefaultPlexusContainer
 
         configuration = bootstrapConfiguration;
 
-        PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
-
-        PlexusConfiguration plexusConfiguration = discoverer.discoverConfiguration( getContext(), containerRealm );
-
-        if ( plexusConfiguration != null )
+        if ( !containerContext.contains( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION ) || containerContext.get( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION ) != Boolean.TRUE )
         {
-            configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
+            PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
 
-            processConfigurationsDirectory();
-        }
+            PlexusConfiguration plexusConfiguration = discoverer.discoverConfiguration( getContext(), containerRealm );
 
-        if ( configurationReader != null )
-        {
-            // User userConfiguration
+            if ( plexusConfiguration != null )
+            {
+                configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
 
-            PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration(
-                "<User Specified Configuration Reader>", getInterpolationConfigurationReader( configurationReader ) );
+                processConfigurationsDirectory();
+            }
 
-            // Merger of bootstrapConfiguration and user userConfiguration
+            if ( configurationReader != null )
+            {
+                // User userConfiguration
 
-            configuration = PlexusConfigurationMerger.merge( userConfiguration, configuration );
+                PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration(
+                    "<User Specified Configuration Reader>", getInterpolationConfigurationReader( configurationReader ) );
 
-            processConfigurationsDirectory();
+                // Merger of bootstrapConfiguration and user userConfiguration
+
+                configuration = PlexusConfigurationMerger.merge( userConfiguration, configuration );
+
+                processConfigurationsDirectory();
+            }
         }
 
         // ---------------------------------------------------------------------------
