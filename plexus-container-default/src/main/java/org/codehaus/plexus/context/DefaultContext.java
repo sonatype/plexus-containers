@@ -193,7 +193,7 @@ public class DefaultContext
      *
      * @return the containerContext data
      */
-    protected Map getContextData()
+    public Map getContextData()
     {
         return contextData;
     }
