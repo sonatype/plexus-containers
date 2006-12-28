@@ -193,6 +193,17 @@ public class DefaultPlexusContainer
                                    ClassWorld classWorld )
         throws PlexusContainerException
     {
+        this( name, context, configuration, classWorld, true );
+    }
+
+    public DefaultPlexusContainer( String name,
+                                    Map context,
+                                    String configuration,
+                                    ClassWorld classWorld,
+                                    boolean load )
+        throws PlexusContainerException
+    {
+
         this.name = name;
 
         // ----------------------------------------------------------------------------
@@ -267,9 +278,12 @@ public class DefaultPlexusContainer
             }
         }
 
-        initialize();
+        if ( load )
+        {
+            initialize();
 
-        start();
+            start();
+        }
     }
 
     // ----------------------------------------------------------------------------
@@ -736,7 +750,7 @@ public class DefaultPlexusContainer
 
     boolean initialized;
 
-    protected void initialize()
+    public void initialize()
         throws PlexusContainerException
     {
         if ( initialized )
@@ -814,7 +828,7 @@ public class DefaultPlexusContainer
         return ComponentDiscoveryPhase.discoverComponents( this, classRealm );
     }
 
-    protected void start()
+    public void start()
         throws PlexusContainerException
     {
         configuration = null;
