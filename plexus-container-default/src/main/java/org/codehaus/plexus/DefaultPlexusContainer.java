@@ -1062,8 +1062,10 @@ public class DefaultPlexusContainer
         {
             containerRealm.addURL( jar.toURI().toURL() );
 
-            //TODO: might not necessarily want to discover components here.
-            discoverComponents( containerRealm );
+            if ( this.initialized )
+            {
+                discoverComponents( containerRealm );
+            }
         }
         catch ( MalformedURLException e )
         {
