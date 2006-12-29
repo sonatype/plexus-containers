@@ -50,7 +50,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        PlexusContainer container = new DefaultPlexusContainer( null, null, null, classWorld );
+        PlexusContainer container = new DefaultPlexusContainer( null, null, classWorld );
 
         Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), container );
 
@@ -72,7 +72,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        PlexusContainer container = new DefaultPlexusContainer( null, null, null, classWorld );
+        PlexusContainer container = new DefaultPlexusContainer( null, null, classWorld );
 
         factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), container );
     }
@@ -92,7 +92,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        PlexusContainer container = new DefaultPlexusContainer( null, null, null, classWorld );
+        PlexusContainer container = new DefaultPlexusContainer( null, null, classWorld );
 
         try
         {

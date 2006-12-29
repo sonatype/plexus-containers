@@ -17,7 +17,6 @@ package org.codehaus.plexus.embed;
  */
 
 import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.ClassWorldAdapter;
 import org.codehaus.classworlds.ClassWorldReverseAdapter;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
@@ -26,11 +25,12 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.PropertyUtils;
+import org.codehaus.plexus.util.IOUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.FileWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,7 +41,7 @@ import java.util.Set;
 public class Embedder
     implements PlexusEmbedder
 {
-    private Reader configurationReader;
+    private URL configurationUrl;
 
     private Properties properties;
 
@@ -147,9 +147,12 @@ public class Embedder
             throw new IllegalStateException( "Embedder has already been started" );
         }
 
-        this.configurationReader = new InputStreamReader( configuration.openStream() );
+        this.configurationUrl = configuration;
     }
 
+    /**
+     * @deprecated
+     */
     public synchronized void setConfiguration( Reader configuration )
         throws IOException
     {
@@ -158,7 +161,26 @@ public class Embedder
             throw new IllegalStateException( "Embedder has already been started" );
         }
 
-        this.configurationReader = configuration;
+        // -----------------------------------------------------------------------
+        // This is a very nasty hack to stay compatible..
+        // -----------------------------------------------------------------------
+
+        File tempFile = File.createTempFile( "plexus-embedder", "" );
+        tempFile.deleteOnExit();
+
+        FileWriter writer = null;
+
+        try
+        {
+            writer = new FileWriter( tempFile );
+            IOUtil.copy( configuration, writer );
+
+            configurationUrl = tempFile.toURL();
+        }
+        catch ( IOException e )
+        {
+            IOUtil.close( writer );
+        }
     }
 
     public synchronized void addContextValue( Object key,
@@ -235,7 +257,7 @@ public class Embedder
             initializeContext();
         }
 
-        container = new DefaultPlexusContainer( null, context, null, null );
+        container = new DefaultPlexusContainer( null, context, configurationUrl, null );
 
         embedderStarted = true;
     }
