@@ -193,17 +193,6 @@ public class DefaultPlexusContainer
                                    ClassWorld classWorld )
         throws PlexusContainerException
     {
-        this( name, context, configuration, classWorld, true );
-    }
-
-    public DefaultPlexusContainer( String name,
-                                    Map context,
-                                    String configuration,
-                                    ClassWorld classWorld,
-                                    boolean load )
-        throws PlexusContainerException
-    {
-
         this.name = name;
 
         // ----------------------------------------------------------------------------
@@ -278,12 +267,9 @@ public class DefaultPlexusContainer
             }
         }
 
-        if ( load )
-        {
-            initialize();
+        initialize();
 
-            start();
-        }
+        start();
     }
 
     // ----------------------------------------------------------------------------
@@ -750,7 +736,7 @@ public class DefaultPlexusContainer
 
     boolean initialized;
 
-    public void initialize()
+    protected void initialize()
         throws PlexusContainerException
     {
         if ( initialized )
@@ -784,7 +770,7 @@ public class DefaultPlexusContainer
         initialized = true;
     }
 
-    public void initializePhases()
+    protected void initializePhases()
         throws PlexusContainerException
     {
         PlexusConfiguration initializationConfiguration = configuration.getChild( "container-initialization" );
