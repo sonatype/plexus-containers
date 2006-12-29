@@ -76,7 +76,7 @@ public abstract class PlexusTestCase
         // ----------------------------------------------------------------------------
 
         String config = getCustomConfigurationName();
-        InputStream is = null;
+        InputStream is;
 
         if ( config != null )
         {
@@ -101,6 +101,8 @@ public abstract class PlexusTestCase
         else
         {
             config = getConfigurationName( null );
+
+            is = getClassLoader().getResourceAsStream( config );
         }
 
         // Look for a configuration associated with this test but return null if we
@@ -238,7 +240,7 @@ public abstract class PlexusTestCase
         {
             basedirFile = getTestFile( basedir );
         }
-        System.out.println( "getTestFile: " + new File( basedirFile, path ) );
+
         return new File( basedirFile, path );
     }
 
