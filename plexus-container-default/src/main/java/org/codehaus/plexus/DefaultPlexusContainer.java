@@ -69,8 +69,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.FileInputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -169,14 +169,54 @@ public class DefaultPlexusContainer
     public DefaultPlexusContainer()
         throws PlexusContainerException
     {
-        this( DEFAULT_CONTAINER_NAME, null, null, null );
+        construct( DEFAULT_CONTAINER_NAME, null, null, null );
     }
 
     public DefaultPlexusContainer( String name,
                                    Map context )
         throws PlexusContainerException
     {
-        this( name, context, null );
+        construct( name, context, null, null );
+    }
+
+    public DefaultPlexusContainer( String name,
+                                   Map context,
+                                   ClassWorld classWorld )
+        throws PlexusContainerException
+    {
+        construct( name, context, null, classWorld );
+    }
+
+    public DefaultPlexusContainer( String name,
+                                   Map context,
+                                   File file )
+        throws PlexusContainerException
+    {
+        this( name, context, file, null );
+    }
+
+    public DefaultPlexusContainer( String name,
+                                   Map context,
+                                   File file,
+                                   ClassWorld classWorld )
+        throws PlexusContainerException
+    {
+        FileReader reader = null;
+
+        try
+        {
+            reader = new FileReader( file );
+
+            construct( name, context, reader, classWorld );
+        }
+        catch ( FileNotFoundException e )
+        {
+            throw new PlexusContainerException( "Could not read file: " + file.getAbsolutePath() );
+        }
+        finally
+        {
+            IOUtil.close( reader );
+        }
     }
 
     public DefaultPlexusContainer( String name,
@@ -193,83 +233,55 @@ public class DefaultPlexusContainer
                                    ClassWorld classWorld )
         throws PlexusContainerException
     {
-        this.name = name;
-
-        // ----------------------------------------------------------------------------
-        // ClassWorld
-        // ----------------------------------------------------------------------------
-
-        this.classWorld = classWorld;
-
-        // Make sure we have a valid ClassWorld
-        if ( this.classWorld == null )
-        {
-            this.classWorld = new ClassWorld( DEFAULT_REALM_NAME, Thread.currentThread().getContextClassLoader() );
-        }
+        InputStream is = null;
 
         try
         {
-            containerRealm = this.classWorld.getRealm( DEFAULT_REALM_NAME );
-        }
-        catch ( NoSuchRealmException e )
-        {
-            List realms = new LinkedList( this.classWorld.getRealms() );
-            containerRealm = (ClassRealm) realms.get( 0 );
-        }
-
-        // ----------------------------------------------------------------------------
-        // Context
-        // ----------------------------------------------------------------------------
-
-        this.containerContext = new DefaultContext();
-
-        if ( context != null )
-        {
-            for ( Iterator it = context.entrySet().iterator(); it.hasNext(); )
-            {
-                Map.Entry entry = (Map.Entry) it.next();
-
-                addContextValue( entry.getKey(), entry.getValue() );
-            }
-        }
-
-        // ----------------------------------------------------------------------------
-        // Configuration
-        // ----------------------------------------------------------------------------
-
-        //TODO: just store reference to the configuration in a String and use that in the configuration
-        // initialization
-        if ( configuration != null )
-        {
-            //containerRealm.display();
-
-            InputStream is = containerRealm.getResourceAsStream( configuration );
+            is = getClass().getResourceAsStream( configuration );
 
             if ( is == null )
             {
-                try
-                {
-                    File configurationFile = new File( configuration );
-
-                    if ( configurationFile.exists() )
-                    {
-                        is = new FileInputStream( configuration );
-                    }
-                } catch ( IOException e ) {
-                    throw new PlexusContainerException(
-                        "The specified user configuration '" + configuration + "' is null." );
-                }
+                throw new PlexusContainerException( "Could not load resource '" + configuration + "'." );
             }
 
-            if ( is != null )
-            {
-                configurationReader = new InputStreamReader( is );
-            }
+            construct( name, context, new InputStreamReader( is ), classWorld );
         }
+        finally
+        {
+            IOUtil.close( is );
+        }
+    }
 
-        initialize();
+    public DefaultPlexusContainer( String name,
+                                   Map context,
+                                   URL url )
+        throws PlexusContainerException
+    {
+        this( name, context, url, null );
+    }
 
-        start();
+    public DefaultPlexusContainer( String name,
+                                   Map context,
+                                   URL url,
+                                   ClassWorld classWorld )
+        throws PlexusContainerException
+    {
+        Reader reader = null;
+
+        try
+        {
+            reader = new InputStreamReader( url.openStream() );
+
+            construct( name, context, reader, classWorld );
+        }
+        catch ( IOException e )
+        {
+            throw new PlexusContainerException( "Could not read URL: " + url.toExternalForm() );
+        }
+        finally
+        {
+            IOUtil.close( reader );
+        }
     }
 
     // ----------------------------------------------------------------------------
@@ -278,12 +290,12 @@ public class DefaultPlexusContainer
 
     public DefaultPlexusContainer( String name,
                                    Map context,
-                                   String configuration,
+                                   File file,
                                    Set jars,
                                    PlexusContainer parentContainer )
         throws PlexusContainerException
     {
-        this( name, context, configuration );
+        this( name, context, file );
 
         this.parentContainer = parentContainer;
 
@@ -470,7 +482,7 @@ public class DefaultPlexusContainer
             throw new DuplicateChildContainerException( getName(), name );
         }
 
-        DefaultPlexusContainer child = new DefaultPlexusContainer( name, context, null, null );
+        DefaultPlexusContainer child = new DefaultPlexusContainer( name, context );
 
         child.classWorld = classWorld;
 
@@ -735,6 +747,61 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     boolean initialized;
+
+    private void construct( String name, Map context, Reader reader, ClassWorld classWorld )
+        throws PlexusContainerException
+    {
+        this.name = name;
+
+        // ----------------------------------------------------------------------------
+        // ClassWorld
+        // ----------------------------------------------------------------------------
+
+        this.classWorld = classWorld;
+
+        // Make sure we have a valid ClassWorld
+        if ( this.classWorld == null )
+        {
+            this.classWorld = new ClassWorld( DEFAULT_REALM_NAME, Thread.currentThread().getContextClassLoader() );
+        }
+
+        try
+        {
+            containerRealm = this.classWorld.getRealm( DEFAULT_REALM_NAME );
+        }
+        catch ( NoSuchRealmException e )
+        {
+            List realms = new LinkedList( this.classWorld.getRealms() );
+            containerRealm = (ClassRealm) realms.get( 0 );
+        }
+
+        // ----------------------------------------------------------------------------
+        // Context
+        // ----------------------------------------------------------------------------
+
+        this.containerContext = new DefaultContext();
+
+        if ( context != null )
+        {
+            for ( Iterator it = context.entrySet().iterator(); it.hasNext(); )
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+
+                addContextValue( entry.getKey(), entry.getValue() );
+            }
+        }
+
+        // ----------------------------------------------------------------------------
+        // Configuration
+        // ----------------------------------------------------------------------------
+
+        //TODO: just store reference to the configuration in a String and use that in the configuration initialization
+        this.configurationReader = reader;
+
+        initialize();
+
+        start();
+    }
 
     protected void initialize()
         throws PlexusContainerException

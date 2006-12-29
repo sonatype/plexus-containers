@@ -52,7 +52,7 @@ public class PlexusContainerTest
 
         classLoader = getClass().getClassLoader();
 
-        configuration = getClass().getName().replace( '.', '/' ) + ".xml";
+        configuration = "/" + getClass().getName().replace( '.', '/' ) + ".xml";
 
         assertNotNull( classLoader );
 

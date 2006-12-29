@@ -22,10 +22,9 @@ import org.codehaus.plexus.context.DefaultContext;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URL;
 
 /**
  * @author Jason van Zyl
@@ -76,60 +75,33 @@ public abstract class PlexusTestCase
         // ----------------------------------------------------------------------------
 
         String config = getCustomConfigurationName();
-        InputStream is;
 
         if ( config != null )
         {
-            is = getClassLoader().getResourceAsStream( config );
+            URL url = getClassLoader().getResource( config );
 
-            if ( is == null )
+            if ( url != null )
             {
-                try
-                {
-                    File configFile = new File( config );
-
-                    if ( configFile.exists() )
-                    {
-                        is = new FileInputStream( configFile );
-                    }
-                } catch ( IOException e ) {
-                    throw new Exception( "The custom configuration specified is null: " + config );
-                }
+                container = new DefaultPlexusContainer( "test", context, url );
             }
-
+            else
+            {
+                container = new DefaultPlexusContainer( "test", context, new File( config ) );
+            }
         }
         else
         {
-            config = getConfigurationName( null );
+            URL url = getClassLoader().getResource( getConfigurationName( null ) );
 
-            is = getClassLoader().getResourceAsStream( config );
+            if ( url != null )
+            {
+                container = new DefaultPlexusContainer( "test", context, url );
+            }
+            else
+            {
+                container = new DefaultPlexusContainer( "test", context );
+            }
         }
-
-        // Look for a configuration associated with this test but return null if we
-        // can't find one so the container doesn't look for a configuration that we
-        // know doesn't exist. Not all tests have an associated Foo.xml for testing.
-
-        if ( is == null )
-        {
-            config = null;
-        }
-        else
-        {
-            is.close();
-        }
-
-        // ----------------------------------------------------------------------------
-        // Create the container
-        // ----------------------------------------------------------------------------
-
-        container = createContainerInstance( context, config );
-    }
-
-    protected PlexusContainer createContainerInstance( Map context,
-                                                       String configuration )
-        throws PlexusContainerException
-    {
-        return new DefaultPlexusContainer( "test", context, configuration );
     }
 
     protected void customizeContext( Context context )

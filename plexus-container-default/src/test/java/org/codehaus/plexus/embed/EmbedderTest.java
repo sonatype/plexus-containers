@@ -51,7 +51,7 @@ public class EmbedderTest
 
             context.put( "property2", "value2" );
 
-            String configuration = getClass().getName().replace( '.', '/' ) + ".xml";
+            String configuration = "/" + getClass().getName().replace( '.', '/' ) + ".xml";
 
             System.out.println( "configuration = " + configuration );
 
@@ -65,7 +65,7 @@ public class EmbedderTest
 
             //while ( true )
             //{
-            // infinite loop generate an StackTrace stackOverflow 
+            // infinite loop generate an StackTrace stackOverflow
             // due to recreation of component for each lookup
             // Try it by removing comments but not commit this ;-)
 
