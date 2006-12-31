@@ -201,6 +201,13 @@ public class DefaultPlexusContainer
                                    ClassWorld classWorld )
         throws PlexusContainerException
     {
+        if ( file == null )
+        {
+            construct( name, context, null, classWorld );
+
+            return;
+        }
+
         FileReader reader = null;
 
         try
@@ -233,6 +240,13 @@ public class DefaultPlexusContainer
                                    ClassWorld classWorld )
         throws PlexusContainerException
     {
+        if ( configuration == null )
+        {
+            construct( name, context, null, classWorld );
+
+            return;
+        }
+
         InputStream is = null;
 
         try
@@ -266,6 +280,13 @@ public class DefaultPlexusContainer
                                    ClassWorld classWorld )
         throws PlexusContainerException
     {
+        if ( url == null )
+        {
+            construct( name, context, null, classWorld );
+
+            return;
+        }
+
         Reader reader = null;
 
         try
