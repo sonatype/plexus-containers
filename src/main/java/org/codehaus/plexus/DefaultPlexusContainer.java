@@ -1047,20 +1047,20 @@ public class DefaultPlexusContainer
 
                 processConfigurationsDirectory();
             }
+        }
 
-            if ( configurationReader != null )
-            {
-                // User userConfiguration
+        if ( configurationReader != null )
+        {
+            // User userConfiguration
 
-                PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration(
-                    "<User Specified Configuration Reader>", getInterpolationConfigurationReader( configurationReader ) );
+            PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration(
+                "<User Specified Configuration Reader>", getInterpolationConfigurationReader( configurationReader ) );
 
-                // Merger of bootstrapConfiguration and user userConfiguration
+            // Merger of bootstrapConfiguration and user userConfiguration
 
-                configuration = PlexusConfigurationMerger.merge( userConfiguration, configuration );
+            configuration = PlexusConfigurationMerger.merge( userConfiguration, configuration );
 
-                processConfigurationsDirectory();
-            }
+            processConfigurationsDirectory();
         }
 
         // ---------------------------------------------------------------------------
