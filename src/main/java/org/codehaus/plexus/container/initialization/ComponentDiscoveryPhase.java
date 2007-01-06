@@ -101,6 +101,15 @@ public class ComponentDiscoveryPhase
 
                             discoveredComponentDescriptors.add( componentDescriptor );
                         }
+                        else
+                        {
+                            container.getLogger().debug( "Duplicate component found in realm "
+                                + realm.getId()
+                                + "; already present in realm "
+                                + container.getComponentDescriptor( componentDescriptor.getComponentKey() )
+                                    .getRealmId() + "; not overriding: " + componentDescriptor.getHumanReadableKey()
+                                + " from realm " + realm.getId() );
+                        }
                     }
 
                     //discoveredComponentDescriptors.addAll( componentDescriptors );
