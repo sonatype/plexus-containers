@@ -26,8 +26,6 @@
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
-          <finalName>plexus</finalName>
-          <classifier />
         </configuration>
       </plugin>
     </plugins>
