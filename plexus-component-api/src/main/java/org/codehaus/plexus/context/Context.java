@@ -18,9 +18,22 @@ package org.codehaus.plexus.context;
 
 public interface Context
 {
+    /**
+     * Returns the value of the key. If the key can't be found it will throw a exception.
+     * 
+     * @param key The key of the value to look up.
+     * @return Returns 
+     * @throws ContextException If the key doesn't exist.
+     */    
     Object get( Object key )
         throws ContextException;
-
+    
+    /**
+     * Returns true if the map or the parent map contains the key.
+     * 
+     * @param key The key to search for.
+     * @return Returns true if the key was found.
+     */
     boolean contains( Object key );
 
     /**
