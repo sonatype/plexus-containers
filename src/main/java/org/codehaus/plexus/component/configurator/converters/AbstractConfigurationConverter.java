@@ -64,9 +64,22 @@ public abstract class AbstractConfigurationConverter
             }
             catch ( ClassNotFoundException e )
             {
-                String msg =
-                    "Class name which was explicitly given in configuration using 'implementation' attribute: '" +
-                        implementation + "' cannot be loaded";
+                String msg = "ClassNotFoundException: Class name which was explicitly given in configuration using"
+                    + " 'implementation' attribute: '" + implementation + "' cannot be loaded";
+
+                throw new ComponentConfigurationException( msg, e );
+            }
+            catch ( UnsupportedClassVersionError e )
+            {
+                String msg = "UnsupportedClassVersionError: Class name which was explicitly given in configuration"
+                    + " using 'implementation' attribute: '" + implementation + "' cannot be loaded";
+
+                throw new ComponentConfigurationException( msg, e );
+            }
+            catch ( LinkageError e )
+            {
+                String msg = "LinkageError: Class name which was explicitly given in configuration using"
+                    + " 'implementation' attribute: '" + implementation + "' cannot be loaded";
 
                 throw new ComponentConfigurationException( msg, e );
             }
