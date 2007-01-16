@@ -19,7 +19,6 @@ package org.codehaus.plexus.component.composition.setter;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.composition.AbstractComponentComposer;
 import org.codehaus.plexus.component.composition.CompositionException;
-import org.codehaus.plexus.component.composition.CompositionUtils;
 import org.codehaus.plexus.component.composition.Requirement;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
@@ -45,7 +44,8 @@ public class SetterComponentComposer
 {
     public static final String PROPERTY_DESCRIPTORS = SetterComponentComposer.class.getName() + ":property.descriptors";
 
-    public Map createCompositionContext( Object component, ComponentDescriptor descriptor )
+    public Map createCompositionContext( Object component,
+                                         ComponentDescriptor descriptor )
         throws CompositionException
     {
         Map compositionContext = new HashMap();
@@ -60,7 +60,7 @@ public class SetterComponentComposer
         {
             reportErrorFailedToIntrospect( descriptor );
         }
-                
+
         compositionContext.put( PROPERTY_DESCRIPTORS, beanInfo.getPropertyDescriptors() );
 
         return compositionContext;
@@ -73,7 +73,8 @@ public class SetterComponentComposer
                                    Map compositionContext )
         throws CompositionException
     {
-        PropertyDescriptor[] propertyDescriptors = (PropertyDescriptor[]) compositionContext.get( PROPERTY_DESCRIPTORS );
+        PropertyDescriptor[] propertyDescriptors =
+            (PropertyDescriptor[]) compositionContext.get( PROPERTY_DESCRIPTORS );
 
         PropertyDescriptor propertyDescriptor = findMatchingPropertyDescriptor( requirement, propertyDescriptors );
 
@@ -91,9 +92,11 @@ public class SetterComponentComposer
     //
     // ----------------------------------------------------------------------
 
-    public List gleanAutowiringRequirements( Map compositionContext, PlexusContainer container )
+    public List gleanAutowiringRequirements( Map compositionContext,
+                                             PlexusContainer container )
     {
-        PropertyDescriptor[] propertyDescriptors = (PropertyDescriptor[]) compositionContext.get( PROPERTY_DESCRIPTORS );
+        PropertyDescriptor[] propertyDescriptors =
+            (PropertyDescriptor[]) compositionContext.get( PROPERTY_DESCRIPTORS );
 
         List requirements = new ArrayList();
 
@@ -126,16 +129,14 @@ public class SetterComponentComposer
                               PlexusContainer container )
         throws CompositionException
     {
-        Requirement requirement = CompositionUtils.findRequirement( component,
-                                                                    propertyDescriptor.getPropertyType(),
-                                                                    container,
-                                                                    requirementDescriptor );
+        Requirement requirement =
+            findRequirement( component, propertyDescriptor.getPropertyType(), container, requirementDescriptor );
 
         try
         {
             Method writeMethod = propertyDescriptor.getWriteMethod();
 
-            Object[] params = new Object[ 1 ];
+            Object[] params = new Object[1];
 
             params[0] = requirement.getAssignment();
 
@@ -213,7 +214,8 @@ public class SetterComponentComposer
     }
 
     private void reportErrorNoSuchProperty( ComponentDescriptor descriptor,
-                                            ComponentRequirement requirement ) throws CompositionException
+                                            ComponentRequirement requirement )
+        throws CompositionException
     {
 
         String causeDescriprion = "Failed to assign requirment using Java Bean introspection mechanism." +
@@ -236,7 +238,8 @@ public class SetterComponentComposer
         throw new CompositionException( msg );
     }
 
-    private void reportErrorFailedToIntrospect( ComponentDescriptor descriptor ) throws CompositionException
+    private void reportErrorFailedToIntrospect( ComponentDescriptor descriptor )
+        throws CompositionException
     {
         String msg = getErrorMessage( descriptor, null, null );
 

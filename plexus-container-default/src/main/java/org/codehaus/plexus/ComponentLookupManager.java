@@ -17,18 +17,21 @@ package org.codehaus.plexus;
  */
 
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Jason van Zyl
- */
+/** @author Jason van Zyl */
 public interface ComponentLookupManager
 {
     String ROLE = ComponentLookupManager.class.getName();
 
     Object lookup( String componentKey )
+        throws ComponentLookupException;
+
+    Object lookup( String componentKey,
+                   ClassRealm realm )
         throws ComponentLookupException;
 
     Map lookupMap( String role )
@@ -39,6 +42,11 @@ public interface ComponentLookupManager
 
     Object lookup( String role,
                    String roleHint )
+        throws ComponentLookupException;
+
+    Object lookup( String role,
+                   String roleHint,
+                   ClassRealm realm )
         throws ComponentLookupException;
 
     Object lookup( Class componentClass )

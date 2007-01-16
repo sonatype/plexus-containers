@@ -23,6 +23,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,9 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Jason van Zyl
- */
+/** @author Jason van Zyl */
 public class DefaultComponentLookupManager
     implements ComponentLookupManager
 {
@@ -62,7 +61,14 @@ public class DefaultComponentLookupManager
     public Object lookup( String componentKey )
         throws ComponentLookupException
     {
-        Object component = null;
+        return lookup( componentKey, (ClassRealm) null );
+    }
+
+    public Object lookup( String componentKey,
+                          ClassRealm realm )
+        throws ComponentLookupException
+    {
+        Object component;
 
         ComponentManager componentManager = container.getComponentManagerManager()
             .findComponentManagerByComponentKey( componentKey );
@@ -84,8 +90,8 @@ public class DefaultComponentLookupManager
 
                 container.getLogger().debug( "Nonexistent component: " + componentKey );
 
-                String message = "Component descriptor cannot be found in the component repository: " + componentKey
-                    + ".";
+                String message =
+                    "Component descriptor cannot be found in the component repository: " + componentKey + ".";
 
                 throw new ComponentLookupException( message );
             }
@@ -95,17 +101,17 @@ public class DefaultComponentLookupManager
 
         try
         {
-            component = componentManager.getComponent();
+            component = componentManager.getComponent( realm );
         }
         catch ( ComponentInstantiationException e )
         {
-            throw new ComponentLookupException( "Unable to lookup component '" + componentKey
-                + "', it could not be created", e );
+            throw new ComponentLookupException(
+                "Unable to lookup component '" + componentKey + "', it could not be created", e );
         }
         catch ( ComponentLifecycleException e )
         {
-            throw new ComponentLookupException( "Unable to lookup component '" + componentKey
-                + "', it could not be started", e );
+            throw new ComponentLookupException(
+                "Unable to lookup component '" + componentKey + "', it could not be started", e );
         }
 
         container.getComponentManagerManager().associateComponentWithComponentManager( component, componentManager );
@@ -113,27 +119,28 @@ public class DefaultComponentLookupManager
         return component;
     }
 
-    private ComponentManager createComponentManager( ComponentDescriptor descriptor, String componentKey )
+    private ComponentManager createComponentManager( ComponentDescriptor descriptor,
+                                                     String componentKey )
         throws ComponentLookupException
     {
         ComponentManager componentManager;
 
         try
         {
-            componentManager = container.getComponentManagerManager().createComponentManager( descriptor, container,
-                                                                                              componentKey );
+            componentManager =
+                container.getComponentManagerManager().createComponentManager( descriptor, container, componentKey );
         }
         catch ( UndefinedComponentManagerException e )
         {
-            String message = "Cannot create component manager for " + descriptor.getComponentKey()
-                + ", so we cannot provide a component instance.";
+            String message = "Cannot create component manager for " + descriptor.getComponentKey() +
+                ", so we cannot provide a component instance.";
 
             throw new ComponentLookupException( message, e );
         }
         catch ( UndefinedLifecycleHandlerException e )
         {
-            String message = "Cannot create component manager for " + descriptor.getComponentKey()
-                + ", so we cannot provide a component instance.";
+            String message = "Cannot create component manager for " + descriptor.getComponentKey() +
+                ", so we cannot provide a component instance.";
 
             throw new ComponentLookupException( message, e );
         }
@@ -206,7 +213,16 @@ public class DefaultComponentLookupManager
         return components;
     }
 
-    public Object lookup( String role, String roleHint )
+    public Object lookup( String role,
+                          String roleHint,
+                          ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return lookup( role + roleHint, (ClassRealm) null );
+    }
+
+    public Object lookup( String role,
+                          String roleHint )
         throws ComponentLookupException
     {
         return lookup( role + roleHint );
@@ -230,7 +246,8 @@ public class DefaultComponentLookupManager
         return lookupList( role.getName() );
     }
 
-    public Object lookup( Class role, String roleHint )
+    public Object lookup( Class role,
+                          String roleHint )
         throws ComponentLookupException
     {
         return lookup( role.getName(), roleHint );

@@ -18,6 +18,10 @@ package org.codehaus.plexus.component.manager;
 
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * This ensures only a single manager of a a component exists. Once no
@@ -33,14 +37,16 @@ public class ClassicSingletonComponentManager
 {
     private Object lock = new Object();
 
-    private Object singleton;
+    //private Object singleton;
+
+    private Map singletonMap = new HashMap();
 
     public void release( Object component )
         throws ComponentLifecycleException
     {
         synchronized( lock )
         {
-            if ( singleton == component )
+            if ( findSingleton( component ) == component )
             {
                 decrementConnectionCount();
     
@@ -61,31 +67,49 @@ public class ClassicSingletonComponentManager
     {
         synchronized( lock )
         {
-            //wait for all the clients to return all the components
-            //Do we do this in a seperate thread? or block the current thread??
-            //TODO
+            /*
             if ( singleton != null )
             {
                 endComponentLifecycle( singleton );
 
                 singleton = null;
             }
+            */
         }
     }
 
-    public Object getComponent()
+    public Object getComponent( ClassRealm realm )
         throws ComponentInstantiationException, ComponentLifecycleException
     {
         synchronized( lock )
         {
+            Object singleton = findSingleton( realm );
+
             if ( singleton == null )
             {
-                singleton = createComponentInstance();
+                singleton = createComponentInstance( realm );
             }
     
             incrementConnectionCount();
     
             return singleton;
+        }
+    }
+
+    protected Object findSingleton( ClassRealm realm )
+    {
+        return singletonMap.get( realm != null ? realm.getId() : container.getContainerRealm().getId() ) ;
+    }
+
+    protected Object findSingleton( Object component )
+    {
+        if ( component.getClass().getClassLoader() instanceof ClassRealm )
+        {
+            return singletonMap.get( ((ClassRealm)component.getClass().getClassLoader()).getId() );
+        }
+        else
+        {
+            return singletonMap.get( container.getContainerRealm().getId() );
         }
     }
 }

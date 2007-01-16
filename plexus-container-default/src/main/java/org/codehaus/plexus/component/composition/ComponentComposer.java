@@ -52,5 +52,5 @@ public interface ComponentComposer
                             ComponentDescriptor componentDescriptor,
                             ComponentRequirement componentRequirement,
                             PlexusContainer container, Map compositionContext )
-        throws CompositionException;
+        throws CompositionException;    
 }

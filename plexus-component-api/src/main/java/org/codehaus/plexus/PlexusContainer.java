@@ -191,4 +191,6 @@ public interface PlexusContainer
     public ClassRealm createComponentRealm( String id,
                                             List jars )
         throws PlexusContainerException;
+
+    ClassRealm getComponentRealm( String realmId );    
 }
