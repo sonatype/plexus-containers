@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.manager;
  */
 
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 public class ContainerComponentManager extends AbstractComponentManager
 {
@@ -29,7 +30,7 @@ public class ContainerComponentManager extends AbstractComponentManager
     {
     }
 
-    public Object getComponent()
+    public Object getComponent( ClassRealm realm )
         throws ComponentLifecycleException
     {
         return getContainer();

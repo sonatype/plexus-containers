@@ -17,15 +17,21 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.ArrayList;
+import java.lang.reflect.Array;
 
 /**
  * @author Jason van Zyl
@@ -49,13 +55,15 @@ public abstract class AbstractComponentComposer
     {
     }
 
-    public Map createCompositionContext( Object component, ComponentDescriptor descriptor )
+    public Map createCompositionContext( Object component,
+                                         ComponentDescriptor descriptor )
         throws CompositionException
     {
         return Collections.EMPTY_MAP;
     }
 
-    public List gleanAutowiringRequirements( Map compositionContext, PlexusContainer container )
+    public List gleanAutowiringRequirements( Map compositionContext,
+                                             PlexusContainer container )
         throws CompositionException
     {
         return Collections.EMPTY_LIST;
@@ -119,6 +127,106 @@ public abstract class AbstractComponentComposer
             assignRequirement( component, componentDescriptor, requirement, container, compositionContext );
         }
     }
+
+    public static Requirement findRequirement( Object component,
+                                               Class clazz,
+                                               PlexusContainer container,
+                                               ComponentRequirement requirement )
+        throws CompositionException
+    {
+        // We want to find all the requirements for a component and we want to ensure that the
+        // requirements are pulled from the same realm as the component itself.
+
+        ClassRealm componentRealm;
+
+        if ( component.getClass().getClassLoader() instanceof ClassRealm )
+        {
+            componentRealm = ((ClassRealm)component.getClass().getClassLoader());
+        }
+        else
+        {
+            componentRealm = container.getContainerRealm();
+        }
+
+        try
+        {
+            List componentDescriptors;
+
+            Object assignment;
+
+            String role = requirement.getRole();
+
+            if ( clazz.isArray() )
+            {
+                List dependencies = container.lookupList( role );
+
+                Object[] array = (Object[]) Array.newInstance( clazz, dependencies.size() );
+
+                componentDescriptors = container.getComponentDescriptorList( role );
+
+                try
+                {
+                    assignment = dependencies.toArray( array );
+                }
+                catch ( ArrayStoreException e )
+                {
+                    for ( Iterator i = dependencies.iterator(); i.hasNext(); )
+                    {
+                        Class dependencyClass = i.next().getClass();
+
+                        if ( !clazz.isAssignableFrom( dependencyClass ) )
+                        {
+                            throw new CompositionException( "Dependency of class " + dependencyClass.getName() +
+                                " in requirement " + requirement + " is not assignable in field of class " +
+                                clazz.getComponentType().getName(), e );
+                        }
+                    }
+
+                    // never gets here
+                    throw e;
+                }
+            }
+            else if ( Map.class.isAssignableFrom( clazz ) )
+            {
+                assignment = container.lookupMap( role );
+
+                componentDescriptors = container.getComponentDescriptorList( role );
+            }
+            else if ( List.class.isAssignableFrom( clazz ) )
+            {
+                assignment = container.lookupList( role );
+
+                componentDescriptors = container.getComponentDescriptorList( role );
+            }
+            else if ( Set.class.isAssignableFrom( clazz ) )
+            {
+                assignment = container.lookupMap( role );
+
+                componentDescriptors = container.getComponentDescriptorList( role );
+            }
+            else
+            {
+                String key = requirement.getRequirementKey();
+
+                assignment = ((MutablePlexusContainer)container).lookup( key, componentRealm );
+
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
+
+                componentDescriptors = new ArrayList( 1 );
+
+                componentDescriptors.add( componentDescriptor );
+            }
+
+            return new Requirement( assignment, componentDescriptors );
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new CompositionException( "Composition failed of field " + requirement.getFieldName() + " " +
+                "in object of type " + component.getClass().getName() + " because the requirement " + requirement +
+                " was missing", e );
+        }
+    }
+
 
     public String getId()
     {

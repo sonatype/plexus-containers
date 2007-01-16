@@ -73,6 +73,7 @@ public class JavaComponentFactory
         }
         catch ( ClassNotFoundException e )
         {
+            classRealm.display();
             throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
         catch ( IllegalAccessException e )
@@ -103,8 +104,6 @@ public class JavaComponentFactory
         }
         else
         {
-            //componentClassRealm.display();
-
             msg = "Could not instantiate component: " + componentDescriptor.getHumanReadableKey();
         }
 

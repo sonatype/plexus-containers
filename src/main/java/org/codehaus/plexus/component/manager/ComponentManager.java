@@ -18,6 +18,7 @@ package org.codehaus.plexus.component.manager;
  */
 
 import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -62,6 +63,9 @@ public interface ComponentManager
         throws ComponentLifecycleException;
 
     Object getComponent()
+        throws ComponentInstantiationException, ComponentLifecycleException;
+
+    Object getComponent( ClassRealm realm )
         throws ComponentInstantiationException, ComponentLifecycleException;
 
     ComponentDescriptor getComponentDescriptor();

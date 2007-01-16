@@ -35,7 +35,6 @@ public class DefaultCompositionResolver
 {
     private DAG dag = new DAG();
 
-
     public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws CompositionException
     {

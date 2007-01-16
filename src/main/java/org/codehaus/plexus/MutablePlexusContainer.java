@@ -21,6 +21,7 @@ import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.Logger;
@@ -83,4 +84,12 @@ public interface MutablePlexusContainer
     ClassRealm getComponentRealm( String realmId );
 
     ClassWorld getClassWorld();
+
+    // Lookup methods using realms
+
+    Object lookup( String role, ClassRealm realm )
+        throws ComponentLookupException;
+
+    Object lookup( String role, String roleHint, ClassRealm realm )
+        throws ComponentLookupException;    
 }

@@ -18,6 +18,7 @@ package org.codehaus.plexus.component.manager;
 
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 /**
  * Creates a new component manager for every lookup
@@ -33,10 +34,10 @@ public class PerLookupComponentManager
     {
     }
 
-    public Object getComponent()
+    public Object getComponent( ClassRealm realm )
         throws ComponentInstantiationException, ComponentLifecycleException
     {
-        Object component = createComponentInstance();
+        Object component = createComponentInstance( realm );
 
         return component;
     }

@@ -30,6 +30,7 @@ import java.util.List;
 
 /**
  * @author Jason van Zyl
+ * PLXAPI: this needs to move into the discovery package
  */
 public class ComponentDiscoveryPhase
     extends AbstractContainerInitializationPhase
@@ -111,8 +112,6 @@ public class ComponentDiscoveryPhase
                                 + " from realm " + realm.getId() );
                         }
                     }
-
-                    //discoveredComponentDescriptors.addAll( componentDescriptors );
                 }
             }
         }

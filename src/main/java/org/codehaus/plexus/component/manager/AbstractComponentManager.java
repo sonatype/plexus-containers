@@ -35,7 +35,7 @@ import java.lang.reflect.Method;
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
 {
-    private MutablePlexusContainer container;
+    protected MutablePlexusContainer container;
 
     private ComponentDescriptor componentDescriptor;
 
@@ -114,10 +114,12 @@ public abstract class AbstractComponentManager
     {
     }
 
-    protected Object createComponentInstance()
+    protected Object createComponentInstance( ClassRealm realm )
         throws ComponentInstantiationException, ComponentLifecycleException
     {
-        Object component = createComponentInstance( componentDescriptor );
+        Object component = createComponentInstance( componentDescriptor, realm );
+
+
 
         startComponentLifecycle( component );
 
@@ -186,7 +188,8 @@ public abstract class AbstractComponentManager
         return container.getLogger();
     }
 
-    protected Object createComponentInstance( ComponentDescriptor componentDescriptor )
+    protected Object createComponentInstance( ComponentDescriptor componentDescriptor,
+                                              ClassRealm realm )
         throws ComponentInstantiationException, ComponentLifecycleException
     {
         String componentFactoryId = componentDescriptor.getComponentFactory();
@@ -206,7 +209,16 @@ public abstract class AbstractComponentManager
                 componentFactory = container.getComponentFactoryManager().getDefaultComponentFactory();
             }
 
-            ClassRealm componentRealm = container.getComponentRealm( componentDescriptor.getRealmId() );
+            ClassRealm componentRealm;
+
+            if ( realm == null )
+            {
+                componentRealm = container.getComponentRealm( componentDescriptor.getRealmId() );
+            }
+            else
+            {
+                componentRealm = realm;
+            }
 
             try
             {
@@ -243,5 +255,11 @@ public abstract class AbstractComponentManager
         }
 
         return component;
+    }
+
+    public Object getComponent()
+        throws ComponentInstantiationException, ComponentLifecycleException
+    {
+        return getComponent( null );
     }
 }

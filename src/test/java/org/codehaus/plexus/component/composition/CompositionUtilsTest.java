@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
@@ -29,7 +30,7 @@ import java.util.List;
  * @version $Id$
  */
 public class CompositionUtilsTest
-    extends MockObjectTestCase
+    extends PlexusTestCase
 {
 
     /**
@@ -44,9 +45,9 @@ public class CompositionUtilsTest
 
         Class clazz = ( new int[0] ).getClass();
 
-        Mock containerMock = mock( PlexusContainer.class );
+        //Mock containerMock = mock( PlexusContainer.class );
 
-        PlexusContainer container = (PlexusContainer) containerMock.proxy();
+        //PlexusContainer container = (PlexusContainer) containerMock.proxy();
 
         ComponentRequirement requirement = new ComponentRequirement();
 
@@ -54,9 +55,9 @@ public class CompositionUtilsTest
 
         dependencies.add( "" );
 
-        containerMock.expects( once() ).method( "lookupList" ).will( returnValue( dependencies ) );
+        //containerMock.expects( once() ).method( "lookupList" ).will( returnValue( dependencies ) );
 
-        containerMock.expects( once() ).method( "getComponentDescriptorList" ).will( returnValue( null ) );
+        //containerMock.expects( once() ).method( "getComponentDescriptorList" ).will( returnValue( null ) );
 
         try
         {

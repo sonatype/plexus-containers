@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.util.ReflectionUtils;
@@ -59,7 +60,9 @@ public class FieldComponentComposer
                                            ComponentRequirement requirementDescriptor )
         throws CompositionException
     {
-        Requirement requirement = CompositionUtils.findRequirement( component, field.getType(), container, requirementDescriptor );
+        Requirement requirement = findRequirement( component, field.getType(), container, requirementDescriptor );
+
+        Object assignment = requirement.getAssignment();
 
         try
         {
@@ -69,11 +72,17 @@ public class FieldComponentComposer
         }
         catch ( IllegalArgumentException e )
         {
+            System.out.println( "[" + component + ":" + ((ClassRealm) component.getClass().getClassLoader() ).getId() + "]" +
+                "[" + assignment + ":" + ((ClassRealm)assignment.getClass().getClassLoader()).getId() + "]");
+
             throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
                 "in object of type " + component.getClass().getName(), e );
         }
         catch ( IllegalAccessException e )
         {
+            System.out.println( "[" + component + ":" + ((ClassRealm) component.getClass().getClassLoader() ).getId() + "]" +
+                "[" + assignment + ":" + ((ClassRealm)assignment.getClass().getClassLoader()).getId() + "]");
+
             throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
                 "in object of type " + component.getClass().getName(), e );
         }
@@ -101,12 +110,16 @@ public class FieldComponentComposer
             {
                 if ( container != null )
                 {
-                    fieldClass =
-                        container.getContainerRealm().loadClass( requirement.getRole() );
+                    //fieldClass = container.getContainerRealm().loadClass( requirement.getRole() );
+                    
+                    // Load the requirement from the same realm that the component itself comes from
+
+                    fieldClass = component.getClass().getClassLoader().loadClass( requirement.getRole() );
                 }
                 else
                 {
-                    fieldClass = Thread.currentThread().getContextClassLoader().loadClass( requirement.getRole() );
+                    fieldClass = component.getClass().getClassLoader().loadClass( requirement.getRole() );
+                    //fieldClass = Thread.currentThread().getContextClassLoader().loadClass( requirement.getRole() );
                 }
             }
             catch ( ClassNotFoundException e )
@@ -126,10 +139,13 @@ public class FieldComponentComposer
 
             field = getFieldByType( component, fieldClass, componentDescriptor );
         }
+
         return field;
     }
 
-    protected Field getFieldByName( Object component, String fieldName, ComponentDescriptor componentDescriptor )
+    protected Field getFieldByName( Object component,
+                                    String fieldName,
+                                    ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
         Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses( fieldName, component.getClass() );
@@ -150,7 +166,8 @@ public class FieldComponentComposer
         return field;
     }
 
-    protected Field getFieldByTypeIncludingSuperclasses( Class componentClass, Class type,
+    protected Field getFieldByTypeIncludingSuperclasses( Class componentClass,
+                                                         Class type,
                                                          ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
@@ -166,11 +183,12 @@ public class FieldComponentComposer
             return (Field) fields.get( 0 );
         }
 
-        throw new CompositionException( "There are several fields of type '" + type + "', " +
-            "use 'field-name' to select the correct field." );
+        throw new CompositionException(
+            "There are several fields of type '" + type + "', " + "use 'field-name' to select the correct field." );
     }
 
-    protected List getFieldsByTypeIncludingSuperclasses( Class componentClass, Class type,
+    protected List getFieldsByTypeIncludingSuperclasses( Class componentClass,
+                                                         Class type,
                                                          ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
@@ -192,8 +210,8 @@ public class FieldComponentComposer
 
         if ( componentClass.getSuperclass() != Object.class )
         {
-            List superFields = getFieldsByTypeIncludingSuperclasses( componentClass.getSuperclass(), type,
-                                                                     componentDescriptor );
+            List superFields =
+                getFieldsByTypeIncludingSuperclasses( componentClass.getSuperclass(), type, componentDescriptor );
 
             foundFields.addAll( superFields );
         }
@@ -201,7 +219,9 @@ public class FieldComponentComposer
         return foundFields;
     }
 
-    protected Field getFieldByType( Object component, Class type, ComponentDescriptor componentDescriptor )
+    protected Field getFieldByType( Object component,
+                                    Class type,
+                                    ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
         Field field = getFieldByTypeIncludingSuperclasses( component.getClass(), type, componentDescriptor );
