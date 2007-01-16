@@ -101,11 +101,14 @@ public abstract class AbstractComponentDiscoverer
                 ComponentSetDescriptor componentSetDescriptor =
                     createComponentDescriptors( interpolationFilterReader, url.toString() );
 
-                for ( Iterator i = componentSetDescriptor.getComponents().iterator(); i.hasNext(); )
+                if ( componentSetDescriptor.getComponents() != null )
                 {
-                    ComponentDescriptor cd = (ComponentDescriptor) i.next();
+                    for ( Iterator i = componentSetDescriptor.getComponents().iterator(); i.hasNext(); )
+                    {
+                        ComponentDescriptor cd = (ComponentDescriptor) i.next();
 
-                    cd.setRealmId( classRealm.getId() );
+                        cd.setRealmId( classRealm.getId() );
+                    }
                 }
 
                 componentSetDescriptors.add( componentSetDescriptor );
