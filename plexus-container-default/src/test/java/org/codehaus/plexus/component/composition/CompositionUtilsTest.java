@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Test for {@link CompositionUtils}
- * 
  * @author <a href="mailto:carlos@apache.org">Carlos Sanchez</a>
  * @version $Id$
  */
@@ -43,19 +41,27 @@ public class CompositionUtilsTest
         throws Exception
     {
         Object component = "";
+
         Class clazz = ( new int[0] ).getClass();
+
         Mock containerMock = mock( PlexusContainer.class );
+
         PlexusContainer container = (PlexusContainer) containerMock.proxy();
+
         ComponentRequirement requirement = new ComponentRequirement();
 
         List dependencies = new ArrayList();
+
         dependencies.add( "" );
+
         containerMock.expects( once() ).method( "lookupList" ).will( returnValue( dependencies ) );
+
         containerMock.expects( once() ).method( "getComponentDescriptorList" ).will( returnValue( null ) );
 
         try
         {
-            CompositionUtils.findRequirement( component, clazz, container, requirement );
+            AbstractComponentComposer.findRequirement( component, clazz, container, requirement );
+
             fail( "should have thrown " + CompositionException.class.getName() );
         }
         catch ( CompositionException e )
