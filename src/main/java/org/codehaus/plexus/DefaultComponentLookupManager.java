@@ -101,6 +101,11 @@ public class DefaultComponentLookupManager
 
         try
         {
+            if ( realm == null )
+            {
+                realm = DefaultPlexusContainer.getLookupRealm();
+            }
+
             component = componentManager.getComponent( realm );
         }
         catch ( ComponentInstantiationException e )
@@ -124,7 +129,7 @@ public class DefaultComponentLookupManager
     {
         return lookup( componentClass.getName() );
     }
-    
+
     // ----------------------------------------------------------------------------
     // Role + Hint
     // ----------------------------------------------------------------------------
@@ -166,7 +171,8 @@ public class DefaultComponentLookupManager
      *
      * @todo Change this to include components looked up from parents as well...
      */
-    public Map lookupMap( String role, ClassRealm realm )
+    public Map lookupMap( String role,
+                          ClassRealm realm )
         throws ComponentLookupException
     {
         Map components = new HashMap();
@@ -193,7 +199,7 @@ public class DefaultComponentLookupManager
     {
         return lookupMap( role.getName() );
     }
-    
+
     // ----------------------------------------------------------------------------
     // Lists
     // ----------------------------------------------------------------------------
@@ -209,7 +215,8 @@ public class DefaultComponentLookupManager
      *
      * @todo Change this to include components looked up from parents as well...
      */
-    public List lookupList( String role, ClassRealm realm )
+    public List lookupList( String role,
+                            ClassRealm realm )
         throws ComponentLookupException
     {
         List components = new ArrayList();

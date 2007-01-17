@@ -156,6 +156,18 @@ public class DefaultPlexusContainer
 
     protected boolean reloadingEnabled;
 
+    private static ThreadLocal lookupRealm = new ThreadLocal();
+
+    public static void setLookupRealm( ClassRealm realm )
+    {
+        lookupRealm.set( realm );
+    }
+
+    public static ClassRealm getLookupRealm()
+    {
+        return (ClassRealm) lookupRealm.get();
+    }
+
     // ----------------------------------------------------------------------
     //  Constructors
     // ----------------------------------------------------------------------
@@ -283,7 +295,7 @@ public class DefaultPlexusContainer
     public Object lookup( String componentKey )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookup( componentKey, (ClassRealm)null );
+        return componentLookupManager.lookup( componentKey, (ClassRealm) null );
     }
 
     public Object lookup( String componentKey,

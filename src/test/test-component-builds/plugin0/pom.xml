@@ -14,22 +14,32 @@
       <groupId>org.codehaus.plexus.components</groupId>
       <artifactId>component-b</artifactId>
       <version>1.0-SNAPSHOT</version>
-    </dependency>    
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-archiver</artifactId>
+      <version>1.0-alpha-7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+      <version>1.0-alpha-16-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <build>                                                                                                                                                                       
-    <plugins>                                                                                                                                                                   
-      <plugin>                                                                                                                                                                  
-        <groupId>org.codehaus.plexus</groupId>                                                                                                                                  
-        <artifactId>plexus-maven-plugin</artifactId>                                                                                                                            
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-maven-plugin</artifactId>
         <version>1.3.3</version>
-        <executions>                                                                                                                                                            
-          <execution>                                                                                                                                                           
-            <goals>                                                                                                                                                             
-              <goal>descriptor</goal>                                                                                                                                           
-            </goals>                                                                                                                                                            
+        <executions>
+        <execution>                                                                                                                                                           
+            <goals>
+              <goal>descriptor</goal>
+            </goals>
           </execution>                                                                                                                                                          
-        </executions>                                                                                                                                                           
-      </plugin>                                                                                                                                                                 
+        </executions>
+      </plugin>
     </plugins>                                                                                                                                                                  
   </build>                 
 </project>
