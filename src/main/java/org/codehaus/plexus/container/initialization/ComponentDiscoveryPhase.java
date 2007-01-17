@@ -22,6 +22,7 @@ import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.configuration.PlexusComponentDescriptorMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.List;
 
 /**
  * @author Jason van Zyl
+ *
  * PLXAPI: this needs to move into the discovery package
  */
 public class ComponentDiscoveryPhase
@@ -52,7 +54,16 @@ public class ComponentDiscoveryPhase
         }
     }
 
+    /**
+     * @deprecated use {@link ComponentDiscoveryPhase#discoverComponents(DefaultPlexusContainer, ClassRealm, boolean)}
+     */
     public static List discoverComponents( DefaultPlexusContainer container, ClassRealm realm )
+        throws PlexusConfigurationException, ComponentRepositoryException
+    {
+        return discoverComponents( container, realm, false );
+    }
+
+    public static List discoverComponents( DefaultPlexusContainer container, ClassRealm realm, boolean override )
         throws PlexusConfigurationException, ComponentRepositoryException
     {
         // We are assuming that any component which is designated as a component discovery
@@ -84,7 +95,11 @@ public class ComponentDiscoveryPhase
                         // If the user has already defined a component descriptor for this particular
                         // component then do not let the discovered component descriptor override
                         // the user defined one.
-                        if ( container.getComponentDescriptor( componentDescriptor.getComponentKey() ) == null )
+
+                        ComponentDescriptor orig = container.getComponentDescriptor( componentDescriptor
+                            .getComponentKey() );
+
+                        if ( orig == null )
                         {
                             container.addComponentDescriptor( componentDescriptor );
 
@@ -102,14 +117,16 @@ public class ComponentDiscoveryPhase
 
                             discoveredComponentDescriptors.add( componentDescriptor );
                         }
-                        else
+                        else if ( override && !componentDescriptor.getRealmId().equals( orig.getRealmId() ) )
                         {
-                            container.getLogger().debug( "Duplicate component found in realm "
-                                + realm.getId()
-                                + "; already present in realm "
-                                + container.getComponentDescriptor( componentDescriptor.getComponentKey() )
-                                    .getRealmId() + "; not overriding: " + componentDescriptor.getHumanReadableKey()
-                                + " from realm " + realm.getId() );
+                            container.getLogger().debug( "Duplicate component found, merging:" + "\n  Original: "
+                                + orig.getRealmId() + ": " + orig.getComponentKey() + " impl="
+                                + orig.getImplementation() + "\n  Config: " + orig.getConfiguration()
+                                + "\n  New:      " + componentDescriptor.getRealmId() + ": "
+                                + componentDescriptor.getComponentKey() + " impl="
+                                + componentDescriptor.getImplementation() + "\n  Config: " + orig.getConfiguration() );
+
+                            PlexusComponentDescriptorMerger.merge( componentDescriptor, orig );
                         }
                     }
                 }

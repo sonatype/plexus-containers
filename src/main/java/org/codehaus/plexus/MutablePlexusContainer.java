@@ -21,13 +21,17 @@ import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.ClassWorld;
+
+import java.util.List;
 
 /**
  * @author Jason van Zyl
@@ -84,6 +88,17 @@ public interface MutablePlexusContainer
     ClassRealm getComponentRealm( String realmId );
 
     ClassWorld getClassWorld();
+
+    /**
+     * Discovers components in the given realm.
+     * @param childRealm
+     * @param override wheter to override/merge any conflicting components, where the new component takes precedence.
+     * @return
+     * @throws PlexusConfigurationException
+     * @throws ComponentRepositoryException
+     */
+    List discoverComponents( ClassRealm childRealm, boolean override )
+        throws PlexusConfigurationException, ComponentRepositoryException;
 
     // Lookup methods using realms
 
