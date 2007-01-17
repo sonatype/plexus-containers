@@ -837,7 +837,17 @@ public class DefaultPlexusContainer
     public List discoverComponents( ClassRealm classRealm )
         throws PlexusConfigurationException, ComponentRepositoryException
     {
-        return ComponentDiscoveryPhase.discoverComponents( this, classRealm );
+        return discoverComponents( classRealm, false );
+    }
+
+    /**
+     * @see org.codehaus.plexus.MutablePlexusContainer#discoverComponents(org.codehaus.plexus.classworlds.realm.ClassRealm,
+     *      boolean)
+     */
+    public List discoverComponents( ClassRealm classRealm, boolean override )
+        throws PlexusConfigurationException, ComponentRepositoryException
+    {
+        return ComponentDiscoveryPhase.discoverComponents( this, classRealm, override );
     }
 
     protected void start()
