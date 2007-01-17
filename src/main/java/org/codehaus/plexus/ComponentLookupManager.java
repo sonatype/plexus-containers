@@ -30,10 +30,6 @@ public interface ComponentLookupManager
     Object lookup( String componentKey )
         throws ComponentLookupException;
 
-    Object lookup( String componentKey,
-                   ClassRealm realm )
-        throws ComponentLookupException;
-
     Map lookupMap( String role )
         throws ComponentLookupException;
 
@@ -42,11 +38,6 @@ public interface ComponentLookupManager
 
     Object lookup( String role,
                    String roleHint )
-        throws ComponentLookupException;
-
-    Object lookup( String role,
-                   String roleHint,
-                   ClassRealm realm )
         throws ComponentLookupException;
 
     Object lookup( Class componentClass )
@@ -63,4 +54,21 @@ public interface ComponentLookupManager
         throws ComponentLookupException;
 
     void setContainer( MutablePlexusContainer container );
+
+    // ClassRealm variants
+
+    Object lookup( String componentKey,
+                   ClassRealm realm )
+        throws ComponentLookupException;
+
+    Object lookup( String role,
+                   String roleHint,
+                   ClassRealm realm )
+        throws ComponentLookupException;
+
+    Map lookupMap( String role, ClassRealm realm )
+        throws ComponentLookupException;
+
+    List lookupList( String role, ClassRealm realm )
+        throws ComponentLookupException;    
 }

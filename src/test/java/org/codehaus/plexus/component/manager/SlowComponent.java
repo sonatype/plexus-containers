@@ -26,7 +26,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
  * @author Ben Walding
  * @version $Id$
  */
-public class SlowComponent
+public class  SlowComponent
     implements Startable
 {
     public static final String ROLE = SlowComponent.class.getName();
