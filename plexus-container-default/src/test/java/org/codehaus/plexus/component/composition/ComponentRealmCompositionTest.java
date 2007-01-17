@@ -11,7 +11,18 @@ import java.io.File;
 public class ComponentRealmCompositionTest
     extends PlexusTestCase
 {
-    public void testComposition()
+    /*
+     * We are testing that when the same component implementation exists in more then one
+     * realm and components depend on those implementations, that the right realm is used
+     * to wire up the components.
+     *
+     * An example of this in practice are Maven plugins where each plugin is loaded into
+     * a separate realm and the plugin may have dependencies on other components. We want
+     * to make sure that a requirement, say a JarArchiver, for a given component, say the
+     * maven-jar-plugin, is wired up with a JarArchiver taken from the same realm as the
+     * maven-jar-plugin and not a different realm.
+     */
+    public void testCompositionWhereTheSameImplementationExistsInDifferentRealms()
         throws Exception
     {
         File p0 = new File( getBasedir(), "src/test/test-components/plugin0-1.0-SNAPSHOT.jar" );
