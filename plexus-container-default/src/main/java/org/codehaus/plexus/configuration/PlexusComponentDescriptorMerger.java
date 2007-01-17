@@ -92,7 +92,7 @@ public class PlexusComponentDescriptorMerger
         {
             ComponentRequirement sourceReq = (ComponentRequirement) it.next();
 
-            for ( Iterator it2 = target.iterator(); it.hasNext(); )
+            for ( Iterator it2 = target.iterator(); it2.hasNext(); )
             {
                 ComponentRequirement targetReq = (ComponentRequirement) it2.next();
 
