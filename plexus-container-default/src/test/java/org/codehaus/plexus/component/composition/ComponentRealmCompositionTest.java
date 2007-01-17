@@ -45,15 +45,19 @@ public class ComponentRealmCompositionTest
 
         assertTrue( c.exists() );
 
+        File archiver = new File( getBasedir(), "src/test/test-components/plexus-archiver-1.0-alpha-8.jar" );
+
+        assertTrue( archiver.exists() );
+
         // Create ClassRealm plugin0 with plugin0 -> A, plugin0 -> B
 
-        List plugin0Jars = Arrays.asList( new Object[]{p0, a, b} );
+        List plugin0Jars = Arrays.asList( new Object[]{p0, a, b, archiver} );
 
         ClassRealm plugin0Realm = container.createComponentRealm( "plugin0Realm", plugin0Jars );
 
         // Create ClassRealm plugin1 with plugin1 -> A, plugin1 -> C
 
-        List plugin1Jars = Arrays.asList( new Object[]{p1, a, c} );
+        List plugin1Jars = Arrays.asList( new Object[]{p1, a, c, archiver } );
 
         ClassRealm plugin1Realm = container.createComponentRealm( "plugin1Realm", plugin1Jars );
 
