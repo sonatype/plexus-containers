@@ -96,7 +96,7 @@ public class FieldComponentComposer
     {
         String fieldName = requirement.getFieldName();
 
-        Field field = null;
+        Field field;
 
         if ( fieldName != null )
         {
@@ -104,23 +104,11 @@ public class FieldComponentComposer
         }
         else
         {
-            Class fieldClass = null;
+            Class fieldClass;
 
             try
             {
-                if ( container != null )
-                {
-                    //fieldClass = container.getContainerRealm().loadClass( requirement.getRole() );
-                    
-                    // Load the requirement from the same realm that the component itself comes from
-
-                    fieldClass = component.getClass().getClassLoader().loadClass( requirement.getRole() );
-                }
-                else
-                {
-                    fieldClass = component.getClass().getClassLoader().loadClass( requirement.getRole() );
-                    //fieldClass = Thread.currentThread().getContextClassLoader().loadClass( requirement.getRole() );
-                }
+                fieldClass = component.getClass().getClassLoader().loadClass( requirement.getRole() );
             }
             catch ( ClassNotFoundException e )
             {

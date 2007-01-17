@@ -53,11 +53,11 @@ public class EmbedderTest
 
             String configuration = "/" + getClass().getName().replace( '.', '/' ) + ".xml";
 
-            System.out.println( "configuration = " + configuration );
-
             PlexusEmbedder embed = new Embedder( context, configuration );
 
             Object o = embed.lookup( MockComponent.ROLE );
+
+            System.out.println( "o = " + o );
 
             assertEquals( "I AM MOCKCOMPONENT", o.toString() );
 
@@ -85,7 +85,9 @@ public class EmbedderTest
         catch ( Exception e )
         {
             System.out.println( "msg  = " + e.getMessage() );
+
             e.printStackTrace();
+
             fail( e.getMessage() );
         }
     }

@@ -22,6 +22,7 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * This ensures only a single manager of a a component exists. Once no
@@ -35,11 +36,9 @@ import java.util.HashMap;
 public class ClassicSingletonComponentManager
     extends AbstractComponentManager
 {
-    private Object lock = new Object();
+    private Object lock;
 
-    //private Object singleton;
-
-    private Map singletonMap = new HashMap();
+    private Map singletonMap;
 
     public void release( Object component )
         throws ComponentLifecycleException
@@ -67,14 +66,12 @@ public class ClassicSingletonComponentManager
     {
         synchronized( lock )
         {
-            /*
-            if ( singleton != null )
+            for ( Iterator i = singletonMap.values().iterator(); i.hasNext(); )
             {
-                endComponentLifecycle( singleton );
+                Object singleton = i.next();
 
-                singleton = null;
+                endComponentLifecycle( singleton );
             }
-            */
         }
     }
 
@@ -83,11 +80,15 @@ public class ClassicSingletonComponentManager
     {
         synchronized( lock )
         {
-            Object singleton = findSingleton( realm );
+            String realmId = realm != null ? realm.getId() : container.getContainerRealm().getId();
+
+            Object singleton = findSingleton( realmId );
 
             if ( singleton == null )
             {
                 singleton = createComponentInstance( realm );
+
+                singletonMap.put( realmId, singleton );
             }
     
             incrementConnectionCount();
@@ -98,7 +99,7 @@ public class ClassicSingletonComponentManager
 
     protected Object findSingleton( ClassRealm realm )
     {
-        return singletonMap.get( realm != null ? realm.getId() : container.getContainerRealm().getId() ) ;
+        return singletonMap.get( realm.getId() ) ;
     }
 
     protected Object findSingleton( Object component )
@@ -111,5 +112,16 @@ public class ClassicSingletonComponentManager
         {
             return singletonMap.get( container.getContainerRealm().getId() );
         }
+    }
+
+    // ----------------------------------------------------------------------------
+    // Lifecycle
+    // ----------------------------------------------------------------------------
+
+    public void initialize()
+    {
+        singletonMap = new HashMap();
+
+        lock = new Object();
     }
 }

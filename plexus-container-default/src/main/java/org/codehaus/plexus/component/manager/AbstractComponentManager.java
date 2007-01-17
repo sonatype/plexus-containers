@@ -16,6 +16,7 @@ package org.codehaus.plexus.component.manager;
 * limitations under the License.
 */
 
+import org.codehaus.classworlds.ClassRealmAdapter;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -27,8 +28,6 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
-import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.classworlds.ClassRealmAdapter;
 
 import java.lang.reflect.Method;
 
@@ -260,6 +259,7 @@ public abstract class AbstractComponentManager
     public Object getComponent()
         throws ComponentInstantiationException, ComponentLifecycleException
     {
+
         return getComponent( null );
     }
 }
