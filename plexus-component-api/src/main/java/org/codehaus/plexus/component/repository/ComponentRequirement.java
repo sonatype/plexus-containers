@@ -17,9 +17,10 @@ package org.codehaus.plexus.component.repository;
  */
 
 /**
- * @author <a href="mmaczka@interia.pl">Michal Maczka</a> 
+ * This represents a component this is required by another component.
  * 
- * @version $Id$ 
+ * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
+ * @version $Id$
  */
 public final class ComponentRequirement
 {
@@ -31,36 +32,66 @@ public final class ComponentRequirement
     
     private String fieldMappingType;
     
+    /**
+     * Returns the field name that this component requirement will inject.
+     * @return the field name that this component requirement will inject
+     */
     public String getFieldName()
     {
         return fieldName;
     }
 
+    /**
+     * Sets the name of the field that will be populated by the required
+     * component.
+     * @param fieldName the name of the field to be populated
+     */
     public void setFieldName( String fieldName )
     {
         this.fieldName = fieldName;
     }
 
+    /**
+     * Returns the role of the required component.
+     * @return the role of the required component
+     */
     public String getRole()
     {
         return role;
     }
 
+    /**
+     * Sets the role of the require component.
+     * @param role the required component's role
+     */
     public void setRole( String role )
     {
         this.role = role;
     }
 
+    /**
+     * Returns the role-hint of the required component.
+     * @return the role-hint of the required component
+     */
     public String getRoleHint()
     {
         return roleHint;
     }
 
+    /**
+     * Sets the role-hint of the require component.
+     * @param roleHint the required component's role-hint
+     */
     public void setRoleHint( String roleHint )
     {
         this.roleHint = roleHint;
     }
 
+    /**
+     * Returns the key of this requirement. This may be the
+     * role+roleHint, or just the role if no hint exists.
+     * @return the key of this requirement
+     */
     public String getRequirementKey()
     {
         if ( getRoleHint() != null )
@@ -71,11 +102,20 @@ public final class ComponentRequirement
         return getRole();
     }
 
+    /**
+     * Returns the type of the field this component requirement will inject.
+     * @return the type of the field this component requirement will inject
+     */
     public String getFieldMappingType()
     {
         return fieldMappingType;
     }
 
+    /**
+     * Sets the type of the field that will be populated by the required
+     * component.
+     * @param fieldType the type of the field to be populated
+     */
     public void setFieldMappingType( String fieldType )
     {
         this.fieldMappingType = fieldType;
@@ -90,6 +130,10 @@ public final class ComponentRequirement
             "}";
     }
 
+    /**
+     * Returns a human-friendly key, suitable for display.
+     * @return a human-friendly key
+     */
     public String getHumanReadableKey()
     {
         StringBuffer key = new StringBuffer();

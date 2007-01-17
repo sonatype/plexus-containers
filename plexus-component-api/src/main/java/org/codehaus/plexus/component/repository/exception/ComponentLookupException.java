@@ -21,17 +21,27 @@ package org.codehaus.plexus.component.repository.exception;
  * the requested component cannot be found.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
  * @version $Id$
  */
 public class ComponentLookupException
     extends Exception
 {
+    private static final long serialVersionUID = 3767774496798908291L;
+
+    /**
+     * Construct a new <code>ComponentLookupException</code> instance.
+     * @param message exception message
+     */
     public ComponentLookupException( String message )
     {
         super( message );
     }
 
+    /**
+     * Construct a new <code>ComponentLookupException</code> instance.
+     * @param message exception message
+     * @param cause causing exception to chain
+     */
     public ComponentLookupException( String message, Throwable cause )
     {
         super( message, cause );

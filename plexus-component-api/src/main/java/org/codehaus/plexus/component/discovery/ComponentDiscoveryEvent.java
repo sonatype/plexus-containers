@@ -18,15 +18,29 @@ package org.codehaus.plexus.component.discovery;
 
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 
+/**
+ * Signals to a ComponentDiscoveryListener that an event has taken place
+ * involving a set of components. It is up to the Listener to decide what
+ * to do with that information.
+ */
 public class ComponentDiscoveryEvent
 {
     private ComponentSetDescriptor componentSetDescriptor;
 
+    /**
+     * Constructs a <code>ComponentDiscoveryEvent</code> with a set of
+     * ComponentDescriptors.
+     * @param componentSetDescriptor a set of ComponentDescriptors
+     */
     public ComponentDiscoveryEvent( ComponentSetDescriptor componentSetDescriptor )
     {
         this.componentSetDescriptor = componentSetDescriptor;
     }
 
+    /**
+     * Returns this event's set of ComponentDescriptors.
+     * @return this event's set of ComponentDescriptors
+     */
     public ComponentSetDescriptor getComponentSetDescriptor()
     {
         return componentSetDescriptor;

@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Iterator;
 
 /**
+ * Contains a set of ComponentDescriptors and the set's dependencies.
+ * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -36,11 +38,19 @@ public class ComponentSetDescriptor
 
     private String id;
 
+    /**
+     * Returns a list of components in this set.
+     * @return a list of components
+     */
     public List getComponents()
     {
         return components;
     }
 
+    /**
+     * Add a new ComponentDescriptor to this set.
+     * @param cd the ComponentDescriptor to add
+     */
     public void addComponentDescriptor( ComponentDescriptor cd )
     {
         if ( components == null )
@@ -51,16 +61,28 @@ public class ComponentSetDescriptor
         components.add( cd );
     }
 
+    /**
+     * Sets a List of components as this set's contents.
+     * @param components the List of components to set
+     */
     public void setComponents( List components )
     {
         this.components = components;
     }
 
+    /**
+     * Returns a List of dependencies of this set of components.
+     * @return a List of dependencies of this set of components
+     */
     public List getDependencies()
     {
         return dependencies;
     }
 
+    /**
+     * Add a depenency to this set's contents.
+     * @param cd the ComponentDependency to add
+     */
     public void addDependency( ComponentDependency cd )
     {
         if ( dependencies == null )
@@ -71,26 +93,47 @@ public class ComponentSetDescriptor
         dependencies.add( cd );
     }
 
+    /**
+     * Sets a List of dependencies as this set's component dependencies.
+     * @param dependencies the List of components to set
+     */
     public void setDependencies( List dependencies )
     {
         this.dependencies = dependencies;
     }
 
+    /**
+     * Sets that this set of components may be in an isolated classrealm.
+     * @param isolatedRealm true if this set of components may be in an
+     *  isolated classrealm
+     */
     public void setIsolatedRealm( boolean isolatedRealm )
     {
         this.isolatedRealm = isolatedRealm;
     }
 
+    /**
+     * Returns true if this set may be in an isolated classrealm.
+     * @return true if this set may be in an isolated classrealm
+     */
     public boolean isIsolatedRealm()
     {
         return isolatedRealm;
     }
 
+    /**
+     * Returns the identifier of this set.
+     * @return the identifier of this set
+     */
     public String getId()
     {
         return id;
     }
 
+    /**
+     * Sets the identifier of this set.
+     * @param id the identifier to set
+     */
     public void setId( String id )
     {
         this.id = id;

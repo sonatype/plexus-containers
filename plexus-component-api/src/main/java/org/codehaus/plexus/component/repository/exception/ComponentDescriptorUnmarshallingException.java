@@ -21,17 +21,27 @@ package org.codehaus.plexus.component.repository.exception;
  * implementation are not available.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
  * @version $Id$
  */
 public class ComponentDescriptorUnmarshallingException
     extends Exception
 {
+    private static final long serialVersionUID = 6991583130117543536L;
+
+    /**
+     * Construct a new <code>ComponentDescriptorUnmarshallingException</code> instance.
+     * @param message exception message
+     */
     public ComponentDescriptorUnmarshallingException( String message )
     {
         super( message );
     }
 
+    /**
+     * Construct a new <code>ComponentDescriptorUnmarshallingException</code> instance.
+     * @param message exception message
+     * @param cause causing exception to chain
+     */
     public ComponentDescriptorUnmarshallingException( String message, Throwable cause )
     {
         super( message, cause );

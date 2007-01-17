@@ -21,17 +21,27 @@ package org.codehaus.plexus.component.repository.exception;
  * implementation are not available.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
  * @version $Id$
  */
 public class ComponentLifecycleException
     extends Exception
 {
+    private static final long serialVersionUID = 146489359157036908L;
+
+    /**
+     * Construct a new <code>ComponentLifecycleException</code> instance.
+     * @param message exception message
+     */
     public ComponentLifecycleException( String message )
     {
         super( message );
     }
 
+    /**
+     * Construct a new <code>ComponentLifecycleException</code> instance.
+     * @param message exception message
+     * @param cause causing exception to chain
+     */
     public ComponentLifecycleException( String message, Throwable cause )
     {
         super( message, cause );

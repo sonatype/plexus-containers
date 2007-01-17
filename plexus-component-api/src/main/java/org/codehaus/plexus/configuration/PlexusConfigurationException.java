@@ -16,14 +16,29 @@ package org.codehaus.plexus.configuration;
  * limitations under the License.
  */
 
+/**
+ * Exception that is thrown when an expected configuration value encounters
+ * problems loading correctly.
+ */
 public class PlexusConfigurationException
     extends Exception
 {
+    private static final long serialVersionUID = 7559886640184983689L;
+
+    /**
+     * Construct a new <code>PlexusConfigurationException</code> instance.
+     * @param message exception message
+     */
     public PlexusConfigurationException( String message )
     {
         this( message, null );
     }
 
+    /**
+     * Construct a new <code>PlexusConfigurationException</code> instance.
+     * @param message exception message
+     * @param throwable causing exception to chain
+     */
     public PlexusConfigurationException( String message, Throwable throwable )
     {
         super( message, throwable );

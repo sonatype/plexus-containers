@@ -21,17 +21,28 @@ package org.codehaus.plexus.component.repository.exception;
  * implementation are not available.
  *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
  * @version $Id$
  */
 public class ComponentManagerImplementationNotFoundException
     extends Exception
 {
+    private static final long serialVersionUID = 2365017114180373632L;
+
+    /**
+     * Construct a new <code>ComponentManagerImplementationNotFoundException</code> instance.
+     * @param message exception message
+     * @param cause causing exception to chain
+     */
     public ComponentManagerImplementationNotFoundException( String message )
     {
         super( message );
     }
 
+    /**
+     * Construct a new <code>ComponentManagerImplementationNotFoundException</code> instance.
+     * @param message exception message
+     * @param cause causing exception to chain
+     */
     public ComponentManagerImplementationNotFoundException( String message, Throwable cause )
     {
         super( message, cause );

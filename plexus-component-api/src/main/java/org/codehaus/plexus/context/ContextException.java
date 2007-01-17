@@ -30,6 +30,8 @@ package org.codehaus.plexus.context;
 public class ContextException
     extends Exception
 {
+    private static final long serialVersionUID = 2030206863811644180L;
+
     /**
      * Construct a new <code>ContextException</code> instance.
      *

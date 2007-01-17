@@ -16,9 +16,21 @@ package org.codehaus.plexus.component.discovery;
  * limitations under the License.
  */
 
+/**
+ * A listener which responds in some way to component discovery by a
+ * PlexusContainer.
+ */
 public interface ComponentDiscoveryListener
 {
+    /**
+     * Signals to this listener that a component has been discovered.
+     * @param event the event that signals what components have been discovered
+     */
     void componentDiscovered( ComponentDiscoveryEvent event );
 
+    /**
+     * Returns this listener's unique key.
+     * @return this listener's unique key
+     */
     String getId();
 }

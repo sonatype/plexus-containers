@@ -24,11 +24,22 @@ package org.codehaus.plexus;
  */
 public class PlexusContainerException extends Exception
 {
+    private static final long serialVersionUID = 2213861902264275451L;
+
+    /**
+     * Construct a new <code>PlexusContainerException</code> instance.
+     * @param message exception message
+     * @param throwable causing exception to chain
+     */
     public PlexusContainerException( String message, Throwable throwable )
     {
         super( message, throwable );
     }
-    
+
+    /**
+     * Construct a new <code>PlexusContainerException</code> instance.
+     * @param message exception message
+     */
     public PlexusContainerException( String message )
     {
         super( message );

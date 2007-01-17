@@ -17,22 +17,39 @@ package org.codehaus.plexus.component.reloading;
  */
 
 /**
+ * Exception for problems in the reloading strategy.
+ * 
  * @author Jason van Zyl
  * @version $Revision$
  */
 public class ComponentReloadingException
     extends Exception
 {
+    private static final long serialVersionUID = 2105955080579002718L;
+
+    /**
+     * Construct a new <code>ComponentReloadingException</code> instance.
+     * @param message exception message
+     */
     public ComponentReloadingException( String message )
     {
         super( message );
     }
 
+    /**
+     * Construct a new <code>ComponentReloadingException</code> instance.
+     * @param ause causing exception to chain
+     */
     public ComponentReloadingException( Throwable cause )
     {
         super( cause );
     }
 
+    /**
+     * Construct a new <code>ComponentReloadingException</code> instance.
+     * @param message exception message
+     * @param cause causing exception to chain
+     */
     public ComponentReloadingException( String message, Throwable cause )
     {
         super( message, cause );

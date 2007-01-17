@@ -19,14 +19,34 @@ package org.codehaus.plexus.component.reloading;
 import org.codehaus.plexus.PlexusContainer;
 
 /**
+ * Implementations declares whether a component should reload when
+ * accessed.
+ * 
  * @author Jason van Zyl
  * @version $Revision$
  */
 public interface ComponentReloadingStrategy
 {
+    /**
+     * Returns true if the given role in the container should be reloaded.
+     * @param role key of the component
+     * @param container the container the role lives in
+     * @return true if the given role in the container should be reloaded
+     * @throws ComponentReloadingException
+     */
     boolean shouldReload( String role, PlexusContainer container )
         throws ComponentReloadingException;
 
+    /**
+     * Returns true if the given role/role-hint in the container should be
+     * reloaded.
+     * @param role key of the component
+     * @param roleHint sub-key of the component
+     * @param container the container the role lives in
+     * @return true if the given role/role-hint in the container should be
+     * reloaded
+     * @throws ComponentReloadingException
+     */
     boolean shouldReload( String role, String roleHint, PlexusContainer container )
         throws ComponentReloadingException;
 

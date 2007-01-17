@@ -27,11 +27,22 @@ package org.codehaus.plexus.component.repository.exception;
 public class ComponentImplementationNotFoundException
     extends Exception
 {
+    private static final long serialVersionUID = -9171668987729438489L;
+
+    /**
+     * Construct a new <code>ComponentImplementationNotFoundException</code> instance.
+     * @param message exception message
+     */
     public ComponentImplementationNotFoundException( String message )
     {
         super( message );
     }
 
+    /**
+     * Construct a new <code>ComponentImplementationNotFoundException</code> instance.
+     * @param message exception message
+     * @param cause causing exception to chain
+     */
     public ComponentImplementationNotFoundException( String message, Throwable cause )
     {
         super( message, cause );

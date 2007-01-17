@@ -17,6 +17,8 @@ package org.codehaus.plexus.component.composition;
  */
 
 /**
+ * Thrown when component composition goes awry.
+ * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
@@ -24,6 +26,7 @@ package org.codehaus.plexus.component.composition;
 public class CompositionException
     extends Exception
 {
+    private static final long serialVersionUID = -5587124702588800322L;
 
     /**
      * Construct a new <code>CompositionException</code> instance.

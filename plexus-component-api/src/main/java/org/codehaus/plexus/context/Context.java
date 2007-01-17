@@ -16,6 +16,9 @@ package org.codehaus.plexus.context;
  * limitations under the License.
  */
 
+/**
+ * Context of the plexus container.
+ */
 public interface Context
 {
     /**
