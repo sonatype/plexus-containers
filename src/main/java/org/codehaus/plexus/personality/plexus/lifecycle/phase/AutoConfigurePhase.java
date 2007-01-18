@@ -31,7 +31,7 @@ public class AutoConfigurePhase
     public static final String DEFAULT_CONFIGURATOR_ID = "basic";
 
     public void execute( Object object,
-                         ComponentManager manager )
+                         ComponentManager manager, ClassRealm lookupRealm )
         throws PhaseExecutionException
     {
         try
@@ -46,7 +46,7 @@ public class AutoConfigurePhase
             }
 
             ComponentConfigurator componentConfigurator =
-                (ComponentConfigurator) manager.getContainer().lookup( ComponentConfigurator.ROLE, configuratorId );
+                (ComponentConfigurator) manager.getContainer().lookup( ComponentConfigurator.ROLE, configuratorId, lookupRealm );
 
             if ( descriptor.hasConfiguration() )
             {

@@ -26,21 +26,14 @@ import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 public class ContextualizePhase
     extends AbstractPhase
 {
-    public void execute( Object object, ComponentManager manager )
+    public void execute( Object object, ComponentManager manager, ClassRealm lookupRealm )
         throws PhaseExecutionException
     {
         if ( object instanceof Contextualizable )
         {
             Context context = manager.getContainer().getContext();
 
-            ClassRealm origRealm = DefaultPlexusContainer.getLookupRealm();
-
-            ClassLoader cl = object.getClass().getClassLoader();
-
-            if ( cl instanceof ClassRealm )
-            {
-                DefaultPlexusContainer.setLookupRealm( (ClassRealm) cl );
-            }
+            ClassRealm origRealm = DefaultPlexusContainer.setLookupRealm( lookupRealm );
 
             try
             {

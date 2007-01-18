@@ -77,10 +77,18 @@ public abstract class AbstractComponentComposer
         return Collections.EMPTY_LIST;
     }
 
+    /**
+     * @deprecated
+     */
+    public void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+        throws CompositionException
+    {
+        assembleComponent( component, componentDescriptor, container, DefaultPlexusContainer.getLookupRealm( component ) );
+    }
 
     public void assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
-                                   PlexusContainer container )
+                                   PlexusContainer container, ClassRealm lookupRealm )
         throws CompositionException
     {
         // ----------------------------------------------------------------------
@@ -110,7 +118,7 @@ public abstract class AbstractComponentComposer
 
             componentDescriptor.setRole( component.getClass().getName() );
 
-            requirements = gleanAutowiringRequirements( compositionContext, container, getRealm( component, container ) );
+            requirements = gleanAutowiringRequirements( compositionContext, container, lookupRealm );
 
             componentDescriptor.addRequirements( requirements );
 
@@ -133,20 +141,36 @@ public abstract class AbstractComponentComposer
         {
             ComponentRequirement requirement = (ComponentRequirement) i.next();
 
-            assignRequirement( component, componentDescriptor, requirement, container, compositionContext );
+            assignRequirement( component, componentDescriptor, requirement, container, compositionContext, lookupRealm );
         }
     }
+
+    /**
+     * @deprecated
+     */
+    public final void assignRequirement( Object component, ComponentDescriptor componentDescriptor,
+                                   ComponentRequirement componentRequirement, PlexusContainer container,
+                                   Map compositionContext )
+        throws CompositionException
+    {
+        assignRequirement( component,
+                           componentDescriptor,
+                           componentRequirement,
+                           container,
+                           compositionContext,
+                           DefaultPlexusContainer.getLookupRealm( component ) );
+    }
+
 
     public static Requirement findRequirement( Object component,
                                                Class clazz,
                                                PlexusContainer container,
-                                               ComponentRequirement requirement )
+                                               ComponentRequirement requirement,
+                                               ClassRealm lookupRealm )
         throws CompositionException
     {
         // We want to find all the requirements for a component and we want to ensure that the
         // requirements are pulled from the same realm as the component itself.
-
-        ClassRealm componentRealm = getRealm( component, container );
 
         try
         {
@@ -158,11 +182,11 @@ public abstract class AbstractComponentComposer
 
             if ( clazz.isArray() )
             {
-                List dependencies = container.lookupList( role );
+                List dependencies = container.lookupList( role, lookupRealm );
 
                 Object[] array = (Object[]) Array.newInstance( clazz, dependencies.size() );
 
-                componentDescriptors = container.getComponentDescriptorList( role );
+                componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
 
                 try
                 {
@@ -188,29 +212,29 @@ public abstract class AbstractComponentComposer
             }
             else if ( Map.class.isAssignableFrom( clazz ) )
             {
-                assignment = container.lookupMap( role );
+                assignment = container.lookupMap( role, lookupRealm );
 
-                componentDescriptors = container.getComponentDescriptorList( role );
+                componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
             else if ( List.class.isAssignableFrom( clazz ) )
             {
-                assignment = container.lookupList( role );
+                assignment = container.lookupList( role, lookupRealm );
 
-                componentDescriptors = container.getComponentDescriptorList( role );
+                componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
             else if ( Set.class.isAssignableFrom( clazz ) )
             {
-                assignment = container.lookupMap( role );
+                assignment = container.lookupMap( role, lookupRealm );
 
-                componentDescriptors = container.getComponentDescriptorList( role );
+                componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
             else
             {
                 String key = requirement.getRequirementKey();
 
-                assignment = ((MutablePlexusContainer)container).lookup( key, componentRealm );
+                assignment = ((MutablePlexusContainer)container).lookup( key, lookupRealm );
 
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, componentRealm );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, lookupRealm );
 
                 componentDescriptors = new ArrayList( 1 );
 
@@ -223,20 +247,7 @@ public abstract class AbstractComponentComposer
         {
             throw new CompositionException( "Composition failed of field " + requirement.getFieldName() + " " +
                 "in object of type " + component.getClass().getName() + " because the requirement " + requirement +
-                " was missing", e );
-        }
-    }
-
-
-    protected static ClassRealm getRealm( Object component, PlexusContainer container )
-    {
-        if ( component.getClass().getClassLoader() instanceof ClassRealm )
-        {
-            return ((ClassRealm)component.getClass().getClassLoader());
-        }
-        else
-        {
-            return DefaultPlexusContainer.getLookupRealm();
+                " was missing (lookup realm: " + lookupRealm.getId() + ")", e );
         }
     }
 

@@ -16,6 +16,9 @@ package org.codehaus.plexus.lifecycle;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.lifecycle.phase.Phase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
@@ -101,9 +104,18 @@ public abstract class AbstractLifecycleHandler
     // ----------------------------------------------------------------------
 
     /**
-     * Start a component's lifecycle.
+     * @deprecated
      */
     public void start( Object component, ComponentManager manager )
+        throws PhaseExecutionException
+    {
+        start( component, manager, getRealm( component ) );
+    }
+
+    /**
+     * Start a component's lifecycle.
+     */
+    public void start( Object component, ComponentManager manager, ClassRealm realm  )
         throws PhaseExecutionException
     {
         if ( segmentIsEmpty( getBeginSegment() ) )
@@ -115,7 +127,7 @@ public abstract class AbstractLifecycleHandler
         {
             Phase phase = (Phase) i.next();
 
-            phase.execute( component, manager );
+            phase.execute( component, manager, realm );
         }
     }
 
@@ -131,7 +143,7 @@ public abstract class AbstractLifecycleHandler
         {
             Phase phase = (Phase) i.next();
 
-            phase.execute( component, manager );
+            phase.execute( component, manager, DefaultPlexusContainer.getLookupRealm( component ) );
         }
     }
 
@@ -147,7 +159,7 @@ public abstract class AbstractLifecycleHandler
         {
             Phase phase = (Phase) i.next();
 
-            phase.execute( component, manager );
+            phase.execute( component, manager, DefaultPlexusContainer.getLookupRealm( component ) );
         }
     }
 
@@ -166,7 +178,7 @@ public abstract class AbstractLifecycleHandler
         {
             Phase phase = (Phase) i.next();
 
-            phase.execute( component, manager );
+            phase.execute( component, manager, DefaultPlexusContainer.getLookupRealm( component ) );
         }
     }
 
@@ -178,5 +190,17 @@ public abstract class AbstractLifecycleHandler
         }
 
         return false;
+    }
+
+    private static ClassRealm getRealm( Object component )
+    {
+        if ( component.getClass().getClassLoader() instanceof ClassRealm )
+        {
+            return ((ClassRealm)component.getClass().getClassLoader());
+        }
+        else
+        {
+            return DefaultPlexusContainer.getLookupRealm();
+        }
     }
 }

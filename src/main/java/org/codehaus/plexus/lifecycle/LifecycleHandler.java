@@ -1,6 +1,5 @@
 package org.codehaus.plexus.lifecycle;
 
-
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -17,6 +16,7 @@ package org.codehaus.plexus.lifecycle;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
@@ -24,7 +24,13 @@ public interface LifecycleHandler
 {
     String getId();
 
+    /**
+     * @deprecated
+     */
     void start( Object component, ComponentManager manager )
+        throws PhaseExecutionException;
+
+    void start( Object component, ComponentManager manager, ClassRealm realm )
         throws PhaseExecutionException;
 
     void suspend( Object component, ComponentManager manager )

@@ -16,14 +16,13 @@ package org.codehaus.plexus.component.manager;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
-import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This ensures only a single manager of a a component exists. Once no

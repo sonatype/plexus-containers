@@ -424,7 +424,11 @@ public class DefaultPlexusContainer
         try
         {
             // XXX this could NOT be a child realm for this container!
-            return classWorld.getRealm( id );
+
+            ClassRealm realm = classWorld.getRealm( id );
+            getLogger()
+                .warn( "Reusing existing component realm: " + id + " - no components detected!", new Throwable() );
+            return realm;
         }
         catch ( NoSuchRealmException e )
         {
@@ -449,6 +453,12 @@ public class DefaultPlexusContainer
         catch ( MalformedURLException e )
         {
             throw new PlexusContainerException( "Error adding JARs to realm.", e );
+        }
+
+        if ( getLogger().isDebugEnabled() )
+        {
+            getLogger().debug( "Created component realm: " + id, new Throwable() );
+            componentRealm.display();
         }
 
         // ----------------------------------------------------------------------------
@@ -1474,5 +1484,21 @@ public class DefaultPlexusContainer
             throw new PlexusContainerException( "Could not load resource '" + resource + "'." );
         }
         return in;
+    }
+
+    /**
+     * Utility method to get a default lookup realm for a component.
+     */
+    public static ClassRealm getLookupRealm( Object component )
+    {
+        if ( component.getClass().getClassLoader() instanceof ClassRealm )
+        {
+            return ( (ClassRealm) component.getClass().getClassLoader() );
+        }
+        else
+        {
+            return DefaultPlexusContainer.getLookupRealm();
+        }
+
     }
 }

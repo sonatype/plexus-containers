@@ -16,12 +16,16 @@ package org.codehaus.plexus.lifecycle.phase;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
 public interface Phase
 {
+    // public void execute( Object component, ComponentManager manager )
+    // throws PhaseExecutionException;
+
     /** Execute the phase. */
-    public void execute( Object component, ComponentManager manager )
+    public void execute( Object component, ComponentManager manager, ClassRealm realm )
         throws PhaseExecutionException;
 }

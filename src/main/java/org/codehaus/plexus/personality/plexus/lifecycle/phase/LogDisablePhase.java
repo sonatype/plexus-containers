@@ -16,6 +16,7 @@ package org.codehaus.plexus.personality.plexus.lifecycle.phase;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -30,7 +31,7 @@ import org.codehaus.plexus.logging.LoggerManager;
 public class LogDisablePhase
     extends AbstractPhase
 {
-    public void execute( Object object, ComponentManager componentManager )
+    public void execute( Object object, ComponentManager componentManager, ClassRealm lookupRealm )
         throws PhaseExecutionException
     {
         LoggerManager loggerManager;
@@ -40,7 +41,7 @@ public class LogDisablePhase
         {
             try
             {
-                loggerManager = (LoggerManager) componentManager.getContainer().lookup( LoggerManager.ROLE );
+                loggerManager = (LoggerManager) componentManager.getContainer().lookup( LoggerManager.ROLE, lookupRealm );
             }
             catch ( ComponentLookupException e )
             {

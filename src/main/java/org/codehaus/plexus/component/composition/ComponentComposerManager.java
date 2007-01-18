@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /**
@@ -28,6 +29,12 @@ public interface ComponentComposerManager
 {
     String ROLE = ComponentComposerManager.class.getName();
 
+    /**
+     * @deprecated
+     */
     void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+        throws CompositionException, UndefinedComponentComposerException;
+
+    void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container, ClassRealm lookupRealm )
         throws CompositionException, UndefinedComponentComposerException;
 }

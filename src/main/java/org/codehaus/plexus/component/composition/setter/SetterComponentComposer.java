@@ -71,7 +71,8 @@ public class SetterComponentComposer
                                    ComponentDescriptor descriptor,
                                    ComponentRequirement requirement,
                                    PlexusContainer container,
-                                   Map compositionContext )
+                                   Map compositionContext,
+                                   ClassRealm lookupRealm )
         throws CompositionException
     {
         PropertyDescriptor[] propertyDescriptors =
@@ -81,7 +82,7 @@ public class SetterComponentComposer
 
         if ( propertyDescriptor != null )
         {
-            setProperty( component, descriptor, requirement, propertyDescriptor, container );
+            setProperty( component, descriptor, requirement, propertyDescriptor, container, lookupRealm );
         }
         else
         {
@@ -127,11 +128,14 @@ public class SetterComponentComposer
                               ComponentDescriptor descriptor,
                               ComponentRequirement requirementDescriptor,
                               PropertyDescriptor propertyDescriptor,
-                              PlexusContainer container )
+                              PlexusContainer container, ClassRealm lookupRealm )
         throws CompositionException
     {
-        Requirement requirement =
-            findRequirement( component, propertyDescriptor.getPropertyType(), container, requirementDescriptor );
+        Requirement requirement = findRequirement( component,
+                                                   propertyDescriptor.getPropertyType(),
+                                                   container,
+                                                   requirementDescriptor,
+                                                   lookupRealm );
 
         try
         {
