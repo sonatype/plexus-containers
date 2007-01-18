@@ -22,9 +22,6 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionExce
 
 public interface Phase
 {
-    // public void execute( Object component, ComponentManager manager )
-    // throws PhaseExecutionException;
-
     /** Execute the phase. */
     public void execute( Object component, ComponentManager manager, ClassRealm realm )
         throws PhaseExecutionException;
