@@ -455,11 +455,7 @@ public class DefaultPlexusContainer
             throw new PlexusContainerException( "Error adding JARs to realm.", e );
         }
 
-        if ( getLogger().isDebugEnabled() )
-        {
-            getLogger().debug( "Created component realm: " + id, new Throwable() );
-            componentRealm.display();
-        }
+        getLogger().debug( "Created component realm: " + id );
 
         // ----------------------------------------------------------------------------
         // Discover the components that are present in the new componentRealm.
