@@ -117,7 +117,8 @@ public class ComponentDiscoveryPhase
 
                             discoveredComponentDescriptors.add( componentDescriptor );
                         }
-                        else if ( override && !componentDescriptor.getRealmId().equals( orig.getRealmId() ) )
+                        else if ( override && orig.getRealmId() != null
+                            && !orig.getRealmId().equals( componentDescriptor.getRealmId() ) )
                         {
                             container.getLogger().debug( "Duplicate component found, merging:" + "\n  Original: "
                                 + orig.getRealmId() + ": " + orig.getComponentKey() + " impl="
