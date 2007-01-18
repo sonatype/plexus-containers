@@ -25,16 +25,13 @@ public abstract class AbstractPhase
     implements Phase
 {
     /** Execute the phase. */
-    public void execute( Object component, ComponentManager manager, ClassRealm realm )
-        throws PhaseExecutionException
-    {
-        // nop
-    }
+    public abstract void execute( Object component, ComponentManager manager, ClassRealm realm )
+        throws PhaseExecutionException;
 
     /**
      * @deprecated
      */
-    public void execute( Object component, ComponentManager manager )
+    public final void execute( Object component, ComponentManager manager )
         throws PhaseExecutionException
     {
         execute( component, manager, DefaultPlexusContainer.getLookupRealm( component ) );
