@@ -16,8 +16,10 @@ package org.codehaus.plexus.component.manager;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 class ComponentLookupThread
     extends Thread
@@ -26,16 +28,20 @@ class ComponentLookupThread
 
     private SlowComponent component;
 
+    private ClassRealm lookupRealm;
+
     public ComponentLookupThread( PlexusContainer container )
     {
         this.container = container;
+        this.lookupRealm = DefaultPlexusContainer.getLookupRealm();
     }
 
     public void run()
     {
         try
         {
-            SlowComponent tmpComponent = (SlowComponent) container.lookup( SlowComponent.ROLE );
+//            DefaultPlexusContainer.setLookupRealm( lookupRealm );
+            SlowComponent tmpComponent = (SlowComponent) container.lookup( SlowComponent.ROLE, lookupRealm );
 
             synchronized ( this )
             {
@@ -44,6 +50,7 @@ class ComponentLookupThread
         }
         catch ( Exception e )
         {
+            DefaultPlexusContainer.getLookupRealm().display();
             e.printStackTrace();
         }
     }
@@ -94,10 +101,7 @@ public class ClassicSingletonComponentManagerTest
         //Wait for them to finish
         for ( int i = 0; i < count; i++ )
         {
-            while ( components[ i ].getComponent() == null )
-            {
-                Thread.sleep( 100 );
-            }
+            components[i].join( 10000 );
         }
 
         //Get master component
@@ -106,7 +110,9 @@ public class ClassicSingletonComponentManagerTest
         //Verify them
         for ( int i = 0; i < count; i++ )
         {
-            assertSame( "components[" + i + "].getComponent()", masterComponent, components[ i ].getComponent() );
+            assertSame( i + ":" + components[i].getComponent() + " == " + masterComponent,
+                        masterComponent,
+                        components[i].getComponent() );
         }
     }
 }

@@ -37,12 +37,14 @@ import java.util.List;
 public class ComponentDiscoveryPhase
     extends AbstractContainerInitializationPhase
 {
+    // XXX tempted to deprecated in favor of adding a ClassRealm parameter
+
     public void execute( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
         try
         {
-            discoverComponents( context.getContainer(), context.getContainer().getContainerRealm() );
+            discoverComponents( context.getContainer(), context.getContainer().getContainerRealm(), false );
         }
         catch ( PlexusConfigurationException e )
         {
@@ -96,8 +98,10 @@ public class ComponentDiscoveryPhase
                         // component then do not let the discovered component descriptor override
                         // the user defined one.
 
+                        // Use the parent realm to search for the original descriptor. It won't
+                        // be in the current realm (yet).
                         ComponentDescriptor orig = container.getComponentDescriptor( componentDescriptor
-                            .getComponentKey() );
+                            .getComponentKey(), realm );
 
                         if ( orig == null )
                         {

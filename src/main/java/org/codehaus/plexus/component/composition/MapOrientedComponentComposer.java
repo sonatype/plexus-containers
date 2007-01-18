@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -75,6 +76,8 @@ public class MapOrientedComponentComposer
                                  ComponentRequirement requirement )
         throws CompositionException
     {
+        ClassRealm componentRealm = getRealm( component, container );
+
         try
         {
             List retValue;
@@ -92,7 +95,7 @@ public class MapOrientedComponentComposer
 
                 value = container.lookup( key );
 
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, componentRealm );
 
                 retValue = Collections.singletonList( componentDescriptor );
             }
@@ -102,7 +105,7 @@ public class MapOrientedComponentComposer
 
                 value = container.lookup( key );
 
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, componentRealm );
 
                 retValue = Collections.singletonList( componentDescriptor );
             }
@@ -124,7 +127,7 @@ public class MapOrientedComponentComposer
 
                 value = container.lookup( key );
 
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, componentRealm );
 
                 retValue = Collections.singletonList( componentDescriptor );
             }
@@ -144,5 +147,4 @@ public class MapOrientedComponentComposer
                 + " because the requirement " + requirement + " cannot be set on the component.", e );
         }
     }
-
 }

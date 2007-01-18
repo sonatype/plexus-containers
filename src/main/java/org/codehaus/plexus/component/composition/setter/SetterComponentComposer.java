@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.composition.setter;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.AbstractComponentComposer;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.Requirement;
@@ -58,7 +59,7 @@ public class SetterComponentComposer
         }
         catch ( IntrospectionException e )
         {
-            reportErrorFailedToIntrospect( descriptor );
+            throw new CompositionException( getErrorMessage( descriptor, null, null ) );
         }
 
         compositionContext.put( PROPERTY_DESCRIPTORS, beanInfo.getPropertyDescriptors() );
@@ -93,7 +94,7 @@ public class SetterComponentComposer
     // ----------------------------------------------------------------------
 
     public List gleanAutowiringRequirements( Map compositionContext,
-                                             PlexusContainer container )
+                                             PlexusContainer container, ClassRealm componentRealm )
     {
         PropertyDescriptor[] propertyDescriptors =
             (PropertyDescriptor[]) compositionContext.get( PROPERTY_DESCRIPTORS );
@@ -106,7 +107,7 @@ public class SetterComponentComposer
 
             String role = pd.getPropertyType().getName();
 
-            ComponentDescriptor componentDescriptor = container.getComponentDescriptor( role );
+            ComponentDescriptor componentDescriptor = container.getComponentDescriptor( role, componentRealm );
 
             if ( componentDescriptor != null )
             {
@@ -234,14 +235,6 @@ public class SetterComponentComposer
         String causeDescriprion = "Failed to assign requirment using Java Bean introspection mechanism. ";
 
         String msg = getErrorMessage( descriptor, requirement, causeDescriprion );
-
-        throw new CompositionException( msg );
-    }
-
-    private void reportErrorFailedToIntrospect( ComponentDescriptor descriptor )
-        throws CompositionException
-    {
-        String msg = getErrorMessage( descriptor, null, null );
 
         throw new CompositionException( msg );
     }
