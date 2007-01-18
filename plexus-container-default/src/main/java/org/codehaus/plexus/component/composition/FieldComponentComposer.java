@@ -40,7 +40,8 @@ public class FieldComponentComposer
                                    ComponentDescriptor componentDescriptor,
                                    ComponentRequirement requirement,
                                    PlexusContainer container,
-                                   Map compositionContext )
+                                   Map compositionContext,
+                                   ClassRealm lookupRealm )
         throws CompositionException
     {
         Field field = findMatchingField( component, componentDescriptor, requirement, container );
@@ -51,16 +52,20 @@ public class FieldComponentComposer
             field.setAccessible( true );
         }
 
-        assignRequirementToField( component, field, container, requirement );
+        assignRequirementToField( component, field, container, requirement, lookupRealm );
     }
 
     private List assignRequirementToField( Object component,
                                            Field field,
                                            PlexusContainer container,
-                                           ComponentRequirement requirementDescriptor )
+                                           ComponentRequirement requirementDescriptor, ClassRealm lookupRealm )
         throws CompositionException
     {
-        Requirement requirement = findRequirement( component, field.getType(), container, requirementDescriptor );
+        Requirement requirement = findRequirement( component,
+                                                   field.getType(),
+                                                   container,
+                                                   requirementDescriptor,
+                                                   lookupRealm );
 
         Object assignment = requirement.getAssignment();
 

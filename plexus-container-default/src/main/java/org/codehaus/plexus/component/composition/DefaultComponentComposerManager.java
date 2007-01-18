@@ -16,8 +16,11 @@ package org.codehaus.plexus.component.composition;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,15 +41,23 @@ public class DefaultComponentComposerManager
 
     private List componentComposers;
 
-    public void assembleComponent( Object component,
-                                   ComponentDescriptor componentDescriptor,
-                                   PlexusContainer container )
+    /**
+     * @deprecated
+     */
+    public void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+        throws UndefinedComponentComposerException, CompositionException
+    {
+        assembleComponent( component, componentDescriptor, container, getRealm( component ) );
+    }
+
+    public void assembleComponent( Object component, ComponentDescriptor componentDescriptor,
+                                   PlexusContainer container, ClassRealm lookupRealm )
         throws UndefinedComponentComposerException, CompositionException
     {
 
         if ( componentDescriptor.getRequirements().size() == 0 )
         {
-            //nothing to do
+            // nothing to do
             return;
         }
 
@@ -59,7 +70,7 @@ public class DefaultComponentComposerManager
 
         ComponentComposer componentComposer = getComponentComposer( componentComposerId );
 
-        componentComposer.assembleComponent( component, componentDescriptor, container );
+        componentComposer.assembleComponent( component, componentDescriptor, container, lookupRealm );
     }
 
     protected ComponentComposer getComponentComposer( String id )
@@ -102,4 +113,17 @@ public class DefaultComponentComposerManager
 
         return retValue;
     }
+
+    private static ClassRealm getRealm( Object component )
+    {
+        if ( component.getClass().getClassLoader() instanceof ClassRealm )
+        {
+            return ( (ClassRealm) component.getClass().getClassLoader() );
+        }
+        else
+        {
+            return DefaultPlexusContainer.getLookupRealm();
+        }
+    }
+
 }

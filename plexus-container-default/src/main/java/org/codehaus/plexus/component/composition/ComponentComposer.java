@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 
@@ -34,9 +35,17 @@ public interface ComponentComposer
 
     String getId();
 
+    /**
+     * @deprecated
+     */
     void assembleComponent( Object component,
                             ComponentDescriptor componentDescriptor,
                             PlexusContainer container )
+        throws CompositionException;
+
+    void assembleComponent( Object component,
+                            ComponentDescriptor componentDescriptor,
+                            PlexusContainer container, ClassRealm lookupRealm )
         throws CompositionException;
 
     void verifyComponentSuitability( Object component )
@@ -48,9 +57,19 @@ public interface ComponentComposer
     List gleanAutowiringRequirements( Map compositionContext, PlexusContainer container )
         throws CompositionException;
 
+    /**
+     * @deprecated
+     */
     void assignRequirement( Object component,
                             ComponentDescriptor componentDescriptor,
                             ComponentRequirement componentRequirement,
                             PlexusContainer container, Map compositionContext )
-        throws CompositionException;    
+        throws CompositionException;
+
+    void assignRequirement( Object component,
+                            ComponentDescriptor componentDescriptor,
+                            ComponentRequirement componentRequirement,
+                            PlexusContainer container, Map compositionContext,
+                            ClassRealm lookupRealm )
+        throws CompositionException;
 }

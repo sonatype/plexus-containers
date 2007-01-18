@@ -16,6 +16,7 @@ package org.codehaus.plexus.personality.plexus.lifecycle.phase;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.manager.ComponentManager;
@@ -30,7 +31,7 @@ import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 public class CompositionPhase
     extends AbstractPhase
 {
-    public void execute( Object object, ComponentManager manager )
+    public void execute( Object object, ComponentManager manager, ClassRealm lookupRealm )
         throws PhaseExecutionException
     {
         ComponentDescriptor descriptor = manager.getComponentDescriptor();
@@ -42,7 +43,10 @@ public class CompositionPhase
 
         try
         {
-            manager.getContainer().getComponentComposerManager().assembleComponent( object, descriptor, manager.getContainer() );
+            manager.getContainer().getComponentComposerManager().assembleComponent( object,
+                                                                                    descriptor,
+                                                                                    manager.getContainer(),
+                                                                                    lookupRealm );
         }
         catch ( CompositionException e )
         {

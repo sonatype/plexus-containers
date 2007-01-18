@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 
@@ -40,7 +41,8 @@ public class NoOpComponentComposer
     public void assignRequirement( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    ComponentRequirement requirement,
-                                   PlexusContainer container, Map compositionContext )
+                                   PlexusContainer container, Map compositionContext,
+                                   ClassRealm lookupRealm )
     {
     }
 }

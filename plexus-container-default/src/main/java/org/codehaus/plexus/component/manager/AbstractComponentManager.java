@@ -118,19 +118,17 @@ public abstract class AbstractComponentManager
     {
         Object component = createComponentInstance( componentDescriptor, realm );
 
-
-
-        startComponentLifecycle( component );
+        startComponentLifecycle( component, realm );
 
         return component;
     }
 
-    protected void startComponentLifecycle( Object component )
+    protected void startComponentLifecycle( Object component, ClassRealm realm )
         throws ComponentLifecycleException
     {
         try
         {
-            getLifecycleHandler().start( component, this );
+            getLifecycleHandler().start( component, this, realm );
         }
         catch ( PhaseExecutionException e )
         {

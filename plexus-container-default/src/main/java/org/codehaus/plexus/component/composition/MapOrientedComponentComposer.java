@@ -62,10 +62,11 @@ public class MapOrientedComponentComposer
     public void assignRequirement( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    ComponentRequirement requirement,
-                                   PlexusContainer container, Map compositionContext )
+                                   PlexusContainer container, Map compositionContext,
+                                   ClassRealm lookupRealm )
         throws CompositionException
     {
-        addRequirement( (MapOrientedComponent) component, container, requirement );
+        addRequirement( (MapOrientedComponent) component, container, requirement, lookupRealm );
     }
 
     // ----------------------------------------------------------------------
@@ -73,11 +74,9 @@ public class MapOrientedComponentComposer
     // ----------------------------------------------------------------------
 
     private List addRequirement( MapOrientedComponent component, PlexusContainer container,
-                                 ComponentRequirement requirement )
+                                 ComponentRequirement requirement, ClassRealm componentRealm )
         throws CompositionException
     {
-        ClassRealm componentRealm = getRealm( component, container );
-
         try
         {
             List retValue;

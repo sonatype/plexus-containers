@@ -16,6 +16,8 @@ package org.codehaus.plexus.lifecycle.phase;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
@@ -23,6 +25,18 @@ public abstract class AbstractPhase
     implements Phase
 {
     /** Execute the phase. */
-    public abstract void execute( Object component, ComponentManager manager )
-        throws PhaseExecutionException;
+    public void execute( Object component, ComponentManager manager, ClassRealm realm )
+        throws PhaseExecutionException
+    {
+        // nop
+    }
+
+    /**
+     * @deprecated
+     */
+    public void execute( Object component, ComponentManager manager )
+        throws PhaseExecutionException
+    {
+        execute( component, manager, DefaultPlexusContainer.getLookupRealm( component ) );
+    }
 }

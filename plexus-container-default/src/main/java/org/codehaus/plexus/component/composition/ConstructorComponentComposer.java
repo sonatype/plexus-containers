@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 
@@ -38,7 +39,8 @@ public class ConstructorComponentComposer
                                    ComponentDescriptor componentDescriptor,
                                    ComponentRequirement requirement,
                                    PlexusContainer container,
-                                   Map compositionContext )
+                                   Map compositionContext,
+                                   ClassRealm lookupRealm )
         throws CompositionException
     {
     }
