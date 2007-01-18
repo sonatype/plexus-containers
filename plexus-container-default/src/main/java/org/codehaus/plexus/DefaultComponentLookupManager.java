@@ -16,6 +16,7 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.UndefinedComponentManagerException;
@@ -23,7 +24,6 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,15 +31,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/** @author Jason van Zyl */
+/**
+ * @author Jason van Zyl
+ * @author Kenney Westerhof
+ */
 public class DefaultComponentLookupManager
     implements ComponentLookupManager
 {
     private MutablePlexusContainer container;
-
-    private Map mapOfComponentMaps;
-
-    private Map mapOfComponentLists;
 
     // ----------------------------------------------------------------------
     // Component Lookup
@@ -49,23 +48,22 @@ public class DefaultComponentLookupManager
     // Try to lookup the component manager for the requested component.
     //
     // component manager exists:
-    //   -> return a component from the component manager.
+    // -> return a component from the component manager.
     //
     // component manager doesn't exist;
-    //   -> lookup component descriptor for the requested component.
-    //   -> instantiate component manager for this component.
-    //   -> track the component manager for this component by the component class name.
-    //   -> return a component from the component manager.
+    // -> lookup component descriptor for the requested component.
+    // -> instantiate component manager for this component.
+    // -> track the component manager for this component by the component class name.
+    // -> return a component from the component manager.
     // ----------------------------------------------------------------------
 
     public Object lookup( String componentKey )
         throws ComponentLookupException
     {
-        return lookup( componentKey, (ClassRealm) null );
+        return lookup( componentKey, DefaultPlexusContainer.getLookupRealm() );
     }
 
-    public Object lookup( String componentKey,
-                          ClassRealm realm )
+    public Object lookup( String componentKey, ClassRealm realm )
         throws ComponentLookupException
     {
         Object component;
@@ -79,19 +77,18 @@ public class DefaultComponentLookupManager
 
         if ( container.isReloadingEnabled() || componentManager == null )
         {
-            ComponentDescriptor descriptor = container.getComponentRepository().getComponentDescriptor( componentKey );
+            ComponentDescriptor descriptor = container.getComponentRepository().getComponentDescriptor( componentKey,
+                                                                                                        realm );
 
             if ( descriptor == null )
             {
                 if ( container.getParentContainer() != null )
                 {
-                    return container.getParentContainer().lookup( componentKey );
+                    return container.getParentContainer().lookup( componentKey, realm );
                 }
 
-                container.getLogger().debug( "Nonexistent component: " + componentKey );
-
-                String message =
-                    "Component descriptor cannot be found in the component repository: " + componentKey + ".";
+                String message = "Component descriptor cannot be found in the component repository: " + componentKey
+                    + ".";
 
                 throw new ComponentLookupException( message );
             }
@@ -101,22 +98,17 @@ public class DefaultComponentLookupManager
 
         try
         {
-            if ( realm == null )
-            {
-                realm = DefaultPlexusContainer.getLookupRealm();
-            }
-
             component = componentManager.getComponent( realm );
         }
         catch ( ComponentInstantiationException e )
         {
-            throw new ComponentLookupException(
-                "Unable to lookup component '" + componentKey + "', it could not be created", e );
+            throw new ComponentLookupException( "Unable to lookup component '" + componentKey
+                + "', it could not be created", e );
         }
         catch ( ComponentLifecycleException e )
         {
-            throw new ComponentLookupException(
-                "Unable to lookup component '" + componentKey + "', it could not be started", e );
+            throw new ComponentLookupException( "Unable to lookup component '" + componentKey
+                + "', it could not be started", e );
         }
 
         container.getComponentManagerManager().associateComponentWithComponentManager( component, componentManager );
@@ -127,30 +119,38 @@ public class DefaultComponentLookupManager
     public Object lookup( Class componentClass )
         throws ComponentLookupException
     {
-        return lookup( componentClass.getName() );
+        return lookup( componentClass.getName(), DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public Object lookup( Class componentClass, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return lookup( componentClass.getName(), realm );
     }
 
     // ----------------------------------------------------------------------------
     // Role + Hint
     // ----------------------------------------------------------------------------
 
-    public Object lookup( String role,
-                          String roleHint,
-                          ClassRealm realm )
+    public Object lookup( Class role, String roleHint, ClassRealm realm )
         throws ComponentLookupException
     {
-        return lookup( role + roleHint, (ClassRealm) null );
+        return lookup( role.getName(), roleHint, realm );
     }
 
-    public Object lookup( String role,
-                          String roleHint )
+    public Object lookup( String role, String roleHint, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return lookup( role + roleHint, realm );
+    }
+
+    public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
         return lookup( role + roleHint );
     }
 
-    public Object lookup( Class role,
-                          String roleHint )
+    public Object lookup( Class role, String roleHint )
         throws ComponentLookupException
     {
         return lookup( role.getName(), roleHint );
@@ -163,7 +163,13 @@ public class DefaultComponentLookupManager
     public Map lookupMap( String role )
         throws ComponentLookupException
     {
-        return lookupMap( role, null );
+        return lookupMap( role, DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public Map lookupMap( Class role, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return lookupMap( role.getName(), realm );
     }
 
     /**
@@ -171,13 +177,12 @@ public class DefaultComponentLookupManager
      *
      * @todo Change this to include components looked up from parents as well...
      */
-    public Map lookupMap( String role,
-                          ClassRealm realm )
+    public Map lookupMap( String role, ClassRealm realm )
         throws ComponentLookupException
     {
         Map components = new HashMap();
 
-        Map componentDescriptors = container.getComponentDescriptorMap( role );
+        Map componentDescriptors = container.getComponentDescriptorMap( role, realm );
 
         if ( componentDescriptors != null )
         {
@@ -204,10 +209,25 @@ public class DefaultComponentLookupManager
     // Lists
     // ----------------------------------------------------------------------------
 
+    /**
+     * @deprecated
+     */
     public List lookupList( String role )
         throws ComponentLookupException
     {
-        return lookupList( role, null );
+        return lookupList( role, DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public List lookupList( Class role )
+        throws ComponentLookupException
+    {
+        return lookupList( role.getName(), DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public List lookupList( Class role, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return lookupList( role.getName(), realm );
     }
 
     /**
@@ -215,13 +235,12 @@ public class DefaultComponentLookupManager
      *
      * @todo Change this to include components looked up from parents as well...
      */
-    public List lookupList( String role,
-                            ClassRealm realm )
+    public List lookupList( String role, ClassRealm realm )
         throws ComponentLookupException
     {
         List components = new ArrayList();
 
-        List componentDescriptors = container.getComponentDescriptorList( role );
+        List componentDescriptors = container.getComponentDescriptorList( role, realm );
 
         if ( componentDescriptors != null )
         {
@@ -249,12 +268,6 @@ public class DefaultComponentLookupManager
         return components;
     }
 
-    public List lookupList( Class role )
-        throws ComponentLookupException
-    {
-        return lookupList( role.getName() );
-    }
-
     // ----------------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------------
@@ -268,28 +281,28 @@ public class DefaultComponentLookupManager
     //
     // ----------------------------------------------------------------------------
 
-    private ComponentManager createComponentManager( ComponentDescriptor descriptor,
-                                                     String componentKey )
+    private ComponentManager createComponentManager( ComponentDescriptor descriptor, String componentKey )
         throws ComponentLookupException
     {
         ComponentManager componentManager;
 
         try
         {
-            componentManager =
-                container.getComponentManagerManager().createComponentManager( descriptor, container, componentKey );
+            componentManager = container.getComponentManagerManager().createComponentManager( descriptor,
+                                                                                              container,
+                                                                                              componentKey );
         }
         catch ( UndefinedComponentManagerException e )
         {
-            String message = "Cannot create component manager for " + descriptor.getComponentKey() +
-                ", so we cannot provide a component instance.";
+            String message = "Cannot create component manager for " + descriptor.getComponentKey()
+                + ", so we cannot provide a component instance.";
 
             throw new ComponentLookupException( message, e );
         }
         catch ( UndefinedLifecycleHandlerException e )
         {
-            String message = "Cannot create component manager for " + descriptor.getComponentKey() +
-                ", so we cannot provide a component instance.";
+            String message = "Cannot create component manager for " + descriptor.getComponentKey()
+                + ", so we cannot provide a component instance.";
 
             throw new ComponentLookupException( message, e );
         }

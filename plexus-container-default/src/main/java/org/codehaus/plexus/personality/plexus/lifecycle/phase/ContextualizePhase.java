@@ -16,6 +16,8 @@ package org.codehaus.plexus.personality.plexus.lifecycle.phase;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
@@ -31,6 +33,15 @@ public class ContextualizePhase
         {
             Context context = manager.getContainer().getContext();
 
+            ClassRealm origRealm = DefaultPlexusContainer.getLookupRealm();
+
+            ClassLoader cl = object.getClass().getClassLoader();
+
+            if ( cl instanceof ClassRealm )
+            {
+                DefaultPlexusContainer.setLookupRealm( (ClassRealm) cl );
+            }
+
             try
             {
                 ( (Contextualizable) object ).contextualize( context );
@@ -38,6 +49,10 @@ public class ContextualizePhase
             catch ( ContextException e )
             {
                 throw new PhaseExecutionException( "Unable to contextualize component", e );
+            }
+            finally
+            {
+                DefaultPlexusContainer.setLookupRealm( origRealm );
             }
         }
     }

@@ -2,6 +2,7 @@ package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import java.util.List;
 import java.util.Arrays;
@@ -63,8 +64,29 @@ public class ComponentRealmCompositionTest
 
         // Lookups
 
-        Object plugin0 = container.lookup( "org.codehaus.plexus.plugins.Plugin0" );
+        try
+        {
+            container.lookup( "org.codehaus.plexus.plugins.Plugin0" );
+            fail("Expected component lookup failure");
+        }
+        catch ( ComponentLookupException e )
+        {
+            // expected
+        }
 
-        Object plugin1 = container.lookup( "org.codehaus.plexus.plugins.Plugin1" );
+        container.lookup( "org.codehaus.plexus.plugins.Plugin0", plugin0Realm );
+
+
+        try
+        {
+            container.lookup( "org.codehaus.plexus.plugins.Plugin1" );
+            fail("Expected component lookup failure");
+        }
+        catch ( ComponentLookupException e )
+        {
+            // expected
+        }
+
+        container.lookup( "org.codehaus.plexus.plugins.Plugin1", plugin1Realm );
     }
 }

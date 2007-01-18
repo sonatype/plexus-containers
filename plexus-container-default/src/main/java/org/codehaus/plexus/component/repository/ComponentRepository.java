@@ -31,10 +31,10 @@ public interface ComponentRepository
     void initialize()
         throws ComponentRepositoryException;
 
-    boolean hasComponent( String role );
+    boolean hasComponent( String role, ClassRealm realm );
 
     boolean hasComponent( String role,
-                          String id );
+                          String id, ClassRealm realm );
 
     void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws ComponentRepositoryException;
@@ -42,9 +42,9 @@ public interface ComponentRepository
     void addComponentDescriptor( PlexusConfiguration configuration )
         throws ComponentRepositoryException;
 
-    ComponentDescriptor getComponentDescriptor( String role );
+    ComponentDescriptor getComponentDescriptor( String role, ClassRealm realm );
 
-    Map getComponentDescriptorMap( String role );
+    Map getComponentDescriptorMap( String role, ClassRealm realm );
 
     List getComponentDependencies( ComponentDescriptor componentDescriptor );
 

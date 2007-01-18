@@ -16,6 +16,7 @@ package org.codehaus.plexus.component.manager;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -48,7 +49,7 @@ public class ClassicSingletonComponentManager
             if ( findSingleton( component ) == component )
             {
                 decrementConnectionCount();
-    
+
                 if ( !connected() )
                 {
                     dispose();
@@ -80,6 +81,7 @@ public class ClassicSingletonComponentManager
     {
         synchronized( lock )
         {
+            // XXX use DefaultPlexusContainer.getLookupRealm() ?
             String realmId = realm != null ? realm.getId() : container.getContainerRealm().getId();
 
             Object singleton = findSingleton( realmId );
@@ -90,9 +92,9 @@ public class ClassicSingletonComponentManager
 
                 singletonMap.put( realmId, singleton );
             }
-    
+
             incrementConnectionCount();
-    
+
             return singleton;
         }
     }
@@ -110,6 +112,7 @@ public class ClassicSingletonComponentManager
         }
         else
         {
+            // XXX use DefaultPlexusContainer.getLookupRealm() ?
             return singletonMap.get( container.getContainerRealm().getId() );
         }
     }

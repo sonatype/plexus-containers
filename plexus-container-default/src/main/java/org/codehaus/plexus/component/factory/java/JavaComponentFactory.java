@@ -86,7 +86,7 @@ public class JavaComponentFactory
         }
     }
 
-    private ComponentInstantiationException makeException( ClassLoader componentClassRealm,
+    private ComponentInstantiationException makeException( ClassRealm componentClassRealm,
                                                            ComponentDescriptor componentDescriptor,
                                                            Class implementationClass,
                                                            Throwable e )
@@ -104,7 +104,8 @@ public class JavaComponentFactory
         }
         else
         {
-            msg = "Could not instantiate component: " + componentDescriptor.getHumanReadableKey();
+            msg = "Could not instantiate component: " + componentDescriptor.getHumanReadableKey() + " realm: "
+                + componentClassRealm.getId();
         }
 
         return new ComponentInstantiationException( msg, e );

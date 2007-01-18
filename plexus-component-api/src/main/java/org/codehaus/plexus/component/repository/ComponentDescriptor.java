@@ -56,7 +56,7 @@ public class ComponentDescriptor
     private String componentFactory;
 
     private String componentComposer;
-    
+
     private String componentConfigurator;
 
     private String description;
@@ -496,39 +496,40 @@ public class ComponentDescriptor
         else
         {
             ComponentDescriptor otherDescriptor = (ComponentDescriptor) other;
-            
+
             boolean isEqual = true;
-            
+
             String role = getRole();
             String otherRole = otherDescriptor.getRole();
-            
+
             isEqual = isEqual && ( role == otherRole || role.equals( otherRole ) );
-            
+
             String roleHint = getRoleHint();
             String otherRoleHint = otherDescriptor.getRoleHint();
-            
+
             isEqual = isEqual && ( roleHint == otherRoleHint || roleHint.equals( otherRoleHint ) );
-            
+
             return isEqual;
         }
     }
-    
+
     public String toString()
     {
-        return this.getClass().getName() + " [role: \'" + getRole() + "\', hint: \'" + getRoleHint() + "\']";
+        return getClass().getName() + " [role: '" + getRole() + "', hint: '" + getRoleHint() + "' realm: "
+            + ( realmId == null ? "NULL" : "'" + realmId + "'" ) + "]";
     }
-    
+
     public int hashCode()
     {
         int result = getRole().hashCode() + 1;
-        
+
         String hint = getRoleHint();
-        
+
         if( hint != null )
         {
             result += hint.hashCode();
         }
-        
+
         return result;
-    }    
+    }
 }

@@ -33,10 +33,9 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 
 /**
- * The core component of Plexus. This is the entry-point for loading and
- * accessing other components, as well as an element in a hierarchy of
- * containers. A Plexus Container can also itself be a component, however, the
- * hierarchy must be bootstrapped by a PlexusContainer implementation.
+ * The core component of Plexus. This is the entry-point for loading and accessing other components, as well as an
+ * element in a hierarchy of containers. A Plexus Container can also itself be a component, however, the hierarchy must
+ * be bootstrapped by a PlexusContainer implementation.
  */
 public interface PlexusContainer
 {
@@ -62,8 +61,7 @@ public interface PlexusContainer
     boolean hasChildContainer( String name );
 
     /**
-     * Removes the keyed child from this container. Does not
-     * necessarily dispose the children.
+     * Removes the keyed child from this container. Does not necessarily dispose the children.
      * @param name a key unique amongst this container's children
      */
     void removeChildContainer( String name );
@@ -80,67 +78,82 @@ public interface PlexusContainer
     // ------------------------------------------------------------------------
 
     /**
-     * Looks up and returns a component object with the given unique key or
-     * role.
-     * @param componentKey a unique key for the desired component
-     * @return a Plexus component object
+     * @deprecated
      */
     Object lookup( String componentKey )
         throws ComponentLookupException;
 
     /**
-     * Looks up and returns a component object with the given unique 
-     * role/role-hint combination.
-     * @param role a non-unique key for the desired component
-     * @param roleHint a hint for the desired component implementation
+     * Looks up and returns a component object with the given unique key or role.
+     * @param componentKey a unique key for the desired component
      * @return a Plexus component object
+     */
+    Object lookup( String componentKey, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
      */
     Object lookup( String role, String roleHint )
         throws ComponentLookupException;
 
     /**
-     * Looks up and returns a Map of component objects with the given role,
-     * keyed by all available role-hints.
-     * @param role a non-unique key for the desired components
-     * @return a Map of component objects
-     */
-    Map lookupMap( String role )
-        throws ComponentLookupException;
-
-    /**
-     * Looks up and returns a List of component objects with the given role.
-     * @param role a non-unique key for the desired components
-     * @return a List of component objects
-     */
-    List lookupList( String role )
-        throws ComponentLookupException;
-
-    /**
-     * Looks up and returns a component object with the given unique key or
-     * role.
-     * @param componentClass a unique key for the desired component
+     * Looks up and returns a component object with the given unique role/role-hint combination.
+     * @param role a non-unique key for the desired component
+     * @param roleHint a hint for the desired component implementation
      * @return a Plexus component object
+     */
+    Object lookup( String role, String roleHint, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
      */
     Object lookup( Class componentClass )
         throws ComponentLookupException;
 
     /**
-     * Looks up and returns a component object with the given unique
-     * role/role-hint combination.
-     * @param role a non-unique class key for the desired component
-     * @param roleHint a hint for the desired component implementation
+     * Looks up and returns a component object with the given unique key or role.
+     * @param componentClass a unique key for the desired component
      * @return a Plexus component object
+     */
+    Object lookup( Class componentClass, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
      */
     Object lookup( Class role, String roleHint )
         throws ComponentLookupException;
 
     /**
-     * Looks up and returns a Map of component objects with the given role,
-     * keyed by all available role-hints.
-     * @param role a non-unique class key for the desired components
-     * @return a Map of component objects
+     * Looks up and returns a component object with the given unique role/role-hint combination.
+     * @param role a non-unique class key for the desired component
+     * @param roleHint a hint for the desired component implementation
+     * @return a Plexus component object
      */
-    Map lookupMap( Class role )
+    Object lookup( Class role, String roleHint, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
+     */
+
+    List lookupList( String role )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a List of component objects with the given role.
+     * @param role a non-unique key for the desired components
+     * @return a List of component objects
+     */
+    List lookupList( String role, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
+     */
+    List lookupList( Class role )
         throws ComponentLookupException;
 
     /**
@@ -148,7 +161,35 @@ public interface PlexusContainer
      * @param role a non-unique class key for the desired components
      * @return a List of component objects
      */
-    List lookupList( Class role )
+    List lookupList( Class role, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
+     */
+    Map lookupMap( String role )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
+     * @param role a non-unique key for the desired components
+     * @return a Map of component objects
+     */
+    Map lookupMap( String role, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
+     */
+    Map lookupMap( Class role )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
+     * @param role a non-unique class key for the desired components
+     * @return a Map of component objects
+     */
+    Map lookupMap( Class role, ClassRealm realm )
         throws ComponentLookupException;
 
     // ----------------------------------------------------------------------
@@ -156,33 +197,47 @@ public interface PlexusContainer
     // ----------------------------------------------------------------------
 
     /**
-     * Returns the ComponentDescriptor with the given component key.
-     * Searches up the hierarchy until one is found, null if none is found.
-     * @param componentKey a unique key for the desired component's descriptor
-     * @return the ComponentDescriptor with the given component key
+     * @deprecated use {@link PlexusContainer#getComponentDescriptor(String, ClassRealm)}
      */
     ComponentDescriptor getComponentDescriptor( String componentKey );
 
     /**
-     * Returns a Map of ComponentDescriptors with the given role, keyed by
-     * role-hint. Searches up the hierarchy until all are found, an empty
-     * Map if none are found.
-     * @param role a non-unique key for the desired components
-     * @return a Map of component descriptors keyed by role-hint
+     * Returns the ComponentDescriptor with the given component key. Searches up the hierarchy until one is found, null
+     * if none is found.
+     * @param componentKey a unique key for the desired component's descriptor
+     * @return the ComponentDescriptor with the given component key
+     */
+    ComponentDescriptor getComponentDescriptor( String componentKey, ClassRealm componentRealm );
+
+    /**
+     * @deprecated use {@link PlexusContainer#getComponentDescriptorMap(String, ClassRealm)}
      */
     Map getComponentDescriptorMap( String role );
 
     /**
-     * Returns a List of ComponentDescriptors with the given role.
-     * Searches up the hierarchy until all are found, an empty List if none are
-     * found.
+     * Returns a Map of ComponentDescriptors with the given role, keyed by role-hint. Searches up the hierarchy until
+     * all are found, an empty Map if none are found.
      * @param role a non-unique key for the desired components
-     * @return a List of component descriptors
+     * @return a Map of component descriptors keyed by role-hint
      */
+    Map getComponentDescriptorMap( String role, ClassRealm componentRealm );
+
+    /**
+     * @deprecated use {@link PlexusContainer#getComponentDescriptorList(String, ClassRealm)}
+     */
+
     List getComponentDescriptorList( String role );
 
     /**
-     * Adds a component descriptor to this container.
+     * Returns a List of ComponentDescriptors with the given role. Searches up the hierarchy until all are found, an
+     * empty List if none are found.
+     * @param role a non-unique key for the desired components
+     * @return a List of component descriptors
+     */
+    List getComponentDescriptorList( String role, ClassRealm componentRealm );
+
+    /**
+     * Adds a component descriptor to this container. componentDescriptor should have realmId set.
      * @param componentDescriptor
      * @throws ComponentRepositoryException
      */
@@ -190,11 +245,9 @@ public interface PlexusContainer
         throws ComponentRepositoryException;
 
     /**
-     * Releases the component from the container. This is dependant upon how
-     * the implementation manages the component, but usually enacts some
-     * standard lifecycle shutdown procedure on the component. In every case,
-     * the component is no longer accessible from the container (unless another
-     * is created).
+     * Releases the component from the container. This is dependant upon how the implementation manages the component,
+     * but usually enacts some standard lifecycle shutdown procedure on the component. In every case, the component is
+     * no longer accessible from the container (unless another is created).
      * @param component the plexus component object to release
      * @throws ComponentLifecycleException
      */
@@ -227,11 +280,10 @@ public interface PlexusContainer
     boolean hasComponent( String componentKey );
 
     /**
-     * Returns true if this container has a component with the given
-     * role/role-hint.
+     * Returns true if this container has a component with the given role/role-hint.
+     * @deprecated
      * @param componentKey
-     * @return true if this container has a component with the given
-     * role/role-hint
+     * @return true if this container has a component with the given role/role-hint
      */
     boolean hasComponent( String role, String roleHint );
 
@@ -252,9 +304,8 @@ public interface PlexusContainer
         throws ComponentLifecycleException;
 
     /**
-     * Disposes of this container, which in turn disposes all of it's
-     * components. This container should also remove itself from the container
-     * hierarchy.
+     * Disposes of this container, which in turn disposes all of it's components. This container should also remove
+     * itself from the container hierarchy.
      */
     void dispose();
 
@@ -267,18 +318,18 @@ public interface PlexusContainer
      * @param key any unique object valid to the Context's implementation
      * @param value any object valid to the Context's implementation
      */
-    void addContextValue( Object key,Object value );
+    void addContextValue( Object key, Object value );
 
     /**
-     * Returns this container's context. A Context is a simple data store used
-     * to hold values which may alter the execution of the Container.
+     * Returns this container's context. A Context is a simple data store used to hold values which may alter the
+     * execution of the Container.
      * @return this container's context.
      */
     Context getContext();
 
     /**
-     * Returns the Classworld's ClassRealm of this Container, which
-     * acts as the default parent for all contained components.
+     * Returns the Classworld's ClassRealm of this Container, which acts as the default parent for all contained
+     * components.
      * @return the ClassRealm of this Container
      */
     ClassRealm getContainerRealm();
@@ -288,8 +339,8 @@ public interface PlexusContainer
     // ----------------------------------------------------------------------
 
     /**
-     * Adds the listener to this container. ComponentDiscoveryListeners have
-     * the ability to respond to various ComponentDiscoverer events.
+     * Adds the listener to this container. ComponentDiscoveryListeners have the ability to respond to various
+     * ComponentDiscoverer events.
      * @param listener A listener which responds to differnet ComponentDiscoveryEvents
      */
     void registerComponentDiscoveryListener( ComponentDiscoveryListener listener );
@@ -308,8 +359,8 @@ public interface PlexusContainer
     void addJarRepository( File repository );
 
     /**
-     * Adds a jar to this container's ClassRealm - whose components are then
-     * discovered (via the various registered ComponentDiscoverer's).
+     * Adds a jar to this container's ClassRealm - whose components are then discovered (via the various registered
+     * ComponentDiscoverer's).
      * @param resource a JAR file
      * @throws PlexusContainerException
      */
@@ -321,8 +372,8 @@ public interface PlexusContainer
     // ----------------------------------------------------------------------
 
     /**
-     * Assembles a component and returns it. May bypass the normal component
-     * assembly hooks (such as creation of a ComponentDescriptor).
+     * Assembles a component and returns it. May bypass the normal component assembly hooks (such as creation of a
+     * ComponentDescriptor).
      * @param component a valid Plexus component
      * @return a componsed (dependency-injected) component
      */
@@ -330,8 +381,7 @@ public interface PlexusContainer
         throws CompositionException;
 
     /**
-     * Creates a corrosponding component instance found in this container's
-     * classrealm, then autowires it.
+     * Creates a corrosponding component instance found in this container's classrealm, then autowires it.
      * @see PlexusContainer.autowire(Object)
      * @param clazz A class available in this container's ClassRealm
      * @return A newly created and autowired component
@@ -354,8 +404,7 @@ public interface PlexusContainer
     void setReloadingEnabled( boolean reloadingEnabled );
 
     /**
-     * Returns true if a component's metadata may be reloaded, otherwise, it
-     * may be loaded only once.
+     * Returns true if a component's metadata may be reloaded, otherwise, it may be loaded only once.
      * @return true if a component's metadata may be reloaded
      */
     boolean isReloadingEnabled();
@@ -384,15 +433,10 @@ public interface PlexusContainer
      */
     void setParentPlexusContainer( PlexusContainer container );
 
-    PlexusContainer createChildContainer( String name,
-                                          List classpathJars,
-                                          Map context )
+    PlexusContainer createChildContainer( String name, List classpathJars, Map context )
         throws PlexusContainerException;
 
-    public PlexusContainer createChildContainer( String name,
-                                                 List classpathJars,
-                                                 Map context,
-                                                 List discoveryListeners )
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
         throws PlexusContainerException;
 
     // ----------------------------------------------------------------------------
@@ -400,9 +444,8 @@ public interface PlexusContainer
     // ----------------------------------------------------------------------------
 
     /**
-     * Creates and returns a new class realm under this container's realm
-     * for the given list of jars. If the realm already exists, return the
-     * realm with the given ID?
+     * Creates and returns a new class realm under this container's realm for the given list of jars. If the realm
+     * already exists, return the realm with the given ID?
      * @see PlexusContainer#addJarResource(File)
      * @param id unique key for the ClassRealm
      * @param jars list of JARs to place in the realm.
@@ -411,5 +454,5 @@ public interface PlexusContainer
     public ClassRealm createComponentRealm( String id, List jars )
         throws PlexusContainerException;
 
-    ClassRealm getComponentRealm( String realmId );    
+    ClassRealm getComponentRealm( String realmId );
 }

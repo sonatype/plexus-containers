@@ -46,7 +46,6 @@ import org.codehaus.plexus.configuration.processor.ConfigurationProcessor;
 import org.codehaus.plexus.configuration.processor.ConfigurationResourceNotFoundException;
 import org.codehaus.plexus.configuration.processor.DirectoryConfigurationResourceHandler;
 import org.codehaus.plexus.configuration.processor.FileConfigurationResourceHandler;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationContext;
 import org.codehaus.plexus.container.initialization.ContainerInitializationException;
@@ -77,7 +76,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -85,20 +83,16 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * //todo move lookup code to a separate component
- * //todo register live components so they can be wired
- * //keep track of the interfaces for components
- * //todo allow setting of a live configuraton so applications that embed plexus
- * can use whatever configuration mechanism they like. They just have to
- * adapt it into something plexus can understand.
- * //todo make a typesafe configuration model for the container
- * //todo pico like registration
- * //todo need loggers per execution like in the maven embedder
- * //todo a simple front-end to make containers of different flavours, a flavour encapsulating
- * //     a set of behaviours
- * //todo the core components should probably have a small lifecycle to pass through
+ * //todo move lookup code to a separate component //todo register live components so they can be wired //keep track of
+ * the interfaces for components //todo allow setting of a live configuraton so applications that embed plexus can use
+ * whatever configuration mechanism they like. They just have to adapt it into something plexus can understand. //todo
+ * make a typesafe configuration model for the container //todo pico like registration //todo need loggers per execution
+ * like in the maven embedder //todo a simple front-end to make containers of different flavours, a flavour
+ * encapsulating // a set of behaviours //todo the core components should probably have a small lifecycle to pass
+ * through
  *
  * @author Jason van Zyl
+ * @author Kenney Westerhof
  */
 public class DefaultPlexusContainer
     extends AbstractLogEnabled
@@ -116,7 +110,7 @@ public class DefaultPlexusContainer
 
     protected PlexusConfiguration configuration;
 
-    //todo: don't use a reader
+    // todo: don't use a reader
     protected Reader configurationReader;
 
     protected ClassWorld classWorld;
@@ -158,9 +152,11 @@ public class DefaultPlexusContainer
 
     private static ThreadLocal lookupRealm = new ThreadLocal();
 
-    public static void setLookupRealm( ClassRealm realm )
+    public static ClassRealm setLookupRealm( ClassRealm realm )
     {
+        ClassRealm oldRealm = (ClassRealm) lookupRealm.get();
         lookupRealm.set( realm );
+        return oldRealm;
     }
 
     public static ClassRealm getLookupRealm()
@@ -169,7 +165,7 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------
-    //  Constructors
+    // Constructors
     // ----------------------------------------------------------------------
 
     // Requirements
@@ -187,78 +183,57 @@ public class DefaultPlexusContainer
         construct( DEFAULT_CONTAINER_NAME, null, null, null, null );
     }
 
-    public DefaultPlexusContainer( String name,
-                                   Map context )
+    public DefaultPlexusContainer( String name, Map context )
         throws PlexusContainerException
     {
         construct( name, context, null, null, null );
     }
 
-    public DefaultPlexusContainer( String name,
-                                   Map context,
-                                   ClassWorld classWorld )
+    public DefaultPlexusContainer( String name, Map context, ClassWorld classWorld )
         throws PlexusContainerException
     {
         this( name, context, classWorld, null );
     }
 
-    public DefaultPlexusContainer( String name,
-                                   Map context,
-                                   ClassWorld classWorld,
-                                   InputStream config )
+    public DefaultPlexusContainer( String name, Map context, ClassWorld classWorld, InputStream config )
         throws PlexusContainerException
     {
         construct( name, context, config, classWorld, null );
     }
 
-    /////// Utility constructors for various configuration sources
+    // ///// Utility constructors for various configuration sources
 
-    public DefaultPlexusContainer( String name,
-                                   Map context,
-                                   File file )
+    public DefaultPlexusContainer( String name, Map context, File file )
         throws PlexusContainerException
     {
         this( name, context, null, toStream( file ) );
     }
 
-    public DefaultPlexusContainer( String name,
-                                   Map context,
-                                   File file,
-                                   ClassWorld classWorld )
+    public DefaultPlexusContainer( String name, Map context, File file, ClassWorld classWorld )
         throws PlexusContainerException
     {
         this( name, context, classWorld, toStream( file ) );
     }
 
-    public DefaultPlexusContainer( String name,
-                                   Map context,
-                                   String configurationResource )
+    public DefaultPlexusContainer( String name, Map context, String configurationResource )
         throws PlexusContainerException
     {
         this( name, context, null, toStream( configurationResource ) );
     }
 
-    public DefaultPlexusContainer( String name,
-                                   Map context,
-                                   String configurationResource,
-                                   ClassWorld classWorld )
+    public DefaultPlexusContainer( String name, Map context, String configurationResource, ClassWorld classWorld )
         throws PlexusContainerException
     {
         this( name, context, classWorld, toStream( configurationResource ) );
     }
 
-    public DefaultPlexusContainer( String name,
-                                   Map context,
-                                   URL url )
+    public DefaultPlexusContainer( String name, Map context, URL url )
         throws PlexusContainerException
     {
         this( name, context, null, toStream( url ) );
     }
 
-    public DefaultPlexusContainer( String name,
-                                   Map context,
-                                   URL url,
-                                   ClassWorld classWorld )
+    public DefaultPlexusContainer( String name, Map context, URL url, ClassWorld classWorld )
         throws PlexusContainerException
     {
         this( name, context, classWorld, toStream( url ) );
@@ -268,10 +243,7 @@ public class DefaultPlexusContainer
     // Inheritance of Containers
     // ----------------------------------------------------------------------------
 
-    protected DefaultPlexusContainer( String name,
-                                      Map context,
-                                      PlexusContainer parent,
-                                      List discoveryListeners )
+    protected DefaultPlexusContainer( String name, Map context, PlexusContainer parent, List discoveryListeners )
         throws PlexusContainerException
     {
         this.parentContainer = parent;
@@ -295,66 +267,117 @@ public class DefaultPlexusContainer
     public Object lookup( String componentKey )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookup( componentKey, (ClassRealm) null );
+        return lookup( componentKey, DefaultPlexusContainer.getLookupRealm() );
+        // componentLookupManager.lookup( componentKey, (ClassRealm) null );
     }
 
-    public Object lookup( String componentKey,
-                          ClassRealm realm )
+    /**
+     * @deprecated
+     */
+    public Map lookupMap( String role )
+        throws ComponentLookupException
+    {
+        return lookupMap( role, DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public Map lookupMap( String role, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupMap( role, realm );
+    }
+
+    public Object lookup( String componentKey, ClassRealm realm )
         throws ComponentLookupException
     {
         return componentLookupManager.lookup( componentKey, realm );
     }
 
-    public Map lookupMap( String role )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookupMap( role );
-    }
-
     public List lookupList( String role )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookupList( role );
+        return lookupList( role, DefaultPlexusContainer.getLookupRealm() );
     }
 
-    public Object lookup( String role,
-                          String roleHint )
+    public List lookupList( String role, ClassRealm realm )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookup( role, roleHint, null );
+        return componentLookupManager.lookupList( role, realm );
     }
 
-    public Object lookup( String role,
-                          String roleHint,
-                          ClassRealm realm )
+    /**
+     * @deprecated
+     */
+    public Object lookup( String role, String roleHint )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookup( role, roleHint, DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public Object lookup( String role, String roleHint, ClassRealm realm )
         throws ComponentLookupException
     {
         return componentLookupManager.lookup( role, roleHint, realm );
     }
 
+    /**
+     * @deprecated
+     */
     public Object lookup( Class componentClass )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookup( componentClass );
+        return lookup( componentClass, DefaultPlexusContainer.getLookupRealm() );
     }
 
+    public Object lookup( Class componentClass, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookup( componentClass, realm );
+    }
+
+    /**
+     * @deprecated
+     */
     public Map lookupMap( Class role )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookupMap( role );
+        return lookupMap( role, DefaultPlexusContainer.getLookupRealm() );
+
     }
 
+    public Map lookupMap( Class role, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupMap( role, realm );
+    }
+
+    /**
+     * @deprecated
+     */
     public List lookupList( Class role )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookupList( role );
+        return lookupList( role, DefaultPlexusContainer.getLookupRealm() );
     }
 
-    public Object lookup( Class role,
-                          String roleHint )
+    public List lookupList( Class role, ClassRealm realm )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookup( role, roleHint );
+        return componentLookupManager.lookupList( role, realm );
+    }
+
+    /**
+     * @deprecated
+     */
+    public Object lookup( Class role, String roleHint )
+        throws ComponentLookupException
+    {
+        return lookup( role, roleHint, DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public Object lookup( Class role, String roleHint, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookup( role, roleHint, realm );
     }
 
     // ----------------------------------------------------------------------
@@ -391,10 +414,9 @@ public class DefaultPlexusContainer
     // o discover all components that are present in the artifact
     // o create a separate realm for the components
     // o retrieve all the dependencies for the artifact: this last part unfortunately
-    //   only works in Maven where artifacts are downloaded
+    // only works in Maven where artifacts are downloaded
     // ----------------------------------------------------------------------------
-    public ClassRealm createComponentRealm( String id,
-                                            List jars )
+    public ClassRealm createComponentRealm( String id, List jars )
         throws PlexusContainerException
     {
         ClassRealm componentRealm;
@@ -453,19 +475,14 @@ public class DefaultPlexusContainer
     // The method from alpha-9 for creating child containers
     // ----------------------------------------------------------------------------
 
-    /** @deprecated  */
-    public PlexusContainer createChildContainer( String name,
-                                                 List classpathJars,
-                                                 Map context )
+    /** @deprecated */
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context )
         throws PlexusContainerException
     {
         return createChildContainer( name, classpathJars, context, Collections.EMPTY_LIST );
     }
 
-    public PlexusContainer createChildContainer( String name,
-                                                 List classpathJars,
-                                                 Map context,
-                                                 List discoveryListeners )
+    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
         throws PlexusContainerException
     {
         if ( hasChildContainer( name ) )
@@ -480,9 +497,7 @@ public class DefaultPlexusContainer
         return child;
     }
 
-    private static ClassRealm getChildRealm( String parentName,
-                                             String name,
-                                             ClassRealm containerRealm )
+    private static ClassRealm getChildRealm( String parentName, String name, ClassRealm containerRealm )
         throws PlexusContainerException
     {
         String childRealmId = parentName + ".child-container[" + name + "]";
@@ -504,12 +519,11 @@ public class DefaultPlexusContainer
             }
             catch ( DuplicateRealmException impossibleError )
             {
-                throw new PlexusContainerException( "Error creating new realm: After getRealm() failed, newRealm() " +
-                    "produced duplication error on same id!", impossibleError );
+                throw new PlexusContainerException( "Error creating new realm: After getRealm() failed, newRealm() "
+                    + "produced duplication error on same id!", impossibleError );
             }
         }
     }
-
 
     // XXX remove
     public void setName( String name )
@@ -527,32 +541,56 @@ public class DefaultPlexusContainer
     // Component Descriptor Lookup
     // ----------------------------------------------------------------------
 
+    /**
+     * @deprecated use {@link DefaultPlexusContainer#getComponentDescriptor(String, ClassRealm)}
+     */
     public ComponentDescriptor getComponentDescriptor( String componentKey )
     {
-        ComponentDescriptor result = componentRepository.getComponentDescriptor( componentKey );
+        return getComponentDescriptor( componentKey, DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public ComponentDescriptor getComponentDescriptor( String componentKey, ClassRealm classRealm )
+    {
+        ComponentDescriptor result = componentRepository.getComponentDescriptor( componentKey, classRealm );
+
+        ClassRealm tmpRealm = classRealm.getParentRealm();
+
+        while ( result == null && tmpRealm != null )
+        {
+            result = componentRepository.getComponentDescriptor( componentKey, classRealm );
+            tmpRealm = tmpRealm.getParentRealm();
+        }
 
         if ( result == null && parentContainer != null )
         {
-            result = parentContainer.getComponentDescriptor( componentKey );
+            result = parentContainer.getComponentDescriptor( componentKey, classRealm );
         }
 
         return result;
     }
 
+    /**
+     * @deprecated
+     */
     public Map getComponentDescriptorMap( String role )
+    {
+        return getComponentDescriptorMap( role, DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public Map getComponentDescriptorMap( String role, ClassRealm realm )
     {
         Map result = new WeakHashMap();
 
         if ( parentContainer != null )
         {
-            Map m = parentContainer.getComponentDescriptorMap( role );
+            Map m = parentContainer.getComponentDescriptorMap( role, realm );
             if ( m != null )
             {
                 result.putAll( m );
             }
         }
 
-        Map componentDescriptors = componentRepository.getComponentDescriptorMap( role );
+        Map componentDescriptors = componentRepository.getComponentDescriptorMap( role, realm );
 
         if ( componentDescriptors != null )
         {
@@ -562,11 +600,19 @@ public class DefaultPlexusContainer
         return result;
     }
 
+    /**
+     * @deprecated
+     */
     public List getComponentDescriptorList( String role )
+    {
+        return getComponentDescriptorList( role, DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public List getComponentDescriptorList( String role, ClassRealm realm )
     {
         List result;
 
-        Map componentDescriptorsByHint = getComponentDescriptorMap( role );
+        Map componentDescriptorsByHint = getComponentDescriptorMap( role, realm );
 
         if ( componentDescriptorsByHint != null )
         {
@@ -575,7 +621,7 @@ public class DefaultPlexusContainer
         else
         {
             // XXX why is it unhinted? the getComponentDescriptor's param is named 'componentKey'
-            ComponentDescriptor unhintedDescriptor = getComponentDescriptor( role );
+            ComponentDescriptor unhintedDescriptor = getComponentDescriptor( role, realm );
 
             if ( unhintedDescriptor != null )
             {
@@ -588,7 +634,6 @@ public class DefaultPlexusContainer
         }
         return result;
     }
-
 
     public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws ComponentRepositoryException
@@ -608,8 +653,7 @@ public class DefaultPlexusContainer
             return;
         }
 
-        ComponentManager componentManager =
-            componentManagerManager.findComponentManagerByComponentInstance( component );
+        ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentInstance( component );
 
         if ( componentManager == null )
         {
@@ -619,8 +663,8 @@ public class DefaultPlexusContainer
             }
             else
             {
-                getLogger().warn(
-                    "Component manager not found for returned component. Ignored. component=" + component );
+                getLogger()
+                    .warn( "Component manager not found for returned component. Ignored. component=" + component );
             }
         }
         else
@@ -656,15 +700,30 @@ public class DefaultPlexusContainer
         }
     }
 
+    /**
+     * @deprecated
+     */
     public boolean hasComponent( String componentKey )
     {
-        return componentRepository.hasComponent( componentKey );
+        return hasComponent( componentKey, DefaultPlexusContainer.getLookupRealm() );
     }
 
-    public boolean hasComponent( String role,
-                                 String roleHint )
+    public boolean hasComponent( String componentKey, ClassRealm realm )
     {
-        return componentRepository.hasComponent( role, roleHint );
+        return componentRepository.hasComponent( componentKey, realm );
+    }
+
+    /**
+     * @deprecated
+     */
+    public boolean hasComponent( String role, String roleHint )
+    {
+        return hasComponent( role, roleHint, DefaultPlexusContainer.getLookupRealm() );
+    }
+
+    public boolean hasComponent( String role, String roleHint, ClassRealm realm )
+    {
+        return componentRepository.hasComponent( role, roleHint, realm );
     }
 
     public void suspend( Object component )
@@ -675,8 +734,7 @@ public class DefaultPlexusContainer
             return;
         }
 
-        ComponentManager componentManager =
-            componentManagerManager.findComponentManagerByComponentInstance( component );
+        ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentInstance( component );
 
         componentManager.suspend( component );
     }
@@ -689,8 +747,7 @@ public class DefaultPlexusContainer
             return;
         }
 
-        ComponentManager componentManager =
-            componentManagerManager.findComponentManagerByComponentInstance( component );
+        ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentInstance( component );
 
         componentManager.resume( component );
     }
@@ -701,11 +758,7 @@ public class DefaultPlexusContainer
 
     boolean initialized;
 
-    private void construct( String name,
-                            Map context,
-                            InputStream in,
-                            ClassWorld classWorld,
-                            ClassRealm realm )
+    private void construct( String name, Map context, InputStream in, ClassWorld classWorld, ClassRealm realm )
         throws PlexusContainerException
     {
         this.name = name;
@@ -734,8 +787,15 @@ public class DefaultPlexusContainer
             {
                 List realms = new LinkedList( this.classWorld.getRealms() );
                 containerRealm = (ClassRealm) realms.get( 0 );
+                if ( containerRealm == null )
+                {
+                    System.err.println( "No container realm! Expect errors." );
+                    new Throwable().printStackTrace();
+                }
             }
         }
+
+        setLookupRealm( containerRealm );
 
         // ----------------------------------------------------------------------------
         // Context
@@ -757,7 +817,7 @@ public class DefaultPlexusContainer
         // Configuration
         // ----------------------------------------------------------------------------
 
-        //TODO: just store reference to the configuration in a String and use that in the configuration initialization
+        // TODO: just store reference to the configuration in a String and use that in the configuration initialization
         this.configurationReader = in == null ? null : new InputStreamReader( in );
 
         try
@@ -813,11 +873,14 @@ public class DefaultPlexusContainer
     {
         PlexusConfiguration initializationConfiguration = configuration.getChild( "container-initialization" );
 
-        ContainerInitializationContext initializationContext =
-            new ContainerInitializationContext( this, classWorld, containerRealm, configuration );
+        ContainerInitializationContext initializationContext = new ContainerInitializationContext(
+            this,
+            classWorld,
+            containerRealm,
+            configuration );
 
-        //PLXAPI: I think we might only ever need one of these so maybe we can create it with a constructor
-        //        and store it.
+        // PLXAPI: I think we might only ever need one of these so maybe we can create it with a constructor
+        // and store it.
         ComponentConfigurator c = new BasicComponentConfigurator();
 
         try
@@ -921,8 +984,7 @@ public class DefaultPlexusContainer
         componentManagerManager.getComponentManagers().clear();
     }
 
-    public void addContextValue( Object key,
-                                 Object value )
+    public void addContextValue( Object key, Object value )
     {
         containerContext.put( key, value );
     }
@@ -955,6 +1017,7 @@ public class DefaultPlexusContainer
     {
         this.containerRealm = containerRealm;
     }
+
     // ----------------------------------------------------------------------
     // Context
     // ----------------------------------------------------------------------
@@ -968,7 +1031,7 @@ public class DefaultPlexusContainer
     // Configuration
     // ----------------------------------------------------------------------
 
-    //TODO: put this in a separate helper class and turn into a component if possible, too big.
+    // TODO: put this in a separate helper class and turn into a component if possible, too big.
 
     protected void initializeConfiguration()
         throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException,
@@ -984,17 +1047,17 @@ public class DefaultPlexusContainer
             String realmStack = "";
             while ( cr != null )
             {
-                realmStack += "\n  " + cr.getId() + " parent=" + cr.getParent() + " (" +
-                    cr.getResource( PlexusConstants.BOOTSTRAP_CONFIGURATION ) + ")";
+                realmStack += "\n  " + cr.getId() + " parent=" + cr.getParent() + " ("
+                    + cr.getResource( PlexusConstants.BOOTSTRAP_CONFIGURATION ) + ")";
                 cr = cr.getParentRealm();
             }
 
-            throw new IllegalStateException( "The internal default plexus-bootstrap.xml is missing. " +
-                "This is highly irregular, your plexus JAR is most likely corrupt. Realms:" + realmStack );
+            throw new IllegalStateException( "The internal default plexus-bootstrap.xml is missing. "
+                + "This is highly irregular, your plexus JAR is most likely corrupt. Realms:" + realmStack );
         }
 
-        PlexusConfiguration bootstrapConfiguration =
-            PlexusTools.buildConfiguration( PlexusConstants.BOOTSTRAP_CONFIGURATION, new InputStreamReader( is ) );
+        PlexusConfiguration bootstrapConfiguration = PlexusTools
+            .buildConfiguration( PlexusConstants.BOOTSTRAP_CONFIGURATION, new InputStreamReader( is ) );
 
         // Some of this could probably be collapsed as having a plexus.xml in your
         // META-INF/plexus directory is probably a better solution then specifying
@@ -1005,8 +1068,8 @@ public class DefaultPlexusContainer
 
         configuration = bootstrapConfiguration;
 
-        if ( !containerContext.contains( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION ) ||
-            containerContext.get( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION ) != Boolean.TRUE )
+        if ( !containerContext.contains( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION )
+            || containerContext.get( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION ) != Boolean.TRUE )
         {
             PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
 
@@ -1024,8 +1087,9 @@ public class DefaultPlexusContainer
         {
             // User userConfiguration
 
-            PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration(
-                "<User Specified Configuration Reader>", getInterpolationConfigurationReader( configurationReader ) );
+            PlexusConfiguration userConfiguration = PlexusTools
+                .buildConfiguration( "<User Specified Configuration Reader>",
+                                     getInterpolationConfigurationReader( configurationReader ) );
 
             // Merger of bootstrapConfiguration and user userConfiguration
 
@@ -1058,9 +1122,8 @@ public class DefaultPlexusContainer
     }
 
     /**
-     * Process any additional component configuration files that have been
-     * specified. The specified directory is scanned recursively so configurations
-     * can be within nested directories to help with component organization.
+     * Process any additional component configuration files that have been specified. The specified directory is scanned
+     * recursively so configurations can be within nested directories to help with component organization.
      */
     private void processConfigurationsDirectory()
         throws PlexusConfigurationException
@@ -1078,8 +1141,7 @@ public class DefaultPlexusContainer
                 List componentConfigurationFiles;
                 try
                 {
-                    componentConfigurationFiles =
-                        FileUtils.getFiles( configurationsDirectory, "**/*.conf", "**/*.xml" );
+                    componentConfigurationFiles = FileUtils.getFiles( configurationsDirectory, "**/*.conf", "**/*.xml" );
                 }
                 catch ( IOException e )
                 {
@@ -1094,16 +1156,16 @@ public class DefaultPlexusContainer
                     try
                     {
                         reader = new FileReader( componentConfigurationFile );
-                        PlexusConfiguration componentConfiguration = PlexusTools.buildConfiguration(
-                            componentConfigurationFile.getAbsolutePath(),
-                            getInterpolationConfigurationReader( reader ) );
+                        PlexusConfiguration componentConfiguration = PlexusTools
+                            .buildConfiguration( componentConfigurationFile.getAbsolutePath(),
+                                                 getInterpolationConfigurationReader( reader ) );
 
                         componentsConfiguration.addChild( componentConfiguration.getChild( "components" ) );
                     }
                     catch ( FileNotFoundException e )
                     {
-                        throw new PlexusConfigurationException(
-                            "File " + componentConfigurationFile + " disappeared before processing", e );
+                        throw new PlexusConfigurationException( "File " + componentConfigurationFile
+                            + " disappeared before processing", e );
                     }
                     finally
                     {
@@ -1132,13 +1194,13 @@ public class DefaultPlexusContainer
         }
         catch ( PlexusConfigurationException e )
         {
-            throw new PlexusContainerException(
-                "Cannot add jar resource: " + jar + " (error discovering new components)", e );
+            throw new PlexusContainerException( "Cannot add jar resource: " + jar
+                + " (error discovering new components)", e );
         }
         catch ( ComponentRepositoryException e )
         {
-            throw new PlexusContainerException(
-                "Cannot add jar resource: " + jar + " (error discovering new components)", e );
+            throw new PlexusContainerException( "Cannot add jar resource: " + jar
+                + " (error discovering new components)", e );
         }
     }
 
@@ -1165,8 +1227,8 @@ public class DefaultPlexusContainer
         }
         else
         {
-            String message = "The specified JAR repository doesn't exist or is not a directory: '" +
-                repository.getAbsolutePath() + "'.";
+            String message = "The specified JAR repository doesn't exist or is not a directory: '"
+                + repository.getAbsolutePath() + "'.";
 
             if ( getLogger() != null )
             {
@@ -1372,7 +1434,6 @@ public class DefaultPlexusContainer
 
         return realm;
     }
-
 
     private static InputStream toStream( File file )
         throws PlexusContainerException

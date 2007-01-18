@@ -22,53 +22,85 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import java.util.List;
 import java.util.Map;
 
-/** @author Jason van Zyl */
+/**
+ * @author Jason van Zyl
+ * @author Kenney Westerhof
+ */
 public interface ComponentLookupManager
 {
     String ROLE = ComponentLookupManager.class.getName();
 
+    void setContainer( MutablePlexusContainer container );
+
+    /**
+     * @deprecated
+     */
     Object lookup( String componentKey )
         throws ComponentLookupException;
 
-    Map lookupMap( String role )
+    Object lookup( String componentKey, ClassRealm realm )
         throws ComponentLookupException;
 
-    List lookupList( String role )
+    /**
+     * @deprecated
+     */
+    Object lookup( String role, String roleHint )
         throws ComponentLookupException;
 
-    Object lookup( String role,
-                   String roleHint )
+    Object lookup( String role, String roleHint, ClassRealm realm )
         throws ComponentLookupException;
 
+    /**
+     * @deprecated
+     */
+    Object lookup( Class role, String roleHint )
+        throws ComponentLookupException;
+
+    Object lookup( Class role, String roleHint, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
+     */
     Object lookup( Class componentClass )
         throws ComponentLookupException;
 
-    Map lookupMap( Class role )
+    Object lookup( Class componentClass, ClassRealm realm )
         throws ComponentLookupException;
 
-    List lookupList( Class role )
-        throws ComponentLookupException;
-
-    Object lookup( Class role,
-                   String roleHint )
-        throws ComponentLookupException;
-
-    void setContainer( MutablePlexusContainer container );
-
-    // ClassRealm variants
-
-    Object lookup( String componentKey,
-                   ClassRealm realm )
-        throws ComponentLookupException;
-
-    Object lookup( String role,
-                   String roleHint,
-                   ClassRealm realm )
+    /**
+     * @deprecated
+     */
+    Map lookupMap( String role )
         throws ComponentLookupException;
 
     Map lookupMap( String role, ClassRealm realm )
         throws ComponentLookupException;
 
+    /**
+     * @deprecated
+     */
+    List lookupList( String role )
+        throws ComponentLookupException;
+
     List lookupList( String role, ClassRealm realm )
-        throws ComponentLookupException;    
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
+     */
+    List lookupList( Class role )
+        throws ComponentLookupException;
+
+    List lookupList( Class role, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * @deprecated
+     */
+    Map lookupMap( Class role )
+        throws ComponentLookupException;
+
+    Map lookupMap( Class role, ClassRealm realm )
+        throws ComponentLookupException;
 }

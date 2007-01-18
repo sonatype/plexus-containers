@@ -16,6 +16,7 @@ package org.codehaus.plexus.component.composition;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -63,11 +64,19 @@ public abstract class AbstractComponentComposer
     }
 
     public List gleanAutowiringRequirements( Map compositionContext,
+                                             PlexusContainer container, ClassRealm classRealm )
+        throws CompositionException
+    {
+        return Collections.EMPTY_LIST;
+    }
+
+    public final List gleanAutowiringRequirements( Map compositionContext,
                                              PlexusContainer container )
         throws CompositionException
     {
         return Collections.EMPTY_LIST;
     }
+
 
     public void assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
@@ -101,7 +110,7 @@ public abstract class AbstractComponentComposer
 
             componentDescriptor.setRole( component.getClass().getName() );
 
-            requirements = gleanAutowiringRequirements( compositionContext, container );
+            requirements = gleanAutowiringRequirements( compositionContext, container, getRealm( component, container ) );
 
             componentDescriptor.addRequirements( requirements );
 
@@ -137,16 +146,7 @@ public abstract class AbstractComponentComposer
         // We want to find all the requirements for a component and we want to ensure that the
         // requirements are pulled from the same realm as the component itself.
 
-        ClassRealm componentRealm;
-
-        if ( component.getClass().getClassLoader() instanceof ClassRealm )
-        {
-            componentRealm = ((ClassRealm)component.getClass().getClassLoader());
-        }
-        else
-        {
-            componentRealm = container.getContainerRealm();
-        }
+        ClassRealm componentRealm = getRealm( component, container );
 
         try
         {
@@ -210,7 +210,7 @@ public abstract class AbstractComponentComposer
 
                 assignment = ((MutablePlexusContainer)container).lookup( key, componentRealm );
 
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, componentRealm );
 
                 componentDescriptors = new ArrayList( 1 );
 
@@ -227,6 +227,18 @@ public abstract class AbstractComponentComposer
         }
     }
 
+
+    protected static ClassRealm getRealm( Object component, PlexusContainer container )
+    {
+        if ( component.getClass().getClassLoader() instanceof ClassRealm )
+        {
+            return ((ClassRealm)component.getClass().getClassLoader());
+        }
+        else
+        {
+            return DefaultPlexusContainer.getLookupRealm();
+        }
+    }
 
     public String getId()
     {
