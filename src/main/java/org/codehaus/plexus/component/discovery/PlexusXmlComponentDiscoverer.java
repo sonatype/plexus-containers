@@ -152,6 +152,8 @@ public class PlexusXmlComponentDiscoverer
 
                 componentDescriptor.setComponentType( "plexus" );
 
+                componentDescriptor.setRealmId( classRealm.getId() );
+
                 componentDescriptors.add( componentDescriptor );
             }
 
