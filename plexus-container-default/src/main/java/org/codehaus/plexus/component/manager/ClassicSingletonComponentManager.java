@@ -80,16 +80,13 @@ public class ClassicSingletonComponentManager
     {
         synchronized( lock )
         {
-            // XXX use DefaultPlexusContainer.getLookupRealm() ?
-            String realmId = realm != null ? realm.getId() : container.getContainerRealm().getId();
-
-            Object singleton = findSingleton( realmId );
+            Object singleton = findSingleton( realm );
 
             if ( singleton == null )
             {
                 singleton = createComponentInstance( realm );
 
-                singletonMap.put( realmId, singleton );
+                singletonMap.put( realm.getId(), singleton );
             }
 
             incrementConnectionCount();
