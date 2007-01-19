@@ -105,6 +105,8 @@ public class DefaultComponentRepository
                 return null;
             }
 
+            // System.out.println("GetComponentDescriptor( " + key + ", " + realm.getId() + ")" );
+
             RealmMaps maps = (RealmMaps) realmMaps.get( realm.getId() );
 
             if ( maps != null )
@@ -112,9 +114,11 @@ public class DefaultComponentRepository
                 ComponentDescriptor desc = (ComponentDescriptor) maps.componentDescriptors.get( key );
                 if ( desc != null )
                 {
+                    // System.out.println("  Found" );
                     return desc;
                 }
             }
+            // System.out.println("  Not found" +(realm.getParentRealm()==null?"":", trying parent " + realm.getParentRealm().getId()));
 
             return getComponentDescriptor( key, realm.getParentRealm() );
         }

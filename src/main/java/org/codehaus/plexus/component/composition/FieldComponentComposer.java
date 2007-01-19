@@ -16,6 +16,7 @@ package org.codehaus.plexus.component.composition;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -24,6 +25,8 @@ import org.codehaus.plexus.util.ReflectionUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -80,8 +83,55 @@ public class FieldComponentComposer
             System.out.println( "[" + component + ":" + ((ClassRealm) component.getClass().getClassLoader() ).getId() + "]" +
                 "[" + assignment + ":" + ((ClassRealm)assignment.getClass().getClassLoader()).getId() + "]");
 
-            throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
-                "in object of type " + component.getClass().getName(), e );
+            Class c = requirement.getAssignment().getClass();
+
+            String msg="";
+            while ( c != null && !c.isAssignableFrom( Object.class ) )
+            {
+                Class[] ifaces = c.getInterfaces();
+
+                msg += "  Interfaces for " + c + ":";
+
+                for ( int i = 0; i < ifaces.length; i++ )
+                {
+                    msg += "\n    Interface "
+                        + ifaces[i]
+                        + "; realm: "
+                        + ( ifaces[i].getClassLoader() instanceof ClassRealm ? ( (ClassRealm) ifaces[i]
+                            .getClassLoader() ).getId() : ifaces[i].getClassLoader().toString() );
+
+                    msg += getURLs(ifaces[i].getClassLoader());
+                }
+
+                c = c.getSuperclass();
+            }
+
+            throw new CompositionException(
+                "Composition failed for the field "
+                    + field.getName()
+                    + " "
+                    + "in object of type "
+                    + component.getClass().getName()
+                    + " (lookup realm: "
+                    + lookupRealm.getId()
+                    + ")"
+                    + "\nfield type: "
+                    + field.getType()
+                    + " realm: "
+                    + ( field.getType().getClassLoader() instanceof ClassRealm ? ( (ClassRealm) field.getType()
+                        .getClassLoader() ).getId() : " classloader " + field.getType().getClassLoader() )
+                        + getURLs(field.getType().getClassLoader())
+                    + "\nvalue type: "
+                    + requirement.getAssignment().getClass()
+                    + " realm: "
+                    + ( requirement.getAssignment().getClass().getClassLoader() instanceof ClassRealm ? ( (ClassRealm) requirement.getAssignment().getClass().getClassLoader() ).getId()
+                       : " classloader " + requirement.getAssignment().getClass().getClassLoader() )
+
+                    + getURLs(requirement.getAssignment().getClass().getClassLoader())
+
+                    +"\nassignable: " + field.getType().isAssignableFrom( requirement.getAssignment().getClass() )
+                   + msg,
+                e );
         }
         catch ( IllegalAccessException e )
         {
@@ -91,6 +141,22 @@ public class FieldComponentComposer
             throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
                 "in object of type " + component.getClass().getName(), e );
         }
+    }
+
+    private String getURLs( ClassLoader classLoader )
+    {
+        String msg = "";
+
+        if ( classLoader instanceof URLClassLoader )
+        {
+            URL [] urls = ((URLClassLoader)classLoader).getURLs();
+
+            for ( int i = 0; i < urls.length; i ++ )
+            {
+                msg +="\n     " + urls[i];
+            }
+        }
+        return msg;
     }
 
     protected Field findMatchingField( Object component,

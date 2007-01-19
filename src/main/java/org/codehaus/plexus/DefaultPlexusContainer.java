@@ -83,13 +83,20 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * //todo move lookup code to a separate component //todo register live components so they can be wired //keep track of
- * the interfaces for components //todo allow setting of a live configuraton so applications that embed plexus can use
- * whatever configuration mechanism they like. They just have to adapt it into something plexus can understand. //todo
- * make a typesafe configuration model for the container //todo pico like registration //todo need loggers per execution
- * like in the maven embedder //todo a simple front-end to make containers of different flavours, a flavour
- * encapsulating // a set of behaviours //todo the core components should probably have a small lifecycle to pass
- * through
+ * <pre>
+ *  //TODO move lookup code to a separate component
+ *  //TODO  register live components so they can be wired
+ *  //keep track of the interfaces for components
+ *  //todo allow setting of a live configuraton so applications that embed plexus can use
+ *  whatever configuration mechanism they like. They just have to adapt it into something plexus can understand.
+ *  //todo
+ *  make a typesafe configuration model for the container
+ *  //todo pico like registration
+ *  //todo need loggers per execution in the maven embedder
+ *  //todo a simple front-end to make containers of different flavours, a flavour encapsulating
+ *  // a set of behaviours
+ *  //todo the core components should probably have a small lifecycle to pass through
+ * </pre>
  *
  * @author Jason van Zyl
  * @author Kenney Westerhof
