@@ -73,8 +73,13 @@ public abstract class AbstractComponentDiscoverer
         Enumeration resources;
         try
         {
-            // do NOT scan parent realms
-            resources = classRealm.findRealmResources( getComponentDescriptorLocation() );
+            // We don't always want to scan parent realms. For plexus
+            // testcase, most components are in the root classloader so that needs to be scanned,
+            // but for child realms, we don't.
+            if ( classRealm.getParentRealm() != null )
+                resources = classRealm.findRealmResources( getComponentDescriptorLocation() );
+            else
+                resources = classRealm.findResources( getComponentDescriptorLocation() );
         }
         catch ( IOException e )
         {
