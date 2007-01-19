@@ -73,7 +73,8 @@ public abstract class AbstractComponentDiscoverer
         Enumeration resources;
         try
         {
-            resources = classRealm.findResources( getComponentDescriptorLocation() );
+            // do NOT scan parent realms
+            resources = classRealm.findRealmResources( getComponentDescriptorLocation() );
         }
         catch ( IOException e )
         {
