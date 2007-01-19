@@ -88,7 +88,7 @@ public class DefaultComponentLookupManager
                 }
 
                 String message = "Component descriptor cannot be found in the component repository: " + componentKey
-                    + ".";
+                    + " (lookup realm: " + realm.getId() + ").";
 
                 throw new ComponentLookupException( message );
             }
