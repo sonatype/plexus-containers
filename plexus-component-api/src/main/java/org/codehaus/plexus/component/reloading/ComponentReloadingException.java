@@ -38,7 +38,7 @@ public class ComponentReloadingException
 
     /**
      * Construct a new <code>ComponentReloadingException</code> instance.
-     * @param ause causing exception to chain
+     * @param cause causing exception to chain
      */
     public ComponentReloadingException( Throwable cause )
     {

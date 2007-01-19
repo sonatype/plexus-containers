@@ -31,7 +31,6 @@ public class ComponentManagerImplementationNotFoundException
     /**
      * Construct a new <code>ComponentManagerImplementationNotFoundException</code> instance.
      * @param message exception message
-     * @param cause causing exception to chain
      */
     public ComponentManagerImplementationNotFoundException( String message )
     {

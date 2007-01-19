@@ -33,9 +33,9 @@ public class CompositionException
      *
      * @param message The detail message for this exception.
      */
-    public CompositionException( String s )
+    public CompositionException( String message )
     {
-        super( s );
+        super( message );
     }
 
     /**

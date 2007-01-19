@@ -281,9 +281,10 @@ public interface PlexusContainer
 
     /**
      * Returns true if this container has a component with the given role/role-hint.
-     * @deprecated
-     * @param componentKey
+     * @param role
+     * @param roleHint
      * @return true if this container has a component with the given role/role-hint
+     * @deprecated
      */
     boolean hasComponent( String role, String roleHint );
 
@@ -382,7 +383,7 @@ public interface PlexusContainer
 
     /**
      * Creates a corrosponding component instance found in this container's classrealm, then autowires it.
-     * @see PlexusContainer.autowire(Object)
+     * @see PlexusContainer#autowire(Object)
      * @param clazz A class available in this container's ClassRealm
      * @return A newly created and autowired component
      * @throws CompositionException
