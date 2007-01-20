@@ -232,7 +232,7 @@ public abstract class AbstractComponentComposer
             {
                 String key = requirement.getRequirementKey();
 
-                assignment = ((MutablePlexusContainer)container).lookup( key, lookupRealm );
+                assignment = container.lookup( key, lookupRealm );
 
                 ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, lookupRealm );
 
