@@ -85,9 +85,8 @@ public class ClassicSingletonComponentManager
             if ( singleton == null )
             {
                 singleton = createComponentInstance( realm );
-                ClassRealm cr = (ClassRealm) singleton.getClass().getClassLoader();
 
-                singletonMap.put( cr.getId(), singleton );
+                singletonMap.put( componentDescriptor.getRealmId(), singleton );
             }
 
             incrementConnectionCount();
