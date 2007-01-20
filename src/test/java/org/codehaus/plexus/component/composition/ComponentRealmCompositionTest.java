@@ -89,4 +89,9 @@ public class ComponentRealmCompositionTest
 
         container.lookup( "org.codehaus.plexus.plugins.Plugin1", plugin1Realm );
     }
+
+    public void testThatASingletonComponentIntheCoreRealmWhenLookedUpInComponentRealmsYieldsTheSameInstance()
+        throws Exception
+    {
+    }
 }
