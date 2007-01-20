@@ -85,8 +85,9 @@ public class ClassicSingletonComponentManager
             if ( singleton == null )
             {
                 singleton = createComponentInstance( realm );
+                ClassRealm cr = (ClassRealm) singleton.getClass().getClassLoader();
 
-                singletonMap.put( realm.getId(), singleton );
+                singletonMap.put( cr.getId(), singleton );
             }
 
             incrementConnectionCount();
@@ -97,7 +98,14 @@ public class ClassicSingletonComponentManager
 
     protected Object findSingleton( ClassRealm realm )
     {
-        return singletonMap.get( realm.getId() ) ;
+        while ( realm != null )
+        {
+            Object o = singletonMap.get( realm.getId() );
+            if ( o != null )
+                return o;
+            realm = realm.getParentRealm();
+        }
+        return null;
     }
 
     protected Object findSingleton( Object component )
