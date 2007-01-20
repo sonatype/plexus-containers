@@ -36,7 +36,7 @@ public abstract class AbstractComponentManager
 {
     protected MutablePlexusContainer container;
 
-    private ComponentDescriptor componentDescriptor;
+    protected ComponentDescriptor componentDescriptor;
 
     private LifecycleHandler lifecycleHandler;
 
