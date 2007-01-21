@@ -86,7 +86,7 @@ public class ClassicSingletonComponentManager
             {
                 singleton = createComponentInstance( realm );
 
-                singletonMap.put( componentDescriptor.getRealmId(), singleton );
+                singletonMap.put( realm.getId(), singleton );
             }
 
             incrementConnectionCount();
