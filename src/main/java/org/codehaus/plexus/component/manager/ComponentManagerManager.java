@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.manager;
  */
 
 import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
@@ -40,7 +41,13 @@ public interface ComponentManagerManager
     // Component manager handling
     // ----------------------------------------------------------------------
 
+    /**
+     * same as {@link ComponentManagerManager#findComponentManagerByComponentKey(String, ClassRealm)}
+     * where the 2nd param is the default lookup realm.
+     */
     ComponentManager findComponentManagerByComponentKey( String componentKey );
+
+    ComponentManager findComponentManagerByComponentKey( String componentKey, ClassRealm realm );
 
     ComponentManager findComponentManagerByComponentInstance( Object component );
 
