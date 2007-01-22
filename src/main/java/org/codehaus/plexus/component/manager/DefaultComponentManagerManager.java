@@ -112,10 +112,10 @@ public class DefaultComponentManagerManager
         return (ComponentManager) componentManagersByComponentHashCode.get( new Integer( component.hashCode() ) );
     }
 
-    public ComponentManager findComponentManagerByComponentKey( String componentKey )
-    {
-        return findComponentManagerByComponentKey( componentKey, DefaultPlexusContainer.getLookupRealm() );
-    }
+//    public ComponentManager findComponentManagerByComponentKey( String componentKey )
+//    {
+//        return findComponentManagerByComponentKey( componentKey, container.getLookupRealm() );
+//    }
 
     public ComponentManager findComponentManagerByComponentKey( String componentKey, ClassRealm lookupRealm )
     {

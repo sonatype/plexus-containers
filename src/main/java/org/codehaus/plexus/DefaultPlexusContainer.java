@@ -157,15 +157,15 @@ public class DefaultPlexusContainer
 
     protected boolean reloadingEnabled;
 
-    private static ThreadLocal lookupRealm = new ThreadLocal();
+    private ThreadLocal lookupRealm = new ThreadLocal();
 
     /**
      * Used for getLookupRealm for threads when the threadlocal
      * doesn't contain a value.
      */
-    private static ClassRealm staticLookupRealm;
+    private ClassRealm staticLookupRealm;
 
-    public static ClassRealm setLookupRealm( ClassRealm realm )
+    public ClassRealm setLookupRealm( ClassRealm realm )
     {
         if ( realm == null )
         {
@@ -179,7 +179,7 @@ public class DefaultPlexusContainer
         return oldRealm;
     }
 
-    public static ClassRealm getLookupRealm()
+    public ClassRealm getLookupRealm()
     {
         ClassRealm cr =  (ClassRealm) lookupRealm.get();
         return cr == null ? staticLookupRealm : cr;
@@ -288,7 +288,7 @@ public class DefaultPlexusContainer
     public Object lookup( String componentKey )
         throws ComponentLookupException
     {
-        return lookup( componentKey, DefaultPlexusContainer.getLookupRealm() );
+        return lookup( componentKey, getLookupRealm() );
         // componentLookupManager.lookup( componentKey, (ClassRealm) null );
     }
 
@@ -298,7 +298,7 @@ public class DefaultPlexusContainer
     public Map lookupMap( String role )
         throws ComponentLookupException
     {
-        return lookupMap( role, DefaultPlexusContainer.getLookupRealm() );
+        return lookupMap( role, getLookupRealm() );
     }
 
     public Map lookupMap( String role, ClassRealm realm )
@@ -316,7 +316,7 @@ public class DefaultPlexusContainer
     public List lookupList( String role )
         throws ComponentLookupException
     {
-        return lookupList( role, DefaultPlexusContainer.getLookupRealm() );
+        return lookupList( role, getLookupRealm() );
     }
 
     public List lookupList( String role, ClassRealm realm )
@@ -331,7 +331,7 @@ public class DefaultPlexusContainer
     public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookup( role, roleHint, DefaultPlexusContainer.getLookupRealm() );
+        return componentLookupManager.lookup( role, roleHint, getLookupRealm() );
     }
 
     public Object lookup( String role, String roleHint, ClassRealm realm )
@@ -346,7 +346,7 @@ public class DefaultPlexusContainer
     public Object lookup( Class componentClass )
         throws ComponentLookupException
     {
-        return lookup( componentClass, DefaultPlexusContainer.getLookupRealm() );
+        return lookup( componentClass, getLookupRealm() );
     }
 
     public Object lookup( Class componentClass, ClassRealm realm )
@@ -361,7 +361,7 @@ public class DefaultPlexusContainer
     public Map lookupMap( Class role )
         throws ComponentLookupException
     {
-        return lookupMap( role, DefaultPlexusContainer.getLookupRealm() );
+        return lookupMap( role, getLookupRealm() );
 
     }
 
@@ -377,7 +377,7 @@ public class DefaultPlexusContainer
     public List lookupList( Class role )
         throws ComponentLookupException
     {
-        return lookupList( role, DefaultPlexusContainer.getLookupRealm() );
+        return lookupList( role, getLookupRealm() );
     }
 
     public List lookupList( Class role, ClassRealm realm )
@@ -392,7 +392,7 @@ public class DefaultPlexusContainer
     public Object lookup( Class role, String roleHint )
         throws ComponentLookupException
     {
-        return lookup( role, roleHint, DefaultPlexusContainer.getLookupRealm() );
+        return lookup( role, roleHint, getLookupRealm() );
     }
 
     public Object lookup( Class role, String roleHint, ClassRealm realm )
@@ -573,7 +573,7 @@ public class DefaultPlexusContainer
      */
     public ComponentDescriptor getComponentDescriptor( String componentKey )
     {
-        return getComponentDescriptor( componentKey, DefaultPlexusContainer.getLookupRealm() );
+        return getComponentDescriptor( componentKey, getLookupRealm() );
     }
 
     public ComponentDescriptor getComponentDescriptor( String componentKey, ClassRealm classRealm )
@@ -601,7 +601,7 @@ public class DefaultPlexusContainer
      */
     public Map getComponentDescriptorMap( String role )
     {
-        return getComponentDescriptorMap( role, DefaultPlexusContainer.getLookupRealm() );
+        return getComponentDescriptorMap( role, getLookupRealm() );
     }
 
     public Map getComponentDescriptorMap( String role, ClassRealm realm )
@@ -632,7 +632,7 @@ public class DefaultPlexusContainer
      */
     public List getComponentDescriptorList( String role )
     {
-        return getComponentDescriptorList( role, DefaultPlexusContainer.getLookupRealm() );
+        return getComponentDescriptorList( role, getLookupRealm() );
     }
 
     public List getComponentDescriptorList( String role, ClassRealm realm )
@@ -732,7 +732,7 @@ public class DefaultPlexusContainer
      */
     public boolean hasComponent( String componentKey )
     {
-        return hasComponent( componentKey, DefaultPlexusContainer.getLookupRealm() );
+        return hasComponent( componentKey, getLookupRealm() );
     }
 
     public boolean hasComponent( String componentKey, ClassRealm realm )
@@ -745,7 +745,7 @@ public class DefaultPlexusContainer
      */
     public boolean hasComponent( String role, String roleHint )
     {
-        return hasComponent( role, roleHint, DefaultPlexusContainer.getLookupRealm() );
+        return hasComponent( role, roleHint, getLookupRealm() );
     }
 
     public boolean hasComponent( String role, String roleHint, ClassRealm realm )
@@ -1506,7 +1506,7 @@ public class DefaultPlexusContainer
     /**
      * Utility method to get a default lookup realm for a component.
      */
-    public static ClassRealm getLookupRealm( Object component )
+    public ClassRealm getLookupRealm( Object component )
     {
         if ( component.getClass().getClassLoader() instanceof ClassRealm )
         {
@@ -1514,7 +1514,7 @@ public class DefaultPlexusContainer
         }
         else
         {
-            return DefaultPlexusContainer.getLookupRealm();
+            return getLookupRealm();
         }
 
     }

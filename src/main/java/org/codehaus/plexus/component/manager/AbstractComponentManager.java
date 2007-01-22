@@ -258,6 +258,6 @@ public abstract class AbstractComponentManager
     public Object getComponent()
         throws ComponentInstantiationException, ComponentLifecycleException
     {
-        return getComponent( DefaultPlexusContainer.getLookupRealm() );
+        return getComponent( container.getLookupRealm() );
     }
 }

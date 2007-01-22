@@ -41,11 +41,14 @@ public interface ComponentManagerManager
     // Component manager handling
     // ----------------------------------------------------------------------
 
-    /**
-     * same as {@link ComponentManagerManager#findComponentManagerByComponentKey(String, ClassRealm)}
-     * where the 2nd param is the default lookup realm.
-     */
-    ComponentManager findComponentManagerByComponentKey( String componentKey );
+// XXX This method doesn't work anymore since there's no way to get a default lookup realm
+// as that requires a container.
+//
+//    /**
+//     * same as {@link ComponentManagerManager#findComponentManagerByComponentKey(String, ClassRealm)}
+//     * where the 2nd param is the default lookup realm.
+//     */
+//    ComponentManager findComponentManagerByComponentKey( String componentKey );
 
     ComponentManager findComponentManagerByComponentKey( String componentKey, ClassRealm realm );
 

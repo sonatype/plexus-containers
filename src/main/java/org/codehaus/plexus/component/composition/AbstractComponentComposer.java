@@ -83,7 +83,7 @@ public abstract class AbstractComponentComposer
     public void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
         throws CompositionException
     {
-        assembleComponent( component, componentDescriptor, container, DefaultPlexusContainer.getLookupRealm( component ) );
+        assembleComponent( component, componentDescriptor, container, container.getLookupRealm( component ) );
     }
 
     public void assembleComponent( Object component,
@@ -158,7 +158,7 @@ public abstract class AbstractComponentComposer
                            componentRequirement,
                            container,
                            compositionContext,
-                           DefaultPlexusContainer.getLookupRealm( component ) );
+                           container.getLookupRealm( component ) );
     }
 
 
