@@ -16,7 +16,9 @@ package org.codehaus.plexus.component.manager;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
@@ -72,6 +74,7 @@ public class DefaultComponentManagerManager
         throw new UndefinedComponentManagerException( "Specified component manager cannot be found: " + id );
     }
 
+
     public ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
                                                     String componentKey )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException
@@ -93,26 +96,45 @@ public class DefaultComponentManagerManager
 
         if ( StringUtils.equals( componentKey, descriptor.getComponentKey() ) )
         {
-            activeComponentManagers.put( descriptor.getComponentKey(), componentManager );
+            activeComponentManagers.put( descriptor.getRealmId() + "/" + descriptor.getComponentKey(), componentManager );
         }
         else
         {
-            activeComponentManagers.put( componentKey, componentManager );
+            activeComponentManagers.put( descriptor.getRealmId() + "/" + componentKey, componentManager );
         }
+
         return componentManager;
     }
 
     public ComponentManager findComponentManagerByComponentInstance( Object component )
     {
+        // XXX this doesn't seem right at all - hashcodes aren't unique!
         return (ComponentManager) componentManagersByComponentHashCode.get( new Integer( component.hashCode() ) );
     }
 
     public ComponentManager findComponentManagerByComponentKey( String componentKey )
     {
-        ComponentManager componentManager = (ComponentManager) activeComponentManagers.get( componentKey );
-
-        return componentManager;
+        return findComponentManagerByComponentKey( componentKey, DefaultPlexusContainer.getLookupRealm() );
     }
+
+    public ComponentManager findComponentManagerByComponentKey( String componentKey, ClassRealm lookupRealm )
+    {
+        while ( lookupRealm != null )
+        {
+            ComponentManager mgr = (ComponentManager) activeComponentManagers.get( lookupRealm.getId() + "/"
+                + componentKey );
+
+            if ( mgr != null )
+            {
+                return mgr;
+            }
+
+            lookupRealm = lookupRealm.getParentRealm();
+        }
+
+        return null;
+    }
+
 
     // ----------------------------------------------------------------------
     // Lifecycle handler manager handling
