@@ -109,7 +109,7 @@ public abstract class AbstractLifecycleHandler
     public void start( Object component, ComponentManager manager )
         throws PhaseExecutionException
     {
-        start( component, manager, getRealm( component ) );
+        start( component, manager, manager.getContainer().getLookupRealm( component ) );
     }
 
     /**
@@ -143,7 +143,7 @@ public abstract class AbstractLifecycleHandler
         {
             Phase phase = (Phase) i.next();
 
-            phase.execute( component, manager, DefaultPlexusContainer.getLookupRealm( component ) );
+            phase.execute( component, manager, manager.getContainer().getLookupRealm( component ) );
         }
     }
 
@@ -159,7 +159,7 @@ public abstract class AbstractLifecycleHandler
         {
             Phase phase = (Phase) i.next();
 
-            phase.execute( component, manager, DefaultPlexusContainer.getLookupRealm( component ) );
+            phase.execute( component, manager, manager.getContainer().getLookupRealm( component ) );
         }
     }
 
@@ -178,7 +178,7 @@ public abstract class AbstractLifecycleHandler
         {
             Phase phase = (Phase) i.next();
 
-            phase.execute( component, manager, DefaultPlexusContainer.getLookupRealm( component ) );
+            phase.execute( component, manager, manager.getContainer().getLookupRealm( component ) );
         }
     }
 
@@ -190,17 +190,5 @@ public abstract class AbstractLifecycleHandler
         }
 
         return false;
-    }
-
-    private static ClassRealm getRealm( Object component )
-    {
-        if ( component.getClass().getClassLoader() instanceof ClassRealm )
-        {
-            return ((ClassRealm)component.getClass().getClassLoader());
-        }
-        else
-        {
-            return DefaultPlexusContainer.getLookupRealm();
-        }
     }
 }

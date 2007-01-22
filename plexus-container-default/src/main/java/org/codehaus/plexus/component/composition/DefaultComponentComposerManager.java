@@ -47,7 +47,7 @@ public class DefaultComponentComposerManager
     public void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
         throws UndefinedComponentComposerException, CompositionException
     {
-        assembleComponent( component, componentDescriptor, container, getRealm( component ) );
+        assembleComponent( component, componentDescriptor, container, container.getLookupRealm( component ) );
     }
 
     public void assembleComponent( Object component, ComponentDescriptor componentDescriptor,
@@ -113,17 +113,4 @@ public class DefaultComponentComposerManager
 
         return retValue;
     }
-
-    private static ClassRealm getRealm( Object component )
-    {
-        if ( component.getClass().getClassLoader() instanceof ClassRealm )
-        {
-            return ( (ClassRealm) component.getClass().getClassLoader() );
-        }
-        else
-        {
-            return DefaultPlexusContainer.getLookupRealm();
-        }
-    }
-
 }

@@ -34,6 +34,6 @@ public abstract class AbstractPhase
     public final void execute( Object component, ComponentManager manager )
         throws PhaseExecutionException
     {
-        execute( component, manager, DefaultPlexusContainer.getLookupRealm( component ) );
+        execute( component, manager, manager.getContainer().getLookupRealm( component ) );
     }
 }

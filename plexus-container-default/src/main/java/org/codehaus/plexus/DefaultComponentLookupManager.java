@@ -60,7 +60,7 @@ public class DefaultComponentLookupManager
     public Object lookup( String componentRole )
         throws ComponentLookupException
     {
-        return lookup( componentRole, DefaultPlexusContainer.getLookupRealm() );
+        return lookup( componentRole, container.getLookupRealm() );
     }
 
     public Object lookup( String componentRole, ClassRealm realm )
@@ -69,7 +69,7 @@ public class DefaultComponentLookupManager
         Object component;
 
         ComponentManager componentManager = container.getComponentManagerManager()
-            .findComponentManagerByComponentKey( componentRole );
+            .findComponentManagerByComponentKey( componentRole, realm );
 
         // The first time we lookup a component a component manager will not exist so we ask the
         // component manager manager to create a component manager for us. Also if we are reloading
@@ -119,7 +119,7 @@ public class DefaultComponentLookupManager
     public Object lookup( Class componentClass )
         throws ComponentLookupException
     {
-        return lookup( componentClass.getName(), DefaultPlexusContainer.getLookupRealm() );
+        return lookup( componentClass.getName(), container.getLookupRealm() );
     }
 
     public Object lookup( Class componentClass, ClassRealm realm )
@@ -163,7 +163,7 @@ public class DefaultComponentLookupManager
     public Map lookupMap( String role )
         throws ComponentLookupException
     {
-        return lookupMap( role, DefaultPlexusContainer.getLookupRealm() );
+        return lookupMap( role, container.getLookupRealm() );
     }
 
     public Map lookupMap( Class role, ClassRealm realm )
@@ -215,13 +215,13 @@ public class DefaultComponentLookupManager
     public List lookupList( String role )
         throws ComponentLookupException
     {
-        return lookupList( role, DefaultPlexusContainer.getLookupRealm() );
+        return lookupList( role, container.getLookupRealm() );
     }
 
     public List lookupList( Class role )
         throws ComponentLookupException
     {
-        return lookupList( role.getName(), DefaultPlexusContainer.getLookupRealm() );
+        return lookupList( role.getName(), container.getLookupRealm() );
     }
 
     public List lookupList( Class role, ClassRealm realm )

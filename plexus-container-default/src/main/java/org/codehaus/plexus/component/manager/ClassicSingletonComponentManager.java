@@ -116,7 +116,7 @@ public class ClassicSingletonComponentManager
 
     protected Object findSingleton( Object component )
     {
-        ClassRealm cr = DefaultPlexusContainer.getLookupRealm( component );
+        ClassRealm cr = container.getLookupRealm( component );
 
         return singletonMap.get( cr == null ? container.getContainerRealm().getId() : cr.getId() );
     }

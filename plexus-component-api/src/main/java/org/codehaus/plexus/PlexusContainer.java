@@ -456,4 +456,28 @@ public interface PlexusContainer
         throws PlexusContainerException;
 
     ClassRealm getComponentRealm( String realmId );
+
+    /**
+     * Returns the lookup realm for this container, which is either
+     * the container realm or the realm set by {@see MutablePlexusContainer#setLookupRealm(ClassRealm)}.
+     */
+    ClassRealm getLookupRealm();
+
+    /**
+     * Sets the lookup realm to use for lookup calls that don't have a ClassRealm parameter.
+     * @param realm the new realm to use.
+     * @return The previous lookup realm. It is adviced to set it back once the old-style lookups have completed.
+     */
+    ClassRealm setLookupRealm(ClassRealm realm);
+
+    /**
+     * XXX ideally i'd like to place this in a plexus container specific utility class.
+     *
+     * Utility method to retrieve the lookup realm for a component instance.
+     * If the component's classloader is a ClassRealm, that realm is returned,
+     * otherwise the result of getLookupRealm is returned.
+     * @param component
+     * @return
+     */
+    ClassRealm getLookupRealm( Object component );
 }

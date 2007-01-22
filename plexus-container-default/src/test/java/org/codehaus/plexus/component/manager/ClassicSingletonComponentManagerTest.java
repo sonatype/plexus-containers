@@ -28,12 +28,9 @@ class ComponentLookupThread
 
     private SlowComponent component;
 
-    private ClassRealm lookupRealm;
-
     public ComponentLookupThread( PlexusContainer container )
     {
         this.container = container;
-        this.lookupRealm = DefaultPlexusContainer.getLookupRealm();
     }
 
     public void run()
@@ -41,7 +38,7 @@ class ComponentLookupThread
         try
         {
 //            DefaultPlexusContainer.setLookupRealm( lookupRealm );
-            SlowComponent tmpComponent = (SlowComponent) container.lookup( SlowComponent.ROLE, lookupRealm );
+            SlowComponent tmpComponent = (SlowComponent) container.lookup( SlowComponent.ROLE, container.getLookupRealm() );
 
             synchronized ( this )
             {
@@ -50,7 +47,7 @@ class ComponentLookupThread
         }
         catch ( Exception e )
         {
-            DefaultPlexusContainer.getLookupRealm().display();
+            container.getLookupRealm().display();
             e.printStackTrace();
         }
     }
