@@ -57,19 +57,19 @@ public class DefaultComponentLookupManager
     // -> return a component from the component manager.
     // ----------------------------------------------------------------------
 
-    public Object lookup( String componentKey )
+    public Object lookup( String componentRole )
         throws ComponentLookupException
     {
-        return lookup( componentKey, DefaultPlexusContainer.getLookupRealm() );
+        return lookup( componentRole, DefaultPlexusContainer.getLookupRealm() );
     }
 
-    public Object lookup( String componentKey, ClassRealm realm )
+    public Object lookup( String componentRole, ClassRealm realm )
         throws ComponentLookupException
     {
         Object component;
 
         ComponentManager componentManager = container.getComponentManagerManager()
-            .findComponentManagerByComponentKey( componentKey );
+            .findComponentManagerByComponentKey( componentRole );
 
         // The first time we lookup a component a component manager will not exist so we ask the
         // component manager manager to create a component manager for us. Also if we are reloading
@@ -77,23 +77,23 @@ public class DefaultComponentLookupManager
 
         if ( container.isReloadingEnabled() || componentManager == null )
         {
-            ComponentDescriptor descriptor = container.getComponentRepository().getComponentDescriptor( componentKey,
+            ComponentDescriptor descriptor = container.getComponentRepository().getComponentDescriptor( componentRole,
                                                                                                         realm );
 
             if ( descriptor == null )
             {
                 if ( container.getParentContainer() != null )
                 {
-                    return container.getParentContainer().lookup( componentKey, realm );
+                    return container.getParentContainer().lookup( componentRole, realm );
                 }
 
-                String message = "Component descriptor cannot be found in the component repository: " + componentKey
-                    + " (lookup realm: " + realm.getId() + ").";
+                String message = "Component descriptor cannot be found in the component repository: " + componentRole
+                    + " (lookup realm: " + realm + ").";
 
                 throw new ComponentLookupException( message );
             }
 
-            componentManager = createComponentManager( descriptor, componentKey );
+            componentManager = createComponentManager( descriptor, componentRole );
         }
 
         try
@@ -102,12 +102,12 @@ public class DefaultComponentLookupManager
         }
         catch ( ComponentInstantiationException e )
         {
-            throw new ComponentLookupException( "Unable to lookup component '" + componentKey
+            throw new ComponentLookupException( "Unable to lookup component '" + componentRole
                 + "', it could not be created", e );
         }
         catch ( ComponentLifecycleException e )
         {
-            throw new ComponentLookupException( "Unable to lookup component '" + componentKey
+            throw new ComponentLookupException( "Unable to lookup component '" + componentRole
                 + "', it could not be started", e );
         }
 
