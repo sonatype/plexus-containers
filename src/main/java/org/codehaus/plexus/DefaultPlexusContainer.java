@@ -159,13 +159,21 @@ public class DefaultPlexusContainer
 
     private static ThreadLocal lookupRealm = new ThreadLocal();
 
+    /**
+     * Used for getLookupRealm for threads when the threadlocal
+     * doesn't contain a value.
+     */
+    private static ClassRealm staticLookupRealm;
+
     public static ClassRealm setLookupRealm( ClassRealm realm )
     {
         if ( realm == null )
         {
             return null;
         }
-        
+
+        staticLookupRealm = realm;
+
         ClassRealm oldRealm = (ClassRealm) lookupRealm.get();
         lookupRealm.set( realm );
         return oldRealm;
@@ -173,7 +181,8 @@ public class DefaultPlexusContainer
 
     public static ClassRealm getLookupRealm()
     {
-        return (ClassRealm) lookupRealm.get();
+        ClassRealm cr =  (ClassRealm) lookupRealm.get();
+        return cr == null ? staticLookupRealm : cr;
     }
 
     // ----------------------------------------------------------------------
