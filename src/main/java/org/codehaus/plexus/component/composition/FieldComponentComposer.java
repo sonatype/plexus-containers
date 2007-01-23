@@ -80,8 +80,8 @@ public class FieldComponentComposer
         }
         catch ( IllegalArgumentException e )
         {
-            System.out.println( "[" + component + ":" + ((ClassRealm) component.getClass().getClassLoader() ).getId() + "]" +
-                "[" + assignment + ":" + ((ClassRealm)assignment.getClass().getClassLoader()).getId() + "]");
+//            System.out.println( "[" + component + ":" + ((ClassRealm) component.getClass().getClassLoader() ).getId() + "]" +
+//                "[" + assignment + ":" + ((ClassRealm)assignment.getClass().getClassLoader()).getId() + "]");
 
             Class c = requirement.getAssignment().getClass();
 
@@ -135,8 +135,8 @@ public class FieldComponentComposer
         }
         catch ( IllegalAccessException e )
         {
-            System.out.println( "[" + component + ":" + ((ClassRealm) component.getClass().getClassLoader() ).getId() + "]" +
-                "[" + assignment + ":" + ((ClassRealm)assignment.getClass().getClassLoader()).getId() + "]");
+//            System.out.println( "[" + component + ":" + ((ClassRealm) component.getClass().getClassLoader() ).getId() + "]" +
+//                "[" + assignment + ":" + ((ClassRealm)assignment.getClass().getClassLoader()).getId() + "]");
 
             throw new CompositionException( "Composition failed for the field " + field.getName() + " " +
                 "in object of type " + component.getClass().getName(), e );
