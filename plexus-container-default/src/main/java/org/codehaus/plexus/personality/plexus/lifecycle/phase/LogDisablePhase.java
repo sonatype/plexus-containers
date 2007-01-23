@@ -19,10 +19,8 @@ package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 import org.codehaus.plexus.logging.LogEnabled;
-import org.codehaus.plexus.logging.LoggerManager;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -32,23 +30,11 @@ public class LogDisablePhase
     extends AbstractPhase
 {
     public void execute( Object object, ComponentManager componentManager, ClassRealm lookupRealm )
-        throws PhaseExecutionException
     {
-        LoggerManager loggerManager;
-        ComponentDescriptor descriptor;
-
         if ( object instanceof LogEnabled )
         {
-            try
-            {
-                loggerManager = (LoggerManager) componentManager.getContainer().lookup( LoggerManager.ROLE, lookupRealm );
-            }
-            catch ( ComponentLookupException e )
-            {
-                throw new PhaseExecutionException( "Unable to locate logger manager", e );
-            }
-            descriptor = componentManager.getComponentDescriptor();
-            loggerManager.returnComponentLogger( descriptor.getRole(), descriptor.getRoleHint() );
+            ComponentDescriptor descriptor = componentManager.getComponentDescriptor();
+            componentManager.getContainer().getLoggerManager().returnComponentLogger( descriptor.getRole(), descriptor.getRoleHint() );
         }
     }
 }
