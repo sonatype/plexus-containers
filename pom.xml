@@ -9,15 +9,15 @@
   <artifactId>plexus-containers</artifactId>
   <packaging>pom</packaging>
   <name>Parent Plexus Container POM</name>
-  <version>1.0-alpha-16</version>
+  <version>1.0-alpha-17-SNAPSHOT</version>
   <modules>
     <module>plexus-component-api</module>
     <module>plexus-container-default</module>
   </modules>
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0-alpha-16</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0-alpha-16</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/tags/plexus-containers-1.0-alpha-16</url>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/trunk</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/trunk</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/trunk/</url>
   </scm>
   <dependencies>
     <dependency>
