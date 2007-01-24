@@ -39,7 +39,22 @@ public interface LifecycleHandler
     void resume( Object component, ComponentManager manager )
         throws PhaseExecutionException;
 
+    /**
+     * @deprecated
+     */
     void end( Object component, ComponentManager manager )
+        throws PhaseExecutionException;
+
+    /**
+     *
+     * @param component
+     * @param manager
+     * @param componentContextRealm the realm used to create the component, which may not be the component's realm; this
+     *            component could have requirements that were satisfied using components from this realm. It could be
+     *            used to lookup the same manager components that were used to start the component.
+     * @throws PhaseExecutionException
+     */
+    void end( Object component, ComponentManager manager, ClassRealm componentContextRealm )
         throws PhaseExecutionException;
 
     void initialize();

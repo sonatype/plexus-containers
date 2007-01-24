@@ -31,6 +31,8 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
@@ -40,6 +42,13 @@ public abstract class AbstractComponentManager
     protected ComponentDescriptor componentDescriptor;
 
     private LifecycleHandler lifecycleHandler;
+
+    /**
+     * Contains a mapping from singleton instances to the realms
+     * they were used to configure with. This realm will be used to
+     * call all lifecycle methods.
+     */
+    private Map componentContextRealms = new HashMap();
 
     private int connections;
 
@@ -119,6 +128,8 @@ public abstract class AbstractComponentManager
     {
         Object component = createComponentInstance( componentDescriptor, realm );
 
+        componentContextRealms.put( component, realm );
+
         startComponentLifecycle( component, realm );
 
         return component;
@@ -166,9 +177,15 @@ public abstract class AbstractComponentManager
     protected void endComponentLifecycle( Object component )
         throws ComponentLifecycleException
     {
+        ClassRealm contextRealm = (ClassRealm) componentContextRealms.get( component );
+        if ( contextRealm == null )
+        {
+            contextRealm = container.getLookupRealm( component );
+        }
+
         try
         {
-            getLifecycleHandler().end( component, this );
+            getLifecycleHandler().end( component, this, contextRealm );
         }
         catch ( PhaseExecutionException e )
         {
