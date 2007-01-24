@@ -163,10 +163,21 @@ public abstract class AbstractLifecycleHandler
         }
     }
 
+
+    /**
+     * End a component's lifecycle.
+     * @deprecated
+     */
+    public void end( Object component, ComponentManager manager )
+        throws PhaseExecutionException
+    {
+        end( component, manager, manager.getContainer().getLookupRealm( component ) );
+    }
+
     /**
      * End a component's lifecycle.
      */
-    public void end( Object component, ComponentManager manager )
+    public void end( Object component, ComponentManager manager, ClassRealm contextRealm )
         throws PhaseExecutionException
     {
         if ( segmentIsEmpty( getEndSegment() ) )
@@ -178,7 +189,7 @@ public abstract class AbstractLifecycleHandler
         {
             Phase phase = (Phase) i.next();
 
-            phase.execute( component, manager, manager.getContainer().getLookupRealm( component ) );
+            phase.execute( component, manager, contextRealm );
         }
     }
 
