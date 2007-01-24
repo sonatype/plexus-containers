@@ -44,8 +44,7 @@ public class ComponentDiscoveryPhase
     {
         try
         {
-            discoverComponents( context.getContainer(), context.getContainer().getContainerRealm(),
-                                context.getContainer().getContainerRealm().getParentRealm() != null ); // default false
+            discoverComponents( context.getContainer(), context.getContainer().getContainerRealm(), false );
         }
         catch ( PlexusConfigurationException e )
         {
