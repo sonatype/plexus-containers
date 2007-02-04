@@ -292,9 +292,6 @@ public class DefaultPlexusContainer
         // componentLookupManager.lookup( componentKey, (ClassRealm) null );
     }
 
-    /**
-     * @deprecated
-     */
     public Map lookupMap( String role )
         throws ComponentLookupException
     {
@@ -325,9 +322,6 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookupList( role, realm );
     }
 
-    /**
-     * @deprecated
-     */
     public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
@@ -340,9 +334,6 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookup( role, roleHint, realm );
     }
 
-    /**
-     * @deprecated
-     */
     public Object lookup( Class componentClass )
         throws ComponentLookupException
     {
@@ -355,9 +346,6 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookup( componentClass, realm );
     }
 
-    /**
-     * @deprecated
-     */
     public Map lookupMap( Class role )
         throws ComponentLookupException
     {
@@ -371,9 +359,6 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookupMap( role, realm );
     }
 
-    /**
-     * @deprecated
-     */
     public List lookupList( Class role )
         throws ComponentLookupException
     {
@@ -386,9 +371,6 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookupList( role, realm );
     }
 
-    /**
-     * @deprecated
-     */
     public Object lookup( Class role, String roleHint )
         throws ComponentLookupException
     {
@@ -568,9 +550,6 @@ public class DefaultPlexusContainer
     // Component Descriptor Lookup
     // ----------------------------------------------------------------------
 
-    /**
-     * @deprecated use {@link DefaultPlexusContainer#getComponentDescriptor(String, ClassRealm)}
-     */
     public ComponentDescriptor getComponentDescriptor( String componentKey )
     {
         return getComponentDescriptor( componentKey, getLookupRealm() );
@@ -596,9 +575,6 @@ public class DefaultPlexusContainer
         return result;
     }
 
-    /**
-     * @deprecated
-     */
     public Map getComponentDescriptorMap( String role )
     {
         return getComponentDescriptorMap( role, getLookupRealm() );
@@ -627,9 +603,6 @@ public class DefaultPlexusContainer
         return result;
     }
 
-    /**
-     * @deprecated
-     */
     public List getComponentDescriptorList( String role )
     {
         return getComponentDescriptorList( role, getLookupRealm() );
@@ -727,9 +700,6 @@ public class DefaultPlexusContainer
         }
     }
 
-    /**
-     * @deprecated
-     */
     public boolean hasComponent( String componentKey )
     {
         return hasComponent( componentKey, getLookupRealm() );
@@ -740,9 +710,6 @@ public class DefaultPlexusContainer
         return componentRepository.hasComponent( componentKey, realm );
     }
 
-    /**
-     * @deprecated
-     */
     public boolean hasComponent( String role, String roleHint )
     {
         return hasComponent( role, roleHint, getLookupRealm() );

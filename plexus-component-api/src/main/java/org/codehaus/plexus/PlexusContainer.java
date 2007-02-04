@@ -78,7 +78,9 @@ public interface PlexusContainer
     // ------------------------------------------------------------------------
 
     /**
-     * @deprecated
+     * Looks up and returns a component object with the given unique key or role.
+     * @param componentKey a unique key for the desired component
+     * @return a Plexus component object
      */
     Object lookup( String componentKey )
         throws ComponentLookupException;
@@ -92,7 +94,10 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
-     * @deprecated
+     * Looks up and returns a component object with the given unique role/role-hint combination.
+     * @param role a non-unique key for the desired component
+     * @param roleHint a hint for the desired component implementation
+     * @return a Plexus component object
      */
     Object lookup( String role, String roleHint )
         throws ComponentLookupException;
@@ -107,7 +112,9 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
-     * @deprecated
+     * Looks up and returns a component object with the given unique key or role.
+     * @param componentClass a unique key for the desired component
+     * @return a Plexus component object
      */
     Object lookup( Class componentClass )
         throws ComponentLookupException;
@@ -121,7 +128,10 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
-     * @deprecated
+     * Looks up and returns a component object with the given unique role/role-hint combination.
+     * @param role a non-unique class key for the desired component
+     * @param roleHint a hint for the desired component implementation
+     * @return a Plexus component object
      */
     Object lookup( Class role, String roleHint )
         throws ComponentLookupException;
@@ -136,9 +146,10 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
-     * @deprecated
+     * Looks up and returns a List of component objects with the given role.
+     * @param role a non-unique key for the desired components
+     * @return a List of component objects
      */
-
     List lookupList( String role )
         throws ComponentLookupException;
 
@@ -151,7 +162,9 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
-     * @deprecated
+     * Looks up and returns a List of component objects with the given role.
+     * @param role a non-unique class key for the desired components
+     * @return a List of component objects
      */
     List lookupList( Class role )
         throws ComponentLookupException;
@@ -165,7 +178,9 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
-     * @deprecated
+     * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
+     * @param role a non-unique key for the desired components
+     * @return a Map of component objects
      */
     Map lookupMap( String role )
         throws ComponentLookupException;
@@ -179,7 +194,9 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
-     * @deprecated
+     * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
+     * @param role a non-unique class key for the desired components
+     * @return a Map of component objects
      */
     Map lookupMap( Class role )
         throws ComponentLookupException;
@@ -197,7 +214,10 @@ public interface PlexusContainer
     // ----------------------------------------------------------------------
 
     /**
-     * @deprecated use {@link PlexusContainer#getComponentDescriptor(String, ClassRealm)}
+     * Returns the ComponentDescriptor with the given component key. Searches up the hierarchy until one is found, null
+     * if none is found.
+     * @param componentKey a unique key for the desired component's descriptor
+     * @return the ComponentDescriptor with the given component key
      */
     ComponentDescriptor getComponentDescriptor( String componentKey );
 
@@ -210,7 +230,10 @@ public interface PlexusContainer
     ComponentDescriptor getComponentDescriptor( String componentKey, ClassRealm componentRealm );
 
     /**
-     * @deprecated use {@link PlexusContainer#getComponentDescriptorMap(String, ClassRealm)}
+     * Returns a Map of ComponentDescriptors with the given role, keyed by role-hint. Searches up the hierarchy until
+     * all are found, an empty Map if none are found.
+     * @param role a non-unique key for the desired components
+     * @return a Map of component descriptors keyed by role-hint
      */
     Map getComponentDescriptorMap( String role );
 
@@ -223,9 +246,11 @@ public interface PlexusContainer
     Map getComponentDescriptorMap( String role, ClassRealm componentRealm );
 
     /**
-     * @deprecated use {@link PlexusContainer#getComponentDescriptorList(String, ClassRealm)}
+     * Returns a List of ComponentDescriptors with the given role. Searches up the hierarchy until all are found, an
+     * empty List if none are found.
+     * @param role a non-unique key for the desired components
+     * @return a List of component descriptors
      */
-
     List getComponentDescriptorList( String role );
 
     /**
