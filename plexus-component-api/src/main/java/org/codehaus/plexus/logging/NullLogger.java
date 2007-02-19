@@ -178,4 +178,31 @@ public class NullLogger
     {
         return "NullLogger";
     }
+
+    public Class getSource()
+    {
+        return source;
+    }
+
+    /**
+     * Tell if this NullLogger is equal to another.
+     * Two NullLoggers are equal if they are (failing to) log the same source class or if neither of them has a source.
+     *
+     * @param logger The Object to compare to
+     * @return true if they are logging for the same source class (or null)
+     */
+    public boolean equals( Object logger )
+    {
+        if ( logger instanceof NullLogger )
+        {
+            if ( source == null )
+            {
+                return ( (NullLogger) logger).getSource() == null;
+            }
+
+            return source.equals( ( (NullLogger) logger ).getSource() );
+        }
+
+        return false;
+    }
 }

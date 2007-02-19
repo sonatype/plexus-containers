@@ -28,7 +28,7 @@ public class NullLoggerTest
     {
         AbstractLogEnabled enabled = new AnotherLogEnabled();
 
-        assertNotSame( testClass.getLogger(), enabled.getLogger() );
+        assertFalse( testClass.getLogger().equals( enabled.getLogger() ) );
     }
 }
 
