@@ -1,5 +1,7 @@
 package org.codehaus.plexus.logging;
 
+import java.util.Hashtable;
+
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -21,7 +23,7 @@ package org.codehaus.plexus.logging;
  * It is designed to stop NullPointerExceptions being thrown if we somehoe fail to configure our logging.
  * The class performs no logging at all but prints a warning message to the error stream stating we are not logging.
  *
- * @uthor Andrew Williams
+ * @author Andrew Williams
  * @since 1.0-alpha-18
  * @version $Id$
  */
@@ -29,13 +31,51 @@ public class NullLogger
     implements Logger
 {
 
-    public NullLogger()
+    private static Hashtable instances = new Hashtable();
+    private static NullLogger logger;
+
+    private Class source;
+
+    public static Logger getInstance()
+    {
+        // Do not instantiate until now, supressing the warnings unless they are valid
+        if ( logger == null )
+        {
+            logger = new NullLogger();
+        }
+
+        return logger;
+    }
+
+    public static Logger getInstance( Class object )
+    {
+        if ( object == null )
+        {
+            return getInstance();
+        }
+
+        if ( instances.containsKey( object ) )
+        {
+            return (Logger) instances.get( object );
+        }
+        else
+        {
+            Logger ret = new NullLogger( object );
+            instances.put( object, ret );
+
+            return ret;
+        }
+    }
+
+    protected NullLogger()
     {
         System.err.println( "Warning: No logging has been configured" );
     }
 
-    public NullLogger( Class object )
+    protected NullLogger( Class object )
     {
+        this.source = object;
+
         System.err.println( "Warning: No logging has been configured for class " + object );
     }
 

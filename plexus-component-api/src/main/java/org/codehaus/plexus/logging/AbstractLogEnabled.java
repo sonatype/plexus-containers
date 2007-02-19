@@ -35,7 +35,7 @@ public abstract class AbstractLogEnabled
     {
         if ( logger == null )
         {
-            return new NullLogger( getClass() );
+            return NullLogger.getInstance( getClass() );
         }
 
         return logger;
