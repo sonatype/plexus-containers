@@ -33,11 +33,6 @@ public abstract class AbstractLogEnabled
 
     protected Logger getLogger()
     {
-        if ( logger == null )
-        {
-            return NullLogger.getInstance( getClass() );
-        }
-
         return logger;
     }
 
