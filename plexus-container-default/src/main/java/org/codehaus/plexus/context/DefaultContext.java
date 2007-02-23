@@ -17,6 +17,8 @@ package org.codehaus.plexus.context;
  */
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -189,13 +191,14 @@ public class DefaultContext
     }
 
     /**
-     * Utility method to retrieve containerContext data.
+     * Utility method to retrieve containerContext data 
      *
      * @return the containerContext data
      */
     public Map getContextData()
     {
-        return contextData;
+        return Collections.unmodifiableMap( contextData );
+        
     }
 
     /**
@@ -203,9 +206,18 @@ public class DefaultContext
      *
      * @return the parent Context (may be null)
      */
-    protected Context getParent()
+    public Context getParent()
     {
         return parent;
+    }
+
+        
+    /** 
+     * @see org.codehaus.plexus.context.Context#setParent(org.codehaus.plexus.context.Context)
+     */
+    public void setParent( Context parent )
+    {
+        this.parent = parent;
     }
 
     /**

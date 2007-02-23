@@ -1,5 +1,7 @@
 package org.codehaus.plexus.context;
 
+import java.util.Map;
+
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -27,10 +29,17 @@ public interface Context
      * @param key The key of the value to look up.
      * @return Returns 
      * @throws ContextException If the key doesn't exist.
-     */    
+     */
     Object get( Object key )
         throws ContextException;
-    
+
+    /**
+     * Utility method to retrieve containerContext data.
+     * the returned Map is an unmodifiable view.
+     * @return the containerContext data
+     */
+    Map getContextData();
+
     /**
      * Returns true if the map or the parent map contains the key.
      * 
@@ -46,7 +55,8 @@ public interface Context
      * @param value the item
      * @throws java.lang.IllegalStateException if containerContext is read only
      */
-    public void put( Object key, Object value )throws IllegalStateException;
+    public void put( Object key, Object value )
+        throws IllegalStateException;
 
     /**
      * Hides the item in the containerContext.
