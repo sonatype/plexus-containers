@@ -37,6 +37,7 @@ public interface Context
      * Utility method to retrieve containerContext data.
      * the returned Map is an unmodifiable view.
      * @return the containerContext data
+     * @since 1.0-alpha-18
      */
     Map getContextData();
 
