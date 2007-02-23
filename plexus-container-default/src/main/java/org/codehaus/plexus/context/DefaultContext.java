@@ -206,19 +206,11 @@ public class DefaultContext
      *
      * @return the parent Context (may be null)
      */
-    public Context getParent()
+    protected Context getParent()
     {
         return parent;
     }
 
-        
-    /** 
-     * @see org.codehaus.plexus.context.Context#setParent(org.codehaus.plexus.context.Context)
-     */
-    public void setParent( Context parent )
-    {
-        this.parent = parent;
-    }
 
     /**
      * Make the containerContext read-only.
