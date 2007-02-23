@@ -28,6 +28,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -60,11 +61,12 @@ public abstract class AbstractComponentConfiguratorTest
     public void testComponentConfigurator()
         throws Exception
     {
-        String xml = "<configuration>" + "  <int-value>0</int-value>" + "  <float-value>1</float-value>" +
-            "  <long-value>2</long-value>" + "  <double-value>3</double-value>" + "  <string-value>foo</string-value>" +
-            "  <important-things>" + "    <important-thing><name>jason</name></important-thing>" +
-            "    <important-thing><name>tess</name></important-thing>" + "  </important-things>" + "  <configuration>" +
-            "      <name>jason</name>" + "  </configuration>" + "</configuration>";
+        String xml = "<configuration>" + "  <int-value>0</int-value>" + "  <float-value>1</float-value>"
+            + "  <long-value>2</long-value>" + "  <double-value>3</double-value>"
+            + "  <string-value>foo</string-value>" + "  <important-things>"
+            + "    <important-thing><name>jason</name></important-thing>"
+            + "    <important-thing><name>tess</name></important-thing>" + "  </important-things>"
+            + "  <configuration>" + "      <name>jason</name>" + "  </configuration>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -112,11 +114,12 @@ public abstract class AbstractComponentConfiguratorTest
     public void testComponentConfiguratorWithAComponentThatProvidesSettersForConfiguration()
         throws Exception
     {
-        String xml = "<configuration>" + "  <int-value>0</int-value>" + "  <float-value>1</float-value>" +
-            "  <long-value>2</long-value>" + "  <double-value>3</double-value>" + "  <string-value>foo</string-value>" +
-            "  <important-things>" + "    <important-thing><name>jason</name></important-thing>" +
-            "    <important-thing><name>tess</name></important-thing>" + "  </important-things>" + "  <configuration>" +
-            "      <name>jason</name>" + "  </configuration>" + "</configuration>";
+        String xml = "<configuration>" + "  <int-value>0</int-value>" + "  <float-value>1</float-value>"
+            + "  <long-value>2</long-value>" + "  <double-value>3</double-value>"
+            + "  <string-value>foo</string-value>" + "  <important-things>"
+            + "    <important-thing><name>jason</name></important-thing>"
+            + "    <important-thing><name>tess</name></important-thing>" + "  </important-things>"
+            + "  <configuration>" + "      <name>jason</name>" + "  </configuration>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -206,12 +209,12 @@ public abstract class AbstractComponentConfiguratorTest
     public void testComponentConfigurationWhereFieldsAreCollections()
         throws Exception
     {
-        String xml = "<configuration>" + "  <vector>" + "    <important-thing>" + "       <name>life</name>" +
-            "    </important-thing>" + "  </vector>" + "  <set>" + "    <important-thing>" +
-            "       <name>life</name>" + "    </important-thing>" + "  </set>" +
-            "   <list implementation=\"java.util.LinkedList\">" + "     <important-thing>" +
-            "       <name>life</name>" + "    </important-thing>" + "  </list>" + "  <stringList>" +
-            "    <something>abc</something>" + "    <somethingElse>def</somethingElse>" + "  </stringList>" +
+        String xml = "<configuration>" + "  <vector>" + "    <important-thing>" + "       <name>life</name>"
+            + "    </important-thing>" + "  </vector>" + "  <set>" + "    <important-thing>"
+            + "       <name>life</name>" + "    </important-thing>" + "  </set>"
+            + "   <list implementation=\"java.util.LinkedList\">" + "     <important-thing>"
+            + "       <name>life</name>" + "    </important-thing>" + "  </list>" + "  <stringList>"
+            + "    <something>abc</something>" + "    <somethingElse>def</somethingElse>" + "  </stringList>" +
             // TODO: implement List<int> etc..
             //  "<intList>" +
             //  "  <something>12</something>" +
@@ -271,17 +274,17 @@ public abstract class AbstractComponentConfiguratorTest
     public void testComponentConfigurationWhereFieldsAreArrays()
         throws Exception
     {
-        String xml = "<configuration>" + "  <stringArray>" + "    <first-string>value1</first-string>" +
-            "    <second-string>value2</second-string>" + "  </stringArray>" + "  <integerArray>" +
-            "    <firstInt>42</firstInt>" + "    <secondInt>69</secondInt>" + "  </integerArray>" +
-            "  <importantThingArray>" + "    <importantThing><name>Hello</name></importantThing>" +
-            "    <importantThing><name>World!</name></importantThing>" + "  </importantThingArray>" +
-            "  <objectArray>" + "    <java.lang.String>some string</java.lang.String>" +
-            "    <importantThing><name>something important</name></importantThing>" +
-            "    <whatever implementation='java.lang.Integer'>303</whatever>" + "  </objectArray>" + "  <urlArray>" +
-            "    <url>http://foo.com/bar</url>" + "    <url>file://localhost/c:/windows</url>" + "  </urlArray>" +
-            "  <fileArray>" + "    <file>c:/windows</file>" + "    <file>/usr/local/bin/foo.sh</file>" +
-            "  </fileArray>" + "</configuration>";
+        String xml = "<configuration>" + "  <stringArray>" + "    <first-string>value1</first-string>"
+            + "    <second-string>value2</second-string>" + "  </stringArray>" + "  <integerArray>"
+            + "    <firstInt>42</firstInt>" + "    <secondInt>69</secondInt>" + "  </integerArray>"
+            + "  <importantThingArray>" + "    <importantThing><name>Hello</name></importantThing>"
+            + "    <importantThing><name>World!</name></importantThing>" + "  </importantThingArray>"
+            + "  <objectArray>" + "    <java.lang.String>some string</java.lang.String>"
+            + "    <importantThing><name>something important</name></importantThing>"
+            + "    <whatever implementation='java.lang.Integer'>303</whatever>" + "  </objectArray>" + "  <urlArray>"
+            + "    <url>http://foo.com/bar</url>" + "    <url>file://localhost/c:/windows</url>" + "  </urlArray>"
+            + "  <fileArray>" + "    <file>c:/windows</file>" + "    <file>/usr/local/bin/foo.sh</file>"
+            + "  </fileArray>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -352,9 +355,9 @@ public abstract class AbstractComponentConfiguratorTest
         throws Exception
     {
 
-        String xml = "<configuration>" +
-            "  <thing implementation=\"org.codehaus.plexus.component.configurator.ImportantThing\">" +
-            "     <name>I am not abstract!</name>" + "  </thing>" + "</configuration>";
+        String xml = "<configuration>"
+            + "  <thing implementation=\"org.codehaus.plexus.component.configurator.ImportantThing\">"
+            + "     <name>I am not abstract!</name>" + "  </thing>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -407,9 +410,10 @@ public abstract class AbstractComponentConfiguratorTest
         throws Exception
     {
 
-        String xml = "<configuration>" + "  <someProperties>" + "     <property>" + "        <name>firstname</name>" +
-            "        <value>michal</value>" + "     </property>" + "     <property>" + "        <name>lastname</name>" +
-            "        <value>maczka</value>" + "     </property>" + "  </someProperties>" + "</configuration>";
+        String xml = "<configuration>" + "  <someProperties>" + "     <property>" + "        <name>firstname</name>"
+            + "        <value>michal</value>" + "     </property>" + "     <property>"
+            + "        <name>lastname</name>" + "        <value>maczka</value>" + "     </property>"
+            + "  </someProperties>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
@@ -439,11 +443,62 @@ public abstract class AbstractComponentConfiguratorTest
 
     }
 
+    public void testComponentConfigurationWithPropertiesFieldsWithExpression()
+        throws Exception
+    {
+
+        String xml = "<configuration>" + " <someProperties> ${injectedProperties} </someProperties>" + "</configuration>";
+
+        final Properties propertiesInterpolated = new Properties();
+        propertiesInterpolated.put( "firstname", "olivier" );
+        propertiesInterpolated.put( "lastname", "lamy" );
+
+        ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator()
+        {
+            public Object evaluate( String expression )
+            {
+                return propertiesInterpolated;
+            }
+
+            public File alignToBaseDirectory( File file )
+            {
+                return null;
+            }
+        };
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithPropertiesField component = new ComponentWithPropertiesField();
+
+        ComponentConfigurator cc = getComponentConfigurator();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        cc.configureComponent( component, configuration, expressionEvaluator, realm );
+
+        Properties properties = component.getSomeProperties();
+
+        assertNotNull( properties );
+
+        assertEquals( "olivier", properties.get( "firstname" ) );
+
+        assertEquals( "lamy", properties.get( "lastname" ) );
+
+    }
+
     public void testComponentConfigurationWithMapField()
         throws Exception
     {
-        String xml = "<configuration>" + "  <map>" + "     <firstName>Kenney</firstName>" +
-            "     <lastName>Westerhof</lastName>" + "  </map>" + "</configuration>";
+        String xml = "<configuration>" + "  <map>" + "     <firstName>Kenney</firstName>"
+            + "     <lastName>Westerhof</lastName>" + "  </map>" + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
