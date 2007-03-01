@@ -439,7 +439,7 @@ public class PlexusContainerTest
     public void testLookupOfInternallyDefinedComponentConfigurator()
         throws Exception
     {
-        container.lookup( ComponentConfigurator.ROLE );
+        container.lookup( ComponentConfigurator.ROLE, "basic" );
     }
 
     public void testLookupOfComponentThatShouldBeDiscovered()
