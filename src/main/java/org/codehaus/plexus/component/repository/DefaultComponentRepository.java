@@ -308,12 +308,14 @@ public class DefaultComponentRepository
 
         maps.componentDescriptors.put( componentDescriptor.getComponentKey(), componentDescriptor );
 
+/*      I don't understand the reasoning behind this - Trygve
         // We need to be able to lookup by role only (in non-collection situations), even when the
         // component has a roleHint.
         if ( !maps.componentDescriptors.containsKey( role ) )
         {
             maps.componentDescriptors.put( role, componentDescriptor );
         }
+*/
     }
 
     public void validateComponentDescriptor( ComponentDescriptor componentDescriptor )

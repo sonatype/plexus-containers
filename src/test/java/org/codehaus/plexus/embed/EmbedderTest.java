@@ -55,7 +55,7 @@ public class EmbedderTest
 
             PlexusEmbedder embed = new Embedder( context, configuration );
 
-            Object o = embed.lookup( MockComponent.ROLE );
+            Object o = embed.lookup( MockComponent.ROLE, "default" );
 
             System.out.println( "o = " + o );
 
@@ -69,11 +69,11 @@ public class EmbedderTest
             // due to recreation of component for each lookup
             // Try it by removing comments but not commit this ;-)
 
-            Object m = embed.lookup( MockComponent.ROLE );
+            Object m = embed.lookup( MockComponent.ROLE, "default" );
 
             assertEquals( "not same hashCode for singleton component", o.hashCode(), m.hashCode() );
 
-            Object l = embed.lookup( MockComponent.ROLE );
+            Object l = embed.lookup( MockComponent.ROLE, "default" );
 
             assertEquals( "not same hashCode for singleton component", l.hashCode(), m.hashCode() );
 
