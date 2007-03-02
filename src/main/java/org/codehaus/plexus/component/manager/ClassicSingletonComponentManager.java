@@ -106,18 +106,23 @@ public class ClassicSingletonComponentManager
         while ( realm != null )
         {
             Object o = singletonMap.get( realm.getId() );
+
             if ( o != null )
+            {
                 return o;
+            }
+
             realm = realm.getParentRealm();
         }
+
         return null;
     }
 
     protected Object findSingleton( Object component )
     {
-        ClassRealm cr = container.getLookupRealm( component );
-
-        return singletonMap.get( cr == null ? container.getContainerRealm().getId() : cr.getId() );
+        ClassRealm classRealm = container.getLookupRealm( component );
+        
+        return singletonMap.get( classRealm == null ? container.getContainerRealm().getId() : classRealm.getId() );
     }
 
     // ----------------------------------------------------------------------------
