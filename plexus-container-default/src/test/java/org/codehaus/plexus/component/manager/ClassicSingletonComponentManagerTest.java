@@ -5,7 +5,7 @@ import org.codehaus.plexus.PlexusContainer;
 
 /**
  * @author Ben Walding
- * @version $Id$
+ * @version $Id: SlowComponentClassicSingletonComponentManagerTest.java 5493 2007-01-22 19:05:46Z kenney $
  */
 public class ClassicSingletonComponentManagerTest
     extends PlexusTestCase
@@ -23,10 +23,10 @@ public class ClassicSingletonComponentManagerTest
 
         d = (Component) lookup( Component.ROLE );
 
-        assertEquals( a, b );
+        assertTrue( a == b );
 
-        assertEquals( a, c );
+        assertTrue( a == c );
 
-        assertEquals( a, d );
+        assertTrue( a == d );
     }
 }
