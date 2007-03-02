@@ -56,7 +56,7 @@ public class ClassicSingletonComponentManager
             }
             else
             {
-                getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component );
+                getLogger().debug( "Component returned which is not the same manager. Ignored. component=" + component );
             }
         }
     }
