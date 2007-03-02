@@ -20,19 +20,16 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Jason van Zyl
- */
+/** @author Jason van Zyl */
 public class ComponentMap
     extends AbstractComponentCollection
     implements Map
 {
-    /**
-     * The Map of components we are holding keyed by role hint.
-     */
+    /** The Map of components we are holding keyed by role hint. */
     private Map components;
 
-    public ComponentMap( String role, Map components )
+    public ComponentMap( String role,
+                         Map components )
     {
         super( role );
 
@@ -64,7 +61,8 @@ public class ComponentMap
         return components.get( key );
     }
 
-    public Object put( Object key, Object value )
+    public Object put( Object key,
+                       Object value )
     {
         return components.put( key, value );
     }
