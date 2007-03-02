@@ -145,6 +145,5 @@ public class ConfigurationProcessorTest
         // ----------------------------------------------------------------------
 
         assertEquals( "slacker", processed.getChild( "occupation" ).getValue() );
-
     }
 }

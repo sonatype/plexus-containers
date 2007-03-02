@@ -16,9 +16,7 @@ package org.codehaus.plexus.component.collections;
  * limitations under the License.
  */
 
-/**
- * @author Jason van Zyl
- */
+/** @author Jason van Zyl */
 
 // We need to have the collection notified when a new implementation of a given role has
 // been added to the container. We probably need some options so that we know when new
@@ -27,13 +25,23 @@ package org.codehaus.plexus.component.collections;
 
 public class AbstractComponentCollection
 {
-    /**
-     * The role of the components we are holding in this Map.
-     */
+    /** The role of the components we are holding in this Collection. */
     protected String role;
+
+    /** The role hint of the components we are holding in this Collection. */
+    protected String roleHint;
 
     public AbstractComponentCollection( String role )
     {
         this.role = role;
+    }
+
+
+    public AbstractComponentCollection( String role,
+                                        String roleHint )
+    {
+        this( role );
+
+        this.roleHint = roleHint;
     }
 }
