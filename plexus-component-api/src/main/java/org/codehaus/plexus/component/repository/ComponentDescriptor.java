@@ -515,7 +515,7 @@ public class ComponentDescriptor
 
     public String toString()
     {
-        return getClass().getName() + " [role: '" + getRole() + "', hint: '" + getRoleHint() + "' realm: "
+        return getClass().getName() + " [role: '" + getRole() + "', hint: '" + getRoleHint() + "', realm: "
             + ( realmId == null ? "NULL" : "'" + realmId + "'" ) + "]";
     }
 

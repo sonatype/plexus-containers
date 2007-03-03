@@ -309,13 +309,14 @@ public class DefaultComponentRepository
         maps.componentDescriptors.put( componentDescriptor.getComponentKey(), componentDescriptor );
 
 /*      I don't understand the reasoning behind this - Trygve
+        Trygve is right, this needs to be removed, but too many things depend on this "feature" atm, needs to be fixed properly
+          falling back to a "default" role hint or something. Andy */
         // We need to be able to lookup by role only (in non-collection situations), even when the
         // component has a roleHint.
         if ( !maps.componentDescriptors.containsKey( role ) )
         {
             maps.componentDescriptors.put( role, componentDescriptor );
         }
-*/
     }
 
     public void validateComponentDescriptor( ComponentDescriptor componentDescriptor )
