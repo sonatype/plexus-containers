@@ -293,6 +293,6 @@ public class DefaultComponentRepository
 
     public List getComponentDependencies( ComponentDescriptor componentDescriptor )
     {
-        return compositionResolver.getRequirements( componentDescriptor.getComponentKey() );
+        return compositionResolver.getRequirements( componentDescriptor.getRole(), componentDescriptor.getRoleHint() );
     }
 }

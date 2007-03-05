@@ -93,13 +93,13 @@ public abstract class AbstractCompositionResolverTest
 
         compositionResolver.addComponentDescriptor( c3 );
 
-        List dependencies = compositionResolver.getRequirements( c1.getComponentKey() );
+        List dependencies = compositionResolver.getRequirements( c1.getRole(), c1.getRoleHint() );
 
         assertEquals( 2, dependencies.size() );
 
-        assertTrue( dependencies.contains( c2.getRole() ) );
+        assertTrue( dependencies.contains( c2.getRole() + CompositionResolver.SEPARATOR_CHAR + c2.getRoleHint() ) );
 
-        assertTrue( dependencies.contains( c3.getRole() ) );
+        assertTrue( dependencies.contains( c3.getRole() + CompositionResolver.SEPARATOR_CHAR + c2.getRoleHint() ) );
 
         assertEquals( 2, dependencies.size() );
     }
@@ -190,7 +190,7 @@ public abstract class AbstractCompositionResolverTest
 
         compositionResolver.addComponentDescriptor( c5 );
 
-        List dependencies = compositionResolver.getRequirements( c1.getComponentKey() );
+        List dependencies = compositionResolver.getRequirements( c1.getRole(), c1.getRoleHint() );
 
         assertEquals( 2, dependencies.size() );
 

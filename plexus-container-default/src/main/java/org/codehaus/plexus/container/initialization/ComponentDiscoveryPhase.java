@@ -132,10 +132,10 @@ public class ComponentDiscoveryPhase
                             && !orig.getRealmId().equals( componentDescriptor.getRealmId() ) )
                         {
                             container.getLogger().debug( "Duplicate component found, merging:" + "\n  Original: "
-                                + orig.getRealmId() + ": " + orig.getComponentKey() + " impl="
+                                + orig.getRealmId() + ": " + orig.getRole() + " [" + orig.getRoleHint() + "] impl="
                                 + orig.getImplementation() + "\n  Config: " + orig.getConfiguration()
                                 + "\n  New:      " + componentDescriptor.getRealmId() + ": "
-                                + componentDescriptor.getComponentKey() + " impl="
+                                + componentDescriptor.getRole() + " [" + orig.getRoleHint() + "] impl="
                                 + componentDescriptor.getImplementation() + "\n  Config: " + orig.getConfiguration() );
 
                             PlexusComponentDescriptorMerger.merge( componentDescriptor, orig );

@@ -38,7 +38,7 @@ public class DefaultCompositionResolver
     public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
-        String componentKey = componentDescriptor.getComponentKey();
+        String key = getDAGKey( componentDescriptor.getRole(), componentDescriptor.getRoleHint() );
 
         List requirements = componentDescriptor.getRequirements();
 
@@ -48,7 +48,7 @@ public class DefaultCompositionResolver
 
             try
             {
-                dag.addEdge( componentKey, requirement.getRole() );
+                dag.addEdge( key, getDAGKey( requirement.getRole(), requirement.getRoleHint() ) );
             }
             catch ( CycleDetectedException e )
             {
@@ -58,19 +58,24 @@ public class DefaultCompositionResolver
     }
 
     /**
-     * @see org.codehaus.plexus.component.composition.CompositionResolver#getRequirements(java.lang.String)
+     * @see org.codehaus.plexus.component.composition.CompositionResolver#getRequirements(String,String)
      */
-    public List getRequirements( String componentKey )
+    public List getRequirements( String role, String roleHint )
     {
-        return dag.getChildLabels( componentKey );
+        return dag.getChildLabels( getDAGKey( role, roleHint ) );
     }
 
 
     /**
-     * @see org.codehaus.plexus.component.composition.CompositionResolver#findRequirements(java.lang.String)
+     * @see org.codehaus.plexus.component.composition.CompositionResolver#findRequirements(String,String)
      */
-    public List findRequirements( String componentKey )
+    public List findRequirements( String role, String roleHint )
     {
-        return dag.getParentLabels( componentKey );
+        return dag.getParentLabels( getDAGKey( role, roleHint ) );
+    }
+
+    private String getDAGKey( String role, String roleHint )
+    {
+        return role + SEPARATOR_CHAR + roleHint;
     }
 }

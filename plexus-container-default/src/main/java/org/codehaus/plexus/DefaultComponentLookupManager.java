@@ -291,15 +291,15 @@ public class DefaultComponentLookupManager
         }
         catch ( UndefinedComponentManagerException e )
         {
-            String message = "Cannot create component manager for " + descriptor.getComponentKey()
-                + ", so we cannot provide a component instance.";
+            String message = "Cannot create component manager for " + descriptor.getRole() + " ["
+                + descriptor.getRoleHint() + "], so we cannot provide a component instance.";
 
             throw new ComponentLookupException( message, e );
         }
         catch ( UndefinedLifecycleHandlerException e )
         {
-            String message = "Cannot create component manager for " + descriptor.getComponentKey()
-                + ", so we cannot provide a component instance.";
+            String message = "Cannot create component manager for " + descriptor.getRole() + " ["
+                + descriptor.getRoleHint() + "], so we cannot provide a component instance.";
 
             throw new ComponentLookupException( message, e );
         }

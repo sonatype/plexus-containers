@@ -84,21 +84,6 @@ public class ComponentDescriptor
     // ----------------------------------------------------------------------
 
     /**
-     * Returns a unique key created as a combination of role+hint.
-     * @return a unique key for this component
-     * @deprecated the role+hint in one String is being removed
-     */
-    public String getComponentKey()
-    {
-        if ( getRoleHint() != null )
-        {
-            return getRole() + getRoleHint();
-        }
-
-        return getRole();
-    }
-
-    /**
      * Returns a human-friendly key, suitable for display.
      * @return a human-friendly key
      */
