@@ -20,6 +20,8 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.LoggerManager;
 
+import java.util.Map;
+
 /**
  * @author Jason van Zyl
  */
@@ -40,7 +42,10 @@ public class InitializeLoggerManagerPhase
         {
             try
             {
-                loggerManager = (LoggerManager) context.getContainer().lookup( LoggerManager.ROLE );
+                /* as we do not know what logger role hint has been configured pull the first logger we find. Andy
+                 * TODO - figure how to make this more determanistic? */
+                Map loggers = context.getContainer().lookupMap( LoggerManager.ROLE );
+                loggerManager = (LoggerManager) loggers.get( loggers.keySet().iterator().next() );
 
                 context.getContainer().setLoggerManager( loggerManager );
             }

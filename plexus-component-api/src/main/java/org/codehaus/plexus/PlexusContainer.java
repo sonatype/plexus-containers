@@ -214,20 +214,40 @@ public interface PlexusContainer
     // ----------------------------------------------------------------------
 
     /**
-     * Returns the ComponentDescriptor with the given component key. Searches up the hierarchy until one is found, null
-     * if none is found.
-     * @param componentKey a unique key for the desired component's descriptor
-     * @return the ComponentDescriptor with the given component key
+     * Returns the ComponentDescriptor with the given component role and the default role hint.
+     * Searches up the hierarchy until one is found, null if none is found.
+     * @param role a unique role for the desired component's descriptor
+     * @return the ComponentDescriptor with the given component role
      */
-    ComponentDescriptor getComponentDescriptor( String componentKey );
+    ComponentDescriptor getComponentDescriptor( String role );
 
     /**
-     * Returns the ComponentDescriptor with the given component key. Searches up the hierarchy until one is found, null
-     * if none is found.
-     * @param componentKey a unique key for the desired component's descriptor
-     * @return the ComponentDescriptor with the given component key
+     * Returns the ComponentDescriptor with the given component role and hint.
+     * Searches up the hierarchy until one is found, null if none is found.
+     * @param role a unique role for the desired component's descriptor
+     * @param roleHint a hint showing which implementation should be used
+     * @return the ComponentDescriptor with the given component role
      */
-    ComponentDescriptor getComponentDescriptor( String componentKey, ClassRealm componentRealm );
+    ComponentDescriptor getComponentDescriptor( String role, String roleHint );
+
+    /**
+     * Returns the ComponentDescriptor with the given component role and the default role hint.
+     * Searches up the hierarchy until one is found, null if none is found.
+     * @param role a unique role for the desired component's descriptor
+     * @param realm The class realm to search
+     * @return the ComponentDescriptor with the given component role
+     */
+    ComponentDescriptor getComponentDescriptor( String role, ClassRealm realm );
+
+    /**
+     * Returns the ComponentDescriptor with the given component role and hint.
+     * Searches up the hierarchy until one is found, null if none is found.
+     * @param role a unique role for the desired component's descriptor
+     * @param roleHint a hint showing which implementation should be used
+     * @param realm The class realm to search
+     * @return the ComponentDescriptor with the given component role
+     */
+    ComponentDescriptor getComponentDescriptor( String role, String roleHint, ClassRealm realm );
 
     /**
      * Returns a Map of ComponentDescriptors with the given role, keyed by role-hint. Searches up the hierarchy until
@@ -299,17 +319,16 @@ public interface PlexusContainer
 
     /**
      * Returns true if this container has the keyed component.
-     * @param componentKey
+     * @param role
      * @return true if this container has the keyed component
      */
-    boolean hasComponent( String componentKey );
+    boolean hasComponent( String role );
 
     /**
      * Returns true if this container has a component with the given role/role-hint.
      * @param role
      * @param roleHint
      * @return true if this container has a component with the given role/role-hint
-     * @deprecated
      */
     boolean hasComponent( String role, String roleHint );
 

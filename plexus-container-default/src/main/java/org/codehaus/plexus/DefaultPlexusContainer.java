@@ -289,7 +289,12 @@ public class DefaultPlexusContainer
         throws ComponentLookupException
     {
         return lookup( componentKey, getLookupRealm() );
-        // componentLookupManager.lookup( componentKey, (ClassRealm) null );
+    }
+
+    public Object lookup( String componentKey, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookup( componentKey, realm );
     }
 
     public Map lookupMap( String role )
@@ -302,12 +307,6 @@ public class DefaultPlexusContainer
         throws ComponentLookupException
     {
         return componentLookupManager.lookupMap( role, realm );
-    }
-
-    public Object lookup( String componentKey, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookup( componentKey, realm );
     }
 
     public List lookupList( String role )
@@ -550,26 +549,36 @@ public class DefaultPlexusContainer
     // Component Descriptor Lookup
     // ----------------------------------------------------------------------
 
-    public ComponentDescriptor getComponentDescriptor( String componentKey )
+    public ComponentDescriptor getComponentDescriptor( String role )
     {
-        return getComponentDescriptor( componentKey, getLookupRealm() );
+        return getComponentDescriptor( role, getLookupRealm() );
     }
 
-    public ComponentDescriptor getComponentDescriptor( String componentKey, ClassRealm classRealm )
+    public ComponentDescriptor getComponentDescriptor( String role, ClassRealm realm )
     {
-        ComponentDescriptor result = componentRepository.getComponentDescriptor( componentKey, classRealm );
+        return getComponentDescriptor( role, PlexusConstants.PLEXUS_DEFAULT_HINT, realm );
+    }
+
+    public ComponentDescriptor getComponentDescriptor( String role, String hint )
+    {
+        return getComponentDescriptor( role, hint, getLookupRealm() );
+    }
+
+    public ComponentDescriptor getComponentDescriptor( String role, String hint, ClassRealm classRealm )
+    {
+        ComponentDescriptor result = componentRepository.getComponentDescriptor( role, hint, classRealm );
 
         ClassRealm tmpRealm = classRealm.getParentRealm();
 
         while ( result == null && tmpRealm != null )
         {
-            result = componentRepository.getComponentDescriptor( componentKey, classRealm );
+            result = componentRepository.getComponentDescriptor( role, hint, classRealm );
             tmpRealm = tmpRealm.getParentRealm();
         }
 
         if ( result == null && parentContainer != null )
         {
-            result = parentContainer.getComponentDescriptor( componentKey, classRealm );
+            result = parentContainer.getComponentDescriptor( role, hint, classRealm );
         }
 
         return result;
@@ -612,27 +621,9 @@ public class DefaultPlexusContainer
     {
         List result;
 
-        Map componentDescriptorsByHint = getComponentDescriptorMap( role, realm );
+        Map componentDescriptors = getComponentDescriptorMap( role, realm );
 
-        if ( componentDescriptorsByHint != null )
-        {
-            result = new ArrayList( componentDescriptorsByHint.values() );
-        }
-        else
-        {
-            // XXX why is it unhinted? the getComponentDescriptor's param is named 'componentKey'
-            ComponentDescriptor unhintedDescriptor = getComponentDescriptor( role, realm );
-
-            if ( unhintedDescriptor != null )
-            {
-                result = Collections.singletonList( unhintedDescriptor );
-            }
-            else
-            {
-                result = Collections.EMPTY_LIST;
-            }
-        }
-        return result;
+        return new ArrayList( componentDescriptors.values() );
     }
 
     public void addComponentDescriptor( ComponentDescriptor componentDescriptor )

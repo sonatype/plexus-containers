@@ -18,6 +18,7 @@ package org.codehaus.plexus.container.initialization;
 
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.PlexusConstants;
 
 /**
  * @author Jason van Zyl
@@ -49,11 +50,10 @@ public class StartLoadOnStartComponentsPhase
             {
                 if ( roleHint == null )
                 {
-                    context.getContainer().getLogger().info( "Loading on start [role]: " + "[" + role + "]" );
-
-                    context.getContainer().lookup( role );
+                    roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
                 }
-                else if ( roleHint.equals( "*" ) )
+
+                if ( roleHint.equals( "*" ) )
                 {
                     context.getContainer().getLogger().info(
                         "Loading on start all components with [role]: " + "[" + role + "]" );

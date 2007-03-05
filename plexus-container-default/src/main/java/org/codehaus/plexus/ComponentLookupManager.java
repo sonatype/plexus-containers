@@ -32,72 +32,48 @@ public interface ComponentLookupManager
 
     void setContainer( MutablePlexusContainer container );
 
-    /**
-     * @deprecated
-     */
     Object lookup( String componentKey )
         throws ComponentLookupException;
 
     Object lookup( String componentKey, ClassRealm realm )
         throws ComponentLookupException;
 
-    /**
-     * @deprecated
-     */
     Object lookup( String role, String roleHint )
         throws ComponentLookupException;
 
     Object lookup( String role, String roleHint, ClassRealm realm )
         throws ComponentLookupException;
 
-    /**
-     * @deprecated
-     */
     Object lookup( Class role, String roleHint )
         throws ComponentLookupException;
 
     Object lookup( Class role, String roleHint, ClassRealm realm )
         throws ComponentLookupException;
 
-    /**
-     * @deprecated
-     */
     Object lookup( Class componentClass )
         throws ComponentLookupException;
 
     Object lookup( Class componentClass, ClassRealm realm )
         throws ComponentLookupException;
 
-    /**
-     * @deprecated
-     */
     Map lookupMap( String role )
         throws ComponentLookupException;
 
     Map lookupMap( String role, ClassRealm realm )
         throws ComponentLookupException;
 
-    /**
-     * @deprecated
-     */
     List lookupList( String role )
         throws ComponentLookupException;
 
     List lookupList( String role, ClassRealm realm )
         throws ComponentLookupException;
 
-    /**
-     * @deprecated
-     */
     List lookupList( Class role )
         throws ComponentLookupException;
 
     List lookupList( Class role, ClassRealm realm )
         throws ComponentLookupException;
 
-    /**
-     * @deprecated
-     */
     Map lookupMap( Class role )
         throws ComponentLookupException;
 

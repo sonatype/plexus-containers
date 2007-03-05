@@ -42,6 +42,7 @@ public class RegisterComponentDiscoveryListenersPhase
                 DiscoveryListenerDescriptor listenerDescriptor = (DiscoveryListenerDescriptor) i.next();
 
                 String role = listenerDescriptor.getRole();
+                String roleHint = listenerDescriptor.getRoleHint();
 
                 try
                 {
@@ -51,16 +52,16 @@ public class RegisterComponentDiscoveryListenersPhase
 
                     if ( container.getParentContainer() != null )
                     {
-                        listener = (ComponentDiscoveryListener) container.getParentContainer().lookup( role );
+                        listener = (ComponentDiscoveryListener) container.getParentContainer().lookup( role, roleHint );
 
                         if ( listener == null )
                         {
-                            listener = (ComponentDiscoveryListener) container.lookup( role );
+                            listener = (ComponentDiscoveryListener) container.lookup( role, roleHint );
                         }
                     }
                     else
                     {
-                        listener = (ComponentDiscoveryListener) container.lookup( role );
+                        listener = (ComponentDiscoveryListener) container.lookup( role, roleHint );
                     }
 
                     container.getComponentDiscovererManager().registerComponentDiscoveryListener( listener );

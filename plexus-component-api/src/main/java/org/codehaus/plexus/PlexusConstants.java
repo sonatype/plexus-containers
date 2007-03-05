@@ -30,4 +30,6 @@ public abstract class PlexusConstants
     /** Key used to retrieve the core classworlds realm from the containerContext.*/
     public static final String PLEXUS_CORE_REALM = "containerRealm";
 
+    /** The role-hint to use for components or lookups that do not specify a role.*/
+    public static final String PLEXUS_DEFAULT_HINT = "default";
 }

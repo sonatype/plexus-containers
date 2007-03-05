@@ -175,6 +175,7 @@
   <components>
     <component>
       <role>org.codehaus.plexus.logging.LoggerManager</role>
+      <role-hint>default</role-hint>
       <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
       <lifecycle-handler>basic</lifecycle-handler>
       <configuration>

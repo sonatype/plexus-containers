@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component.repository;
 
+import org.codehaus.plexus.PlexusConstants;
+
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -26,7 +28,7 @@ public final class ComponentRequirement
 {
     private String role;
 
-    private String roleHint;
+    private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
 
     private String fieldName;
     
@@ -80,26 +82,19 @@ public final class ComponentRequirement
 
     /**
      * Sets the role-hint of the require component.
+     * Pasing null will set the hint to the default value.
      * @param roleHint the required component's role-hint
      */
     public void setRoleHint( String roleHint )
     {
-        this.roleHint = roleHint;
-    }
-
-    /**
-     * Returns the key of this requirement. This may be the
-     * role+roleHint, or just the role if no hint exists.
-     * @return the key of this requirement
-     */
-    public String getRequirementKey()
-    {
-        if ( getRoleHint() != null )
+        if ( roleHint == null || roleHint.trim().equals( "" ) )
         {
-            return getRole() + getRoleHint();
+            this.roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
         }
-
-        return getRole();
+        else
+        {
+            this.roleHint = roleHint;
+        }
     }
 
     /**

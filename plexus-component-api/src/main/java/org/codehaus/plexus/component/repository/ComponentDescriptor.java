@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.PlexusConstants;
 
 /**
  * Component instantiation description.
@@ -35,7 +36,7 @@ public class ComponentDescriptor
 
     private String role = null;
 
-    private String roleHint = null;
+    private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
 
     private String implementation = null;
 
@@ -85,6 +86,7 @@ public class ComponentDescriptor
     /**
      * Returns a unique key created as a combination of role+hint.
      * @return a unique key for this component
+     * @deprecated the role+hint in one String is being removed
      */
     public String getComponentKey()
     {
@@ -169,11 +171,19 @@ public class ComponentDescriptor
 
     /**
      * Sets the role-hint of this component.
+     * Pasing null will set the hint to the default value.
      * @param roleHint this component's role-hint
      */
     public void setRoleHint( String roleHint )
     {
-        this.roleHint = roleHint;
+        if ( roleHint == null || roleHint.trim().equals( "" ) )
+        {
+            this.roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
+        }
+        else
+        {
+            this.roleHint = roleHint;
+        }
     }
 
     /**
