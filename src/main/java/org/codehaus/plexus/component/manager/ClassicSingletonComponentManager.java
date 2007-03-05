@@ -56,7 +56,7 @@ public class ClassicSingletonComponentManager
             }
             else
             {
-                getLogger().debug( "Component returned which is not the same manager. Ignored. component=" + component );
+                getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component, new Exception() );
             }
         }
     }
@@ -122,7 +122,7 @@ public class ClassicSingletonComponentManager
     {
         ClassRealm classRealm = container.getLookupRealm( component );
         
-        return singletonMap.get( classRealm == null ? container.getContainerRealm().getId() : classRealm.getId() );
+        return findSingleton( classRealm == null ? container.getContainerRealm() : classRealm );
     }
 
     // ----------------------------------------------------------------------------
