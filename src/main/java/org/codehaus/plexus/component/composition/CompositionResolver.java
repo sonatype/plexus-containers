@@ -27,6 +27,7 @@ import java.util.List;
  */
 public interface CompositionResolver
 {
+    public static final char SEPARATOR_CHAR = ':';
 
     /**
      * @param componentDescriptor
@@ -36,22 +37,26 @@ public interface CompositionResolver
 
     /**
      * Returns the list of names of components which are required
-     * by the component of given componentKey.
+     * by the component of given role and roleHint.
+     * The names returned are in the form role:hint, where : is defined in SEPARATOR_CHAR.
      *
-     * @param componentKey The name of the component
+     * @param role The name of the component
+     * @param roleHint The implementation hint of the component
      * @return The list of components which are required by given component
      */
-    List getRequirements( String componentKey );
+    List getRequirements( String role, String roleHint );
 
 
     /**
      * Returns the list of names of components which are using the component.
-     * of given componentKey
+     * of given role and roleHint.
+     * The names returned are in the form role:hint, where : is defined in SEPARATOR_CHAR.
      *
-     * @param componentKey The name of the component
+     * @param role The name of the component
+     * @param roleHint The implementation hint of the component
      * @return The list of components which are requiring given component
      */
-    List findRequirements( String componentKey );
+    List findRequirements( String role, String roleHint );
 
 
 }
