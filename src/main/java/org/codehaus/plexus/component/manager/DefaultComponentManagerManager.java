@@ -18,6 +18,7 @@ package org.codehaus.plexus.component.manager;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
@@ -76,7 +77,14 @@ public class DefaultComponentManagerManager
 
 
     public ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
-                                                    String componentKey )
+                                                    String role )
+        throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException
+    {
+        return createComponentManager( descriptor, container, role, PlexusConstants.PLEXUS_DEFAULT_HINT );
+    }
+
+    public ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
+                                                    String role, String roleHint )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException
     {
         String componentManagerId = descriptor.getInstantiationStrategy();
@@ -94,13 +102,15 @@ public class DefaultComponentManagerManager
 
         componentManager.initialize();
 
-        if ( StringUtils.equals( componentKey, descriptor.getComponentKey() ) )
+        if ( StringUtils.equals( role, descriptor.getRole() ) &&
+            StringUtils.equals( roleHint, descriptor.getRoleHint() ) )
         {
-            activeComponentManagers.put( descriptor.getRealmId() + "/" + descriptor.getComponentKey(), componentManager );
+            activeComponentManagers.put( descriptor.getRealmId() + "/" + descriptor.getRole() + "/" +
+                                         descriptor.getRoleHint(), componentManager );
         }
         else
         {
-            activeComponentManagers.put( descriptor.getRealmId() + "/" + componentKey, componentManager );
+            activeComponentManagers.put( descriptor.getRealmId() + "/" + role + "/" + roleHint, componentManager );
         }
 
         return componentManager;
@@ -117,12 +127,12 @@ public class DefaultComponentManagerManager
 //        return findComponentManagerByComponentKey( componentKey, container.getLookupRealm() );
 //    }
 
-    public ComponentManager findComponentManagerByComponentKey( String componentKey, ClassRealm lookupRealm )
+    public ComponentManager findComponentManagerByComponentKey( String role, String roleHint, ClassRealm lookupRealm )
     {
         while ( lookupRealm != null )
         {
             ComponentManager mgr = (ComponentManager) activeComponentManagers.get( lookupRealm.getId() + "/"
-                + componentKey );
+                + role + "/" + roleHint );
 
             if ( mgr != null )
             {

@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.composition;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
@@ -87,24 +88,21 @@ public class MapOrientedComponentComposer
 
             Object value = null;
 
-            // if the hint is not empty, we don't care about mapping type...it's a single-value, not a collection.
-            if ( StringUtils.isNotEmpty( hint ) )
+            // if the hint is not empty (and not default), we don't care about mapping type...
+            // it's a single-value, not a collection.
+            if ( StringUtils.isNotEmpty( hint ) && !hint.equals( PlexusConstants.PLEXUS_DEFAULT_HINT ) )
             {
-                String key = requirement.getRequirementKey();
+                value = container.lookup( role, hint );
 
-                value = container.lookup( key );
-
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, componentRealm );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( role, hint, componentRealm );
 
                 retValue = Collections.singletonList( componentDescriptor );
             }
             else if ( SINGLE_MAPPING_TYPE.equals( mappingType ) )
             {
-                String key = requirement.getRequirementKey();
+                value = container.lookup( role, hint );
 
-                value = container.lookup( key );
-
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, componentRealm );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( role, hint, componentRealm );
 
                 retValue = Collections.singletonList( componentDescriptor );
             }
@@ -122,11 +120,9 @@ public class MapOrientedComponentComposer
             }
             else
             {
-                String key = requirement.getRequirementKey();
+                value = container.lookup( role, hint );
 
-                value = container.lookup( key );
-
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, componentRealm );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( role, hint, componentRealm );
 
                 retValue = Collections.singletonList( componentDescriptor );
             }

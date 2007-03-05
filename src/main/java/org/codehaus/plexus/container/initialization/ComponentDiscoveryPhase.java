@@ -103,7 +103,7 @@ public class ComponentDiscoveryPhase
                         // Use the parent realm to search for the original descriptor. It won't
                         // be in the current realm (yet).
                         ComponentDescriptor orig = container.getComponentDescriptor( componentDescriptor
-                            .getComponentKey(), realm );
+                            .getRole(), componentDescriptor.getRoleHint(), realm );
 
                         // System.out.println("Found new descriptor: " + componentDescriptor.getHumanReadableKey() + "
                         // realm="+ componentDescriptor.getRealmId() );

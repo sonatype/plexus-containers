@@ -25,6 +25,8 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 
+import java.util.Map;
+
 public class LogEnablePhase
     extends AbstractPhase
 {
@@ -36,7 +38,10 @@ public class LogEnablePhase
             LoggerManager loggerManager;
             try
             {
-                loggerManager = (LoggerManager) componentManager.getContainer().lookup( LoggerManager.ROLE, lookupRealm );
+                /* as we do not know what logger role hint has been configured pull the first logger we find. Andy
+                 * TODO - figure how to make this more determanistic? */
+                Map loggers = componentManager.getContainer().lookupMap( LoggerManager.ROLE, lookupRealm );
+                loggerManager = (LoggerManager) loggers.get( loggers.keySet().iterator().next() );
             }
             catch ( ComponentLookupException e )
             {

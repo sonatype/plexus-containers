@@ -179,6 +179,7 @@ public abstract class AbstractComponentComposer
             Object assignment;
 
             String role = requirement.getRole();
+            String roleHint = requirement.getRoleHint();
 
             if ( clazz.isArray() )
             {
@@ -230,11 +231,9 @@ public abstract class AbstractComponentComposer
             }
             else
             {
-                String key = requirement.getRequirementKey();
+                assignment = container.lookup( role, roleHint, lookupRealm );
 
-                assignment = container.lookup( key, lookupRealm );
-
-                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( key, lookupRealm );
+                ComponentDescriptor componentDescriptor = container.getComponentDescriptor( role, roleHint, lookupRealm );
 
                 componentDescriptors = new ArrayList( 1 );
 

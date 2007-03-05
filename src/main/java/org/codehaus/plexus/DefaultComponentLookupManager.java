@@ -66,54 +66,7 @@ public class DefaultComponentLookupManager
     public Object lookup( String componentRole, ClassRealm realm )
         throws ComponentLookupException
     {
-        Object component;
-
-        ComponentManager componentManager = container.getComponentManagerManager()
-            .findComponentManagerByComponentKey( componentRole, realm );
-
-        // The first time we lookup a component a component manager will not exist so we ask the
-        // component manager manager to create a component manager for us. Also if we are reloading
-        // components then we'll also get a new component manager.
-
-        if ( container.isReloadingEnabled() || componentManager == null )
-        {
-            ComponentDescriptor descriptor = container.getComponentRepository().getComponentDescriptor( componentRole,
-                                                                                                        realm );
-
-            if ( descriptor == null )
-            {
-                if ( container.getParentContainer() != null )
-                {
-                    return container.getParentContainer().lookup( componentRole, realm );
-                }
-
-                String message = "Component descriptor cannot be found in the component repository: " + componentRole
-                    + " (lookup realm: " + realm + ").";
-
-                throw new ComponentLookupException( message );
-            }
-
-            componentManager = createComponentManager( descriptor, componentRole );
-        }
-
-        try
-        {
-            component = componentManager.getComponent( realm );
-        }
-        catch ( ComponentInstantiationException e )
-        {
-            throw new ComponentLookupException( "Unable to lookup component '" + componentRole
-                + "', it could not be created", e );
-        }
-        catch ( ComponentLifecycleException e )
-        {
-            throw new ComponentLookupException( "Unable to lookup component '" + componentRole
-                + "', it could not be started", e );
-        }
-
-        container.getComponentManagerManager().associateComponentWithComponentManager( component, componentManager );
-
-        return component;
+        return lookup( componentRole, PlexusConstants.PLEXUS_DEFAULT_HINT, realm );
     }
 
     public Object lookup( Class componentClass )
@@ -138,22 +91,75 @@ public class DefaultComponentLookupManager
         return lookup( role.getName(), roleHint, realm );
     }
 
-    public Object lookup( String role, String roleHint, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return lookup( role + roleHint, realm );
-    }
-
     public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
-        return lookup( role + roleHint );
+        return lookup( role, roleHint, container.getLookupRealm() );
     }
 
     public Object lookup( Class role, String roleHint )
         throws ComponentLookupException
     {
         return lookup( role.getName(), roleHint );
+    }
+
+    public Object lookup( String componentRole, String roleHint, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        Object component;
+
+        if ( roleHint == null )
+        {
+            roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
+        }
+
+        ComponentManager componentManager = container.getComponentManagerManager()
+            .findComponentManagerByComponentKey( componentRole, roleHint, realm );
+
+        // The first time we lookup a component a component manager will not exist so we ask the
+        // component manager manager to create a component manager for us. Also if we are reloading
+        // components then we'll also get a new component manager.
+
+        if ( container.isReloadingEnabled() || componentManager == null )
+        {
+            ComponentDescriptor descriptor = container.getComponentRepository().getComponentDescriptor( componentRole,
+                                                                                                        roleHint,
+                                                                                                        realm );
+
+            if ( descriptor == null )
+            {
+                if ( container.getParentContainer() != null )
+                {
+                    return container.getParentContainer().lookup( componentRole, roleHint, realm );
+                }
+
+                String message = "Component descriptor cannot be found in the component repository: " + componentRole
+                    + " [" + roleHint + "]" + " (lookup realm: " + realm + ").";
+
+                throw new ComponentLookupException( message );
+            }
+
+            componentManager = createComponentManager( descriptor, componentRole, roleHint );
+        }
+
+        try
+        {
+            component = componentManager.getComponent( realm );
+        }
+        catch ( ComponentInstantiationException e )
+        {
+            throw new ComponentLookupException( "Unable to lookup component '" + componentRole
+                + "', it could not be created", e );
+        }
+        catch ( ComponentLifecycleException e )
+        {
+            throw new ComponentLookupException( "Unable to lookup component '" + componentRole
+                + "', it could not be started", e );
+        }
+
+        container.getComponentManagerManager().associateComponentWithComponentManager( component, componentManager );
+
+        return component;
     }
 
     // ----------------------------------------------------------------------------
@@ -250,16 +256,7 @@ public class DefaultComponentLookupManager
 
                 String roleHint = descriptor.getRoleHint();
 
-                Object component;
-
-                if ( roleHint != null )
-                {
-                    component = lookup( role, roleHint, realm );
-                }
-                else
-                {
-                    component = lookup( role, realm );
-                }
+                Object component = lookup( role, roleHint, realm );
 
                 components.add( component );
             }
@@ -281,7 +278,7 @@ public class DefaultComponentLookupManager
     //
     // ----------------------------------------------------------------------------
 
-    private ComponentManager createComponentManager( ComponentDescriptor descriptor, String componentKey )
+    private ComponentManager createComponentManager( ComponentDescriptor descriptor, String role, String roleHint )
         throws ComponentLookupException
     {
         ComponentManager componentManager;
@@ -290,7 +287,7 @@ public class DefaultComponentLookupManager
         {
             componentManager = container.getComponentManagerManager().createComponentManager( descriptor,
                                                                                               container,
-                                                                                              componentKey );
+                                                                                              role, roleHint );
         }
         catch ( UndefinedComponentManagerException e )
         {

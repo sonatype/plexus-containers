@@ -38,10 +38,10 @@ public class PlexusContainerLocator
         this.container = container;
     }
 
-    public Object lookup( String componentKey )
+    public Object lookup( String role )
         throws ComponentLookupException
     {
-        return container.lookup( componentKey );
+        return container.lookup( role );
     }
 
     public Object lookup( String role,

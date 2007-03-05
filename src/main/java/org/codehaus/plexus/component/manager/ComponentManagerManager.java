@@ -50,12 +50,16 @@ public interface ComponentManagerManager
 //     */
 //    ComponentManager findComponentManagerByComponentKey( String componentKey );
 
-    ComponentManager findComponentManagerByComponentKey( String componentKey, ClassRealm realm );
+    ComponentManager findComponentManagerByComponentKey( String role, String roleHint, ClassRealm realm );
 
     ComponentManager findComponentManagerByComponentInstance( Object component );
 
     ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
-                                             String componentKey )
+                                             String role )
+        throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException;
+
+    ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
+                                             String role, String roleHint )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException;
 
     Map getComponentManagers();
