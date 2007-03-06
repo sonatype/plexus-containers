@@ -50,7 +50,7 @@ public class DefaultComponentManagerManager
 
     private LifecycleHandlerManager lifecycleHandlerManager;
 
-    private Map componentManagersByComponentHashCode = Collections.synchronizedMap( new HashMap() );
+    private Map componentManagersByComponent = Collections.synchronizedMap( new HashMap() );
 
     public void setLifecycleHandlerManager( LifecycleHandlerManager lifecycleHandlerManager )
     {
@@ -118,8 +118,7 @@ public class DefaultComponentManagerManager
 
     public ComponentManager findComponentManagerByComponentInstance( Object component )
     {
-        // XXX this doesn't seem right at all - hashcodes aren't unique!
-        return (ComponentManager) componentManagersByComponentHashCode.get( new Integer( component.hashCode() ) );
+        return (ComponentManager) componentManagersByComponent.get( component );
     }
 
 //    public ComponentManager findComponentManagerByComponentKey( String componentKey )
@@ -180,11 +179,11 @@ public class DefaultComponentManagerManager
 
     public void associateComponentWithComponentManager( Object component, ComponentManager componentManager )
     {
-        componentManagersByComponentHashCode.put( new Integer( component.hashCode() ), componentManager );
+        componentManagersByComponent.put( component, componentManager );
     }
 
     public void unassociateComponentWithComponentManager( Object component )
     {
-        componentManagersByComponentHashCode.remove( new Integer( component.hashCode() ) );
+        componentManagersByComponent.remove( component );
     }
 }
