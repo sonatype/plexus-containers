@@ -24,15 +24,14 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  * SOFTWARE.
  */
 
+import java.util.Properties;
+
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.logging.Logger;
-
-import java.util.Properties;
 
 /**
  * Converter for <code>java.util.Properties</code>.
@@ -53,6 +52,13 @@ public class PropertiesConverter
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
+
+        Object retValueInterpolated = fromExpression( configuration, expressionEvaluator, type );
+        if ( retValueInterpolated != null )
+        {
+            return retValueInterpolated;
+        }
+
         String element = configuration.getName();
 
         Properties retValue = new Properties();
@@ -81,8 +87,8 @@ public class PropertiesConverter
 
         if ( name == null )
         {
-            String msg = "Converter: java.util.Properties. Trying to convert the configuration element: '" + element +
-                "', missing child element 'name'.";
+            String msg = "Converter: java.util.Properties. Trying to convert the configuration element: '" + element
+                + "', missing child element 'name'.";
 
             throw new ComponentConfigurationException( msg );
         }
