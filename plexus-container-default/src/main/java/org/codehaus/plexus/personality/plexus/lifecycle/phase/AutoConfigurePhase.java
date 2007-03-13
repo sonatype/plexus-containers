@@ -16,6 +16,7 @@ package org.codehaus.plexus.personality.plexus.lifecycle.phase;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.manager.ComponentManager;
@@ -23,7 +24,6 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 public class AutoConfigurePhase
     extends AbstractPhase

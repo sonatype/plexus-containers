@@ -16,9 +16,8 @@ package org.codehaus.plexus.configuration.processor;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.io.File;
 import java.util.HashMap;

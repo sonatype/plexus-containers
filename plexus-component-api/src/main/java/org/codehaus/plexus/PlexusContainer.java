@@ -16,11 +16,6 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
@@ -31,6 +26,11 @@ import org.codehaus.plexus.component.repository.exception.ComponentRepositoryExc
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
+
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The core component of Plexus. This is the entry-point for loading and accessing other components, as well as an

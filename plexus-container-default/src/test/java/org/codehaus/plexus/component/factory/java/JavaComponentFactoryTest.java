@@ -17,6 +17,8 @@ package org.codehaus.plexus.component.factory.java;
  */
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.factory.Component;
 import org.codehaus.plexus.component.factory.ComponentImplA;
@@ -24,8 +26,6 @@ import org.codehaus.plexus.component.factory.ComponentImplB;
 import org.codehaus.plexus.component.factory.ComponentImplC;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.DefaultPlexusContainer;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>

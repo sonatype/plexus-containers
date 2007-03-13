@@ -16,7 +16,6 @@ package org.codehaus.plexus.component.manager;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;

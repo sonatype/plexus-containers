@@ -17,12 +17,12 @@ package org.codehaus.plexus.component.repository;
  */
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Contains a set of ComponentDescriptors and the set's dependencies.
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$

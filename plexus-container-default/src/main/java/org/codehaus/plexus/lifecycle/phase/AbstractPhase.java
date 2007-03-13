@@ -16,7 +16,6 @@ package org.codehaus.plexus.lifecycle.phase;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;

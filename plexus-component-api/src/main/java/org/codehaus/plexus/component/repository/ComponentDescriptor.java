@@ -16,11 +16,11 @@ package org.codehaus.plexus.component.repository;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.PlexusConstants;
 
 /**
  * Component instantiation description.
@@ -456,7 +456,7 @@ public class ComponentDescriptor
 
     /**
      * Sets the type of component configurator for this project.
-     * @param componentConfigurator 
+     * @param componentConfigurator
      */
     public void setComponentConfigurator( String componentConfigurator )
     {

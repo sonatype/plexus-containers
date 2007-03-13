@@ -16,9 +16,9 @@ package org.codehaus.plexus.component.manager;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 /**
  * Creates a new component manager for every lookup
