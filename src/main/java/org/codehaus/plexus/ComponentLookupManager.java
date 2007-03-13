@@ -16,8 +16,8 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import java.util.List;
 import java.util.Map;

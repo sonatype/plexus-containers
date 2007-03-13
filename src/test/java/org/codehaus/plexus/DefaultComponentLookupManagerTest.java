@@ -2,11 +2,8 @@ package org.codehaus.plexus;
 
 import junit.framework.TestCase;
 
-import java.util.Collections;
 import java.net.URL;
-
-import org.codehaus.plexus.test.ComponentA;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import java.util.Collections;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>

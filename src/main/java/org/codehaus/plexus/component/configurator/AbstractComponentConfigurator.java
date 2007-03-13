@@ -24,16 +24,13 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
+import org.codehaus.classworlds.ClassRealmAdapter;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.classworlds.ClassRealmAdapter;
 
 import java.lang.reflect.Method;
 

@@ -1,7 +1,6 @@
 package org.codehaus.plexus.component.manager;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.PlexusContainer;
 
 /**
  * @author Ben Walding

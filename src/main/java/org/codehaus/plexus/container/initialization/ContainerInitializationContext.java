@@ -16,9 +16,9 @@ package org.codehaus.plexus.container.initialization;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**

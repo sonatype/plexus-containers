@@ -26,9 +26,9 @@ package org.codehaus.plexus.embed;
 
 import junit.framework.TestCase;
 
-import java.util.Properties;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Ben Walding

@@ -16,6 +16,7 @@ package org.codehaus.plexus.component.repository;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
@@ -25,7 +26,6 @@ import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.PlexusConstants;
 
 import java.util.HashMap;
 import java.util.List;

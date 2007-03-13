@@ -16,20 +16,20 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.classworlds.ClassWorld;
 
 import java.util.List;
 
@@ -106,5 +106,5 @@ public interface MutablePlexusContainer
         throws ComponentLookupException;
 
     Object lookup( String role, String roleHint, ClassRealm realm )
-        throws ComponentLookupException;    
+        throws ComponentLookupException;
 }

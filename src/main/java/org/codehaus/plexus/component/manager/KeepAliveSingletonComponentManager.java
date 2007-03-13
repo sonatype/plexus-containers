@@ -16,9 +16,9 @@ package org.codehaus.plexus.component.manager;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 /**
  * This ensures a component is only used as a singleton, and is only shutdown when
@@ -71,9 +71,9 @@ public class KeepAliveSingletonComponentManager
             {
                 singleton = createComponentInstance( realm );
             }
-    
+
             incrementConnectionCount();
-    
+
             return singleton;
         }
     }

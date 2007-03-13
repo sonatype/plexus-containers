@@ -16,9 +16,6 @@ package org.codehaus.plexus.component.discovery;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;

@@ -4,9 +4,9 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
-import java.util.List;
-import java.util.Arrays;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 /** @author Jason van Zyl */
 public class ComponentRealmCompositionTest

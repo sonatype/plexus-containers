@@ -24,13 +24,13 @@ import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.util.PropertyUtils;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.PropertyUtils;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.FileWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;

@@ -22,9 +22,9 @@ import org.codehaus.plexus.context.DefaultContext;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.URL;
 
 /**
  * @author Jason van Zyl

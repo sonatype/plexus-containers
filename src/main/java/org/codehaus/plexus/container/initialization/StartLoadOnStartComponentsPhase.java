@@ -16,9 +16,9 @@ package org.codehaus.plexus.container.initialization;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.PlexusConstants;
 
 /**
  * @author Jason van Zyl

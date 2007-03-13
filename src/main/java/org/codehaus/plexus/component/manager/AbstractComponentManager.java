@@ -17,7 +17,6 @@ package org.codehaus.plexus.component.manager;
 */
 
 import org.codehaus.classworlds.ClassRealmAdapter;
-import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;

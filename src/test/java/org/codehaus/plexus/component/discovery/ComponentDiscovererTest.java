@@ -16,13 +16,12 @@ package org.codehaus.plexus.component.discovery;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.context.DefaultContext;
-import org.codehaus.plexus.PlexusTestCase;
 
 import java.io.File;
 import java.util.List;
