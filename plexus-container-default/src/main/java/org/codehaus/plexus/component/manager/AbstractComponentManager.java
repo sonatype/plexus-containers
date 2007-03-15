@@ -47,7 +47,7 @@ public abstract class AbstractComponentManager
      * they were used to configure with. This realm will be used to
      * call all lifecycle methods.
      */
-    private Map componentContextRealms = new HashMap();
+    protected Map componentContextRealms = new HashMap();
 
     private int connections;
 
