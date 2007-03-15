@@ -30,9 +30,9 @@ import org.codehaus.plexus.component.configurator.converters.AbstractConfigurati
 import org.codehaus.plexus.component.configurator.converters.ComponentValueSetter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Map;
@@ -81,12 +81,14 @@ public class ObjectWithFieldsConverter
             try
             {
                 // it is a "composite" - we compose it from its children. It does not have a value of its own
-                Class implementation = getClassForImplementationHint( type, configuration, classLoader );
-
-                retValue = instantiateObject( implementation );
+                retValue = getObjectForImplementationHint( type, configuration, classLoader );
 
                 processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator,
                                       listener );
+            }
+            catch ( ComponentLookupException e )
+            {
+                throw new ComponentConfigurationException( configuration, e );
             }
             catch ( ComponentConfigurationException e )
             {
