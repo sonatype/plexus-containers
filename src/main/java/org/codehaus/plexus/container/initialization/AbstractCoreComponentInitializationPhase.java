@@ -29,19 +29,20 @@ import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 public abstract class AbstractCoreComponentInitializationPhase
     extends AbstractContainerInitializationPhase
 {
-    BasicComponentConfigurator configurator;
+    BasicComponentConfigurator configurator = new BasicComponentConfigurator();
 
     public void execute( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        this.configurator = new BasicComponentConfigurator( context.getContainer() );
         initializeCoreComponent( context );
     }
 
     protected abstract void initializeCoreComponent( ContainerInitializationContext context )
         throws ContainerInitializationException;
 
-    protected void setupCoreComponent( String role, BasicComponentConfigurator configurator, PlexusConfiguration c,
+    protected void setupCoreComponent( String role,
+                                       BasicComponentConfigurator configurator,
+                                       PlexusConfiguration c,
                                        PlexusContainer container )
         throws ContainerInitializationException
     {
@@ -50,9 +51,9 @@ public abstract class AbstractCoreComponentInitializationPhase
         if ( implementation == null )
         {
             //TODO: put plexus.conf in constants and change to plexus.xml
-            String msg = "Core component: '" + role + "' + which is needed by plexus to function properly cannot "
-                + "be instantiated. Implementation attribute was not specified in plexus.conf."
-                + "This is highly irregular, your plexus JAR is most likely corrupt.";
+            String msg = "Core component: '" + role + "' + which is needed by plexus to function properly cannot " +
+                "be instantiated. Implementation attribute was not specified in plexus.conf." +
+                "This is highly irregular, your plexus JAR is most likely corrupt.";
 
             throw new ContainerInitializationException( msg );
         }

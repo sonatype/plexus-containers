@@ -24,8 +24,7 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-public class BasicComponentConfiguratorTest
-    extends AbstractComponentConfiguratorTest
+public class BasicComponentConfiguratorTest extends AbstractComponentConfiguratorTest
 {
     public BasicComponentConfiguratorTest( String s )
     {
@@ -34,7 +33,7 @@ public class BasicComponentConfiguratorTest
 
     protected ComponentConfigurator getComponentConfigurator()
     {
-        return new BasicComponentConfigurator( null );
+         return new BasicComponentConfigurator();
     }
 
 }

@@ -866,7 +866,7 @@ public class DefaultPlexusContainer
 
         // PLXAPI: I think we might only ever need one of these so maybe we can create it with a constructor
         // and store it.
-        ComponentConfigurator c = new BasicComponentConfigurator(this);
+        ComponentConfigurator c = new BasicComponentConfigurator();
 
         try
         {

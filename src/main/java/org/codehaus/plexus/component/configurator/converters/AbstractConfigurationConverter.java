@@ -38,11 +38,11 @@ import org.codehaus.plexus.util.StringUtils;
 public abstract class AbstractConfigurationConverter
     implements ConfigurationConverter
 {
-    protected static final String IMPLEMENTATION = "implementation";
+    private static final String IMPLEMENTATION = "implementation";
 
     /**
      * We will check if user has provided a hint which class should be used for given field.
-     * So we will check if something like &lt;foo implementation="com.MyFoo"&gt; is present in configuraion.
+     * So we will check if something like <foo implementation="com.MyFoo"> is present in configuraion.
      * If 'implementation' hint was provided we will try to load correspoding class
      * If we are unable to do so error will be reported
      */
@@ -86,6 +86,7 @@ public abstract class AbstractConfigurationConverter
 
         return retValue;
     }
+
 
     protected Class loadClass( String classname, ClassLoader classLoader )
         throws ComponentConfigurationException
@@ -133,6 +134,7 @@ public abstract class AbstractConfigurationConverter
         }
     }
 
+
     // first-name --> firstName
     protected String fromXML( String elementName )
     {
@@ -154,8 +156,8 @@ public abstract class AbstractConfigurationConverter
         {
             if ( !type.isAssignableFrom( v.getClass() ) )
             {
-                String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type
-                    + "' from '" + configuration.getValue( null ) + "', which is of type " + v.getClass();
+                String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type +
+                    "' from '" + configuration.getValue( null ) + "', which is of type " + v.getClass();
                 throw new ComponentConfigurationException( configuration, msg );
             }
         }
@@ -178,8 +180,8 @@ public abstract class AbstractConfigurationConverter
             }
             catch ( ExpressionEvaluationException e )
             {
-                String msg = "Error evaluating the expression '" + value + "' for configuration value '"
-                    + configuration.getName() + "'";
+                String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
+                    configuration.getName() + "'";
                 throw new ComponentConfigurationException( configuration, msg, e );
             }
         }
@@ -194,8 +196,8 @@ public abstract class AbstractConfigurationConverter
                 }
                 catch ( ExpressionEvaluationException e )
                 {
-                    String msg = "Error evaluating the expression '" + value + "' for configuration value '"
-                        + configuration.getName() + "'";
+                    String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
+                        configuration.getName() + "'";
                     throw new ComponentConfigurationException( configuration, msg, e );
                 }
             }

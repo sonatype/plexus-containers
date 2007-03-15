@@ -1,14 +1,12 @@
 package org.codehaus.plexus.component.configurator;
 
-import java.util.Map;
-
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.configurator.converters.composite.MapConverter;
-import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
-import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+
+import java.util.Map;
 
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
@@ -29,8 +27,6 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 public class MapOrientedComponentConfigurator
     extends AbstractComponentConfigurator
 {
-    // TODO: configured as a component
-    private ConverterLookup converterLookup = new DefaultConverterLookup( null );
 
     public void configureComponent( Object component, PlexusConfiguration configuration,
                                     ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
@@ -39,14 +35,15 @@ public class MapOrientedComponentConfigurator
     {
         if ( !( component instanceof MapOrientedComponent ) )
         {
-            throw new ComponentConfigurationException( "This configurator can only process implementations of "
-                + MapOrientedComponent.class.getName() );
+            throw new ComponentConfigurationException(
+                "This configurator can only process implementations of " + MapOrientedComponent.class.getName() );
         }
 
         MapConverter converter = new MapConverter();
 
-        Map context = (Map) converter.fromConfiguration( converterLookup, configuration, null, null, containerRealm,
-                                                         expressionEvaluator, listener );
+        Map context = (Map) converter.fromConfiguration( converterLookup, configuration, null, null,
+                                                         containerRealm, expressionEvaluator,
+                                                         listener );
 
         ( (MapOrientedComponent) component ).setComponentConfiguration( context );
     }
