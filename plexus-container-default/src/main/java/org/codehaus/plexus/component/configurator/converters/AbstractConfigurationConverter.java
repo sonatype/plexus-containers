@@ -24,10 +24,12 @@ package org.codehaus.plexus.component.configurator.converters;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -40,9 +42,87 @@ public abstract class AbstractConfigurationConverter
 {
     private static final String IMPLEMENTATION = "implementation";
 
+    private static final String HINT = "hint";
+    
+    private static final String ROLE = "role";
+
+    private PlexusContainer container;
+
+    /**
+     * Returns the container.
+     */
+    public PlexusContainer getContainer() {
+        return container;
+    }
+
+    /**
+     * Sets the container.
+     */
+    public void setContainer(PlexusContainer pContainer) {
+        container = pContainer;
+    }
+
+    /**
+     * We will check if the user has provided a hint which class should be used for given
+     * field. The user may do this by specifying by using something like the following
+     * patterns:
+     * <pre>
+     *   &lt;foo implementation="com.MyFoo"&gt; &lt;!-- Explicit class name --&gt;
+     *   &lt;foo hint="bar"&gt; &lt;!-- Lookup via class name as the role and the
+     *                                  given hint --&gt;
+     *   &lt;foo hint="bar" role="com.MyBar"&ht;
+     *                          &lt;!-- Lookup via the given role and hint --&gt;
+     * </pre>
+     */
+    protected Object getObjectForImplementationHint( Class type, PlexusConfiguration configuration,
+                                                     ClassLoader classLoader )
+        throws ComponentConfigurationException, ComponentLookupException
+    {
+        String implementation = configuration.getAttribute( IMPLEMENTATION, null );
+        String hint = configuration.getAttribute( HINT, null );
+        String role = configuration.getAttribute( ROLE, null );
+
+        if ( implementation != null )
+        {
+            if ( hint != null  ||  role != null )
+            {
+                String msg = "The attributes '" + IMPLEMENTATION
+                    + "' and '" + HINT + "' or '" + ROLE + "' are mutually exclusive.";
+                throw new ComponentConfigurationException( msg );
+            }
+            Class c = getClassForImplementationHint( type, configuration, classLoader );
+            return instantiateObject( c );
+        }
+        if ( role != null || hint != null )
+        {
+            PlexusContainer pc = getContainer();
+            if ( pc == null )
+            {
+                String msg = "Component lookup requires that the container is set.";
+                throw new ComponentConfigurationException( msg );
+            }
+            if ( role == null )
+            {
+                return container.lookup( type, hint );
+            }
+            else
+            {
+                if ( hint == null )
+                {
+                    return container.lookup( role );
+                }
+                else
+                {
+                    return container.lookup( role, hint );
+                }
+            }
+        }
+        return instantiateObject( type );
+    }
+
     /**
      * We will check if user has provided a hint which class should be used for given field.
-     * So we will check if something like <foo implementation="com.MyFoo"> is present in configuraion.
+     * So we will check if something like &lt;foo implementation="com.MyFoo"&gt; is present in configuraion.
      * If 'implementation' hint was provided we will try to load correspoding class
      * If we are unable to do so error will be reported
      */
