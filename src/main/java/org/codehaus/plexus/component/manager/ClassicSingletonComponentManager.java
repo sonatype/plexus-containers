@@ -45,7 +45,8 @@ public class ClassicSingletonComponentManager
     {
         synchronized( lock )
         {
-            if ( findSingleton( component ) == component )
+            Object found = findSingleton( component );
+            if ( found == component )
             {
                 decrementConnectionCount();
 
@@ -56,7 +57,9 @@ public class ClassicSingletonComponentManager
             }
             else
             {
-                getLogger().warn( "Component returned which is not the same manager. Ignored. component=" + component );
+                getLogger().warn( "Release: Component not managed by this manager. Ignored.\n"
+                    + "provided: " + component + " ClassLoader: " + component.getClass().getClassLoader() + "\n"
+                    + "found   : " + found  + " Classloader: " + found.getClass().getClassLoader(), new Throwable() );
             }
         }
     }
@@ -120,8 +123,13 @@ public class ClassicSingletonComponentManager
 
     protected Object findSingleton( Object component )
     {
-        ClassRealm classRealm = container.getLookupRealm( component );
-        
+        ClassRealm classRealm = (ClassRealm) componentContextRealms.get( component );
+        if ( classRealm == null )
+        {
+            // should not happen!
+            classRealm = container.getLookupRealm( component );
+        }
+
         return findSingleton( classRealm == null ? container.getContainerRealm() : classRealm );
     }
 
