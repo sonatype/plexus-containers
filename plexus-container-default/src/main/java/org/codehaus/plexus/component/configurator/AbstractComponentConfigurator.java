@@ -41,30 +41,22 @@ import java.lang.reflect.Method;
 public abstract class AbstractComponentConfigurator
     implements ComponentConfigurator
 {
-    // TODO: configured as a component
-    protected ConverterLookup converterLookup = new DefaultConverterLookup();
 
-    public void configureComponent( Object component,
-                                    PlexusConfiguration configuration,
-                                    ClassRealm containerRealm )
+    public void configureComponent( Object component, PlexusConfiguration configuration, ClassRealm containerRealm )
         throws ComponentConfigurationException
     {
         configureComponent( component, configuration, new DefaultExpressionEvaluator(), containerRealm );
     }
 
-    public void configureComponent( Object component,
-                                    PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator,
-                                    ClassRealm containerRealm )
+    public void configureComponent( Object component, PlexusConfiguration configuration,
+                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm )
         throws ComponentConfigurationException
     {
         configureComponent( component, configuration, expressionEvaluator, containerRealm, null );
     }
 
-    public void configureComponent( Object component,
-                                    PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator,
-                                    ClassRealm containerRealm,
+    public void configureComponent( Object component, PlexusConfiguration configuration,
+                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -78,10 +70,16 @@ public abstract class AbstractComponentConfigurator
 
         try
         {
-            method = getClass().getMethod( "configureComponent", new Class[]{Object.class, PlexusConfiguration.class,
-                ExpressionEvaluator.class, org.codehaus.classworlds.ClassRealm.class, ConfigurationListener.class} );
+            method = getClass().getMethod(
+                                           "configureComponent",
+                                           new Class[] {
+                                               Object.class,
+                                               PlexusConfiguration.class,
+                                               ExpressionEvaluator.class,
+                                               org.codehaus.classworlds.ClassRealm.class,
+                                               ConfigurationListener.class } );
 
-            method.invoke( this, new Object[]{component, configuration, expressionEvaluator, cr, listener} );
+            method.invoke( this, new Object[] { component, configuration, expressionEvaluator, cr, listener } );
         }
         catch ( Exception mnfe )
         {
@@ -92,4 +90,7 @@ public abstract class AbstractComponentConfigurator
         // this won't hit the method above going into a loop - instead, it will hit the overridden one
         //configureComponent( component, configuration, expressionEvaluator, containerRealm );
     }
+
+    
+
 }

@@ -24,12 +24,10 @@ package org.codehaus.plexus.component.configurator.converters;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -40,85 +38,7 @@ import org.codehaus.plexus.util.StringUtils;
 public abstract class AbstractConfigurationConverter
     implements ConfigurationConverter
 {
-    private static final String IMPLEMENTATION = "implementation";
-
-    private static final String HINT = "hint";
-    
-    private static final String ROLE = "role";
-
-    private PlexusContainer container;
-
-    /**
-     * Returns the container.
-     */
-    public PlexusContainer getContainer() {
-        return container;
-    }
-
-    /**
-     * Sets the container.
-     */
-    public void setContainer(PlexusContainer pContainer) {
-        container = pContainer;
-    }
-
-    /**
-     * We will check if the user has provided a hint which class should be used for given
-     * field. The user may do this by specifying by using something like the following
-     * patterns:
-     * <pre>
-     *   &lt;foo implementation="com.MyFoo"&gt; &lt;!-- Explicit class name --&gt;
-     *   &lt;foo hint="bar"&gt; &lt;!-- Lookup via class name as the role and the
-     *                                  given hint --&gt;
-     *   &lt;foo hint="bar" role="com.MyBar"&ht;
-     *                          &lt;!-- Lookup via the given role and hint --&gt;
-     * </pre>
-     */
-    protected Object getObjectForImplementationHint( Class type, PlexusConfiguration configuration,
-                                                     ClassLoader classLoader )
-        throws ComponentConfigurationException, ComponentLookupException
-    {
-        String implementation = configuration.getAttribute( IMPLEMENTATION, null );
-        String hint = configuration.getAttribute( HINT, null );
-        String role = configuration.getAttribute( ROLE, null );
-
-        if ( implementation != null )
-        {
-            if ( hint != null  ||  role != null )
-            {
-                String msg = "The attributes '" + IMPLEMENTATION
-                    + "' and '" + HINT + "' or '" + ROLE + "' are mutually exclusive.";
-                throw new ComponentConfigurationException( msg );
-            }
-            Class c = getClassForImplementationHint( type, configuration, classLoader );
-            return instantiateObject( c );
-        }
-        if ( role != null || hint != null )
-        {
-            PlexusContainer pc = getContainer();
-            if ( pc == null )
-            {
-                String msg = "Component lookup requires that the container is set.";
-                throw new ComponentConfigurationException( msg );
-            }
-            if ( role == null )
-            {
-                return container.lookup( type, hint );
-            }
-            else
-            {
-                if ( hint == null )
-                {
-                    return container.lookup( role );
-                }
-                else
-                {
-                    return container.lookup( role, hint );
-                }
-            }
-        }
-        return instantiateObject( type );
-    }
+    protected static final String IMPLEMENTATION = "implementation";
 
     /**
      * We will check if user has provided a hint which class should be used for given field.
@@ -167,7 +87,6 @@ public abstract class AbstractConfigurationConverter
         return retValue;
     }
 
-
     protected Class loadClass( String classname, ClassLoader classLoader )
         throws ComponentConfigurationException
     {
@@ -214,7 +133,6 @@ public abstract class AbstractConfigurationConverter
         }
     }
 
-
     // first-name --> firstName
     protected String fromXML( String elementName )
     {
@@ -236,8 +154,8 @@ public abstract class AbstractConfigurationConverter
         {
             if ( !type.isAssignableFrom( v.getClass() ) )
             {
-                String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type +
-                    "' from '" + configuration.getValue( null ) + "', which is of type " + v.getClass();
+                String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type
+                    + "' from '" + configuration.getValue( null ) + "', which is of type " + v.getClass();
                 throw new ComponentConfigurationException( configuration, msg );
             }
         }
@@ -260,8 +178,8 @@ public abstract class AbstractConfigurationConverter
             }
             catch ( ExpressionEvaluationException e )
             {
-                String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
-                    configuration.getName() + "'";
+                String msg = "Error evaluating the expression '" + value + "' for configuration value '"
+                    + configuration.getName() + "'";
                 throw new ComponentConfigurationException( configuration, msg, e );
             }
         }
@@ -276,8 +194,8 @@ public abstract class AbstractConfigurationConverter
                 }
                 catch ( ExpressionEvaluationException e )
                 {
-                    String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
-                        configuration.getName() + "'";
+                    String msg = "Error evaluating the expression '" + value + "' for configuration value '"
+                        + configuration.getName() + "'";
                     throw new ComponentConfigurationException( configuration, msg, e );
                 }
             }

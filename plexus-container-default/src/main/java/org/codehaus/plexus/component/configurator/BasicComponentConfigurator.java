@@ -24,12 +24,18 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
+import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.configurator.converters.special.ClassRealmConverter;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -38,7 +44,36 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
  */
 public class BasicComponentConfigurator
     extends AbstractComponentConfigurator
+    implements Contextualizable
 {
+    private PlexusContainer plexusContainer;
+
+    // TODO: configured as a component
+    private ConverterLookup converterLookup;
+    
+    /**
+     * <b>If construct with this without the container
+     *  ObjectWithFieldsConverter#getObjectForImplementationHint won't work</b> 
+     */
+    public BasicComponentConfigurator()
+    {
+        this.converterLookup = new DefaultConverterLookup( null ); 
+    }
+
+    public void contextualize( Context context )
+        throws ContextException
+    {
+        this.plexusContainer = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
+        this.converterLookup = new DefaultConverterLookup( plexusContainer );
+
+    }
+
+    public BasicComponentConfigurator( PlexusContainer plexusContainer )
+    {
+        this.plexusContainer = plexusContainer;
+        this.converterLookup = new DefaultConverterLookup( plexusContainer );
+    }
+
     public void configureComponent( Object component, PlexusConfiguration configuration,
                                     ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
                                     ConfigurationListener listener )
@@ -51,10 +86,10 @@ public class BasicComponentConfigurator
 
         converterLookup.registerConverter( new ClassRealmConverter( containerRealm ) );
 
-        ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
+        ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter( this.plexusContainer );
 
-        converter.processConfiguration( converterLookup, component, containerRealm, configuration,
-                                        expressionEvaluator, listener );
+        converter.processConfiguration( converterLookup, component, containerRealm, configuration, expressionEvaluator,
+                                        listener );
     }
 
 }
