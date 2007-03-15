@@ -24,19 +24,18 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  * SOFTWARE.
  */
 
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Map;
-
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.ComponentValueSetter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
@@ -45,21 +44,6 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 public class ObjectWithFieldsConverter
     extends AbstractConfigurationConverter
 {
-
-    private static final String HINT = "hint";
-
-    private static final String ROLE = "role";
-
-    private PlexusContainer plexusContainer;
-
-    /**
-     * @param plexusContainer container is mandatory in case of configuration field with role and/or hint
-     */
-    public ObjectWithFieldsConverter( PlexusContainer plexusContainer )
-    {
-        this.plexusContainer = plexusContainer;
-    }
-
     /**
      * @param type
      * @return
@@ -97,14 +81,12 @@ public class ObjectWithFieldsConverter
             try
             {
                 // it is a "composite" - we compose it from its children. It does not have a value of its own
-                retValue = getObjectForImplementationHint( type, configuration, classLoader );
+                Class implementation = getClassForImplementationHint( type, configuration, classLoader );
+
+                retValue = instantiateObject( implementation );
 
                 processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator,
                                       listener );
-            }
-            catch ( ComponentLookupException e )
-            {
-                throw new ComponentConfigurationException( configuration, e );
             }
             catch ( ComponentConfigurationException e )
             {
@@ -119,63 +101,6 @@ public class ObjectWithFieldsConverter
         return retValue;
     }
 
-    /**
-     * We will check if the user has provided a hint which class should be used for given
-     * field. The user may do this by specifying by using something like the following
-     * patterns:
-     * <pre>
-     *   &lt;foo implementation="com.MyFoo"&gt; &lt;!-- Explicit class name --&gt;
-     *   &lt;foo hint="bar"&gt; &lt;!-- Lookup via class name as the role and the
-     *                                  given hint --&gt;
-     *   &lt;foo hint="bar" role="com.MyBar"&ht;
-     *                          &lt;!-- Lookup via the given role and hint --&gt;
-     * </pre>
-     */
-    protected Object getObjectForImplementationHint( Class type, PlexusConfiguration configuration,
-                                                     ClassLoader classLoader )
-        throws ComponentConfigurationException, ComponentLookupException
-    {
-        String implementation = configuration.getAttribute( IMPLEMENTATION, null );
-        String hint = configuration.getAttribute( HINT, null );
-        String role = configuration.getAttribute( ROLE, null );
-
-        if ( implementation != null )
-        {
-            if ( hint != null || role != null )
-            {
-                String msg = "The attributes '" + IMPLEMENTATION + "' and '" + HINT + "' or '" + ROLE
-                    + "' are mutually exclusive.";
-                throw new ComponentConfigurationException( msg );
-            }
-            Class c = getClassForImplementationHint( type, configuration, classLoader );
-            return instantiateObject( c );
-        }
-        if ( role != null || hint != null )
-        {
-            PlexusContainer pc = this.plexusContainer;
-            if ( pc == null )
-            {
-                String msg = "Component lookup requires that the container is set.";
-                throw new ComponentConfigurationException( msg );
-            }
-            if ( role == null )
-            {
-                return this.plexusContainer.lookup( type, hint );
-            }
-            else
-            {
-                if ( hint == null )
-                {
-                    return this.plexusContainer.lookup( role );
-                }
-                else
-                {
-                    return this.plexusContainer.lookup( role, hint );
-                }
-            }
-        }
-        return instantiateObject( type );
-    }
 
     public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
                                       PlexusConfiguration configuration )

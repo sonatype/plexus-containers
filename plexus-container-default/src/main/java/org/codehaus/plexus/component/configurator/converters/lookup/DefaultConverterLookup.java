@@ -24,8 +24,6 @@ package org.codehaus.plexus.component.configurator.converters.lookup;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.BooleanConverter;
@@ -47,9 +45,6 @@ import org.codehaus.plexus.component.configurator.converters.composite.MapConver
 import org.codehaus.plexus.component.configurator.converters.composite.ObjectWithFieldsConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PlexusConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PropertiesConverter;
-import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.context.ContextException;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -58,7 +53,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultConverterLookup
-    implements ConverterLookup, Contextualizable
+    implements ConverterLookup
 {
     private List converters = new LinkedList();
 
@@ -66,20 +61,11 @@ public class DefaultConverterLookup
 
     private Map converterMap = new HashMap();
 
-    private PlexusContainer plexusContainer;
-
-    public DefaultConverterLookup(PlexusContainer plexusContainer)
+    public DefaultConverterLookup()
     {
-        this.plexusContainer = plexusContainer;
         registerDefaultBasicConverters();
 
         registerDefaultCompositeConverters();
-    }
-
-    public void contextualize( Context context )
-        throws ContextException
-    {
-        this.plexusContainer = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 
     public void registerConverter( ConfigurationConverter converter )
@@ -137,6 +123,7 @@ public class DefaultConverterLookup
         return null;
     }
 
+
     private void registerDefaultBasicConverters()
     {
         registerDefaultConverter( new BooleanConverter() );
@@ -181,7 +168,7 @@ public class DefaultConverterLookup
         registerDefaultConverter( new PlexusConfigurationConverter() );
 
         // this converter should be always registred as the last one
-        registerDefaultConverter( new ObjectWithFieldsConverter( this.plexusContainer ) );
+        registerDefaultConverter( new ObjectWithFieldsConverter() );
     }
 
 }
