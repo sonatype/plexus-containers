@@ -26,6 +26,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -209,19 +210,27 @@ public abstract class AbstractComponentComposer
                     throw e;
                 }
             }
-            else if ( Map.class.isAssignableFrom( clazz ) )
+            // Map.class.isAssignableFrom( clazz ) doesn't make sense, since Map.class doesn't really
+            // have a meaningful superclass.
+            else if ( Map.class.equals( clazz ) )
             {
                 assignment = container.lookupMap( role, lookupRealm );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
-            else if ( List.class.isAssignableFrom( clazz ) )
+            // List.class.isAssignableFrom( clazz ) doesn't make sense, since List.class doesn't really
+            // have a meaningful superclass other than Collection.class, which we'll handle next.
+            else if ( List.class.equals( clazz ) )
             {
                 assignment = container.lookupList( role, lookupRealm );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
-            else if ( Set.class.isAssignableFrom( clazz ) )
+            // Set.class.isAssignableFrom( clazz ) doesn't make sense, since Set.class doesn't really
+            // have a meaningful superclass other than Collection.class, and that would make this
+            // if-else cascade unpredictable (both List and Set extend Collection, so we'll put another
+            // check in for Collection.class.
+            else if ( Set.class.equals( clazz ) || Collection.class.isAssignableFrom( clazz ) )
             {
                 assignment = container.lookupMap( role, lookupRealm );
 
