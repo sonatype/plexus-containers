@@ -69,8 +69,6 @@ public class FieldComponentComposer
                                                    requirementDescriptor,
                                                    lookupRealm );
 
-        Object assignment = requirement.getAssignment();
-
         try
         {
             field.set( component, requirement.getAssignment() );
@@ -94,43 +92,58 @@ public class FieldComponentComposer
                 for ( int i = 0; i < ifaces.length; i++ )
                 {
                     msg += "\n    Interface "
-                        + ifaces[i]
-                        + "; realm: "
+                        + ifaces[i];
+                    
+                    if ( ifaces[i].getClassLoader() != null )
+                    {
+                        msg += "; realm: "
                         + ( ifaces[i].getClassLoader() instanceof ClassRealm ? ( (ClassRealm) ifaces[i]
                             .getClassLoader() ).getId() : ifaces[i].getClassLoader().toString() );
 
-                    msg += getURLs(ifaces[i].getClassLoader());
+                        msg += getURLs(ifaces[i].getClassLoader());
+                    }
                 }
 
                 c = c.getSuperclass();
             }
 
-            throw new CompositionException(
-                "Composition failed for the field "
-                    + field.getName()
-                    + " "
-                    + "in object of type "
-                    + component.getClass().getName()
-                    + " (lookup realm: "
-                    + lookupRealm.getId()
-                    + ")"
-                    + "\nfield type: "
-                    + field.getType()
-                    + " realm: "
-                    + ( field.getType().getClassLoader() instanceof ClassRealm ? ( (ClassRealm) field.getType()
-                        .getClassLoader() ).getId() : " classloader " + field.getType().getClassLoader() )
-                        + getURLs(field.getType().getClassLoader())
-                    + "\nvalue type: "
-                    + requirement.getAssignment().getClass()
-                    + " realm: "
-                    + ( requirement.getAssignment().getClass().getClassLoader() instanceof ClassRealm ? ( (ClassRealm) requirement.getAssignment().getClass().getClassLoader() ).getId()
-                       : " classloader " + requirement.getAssignment().getClass().getClassLoader() )
+            String compositionMsg = "Composition failed for the field "
+                + field.getName()
+                + " "
+                + "in object of type "
+                + component.getClass().getName()
+                + " (lookup realm: "
+                + lookupRealm.getId()
+                + ")"
+                + "\nfield type: "
+                + field.getType()
+                + " realm: ";
+            
+            if ( field.getType().getClassLoader() != null )
+            {
+                compositionMsg += ( field.getType().getClassLoader() instanceof ClassRealm
+                                                                                          ? ( (ClassRealm) field.getType().getClassLoader() ).getId()
+                                                                                          : " classloader "
+                                                                                              + field.getType().getClassLoader() );
 
-                    + getURLs(requirement.getAssignment().getClass().getClassLoader())
+                compositionMsg += getURLs( field.getType().getClassLoader() );
+            }
+            
+            compositionMsg += "\nvalue type: " + requirement.getAssignment().getClass() + " realm: ";
+            
+            if ( requirement.getAssignment().getClass().getClassLoader() != null )
+            {
+                compositionMsg += ( requirement.getAssignment().getClass().getClassLoader() instanceof ClassRealm
+                                                                                                                 ? ( (ClassRealm) requirement.getAssignment().getClass().getClassLoader() ).getId()
+                                                                                                                 : " classloader "
+                                                                                                                     + requirement.getAssignment().getClass().getClassLoader() );
 
-                    +"\nassignable: " + field.getType().isAssignableFrom( requirement.getAssignment().getClass() )
-                   + msg,
-                e );
+                compositionMsg += getURLs( requirement.getAssignment().getClass().getClassLoader() );
+            }
+
+            compositionMsg += "\nassignable: " + field.getType().isAssignableFrom( requirement.getAssignment().getClass() );
+
+            throw new CompositionException( compositionMsg + msg, e );
         }
         catch ( IllegalAccessException e )
         {
@@ -144,6 +157,11 @@ public class FieldComponentComposer
 
     private String getURLs( ClassLoader classLoader )
     {
+        if ( classLoader == null )
+        {
+            return "";
+        }
+        
         String msg = "";
 
         if ( classLoader instanceof URLClassLoader )
