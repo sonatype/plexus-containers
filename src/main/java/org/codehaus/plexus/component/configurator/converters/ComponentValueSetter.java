@@ -121,9 +121,6 @@ public class ComponentValueSetter
     private void setValueUsingField( Object value )
         throws ComponentConfigurationException
     {
-        String exceptionInfo = object.getClass().getName() + "." + field.getName() + "; type: " +
-            value.getClass().getName();
-
         try
         {
             boolean wasAccessible = field.isAccessible();
@@ -147,12 +144,12 @@ public class ComponentValueSetter
         }
         catch ( IllegalAccessException e )
         {
-            throw new ComponentConfigurationException( "Cannot access field: " + exceptionInfo, e );
+            throw new ComponentConfigurationException( "Cannot access field: " + field, e );
         }
         catch ( IllegalArgumentException e )
         {
-            throw new ComponentConfigurationException( "Cannot assign value '" + value + "' to field: " + exceptionInfo,
-                                                       e );
+            throw new ComponentConfigurationException( "Cannot assign value '" + value + "' (type: "
+                + value.getClass() + ") to " + field, e );
         }
     }
 
