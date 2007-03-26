@@ -46,5 +46,7 @@ public class PerLookupComponentManager
         throws ComponentLifecycleException
     {
         endComponentLifecycle( component );
+        // non cleanup map references for per-lookup cause leak
+        componentContextRealms.remove( component );
     }
 }
