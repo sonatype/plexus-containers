@@ -34,7 +34,7 @@ import java.util.List;
  * 
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
- * @version $Id: ConfigurableComponent.java 1323 2004-12-20 23:00:59Z jvanzyl $
+ * @version $Id$
  */
 public class ComponentWithSetters
 {
