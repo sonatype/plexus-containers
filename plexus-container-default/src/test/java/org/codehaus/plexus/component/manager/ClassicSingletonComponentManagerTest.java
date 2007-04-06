@@ -4,7 +4,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author Ben Walding
- * @version $Id: SlowComponentClassicSingletonComponentManagerTest.java 5493 2007-01-22 19:05:46Z kenney $
+ * @version $Id$
  */
 public class ClassicSingletonComponentManagerTest
     extends PlexusTestCase

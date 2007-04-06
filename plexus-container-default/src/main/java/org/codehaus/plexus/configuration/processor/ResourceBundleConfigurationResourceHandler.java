@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 
 /**
  * @author <a href="mailto:andy@handyande.co.uk">Andrew Williams</a>
- * @version $Id: ResourceBundleConfigurationResourceHandler.java 3657 $
+ * @version $Id$
  */
 public class ResourceBundleConfigurationResourceHandler
     extends AbstractConfigurationResourceHandler

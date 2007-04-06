@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * @author <a href="mailto:andy@handyande.co.uk">Andrew Williams</a>
- * @version $Id: ResourceBundleConfigurationResourceHandlerTest.java 3657 $
+ * @version $Id$
  */
 public class ResourceBundleConfigurationResourceHandlerTest
     extends TestCase
