@@ -27,6 +27,7 @@ import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -184,4 +185,49 @@ public class PlexusTools
 
         return csd;
     }
+
+    public static void writeConfiguration( PrintStream out, PlexusConfiguration configuration )
+        throws PlexusConfigurationException
+    {
+        writeConfiguration( out, configuration, "" );
+    }
+
+    private static void writeConfiguration( PrintStream out, PlexusConfiguration configuration, String indent )
+        throws PlexusConfigurationException
+    {
+        out.print( indent + "<" + configuration.getName() );
+        String[] atts = configuration.getAttributeNames();
+
+        if ( atts.length > 0 )
+        {
+            for ( int i = 0; i < atts.length; i++ )
+            {
+                out.print( "\n" + indent + "  " + atts[i] + "='" + configuration.getAttribute( atts[i] ) + "'" );
+            }
+        }
+
+        PlexusConfiguration[] pc = configuration.getChildren();
+
+        if ( ( configuration.getValue() != null && configuration.getValue().trim().length() > 0 ) || pc.length > 0 )
+        {
+            out.print( ">" + ( configuration.getValue() == null ? "" : configuration.getValue().trim() ) );
+
+            if ( pc.length > 0 )
+            {
+                out.println();
+                for ( int i = 0; i < pc.length; i++ )
+                {
+                    writeConfiguration( out, pc[i], indent + "  " );
+                }
+                out.print( indent );
+            }
+
+            out.println( "</" + configuration.getName() + ">" );
+        }
+        else
+        {
+            out.println( "/>" );
+        }
+    }
+
 }
