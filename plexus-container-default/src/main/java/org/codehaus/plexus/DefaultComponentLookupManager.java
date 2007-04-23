@@ -36,7 +36,7 @@ import java.util.Map;
  * @author Kenney Westerhof
  */
 public class DefaultComponentLookupManager
-    implements ComponentLookupManager
+    implements MutableComponentLookupManager
 {
     private MutablePlexusContainer container;
 

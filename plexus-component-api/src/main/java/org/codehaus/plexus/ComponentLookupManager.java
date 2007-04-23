@@ -30,8 +30,6 @@ public interface ComponentLookupManager
 {
     String ROLE = ComponentLookupManager.class.getName();
 
-    void setContainer( MutablePlexusContainer container );
-
     Object lookup( String componentKey )
         throws ComponentLookupException;
 
