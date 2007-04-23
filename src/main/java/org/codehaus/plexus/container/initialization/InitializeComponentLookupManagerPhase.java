@@ -17,6 +17,8 @@ package org.codehaus.plexus.container.initialization;
  */
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.ComponentLookupManager;
+import org.codehaus.plexus.MutableComponentLookupManager;
 
 /**
  * @author Jason van Zyl
@@ -33,6 +35,11 @@ public class InitializeComponentLookupManagerPhase
 
         setupCoreComponent( "component-lookup-manager", configurator, c, context.getContainer() );
 
-        context.getContainer().getComponentLookupManager().setContainer( context.getContainer() );
+        ComponentLookupManager lookupManager = context.getContainer().getComponentLookupManager();
+
+        if ( lookupManager instanceof MutableComponentLookupManager )
+        {
+            ( (MutableComponentLookupManager) lookupManager).setContainer( context.getContainer() );
+        }
     }
 }
