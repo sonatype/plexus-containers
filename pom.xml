@@ -20,10 +20,11 @@
           </excludes>
         </configuration>
       </plugin>
+      <!--
       <plugin>
         <artifactId>shade-maven-plugin</artifactId>
         <groupId>org.codehaus.mojo</groupId>
-        <version>1.0-alpha-7</version>
+        <version>1.0-alpha-8-SNAPSHOT</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -43,7 +44,8 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>      
+      </plugin>
+      -->
     </plugins>
   </build>
   <dependencies>
