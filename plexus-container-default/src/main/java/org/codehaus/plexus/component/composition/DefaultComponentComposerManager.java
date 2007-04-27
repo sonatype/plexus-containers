@@ -19,7 +19,6 @@ package org.codehaus.plexus.component.composition;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 
 import java.util.HashMap;
 import java.util.Iterator;
