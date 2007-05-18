@@ -52,6 +52,8 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-component-api</artifactId>
+      <version>1.0-alpha-25-SNAPSHOT</version>
+      <!-- preferrably ${version} but there are issues with that -->
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
