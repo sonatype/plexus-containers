@@ -62,6 +62,9 @@
       <component-manager implementation="org.codehaus.plexus.component.manager.ContainerComponentManager">
         <id>container</id>
       </component-manager>
+      <component-manager implementation="org.codehaus.plexus.component.manager.ComponentLookupManagerComponentManager">
+        <id>component-lookup-manager</id>
+      </component-manager>
     </component-managers>
   </component-manager-manager>
 
@@ -225,6 +228,11 @@
           <field-name>converters</field-name>
         </requirement>
       </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.ComponentLookupManager</role>
+      <role-hint>default</role-hint>
+      <instantiation-strategy>component-lookup-manager</instantiation-strategy>
     </component>
   </components>
 

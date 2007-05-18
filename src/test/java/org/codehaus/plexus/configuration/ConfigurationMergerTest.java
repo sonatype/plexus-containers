@@ -105,7 +105,7 @@ public class ConfigurationMergerTest
         // There are now four internal components defined which come before the user components
         // are processed.
 
-        assertEquals( "org.codehaus.plexus.ServiceA", components[5].getChild( "role" ).getValue() );
+        assertEquals( "org.codehaus.plexus.ServiceA", components[6].getChild( "role" ).getValue() );
 
         // Test the merging of the <resources> elements.
 
