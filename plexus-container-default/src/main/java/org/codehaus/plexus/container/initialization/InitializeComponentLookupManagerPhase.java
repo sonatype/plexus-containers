@@ -16,6 +16,8 @@ package org.codehaus.plexus.container.initialization;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.ComponentLookupManager;
 import org.codehaus.plexus.MutableComponentLookupManager;
@@ -33,13 +35,27 @@ public class InitializeComponentLookupManagerPhase
 
         PlexusConfiguration c = configuration.getChild( "component-lookup-manager" );
 
-        setupCoreComponent( "component-lookup-manager", configurator, c, context.getContainer() );
+        ComponentDescriptor componentDescriptor = setupCoreComponent(
+            ComponentLookupManager.ROLE,
+            configurator,
+            c,
+            context.getContainer() );
+
+        // register the component descriptor so it can be looked up
+        try
+        {
+            context.getContainer().getComponentRepository().addComponentDescriptor( componentDescriptor );
+        }
+        catch ( ComponentRepositoryException e )
+        {
+            throw new ContainerInitializationException( "Error registering core component descriptor", e );
+        }
 
         ComponentLookupManager lookupManager = context.getContainer().getComponentLookupManager();
 
         if ( lookupManager instanceof MutableComponentLookupManager )
         {
-            ( (MutableComponentLookupManager) lookupManager).setContainer( context.getContainer() );
+            ( (MutableComponentLookupManager) lookupManager ).setContainer( context.getContainer() );
         }
     }
 }

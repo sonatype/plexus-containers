@@ -20,6 +20,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
@@ -40,7 +41,7 @@ public abstract class AbstractCoreComponentInitializationPhase
     protected abstract void initializeCoreComponent( ContainerInitializationContext context )
         throws ContainerInitializationException;
 
-    protected void setupCoreComponent( String role,
+    protected ComponentDescriptor setupCoreComponent( String role,
                                        BasicComponentConfigurator configurator,
                                        PlexusConfiguration c,
                                        PlexusContainer container )
@@ -64,6 +65,8 @@ public abstract class AbstractCoreComponentInitializationPhase
 
         componentDescriptor.setImplementation( implementation );
 
+        componentDescriptor.setRealmId( container.getContainerRealm().getId() );
+
         PlexusConfiguration configuration = new XmlPlexusConfiguration( "containerConfiguration" );
 
         configuration.addChild( c );
@@ -78,5 +81,7 @@ public abstract class AbstractCoreComponentInitializationPhase
             String message = "Error configuring component: " + componentDescriptor.getHumanReadableKey();
             throw new ContainerInitializationException( message, e );
         }
+
+        return componentDescriptor;
     }
 }

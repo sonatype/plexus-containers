@@ -1,8 +1,0 @@
-<component-set>
-  <components>
-    <component>
-      <role>org.codehaus.plexus.ComponentLookupManager</role>
-      <implementation>org.codehaus.plexus.DefaultComponentLookupManager</implementation>
-    </component>
-  </components>
-</component-set>
