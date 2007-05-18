@@ -1,5 +1,7 @@
 package org.codehaus.plexus;
 
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+
 /*
  * Licensed to The Codehaus ( www.codehaus.org ) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,7 +42,10 @@ public class ComponentsTest
     }
 
     public void testLookupManagerComponent()
+        throws ComponentLookupException
     {
         assertNotNull( lookupManager );
+
+        assertSame( lookupManager, lookupManager.lookup( ComponentLookupManager.ROLE ) );
     }
 }
