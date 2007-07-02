@@ -7,9 +7,9 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.util.xml.XmlReader;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -64,14 +64,14 @@ public abstract class AbstractComponentDiscoverer
         {
             URL url = (URL) e.nextElement();
 
-            InputStreamReader reader = null;
+            Reader reader = null;
             try
             {
                 URLConnection conn = url.openConnection();
                 conn.setUseCaches( false );
                 conn.connect();
 
-                reader = new InputStreamReader( conn.getInputStream() );
+                reader = new XmlReader( conn.getInputStream() );
                 InterpolationFilterReader input = new InterpolationFilterReader( reader,
                                                                                  new ContextMapAdapter( context ) );
 

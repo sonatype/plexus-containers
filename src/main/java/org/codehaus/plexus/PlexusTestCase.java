@@ -26,10 +26,10 @@ package org.codehaus.plexus;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.util.xml.XmlReader;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
@@ -113,7 +113,7 @@ public abstract class PlexusTestCase
 
         if ( configuration != null )
         {
-            container.setConfigurationResource( new InputStreamReader( configuration ) );
+            container.setConfigurationResource( new XmlReader( configuration ) );
         }
 
         container.initialize();

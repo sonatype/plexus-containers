@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>plexus-container-default</artifactId>
   <name>Default Plexus Container</name>
-  <version>1.0-alpha-9-stable-1</version>
+  <version>1.0-alpha-9-stable-2-SNAPSHOT</version>
   <build>
     <plugins>
       <plugin>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>1.0.4</version>
+      <version>1.4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>classworlds</groupId>

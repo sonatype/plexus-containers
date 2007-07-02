@@ -32,7 +32,9 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.StartingException;
+import org.codehaus.plexus.util.xml.XmlReader;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -79,7 +81,15 @@ public class SimplePlexusContainerManager
 
         InputStream stream = loader.getResourceAsStream( plexusConfig );
 
-        Reader r = new InputStreamReader( stream );
+        Reader r;
+        try
+        {
+            r = new XmlReader( stream );
+        }
+        catch ( IOException e )
+        {
+            throw new InitializationException( "Unable to read container configuration", e );
+        }
 
         try
         {

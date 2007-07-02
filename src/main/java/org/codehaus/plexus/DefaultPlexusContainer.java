@@ -76,13 +76,12 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.util.xml.XmlReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -675,6 +674,10 @@ public class DefaultPlexusContainer
         {
             throw new PlexusContainerException( "Error contextualizing components", e );
         }
+        catch ( IOException e )
+        {
+            throw new PlexusContainerException( "Error reading configuration file", e );
+        }
     }
 
     public void registerComponentDiscoveryListeners()
@@ -1051,7 +1054,7 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
 
     protected void initializeConfiguration()
-        throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException
+        throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException, IOException
     {
         // System userConfiguration
 
@@ -1064,7 +1067,7 @@ public class DefaultPlexusContainer
                 "most likely corrupt." );
         }
 
-        PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( BOOTSTRAP_CONFIGURATION, new InputStreamReader( is ) );
+        PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( BOOTSTRAP_CONFIGURATION, new XmlReader( is ) );
 
         // ----------------------------------------------------------------------
         //
@@ -1167,10 +1170,10 @@ public class DefaultPlexusContainer
                 {
                     File componentConfigurationFile = (File) i.next();
 
-                    FileReader reader = null;
+                    Reader reader = null;
                     try
                     {
-                        reader = new FileReader( componentConfigurationFile );
+                        reader = new XmlReader( componentConfigurationFile );
                         PlexusConfiguration componentConfiguration =
                             PlexusTools.buildConfiguration( componentConfigurationFile.getAbsolutePath(), getInterpolationConfigurationReader( reader ) );
 
@@ -1179,6 +1182,10 @@ public class DefaultPlexusContainer
                     catch ( FileNotFoundException e )
                     {
                         throw new PlexusConfigurationException( "File " + componentConfigurationFile + " disappeared before processing", e );
+                    }
+                    catch ( IOException e )
+                    {
+                        throw new PlexusConfigurationException( "Error reading file " + componentConfigurationFile, e );
                     }
                     finally
                     {

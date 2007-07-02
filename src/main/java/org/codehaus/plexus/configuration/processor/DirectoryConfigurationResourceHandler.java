@@ -28,10 +28,10 @@ import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.xml.XmlReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +95,7 @@ public class DirectoryConfigurationResourceHandler
             {
                 File configurationFile = (File) files.get( i );
 
-                PlexusConfiguration configuration = PlexusTools.buildConfiguration( configurationFile.getAbsolutePath(), new FileReader( configurationFile ) );
+                PlexusConfiguration configuration = PlexusTools.buildConfiguration( configurationFile.getAbsolutePath(), new XmlReader( configurationFile ) );
 
                 configurations[i] = configuration;
             }
