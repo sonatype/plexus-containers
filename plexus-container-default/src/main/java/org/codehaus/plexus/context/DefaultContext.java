@@ -18,13 +18,12 @@ package org.codehaus.plexus.context;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
 /**
  * Default implementation of Context.
- * 
+ *
  * This implementation is a static hierarchial store. It has the normal <code>get()</code>
  * and <code>put</code> methods. The <code>hide</code> method will hide a property. When
  * a property has been hidden the containerContext will not search in the parent containerContext for the value.
@@ -90,7 +89,7 @@ public class DefaultContext
 
     /**
      * Returns true if the map or the parent map contains the key.
-     * 
+     *
      * @param key The key to search for.
      * @return Returns true if the key was found.
      */
@@ -120,9 +119,9 @@ public class DefaultContext
 
     /**
      * Returns the value of the key. If the key can't be found it will throw a exception.
-     * 
+     *
      * @param key The key of the value to look up.
-     * @return Returns 
+     * @return Returns
      * @throws ContextException If the key doesn't exist.
      */
     public Object get( Object key )
@@ -175,7 +174,7 @@ public class DefaultContext
 
     /**
      * Hides the item in the containerContext.
-     * 
+     *
      * After remove(key) has been called, a get(key)
      * will always fail, even if the parent containerContext
      * has such a mapping.
@@ -191,14 +190,14 @@ public class DefaultContext
     }
 
     /**
-     * Utility method to retrieve containerContext data 
+     * Utility method to retrieve containerContext data
      *
      * @return the containerContext data
      */
     public Map getContextData()
     {
         return Collections.unmodifiableMap( contextData );
-        
+
     }
 
     /**
