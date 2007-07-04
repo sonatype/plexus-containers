@@ -28,7 +28,6 @@ import junit.framework.TestCase;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * @author Ben Walding

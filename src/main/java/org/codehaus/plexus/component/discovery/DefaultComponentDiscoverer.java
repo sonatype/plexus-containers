@@ -65,6 +65,7 @@ public class DefaultComponentDiscoverer
                 throw new PlexusConfigurationException( "Cannot process component descriptor: " + source, e );
             }
 
+            componentDescriptor.setSource( source );
             componentDescriptor.setComponentType( "plexus" );
 
             componentDescriptors.add( componentDescriptor );
