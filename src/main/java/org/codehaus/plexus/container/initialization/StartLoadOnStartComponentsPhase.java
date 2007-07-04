@@ -29,25 +29,28 @@ public class StartLoadOnStartComponentsPhase
     public void execute( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        PlexusConfiguration[] loadOnStartComponents =
-            context.getContainer().getConfiguration().getChild( "load-on-start" ).getChildren( "component" );
+        PlexusConfiguration[] loadOnStartComponents = context.getContainer().getConfiguration().getChild(
+            "load-on-start" ).getChildren( "component" );
 
         context.getContainer().getLogger().debug(
             "Found " + loadOnStartComponents.length + " components to load on start" );
 
-        for ( int i = 0; i < loadOnStartComponents.length; i++ )
+        ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader( context.getContainerRealm() );
+
+        try
         {
-            String role = loadOnStartComponents[i].getChild( "role" ).getValue( null );
-
-            String roleHint = loadOnStartComponents[i].getChild( "role-hint" ).getValue( null );
-
-            if ( role == null )
+            for ( int i = 0; i < loadOnStartComponents.length; i++ )
             {
-                throw new ContainerInitializationException( "Missing 'role' element from load-on-start." );
-            }
+                String role = loadOnStartComponents[i].getChild( "role" ).getValue( null );
 
-            try
-            {
+                String roleHint = loadOnStartComponents[i].getChild( "role-hint" ).getValue( null );
+
+                if ( role == null )
+                {
+                    throw new ContainerInitializationException( "Missing 'role' element from load-on-start." );
+                }
+
                 if ( roleHint == null )
                 {
                     roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
@@ -65,13 +68,21 @@ public class StartLoadOnStartComponentsPhase
                     context.getContainer().getLogger().info(
                         "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
 
+                    context.getContainer().getLogger().info(
+                        "Container: " + context.getContainer() + " " + context.getContainer().getName() + " Realm: "
+                            + context.getContainer().getLookupRealm() );
+
                     context.getContainer().lookup( role, roleHint );
                 }
             }
-            catch ( ComponentLookupException e )
-            {
-                throw new ContainerInitializationException( "Error looking up load-on-start component.", e );
-            }
+        }
+        catch ( ComponentLookupException e )
+        {
+            throw new ContainerInitializationException( "Error looking up load-on-start component.", e );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( prevCl );
         }
     }
 }
