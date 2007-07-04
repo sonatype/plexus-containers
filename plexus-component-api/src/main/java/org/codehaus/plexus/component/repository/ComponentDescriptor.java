@@ -79,38 +79,57 @@ public class ComponentDescriptor
 
     private ComponentSetDescriptor componentSetDescriptor;
 
+    private String source;
+
     // ----------------------------------------------------------------------
-    //  Instance methods
+    // Instance methods
     // ----------------------------------------------------------------------
 
     /**
+     * The location this information came from (descriptor file URI).
+     */
+    public void setSource( String source )
+    {
+        this.source = source;
+    }
+
+    /**
+     * The location this information came from (descriptor file URI).
+     */
+    public String getSource()
+    {
+        return source;
+    }
+
+    /**
      * Returns a human-friendly key, suitable for display.
+     *
      * @return a human-friendly key
      */
     public String getHumanReadableKey()
     {
         StringBuffer key = new StringBuffer();
 
-        key.append("role: '" + role + "'" );
+        key.append( "role: '" + role + "'" );
 
-        key.append( ", implementation: '" + implementation  + "'" );
+        key.append( ", implementation: '" + implementation + "'" );
 
         if ( roleHint != null )
         {
-            key.append( ", role hint: '" + roleHint  + "'" );
+            key.append( ", role hint: '" + roleHint + "'" );
         }
 
         if ( alias != null )
         {
-            key.append( ", alias: '" + alias  + "'" );
+            key.append( ", alias: '" + alias + "'" );
         }
 
         return key.toString();
     }
 
     /**
-     * Returns an alias for this component. An alias as an
-     * alternate name other than the normal key.
+     * Returns an alias for this component. An alias as an alternate name other than the normal key.
+     *
      * @return an alias for this component
      */
     public String getAlias()
@@ -120,6 +139,7 @@ public class ComponentDescriptor
 
     /**
      * Sets the alias for this component.
+     *
      * @param alias alternate name to set
      */
     public void setAlias( String alias )
@@ -129,6 +149,7 @@ public class ComponentDescriptor
 
     /**
      * Returns the role of this component.
+     *
      * @return the role of this component
      */
     public String getRole()
@@ -138,6 +159,7 @@ public class ComponentDescriptor
 
     /**
      * Sets the role of this component.
+     *
      * @param role this component's role
      */
     public void setRole( String role )
@@ -147,6 +169,7 @@ public class ComponentDescriptor
 
     /**
      * Returns the role-hint of this component.
+     *
      * @return the role-hint of this component
      */
     public String getRoleHint()
@@ -155,8 +178,8 @@ public class ComponentDescriptor
     }
 
     /**
-     * Sets the role-hint of this component.
-     * Pasing null will set the hint to the default value.
+     * Sets the role-hint of this component. Pasing null will set the hint to the default value.
+     *
      * @param roleHint this component's role-hint
      */
     public void setRoleHint( String roleHint )
@@ -172,9 +195,9 @@ public class ComponentDescriptor
     }
 
     /**
-     * Returns the implementation of this componet. Implementation
-     * is a string denoting a FQCN in normal Java components, or
-     * some other name or file for other component factory implementations.
+     * Returns the implementation of this componet. Implementation is a string denoting a FQCN in normal Java
+     * components, or some other name or file for other component factory implementations.
+     *
      * @return the implementation of this componet's role.
      */
     public String getImplementation()
@@ -184,8 +207,9 @@ public class ComponentDescriptor
 
     /**
      * Sets the implementation of this componet.
-     * @param implementation string denoting a FQCN in normal Java components,
-     *  or some other name or file for other component factory implementations
+     *
+     * @param implementation string denoting a FQCN in normal Java components, or some other name or file for other
+     *        component factory implementations
      */
     public void setImplementation( String implementation )
     {
@@ -193,8 +217,8 @@ public class ComponentDescriptor
     }
 
     /**
-     * Returns a specific point in a components's project timeline.
-     * i.e. version 1, or 2.1.4
+     * Returns a specific point in a components's project timeline. i.e. version 1, or 2.1.4
+     *
      * @return a specific point in a components's project timeline
      */
     public String getVersion()
@@ -204,6 +228,7 @@ public class ComponentDescriptor
 
     /**
      * Sets the point in a components's project development timeline
+     *
      * @param version the components's version
      */
     public void setVersion( String version )
@@ -213,6 +238,7 @@ public class ComponentDescriptor
 
     /**
      * Returns the type of this component.
+     *
      * @return the type of this component
      */
     public String getComponentType()
@@ -222,6 +248,7 @@ public class ComponentDescriptor
 
     /**
      * Sets this component's type.
+     *
      * @param componentType the type to set
      */
     public void setComponentType( String componentType )
@@ -231,6 +258,7 @@ public class ComponentDescriptor
 
     /**
      * Returns the type of instantiation strategy for this component.
+     *
      * @return the type of instantiation strategy for this component
      */
     public String getInstantiationStrategy()
@@ -240,6 +268,7 @@ public class ComponentDescriptor
 
     /**
      * Returns configuration values defined for this component.
+     *
      * @return configuration values defined for this component
      */
     public PlexusConfiguration getConfiguration()
@@ -249,6 +278,7 @@ public class ComponentDescriptor
 
     /**
      * Sets the configuration hierarchy for this component.
+     *
      * @param configuration the configuration hierarchy to set
      */
     public void setConfiguration( PlexusConfiguration configuration )
@@ -258,6 +288,7 @@ public class ComponentDescriptor
 
     /**
      * Returns true if this component has a configuration.
+     *
      * @return true if this component has a configuration
      */
     public boolean hasConfiguration()
@@ -267,6 +298,7 @@ public class ComponentDescriptor
 
     /**
      * Returns the lifecycle-handler for this component.
+     *
      * @return the lifecycle-handler for this component
      */
     public String getLifecycleHandler()
@@ -275,8 +307,8 @@ public class ComponentDescriptor
     }
 
     /**
-     * Sets the lifecycle-handler for this component. For example,
-     * "basic", "passive", "bootstrap".
+     * Sets the lifecycle-handler for this component. For example, "basic", "passive", "bootstrap".
+     *
      * @param lifecycleHandler the lifecycle handler string to set
      */
     public void setLifecycleHandler( String lifecycleHandler )
@@ -296,6 +328,7 @@ public class ComponentDescriptor
 
     /**
      * Add a project requirement to this component.
+     *
      * @param requirement the requirement to add
      */
     public void addRequirement( final ComponentRequirement requirement )
@@ -305,6 +338,7 @@ public class ComponentDescriptor
 
     /**
      * Adds a list of requirements to this component.
+     *
      * @param requirements the requirements to add
      */
     public void addRequirements( List requirements )
@@ -314,6 +348,7 @@ public class ComponentDescriptor
 
     /**
      * Returns all project requirements of this component.
+     *
      * @return all project requirements of this component
      */
     public List getRequirements()
@@ -327,6 +362,7 @@ public class ComponentDescriptor
 
     /**
      * Returns an id of the factory used to create this component.
+     *
      * @return an id of the factory used to create this component
      */
     public String getComponentFactory()
@@ -335,8 +371,8 @@ public class ComponentDescriptor
     }
 
     /**
-     * Sets the id of the factory to use to create this component. For
-     * example, "jruby" will use a JRuby factory.
+     * Sets the id of the factory to use to create this component. For example, "jruby" will use a JRuby factory.
+     *
      * @param componentFactory
      */
     public void setComponentFactory( String componentFactory )
@@ -345,8 +381,9 @@ public class ComponentDescriptor
     }
 
     /**
-     * Returns the ID of the type of composer this component will use. For example,
-     * "setter" or "field" for the different types of dependency injection.
+     * Returns the ID of the type of composer this component will use. For example, "setter" or "field" for the
+     * different types of dependency injection.
+     *
      * @return the ID of the type of composer this component will use
      */
     public String getComponentComposer()
@@ -356,6 +393,7 @@ public class ComponentDescriptor
 
     /**
      * Sets a representation of the composer this component uses.
+     *
      * @param componentComposer string representation of the composer to use
      */
     public void setComponentComposer( String componentComposer )
@@ -365,6 +403,7 @@ public class ComponentDescriptor
 
     /**
      * Return a human-readable description of this component.
+     *
      * @return a human-readable description of this component
      */
     public String getDescription()
@@ -374,6 +413,7 @@ public class ComponentDescriptor
 
     /**
      * Sets a description of this component for users to read.
+     *
      * @param description a human-readable description of this component
      */
     public void setDescription( String description )
@@ -382,8 +422,8 @@ public class ComponentDescriptor
     }
 
     /**
-     * Sets the instantiation-strategy for this component. For example,
-     * "container".
+     * Sets the instantiation-strategy for this component. For example, "container".
+     *
      * @param instantiationStrategy
      */
     public void setInstantiationStrategy( String instantiationStrategy )
@@ -397,6 +437,7 @@ public class ComponentDescriptor
 
     /**
      * Returns true if this may be in an isolated classrealm.
+     *
      * @return true if this may be in an isolated classrealm
      */
     public boolean isIsolatedRealm()
@@ -405,10 +446,9 @@ public class ComponentDescriptor
     }
 
     /**
-     * Sets the component set descriptor of components and dependencies for
-     * this component.
-     * @param componentSetDescriptor the component set descriptor of components
-     *  and dependencies
+     * Sets the component set descriptor of components and dependencies for this component.
+     *
+     * @param componentSetDescriptor the component set descriptor of components and dependencies
      */
     public void setComponentSetDescriptor( ComponentSetDescriptor componentSetDescriptor )
     {
@@ -417,6 +457,7 @@ public class ComponentDescriptor
 
     /**
      * Returns the component set descriptor.
+     *
      * @return the component set descriptor
      */
     public ComponentSetDescriptor getComponentSetDescriptor()
@@ -426,8 +467,8 @@ public class ComponentDescriptor
 
     /**
      * Sets that this component may be in an isolated classrealm.
-     * @param isolatedRealm true if this component may be in an isolated
-     *  classrealm
+     *
+     * @param isolatedRealm true if this component may be in an isolated classrealm
      */
     public void setIsolatedRealm( boolean isolatedRealm )
     {
@@ -436,6 +477,7 @@ public class ComponentDescriptor
 
     /**
      * Returns a List of dependencies of this component.
+     *
      * @return a List of dependencies of this component
      */
     public List getDependencies()
@@ -444,9 +486,9 @@ public class ComponentDescriptor
     }
 
     /**
-     * Returns the type of component configurator for this project. For
-     * example "basic" for normal, or "map-oriented" for map oriented
-     * components.
+     * Returns the type of component configurator for this project. For example "basic" for normal, or "map-oriented"
+     * for map oriented components.
+     *
      * @return the type of component configurator for this project
      */
     public String getComponentConfigurator()
@@ -456,6 +498,7 @@ public class ComponentDescriptor
 
     /**
      * Sets the type of component configurator for this project.
+     *
      * @param componentConfigurator
      */
     public void setComponentConfigurator( String componentConfigurator )
@@ -465,6 +508,7 @@ public class ComponentDescriptor
 
     /**
      * The ClassRealm that this component lives under.
+     *
      * @return ClassRealm that this component lives under
      */
     public String getRealmId()
@@ -474,6 +518,7 @@ public class ComponentDescriptor
 
     /**
      * Set the id of the ClassRealm that this component lives under.
+     *
      * @param realmId ClassRealm id
      */
     public void setRealmId( String realmId )
@@ -482,9 +527,9 @@ public class ComponentDescriptor
     }
 
     // Component identity established here!
-    public boolean equals(Object other)
+    public boolean equals( Object other )
     {
-        if(!(other instanceof ComponentDescriptor))
+        if ( !( other instanceof ComponentDescriptor ) )
         {
             return false;
         }
@@ -520,7 +565,7 @@ public class ComponentDescriptor
 
         String hint = getRoleHint();
 
-        if( hint != null )
+        if ( hint != null )
         {
             result += hint.hashCode();
         }
