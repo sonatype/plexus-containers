@@ -68,10 +68,6 @@ public class StartLoadOnStartComponentsPhase
                     context.getContainer().getLogger().info(
                         "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
 
-                    context.getContainer().getLogger().info(
-                        "Container: " + context.getContainer() + " " + context.getContainer().getName() + " Realm: "
-                            + context.getContainer().getLookupRealm() );
-
                     context.getContainer().lookup( role, roleHint );
                 }
             }
