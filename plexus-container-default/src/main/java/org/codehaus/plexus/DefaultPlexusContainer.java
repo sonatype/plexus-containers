@@ -219,6 +219,14 @@ public class DefaultPlexusContainer
     public DefaultPlexusContainer( String name, Map context, ClassWorld classWorld, InputStream config )
         throws PlexusContainerException
     {
+        this(name, context, classWorld, config, null );
+    }
+
+    public DefaultPlexusContainer( String name, Map context, ClassWorld classWorld, InputStream config,
+        PlexusContainer parentContainer )
+        throws PlexusContainerException
+    {
+        this.parentContainer = parentContainer;
         construct( name, context, config, classWorld, null );
     }
 
