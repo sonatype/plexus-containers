@@ -28,7 +28,7 @@ import java.io.InputStream;
 
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
-import org.codehaus.plexus.util.xml.XmlReader;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import junit.framework.TestCase;
 
@@ -59,14 +59,14 @@ public class ConfigurationMergerTest
 
         assertNotNull( userStream );
 
-        user = PlexusTools.buildConfiguration( "<Test User Stream>", new XmlReader( userStream ) );
+        user = PlexusTools.buildConfiguration( "<Test User Stream>", ReaderFactory.newXmlReader( userStream ) );
 
         InputStream systemStream =
             Thread.currentThread().getContextClassLoader().getResourceAsStream( DefaultPlexusContainer.BOOTSTRAP_CONFIGURATION );
 
         assertNotNull( systemStream );
 
-        system = PlexusTools.buildConfiguration( "<Test System Stream>", new XmlReader( systemStream ) );
+        system = PlexusTools.buildConfiguration( "<Test System Stream>", ReaderFactory.newXmlReader( systemStream ) );
     }
 
     public void testSimpleConfigurationCascading()

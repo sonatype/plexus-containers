@@ -26,7 +26,7 @@ package org.codehaus.plexus;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.util.xml.XmlReader;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
 import java.io.InputStream;
@@ -113,7 +113,7 @@ public abstract class PlexusTestCase
 
         if ( configuration != null )
         {
-            container.setConfigurationResource( new XmlReader( configuration ) );
+            container.setConfigurationResource( ReaderFactory.newXmlReader( configuration ) );
         }
 
         container.initialize();

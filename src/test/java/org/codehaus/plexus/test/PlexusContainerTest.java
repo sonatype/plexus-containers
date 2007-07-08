@@ -33,11 +33,11 @@ import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
+import org.codehaus.plexus.util.ReaderFactory;
 //import org.codehaus.plexus.util.AbstractTestThread;
 //import org.codehaus.plexus.util.TestThreadManager;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +76,7 @@ public class PlexusContainerTest
 
         container.addContextValue( "plexus.home", basedir + "/target/plexus-home" );
 
-        container.setConfigurationResource( new InputStreamReader( configurationStream ) );
+        container.setConfigurationResource( ReaderFactory.newXmlReader( configurationStream ) );
 
         container.initialize();
 

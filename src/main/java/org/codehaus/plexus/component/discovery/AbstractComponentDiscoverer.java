@@ -7,7 +7,7 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
-import org.codehaus.plexus.util.xml.XmlReader;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -71,7 +71,7 @@ public abstract class AbstractComponentDiscoverer
                 conn.setUseCaches( false );
                 conn.connect();
 
-                reader = new XmlReader( conn.getInputStream() );
+                reader = ReaderFactory.newXmlReader( conn.getInputStream() );
                 InterpolationFilterReader input = new InterpolationFilterReader( reader,
                                                                                  new ContextMapAdapter( context ) );
 

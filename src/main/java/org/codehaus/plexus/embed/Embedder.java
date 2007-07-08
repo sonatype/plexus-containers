@@ -33,10 +33,10 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
 import org.codehaus.plexus.util.PropertyUtils;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Iterator;
@@ -116,7 +116,7 @@ public class Embedder implements PlexusEmbedder
             throw new IllegalStateException( "Embedder has already been started" );
         }
 
-        this.configurationReader = new InputStreamReader(configuration.openStream());
+        this.configurationReader = ReaderFactory.newXmlReader(configuration.openStream());
     }
 
     public synchronized void setConfiguration( Reader configuration ) throws IOException {

@@ -4,7 +4,7 @@ import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.xml.XmlReader;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +60,7 @@ public class FileConfigurationResourceHandler
         Reader configurationReader = null;
         try
         {
-            configurationReader = new XmlReader( f );
+            configurationReader = ReaderFactory.newXmlReader( f );
             return new PlexusConfiguration[]{ PlexusTools.buildConfiguration( f.getAbsolutePath(), configurationReader ) };
         }
         catch ( PlexusConfigurationException e )

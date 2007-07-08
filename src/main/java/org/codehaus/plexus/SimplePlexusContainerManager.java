@@ -32,11 +32,10 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.StartingException;
-import org.codehaus.plexus.util.xml.XmlReader;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.Properties;
@@ -84,7 +83,7 @@ public class SimplePlexusContainerManager
         Reader r;
         try
         {
-            r = new XmlReader( stream );
+            r = ReaderFactory.newXmlReader( stream );
         }
         catch ( IOException e )
         {

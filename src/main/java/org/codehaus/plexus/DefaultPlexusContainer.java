@@ -75,8 +75,8 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.util.ReaderFactory;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.XmlReader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1067,7 +1067,7 @@ public class DefaultPlexusContainer
                 "most likely corrupt." );
         }
 
-        PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( BOOTSTRAP_CONFIGURATION, new XmlReader( is ) );
+        PlexusConfiguration systemConfiguration = PlexusTools.buildConfiguration( BOOTSTRAP_CONFIGURATION, ReaderFactory.newXmlReader( is ) );
 
         // ----------------------------------------------------------------------
         //
@@ -1173,7 +1173,7 @@ public class DefaultPlexusContainer
                     Reader reader = null;
                     try
                     {
-                        reader = new XmlReader( componentConfigurationFile );
+                        reader = ReaderFactory.newXmlReader( componentConfigurationFile );
                         PlexusConfiguration componentConfiguration =
                             PlexusTools.buildConfiguration( componentConfigurationFile.getAbsolutePath(), getInterpolationConfigurationReader( reader ) );
 

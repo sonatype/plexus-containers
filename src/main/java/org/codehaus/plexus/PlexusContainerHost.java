@@ -26,10 +26,10 @@ package org.codehaus.plexus;
 
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.plexus.configuration.PlexusConfigurationResourceException;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 
 /**
  * A <code>ContainerHost</code>.
@@ -72,7 +72,7 @@ public class PlexusContainerHost
         container = getPlexusContainer();
 
         container.setClassWorld( classWorld );
-        container.setConfigurationResource( new FileReader( configurationResource ) );
+        container.setConfigurationResource( ReaderFactory.newPlatformReader( new File( configurationResource ) ) );
 
         customizeContainer( container );
 

@@ -27,7 +27,7 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
-import org.codehaus.plexus.util.xml.XmlReader;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -91,7 +91,7 @@ public class PlexusXmlComponentDiscoverer
             Reader reader = null;
             try
             {
-                reader = new XmlReader( url.openStream() );
+                reader = ReaderFactory.newXmlReader( url.openStream() );
 
                 ContextMapAdapter contextAdapter = new ContextMapAdapter( context );
 
