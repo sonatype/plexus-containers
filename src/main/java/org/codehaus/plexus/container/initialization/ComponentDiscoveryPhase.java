@@ -30,9 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author Jason van Zyl
- *
- * PLXAPI: this needs to move into the discovery package
+ * @author Jason van Zyl PLXAPI: this needs to move into the discovery package
  */
 public class ComponentDiscoveryPhase
     extends AbstractContainerInitializationPhase
@@ -60,13 +58,15 @@ public class ComponentDiscoveryPhase
      * @deprecated use {@link ComponentDiscoveryPhase#discoverComponents(DefaultPlexusContainer, ClassRealm, boolean)}
      */
     public static List discoverComponents( DefaultPlexusContainer container, ClassRealm realm )
-        throws PlexusConfigurationException, ComponentRepositoryException
+        throws PlexusConfigurationException,
+            ComponentRepositoryException
     {
         return discoverComponents( container, realm, false );
     }
 
     public static List discoverComponents( DefaultPlexusContainer container, ClassRealm realm, boolean override )
-        throws PlexusConfigurationException, ComponentRepositoryException
+        throws PlexusConfigurationException,
+            ComponentRepositoryException
     {
         // We are assuming that any component which is designated as a component discovery
         // listener is listed in the plexus.xml file that will be discovered and processed
@@ -102,8 +102,10 @@ public class ComponentDiscoveryPhase
 
                         // Use the parent realm to search for the original descriptor. It won't
                         // be in the current realm (yet).
-                        ComponentDescriptor orig = container.getComponentDescriptor( componentDescriptor
-                            .getRole(), componentDescriptor.getRoleHint(), realm );
+                        ComponentDescriptor orig = container.getComponentDescriptor(
+                            componentDescriptor.getRole(),
+                            componentDescriptor.getRoleHint(),
+                            realm );
 
                         // System.out.println("Found new descriptor: " + componentDescriptor.getHumanReadableKey() + "
                         // realm="+ componentDescriptor.getRealmId() );
@@ -128,17 +130,43 @@ public class ComponentDiscoveryPhase
 
                             discoveredComponentDescriptors.add( componentDescriptor );
                         }
-                        else if ( override && orig.getRealmId() != null
-                            && !orig.getRealmId().equals( componentDescriptor.getRealmId() ) )
+                        else if ( override )
                         {
-                            container.getLogger().debug( "Duplicate component found, merging:" + "\n  Original: "
-                                + orig.getRealmId() + ": " + orig.getRole() + " [" + orig.getRoleHint() + "] impl="
-                                + orig.getImplementation() + "\n  Config: " + orig.getConfiguration()
-                                + "\n  New:      " + componentDescriptor.getRealmId() + ": "
-                                + componentDescriptor.getRole() + " [" + orig.getRoleHint() + "] impl="
-                                + componentDescriptor.getImplementation() + "\n  Config: " + orig.getConfiguration() );
+                            if ( orig.getRealmId() != null
+                                && !orig.getRealmId().equals( componentDescriptor.getRealmId() ) )
+                            {
+                                if ( container.getLogger().isDebugEnabled() )
+                                {
+                                    container.getLogger().debug(
+                                        "Duplicate component found, merging:" + "\n  Original: " + orig.getRealmId()
+                                            + ": " + orig.getRole() + " [" + orig.getRoleHint() + "] impl="
+                                            + orig.getImplementation() + "\n  Config: " + orig.getConfiguration()
+                                            + "\n  New:      " + componentDescriptor.getRealmId() + ": "
+                                            + componentDescriptor.getRole() + " [" + orig.getRoleHint() + "] impl="
+                                            + componentDescriptor.getImplementation() + "\n  Config: "
+                                            + orig.getConfiguration() );
+                                }
+                                PlexusComponentDescriptorMerger.merge( componentDescriptor, orig );
+                            }
+                            else if ( orig.getRealmId() != null
+                                && orig.getRealmId().equals( componentDescriptor.getRealmId() ) )
+                            {
+                                // two decls for the same component in the same realm.
+                                // Use classpath order - first one wins.
 
-                            PlexusComponentDescriptorMerger.merge( componentDescriptor, orig );
+                                if ( container.getLogger().isDebugEnabled() )
+                                {
+                                    container.getLogger().debug(
+                                        "Duplicate component found, not replacing:" + "\n  Original: "
+                                            + orig.getRealmId() + ": " + orig.getRole() + " [" + orig.getRoleHint()
+                                            + "] impl=" + orig.getImplementation() + "\n  Config: "
+                                            + orig.getConfiguration() + "\n  New:      "
+                                            + componentDescriptor.getRealmId() + ": " + componentDescriptor.getRole()
+                                            + " [" + orig.getRoleHint() + "] impl="
+                                            + componentDescriptor.getImplementation() + "\n  Config: "
+                                            + orig.getConfiguration() );
+                                }
+                            }
                         }
                     }
                 }
