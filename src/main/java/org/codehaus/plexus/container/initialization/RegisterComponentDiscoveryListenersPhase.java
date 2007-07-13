@@ -52,9 +52,13 @@ public class RegisterComponentDiscoveryListenersPhase
 
                     if ( container.getParentContainer() != null )
                     {
-                        listener = (ComponentDiscoveryListener) container.getParentContainer().lookup( role, roleHint );
-
-                        if ( listener == null )
+                        try
+                        {
+                            listener = (ComponentDiscoveryListener) container.getParentContainer().lookup(
+                                role,
+                                roleHint );
+                        }
+                        catch ( ComponentLookupException e )
                         {
                             listener = (ComponentDiscoveryListener) container.lookup( role, roleHint );
                         }
