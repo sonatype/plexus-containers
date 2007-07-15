@@ -61,14 +61,13 @@ import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -627,8 +626,6 @@ public class DefaultPlexusContainer
 
     public List getComponentDescriptorList( String role, ClassRealm realm )
     {
-        List result;
-
         Map componentDescriptors = getComponentDescriptorMap( role, realm );
 
         return new ArrayList( componentDescriptors.values() );
@@ -746,7 +743,7 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------
-    // Lifecylce Management
+    // Lifecycle Management
     // ----------------------------------------------------------------------
 
     boolean initialized;
@@ -811,7 +808,14 @@ public class DefaultPlexusContainer
         // ----------------------------------------------------------------------------
 
         // TODO: just store reference to the configuration in a String and use that in the configuration initialization
-        this.configurationReader = in == null ? null : new InputStreamReader( in );
+        try
+        {
+            this.configurationReader = in == null ? null : ReaderFactory.newXmlReader( in );
+        }
+        catch ( IOException e )
+        {
+            throw new PlexusContainerException( "Error reading configuration file", e );
+        }
 
         try
         {
@@ -856,6 +860,10 @@ public class DefaultPlexusContainer
         catch ( PlexusConfigurationException e )
         {
             throw new PlexusContainerException( "Error configuring components", e );
+        }
+        catch ( IOException e )
+        {
+            throw new PlexusContainerException( "Error reading configuration file", e );
         }
 
         initialized = true;
@@ -1028,7 +1036,7 @@ public class DefaultPlexusContainer
 
     protected void initializeConfiguration()
         throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException,
-        ContextException
+        ContextException, IOException
     {
         // System userConfiguration
 
@@ -1050,7 +1058,7 @@ public class DefaultPlexusContainer
         }
 
         PlexusConfiguration bootstrapConfiguration = PlexusTools
-            .buildConfiguration( PlexusConstants.BOOTSTRAP_CONFIGURATION, new InputStreamReader( is ) );
+            .buildConfiguration( PlexusConstants.BOOTSTRAP_CONFIGURATION, ReaderFactory.newXmlReader( is ) );
 
         // Some of this could probably be collapsed as having a plexus.xml in your
         // META-INF/plexus directory is probably a better solution then specifying
@@ -1145,10 +1153,10 @@ public class DefaultPlexusContainer
                 {
                     File componentConfigurationFile = (File) i.next();
 
-                    FileReader reader = null;
+                    Reader reader = null;
                     try
                     {
-                        reader = new FileReader( componentConfigurationFile );
+                        reader = ReaderFactory.newXmlReader( componentConfigurationFile );
                         PlexusConfiguration componentConfiguration = PlexusTools
                             .buildConfiguration( componentConfigurationFile.getAbsolutePath(),
                                                  getInterpolationConfigurationReader( reader ) );
@@ -1159,6 +1167,10 @@ public class DefaultPlexusContainer
                     {
                         throw new PlexusConfigurationException( "File " + componentConfigurationFile
                             + " disappeared before processing", e );
+                    }
+                    catch ( IOException e )
+                    {
+                        throw new PlexusConfigurationException( "IO error while reading " + componentConfigurationFile, e );
                     }
                     finally
                     {
