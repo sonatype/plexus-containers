@@ -20,10 +20,11 @@ import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Map;
 
 /**
@@ -48,17 +49,17 @@ public class FileConfigurationResourceHandler
             throw new ConfigurationResourceNotFoundException( "The specified resource " + f + " cannot be found." );
         }
 
-        FileReader configurationReader = null;
+        Reader configurationReader = null;
         try
         {
-            configurationReader = new FileReader( f );
+            configurationReader = ReaderFactory.newXmlReader( f );
             return new PlexusConfiguration[]{ PlexusTools.buildConfiguration( f.getAbsolutePath(), configurationReader ) };
         }
         catch ( PlexusConfigurationException e )
         {
             throw new ConfigurationProcessingException( e );
         }
-        catch ( FileNotFoundException e )
+        catch ( IOException e )
         {
             throw new ConfigurationProcessingException( e );
         }

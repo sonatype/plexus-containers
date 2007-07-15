@@ -19,9 +19,9 @@ package org.codehaus.plexus.configuration;
 import junit.framework.TestCase;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.util.ReaderFactory;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  *
@@ -50,14 +50,14 @@ public class ConfigurationMergerTest
 
         assertNotNull( userStream );
 
-        user = PlexusTools.buildConfiguration( "<Test User Stream>", new InputStreamReader( userStream ) );
+        user = PlexusTools.buildConfiguration( "<Test User Stream>", ReaderFactory.newXmlReader( userStream ) );
 
         InputStream systemStream =
             Thread.currentThread().getContextClassLoader().getResourceAsStream( PlexusConstants.BOOTSTRAP_CONFIGURATION );
 
         assertNotNull( systemStream );
 
-        system = PlexusTools.buildConfiguration( "<Test System Stream>", new InputStreamReader( systemStream ) );
+        system = PlexusTools.buildConfiguration( "<Test System Stream>", ReaderFactory.newXmlReader( systemStream ) );
     }
 
     public void testSimpleConfigurationCascading()
