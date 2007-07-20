@@ -20,11 +20,10 @@
           </excludes>
         </configuration>
       </plugin>
-      <!--
       <plugin>
         <artifactId>shade-maven-plugin</artifactId>
         <groupId>org.codehaus.mojo</groupId>
-        <version>1.0-alpha-8-SNAPSHOT</version>
+        <version>1.0-alpha-8</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -45,15 +44,13 @@
           </execution>
         </executions>
       </plugin>
-      -->
     </plugins>
   </build>
   <dependencies>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-component-api</artifactId>
-      <version>1.0-alpha-26</version>
-      <!-- preferrably ${version} but there are issues with that -->
+      <version>1.0-alpha-27-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
