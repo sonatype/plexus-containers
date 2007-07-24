@@ -26,11 +26,12 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.PropertyUtils;
+import org.codehaus.plexus.util.WriterFactory;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -168,11 +169,11 @@ public class Embedder
         File tempFile = File.createTempFile( "plexus-embedder", "" );
         tempFile.deleteOnExit();
 
-        FileWriter writer = null;
+        Writer writer = null;
 
         try
         {
-            writer = new FileWriter( tempFile );
+            writer = WriterFactory.newPlatformWriter( tempFile );
             IOUtil.copy( configuration, writer );
 
             configurationUrl = tempFile.toURL();
