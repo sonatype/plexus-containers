@@ -70,7 +70,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -149,7 +148,9 @@ public class DefaultPlexusContainer
     //
     // ----------------------------------------------------------------------------
 
-    /** Map&lt;String, PlexusContainer> where the key is the container name. */
+    /**
+     * Map&lt;String, PlexusContainer> where the key is the container name.
+     */
     protected Map childContainers = new WeakHashMap();
 
     protected Date creationDate = new Date();
@@ -174,13 +175,15 @@ public class DefaultPlexusContainer
         staticLookupRealm = realm;
 
         ClassRealm oldRealm = (ClassRealm) lookupRealm.get();
+
         lookupRealm.set( realm );
+
         return oldRealm;
     }
 
     public ClassRealm getLookupRealm()
     {
-        ClassRealm cr =  (ClassRealm) lookupRealm.get();
+        ClassRealm cr = (ClassRealm) lookupRealm.get();
         return cr == null ? staticLookupRealm : cr;
     }
 
@@ -188,83 +191,17 @@ public class DefaultPlexusContainer
     // Constructors
     // ----------------------------------------------------------------------
 
-    // Requirements
-    // - container name
-    // - ClassWorld
-    // - Context values
-    // - User space configuration
-    // - ClassWorld
-
-    // Do we need named realms?
-
     public DefaultPlexusContainer()
         throws PlexusContainerException
     {
-        construct( DEFAULT_CONTAINER_NAME, null, null, null, null );
+        construct( new DefaultContainerConfiguration() );
     }
 
-    public DefaultPlexusContainer( String name, Map context )
+
+    public DefaultPlexusContainer( ContainerConfiguration c )
         throws PlexusContainerException
     {
-        construct( name, context, null, null, null );
-    }
-
-    public DefaultPlexusContainer( String name, Map context, ClassWorld classWorld )
-        throws PlexusContainerException
-    {
-        this( name, context, classWorld, null );
-    }
-
-    public DefaultPlexusContainer( String name, Map context, ClassWorld classWorld, InputStream config )
-        throws PlexusContainerException
-    {
-        this( name, context, classWorld, config, null );
-    }
-
-    public DefaultPlexusContainer( String name, Map context, ClassWorld classWorld, InputStream config,
-        PlexusContainer parentContainer )
-        throws PlexusContainerException
-    {
-        this.parentContainer = parentContainer;
-        construct( name, context, config, classWorld, null );
-    }
-
-    // ///// Utility constructors for various configuration sources
-
-    public DefaultPlexusContainer( String name, Map context, File file )
-        throws PlexusContainerException
-    {
-        this( name, context, null, toStream( file ) );
-    }
-
-    public DefaultPlexusContainer( String name, Map context, File file, ClassWorld classWorld )
-        throws PlexusContainerException
-    {
-        this( name, context, classWorld, toStream( file ) );
-    }
-
-    public DefaultPlexusContainer( String name, Map context, String configurationResource )
-        throws PlexusContainerException
-    {
-        this( name, context, null, toStream( configurationResource ) );
-    }
-
-    public DefaultPlexusContainer( String name, Map context, String configurationResource, ClassWorld classWorld )
-        throws PlexusContainerException
-    {
-        this( name, context, classWorld, toStream( configurationResource ) );
-    }
-
-    public DefaultPlexusContainer( String name, Map context, URL url )
-        throws PlexusContainerException
-    {
-        this( name, context, null, toStream( url ) );
-    }
-
-    public DefaultPlexusContainer( String name, Map context, URL url, ClassWorld classWorld )
-        throws PlexusContainerException
-    {
-        this( name, context, classWorld, toStream( url ) );
+        construct( c );
     }
 
     // ----------------------------------------------------------------------------
@@ -285,7 +222,13 @@ public class DefaultPlexusContainer
             registerComponentDiscoveryListener( (ComponentDiscoveryListener) it.next() );
         }
 
-        construct( name, context, null, containerRealm.getWorld(), containerRealm );
+        ContainerConfiguration c = new DefaultContainerConfiguration()
+            .setName( name )
+            .setContext( context )
+            .setClassWorld( containerRealm.getWorld() )
+            .setRealm( containerRealm );
+
+        construct( c );
     }
 
     // ----------------------------------------------------------------------------
@@ -490,11 +433,40 @@ public class DefaultPlexusContainer
     // The method from alpha-9 for creating child containers
     // ----------------------------------------------------------------------------
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     public PlexusContainer createChildContainer( String name, List classpathJars, Map context )
         throws PlexusContainerException
     {
         return createChildContainer( name, classpathJars, context, Collections.EMPTY_LIST );
+    }
+
+    // not sure this is the best strategy, i might just want to take the world. what are the strategies
+    // for getting this work properly
+    //
+    //
+    // container with classworld and in the case of developing with maven and wanting to startup
+    // waffle what do i need:
+    //
+    // add project deps to container
+    // have new components discoveryed
+    // use classes from parent container so that the classloaders are hooked up
+    //
+    // so do i want to make a classloader or use a realm
+    public PlexusContainer createChildContainer( String name, ClassLoader classLoader )
+        throws PlexusContainerException
+    {
+        if ( hasChildContainer( name ) )
+        {
+            throw new DuplicateChildContainerException( getName(), name );
+        }
+
+        ContainerConfiguration c = new DefaultContainerConfiguration()
+            .setName( name )
+            .setClassWorld( new ClassWorld( name, classLoader ) );
+
+        return new DefaultPlexusContainer( c );
     }
 
     public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
@@ -506,6 +478,13 @@ public class DefaultPlexusContainer
         }
 
         DefaultPlexusContainer child = new DefaultPlexusContainer( name, context, this, discoveryListeners );
+
+        for ( Iterator i = classpathJars.iterator(); i.hasNext(); )
+        {
+            File jar = (File) i.next();
+
+            child.addJarResource( jar );
+        }
 
         childContainers.put( name, child );
 
@@ -748,16 +727,16 @@ public class DefaultPlexusContainer
 
     boolean initialized;
 
-    private void construct( String name, Map context, InputStream in, ClassWorld classWorld, ClassRealm realm )
+    private void construct( ContainerConfiguration c )
         throws PlexusContainerException
     {
-        this.name = name;
+        this.name = c.getName();
 
         // ----------------------------------------------------------------------------
         // ClassWorld
         // ----------------------------------------------------------------------------
 
-        this.classWorld = classWorld;
+        this.classWorld = c.getClassWorld();
 
         // Make sure we have a valid ClassWorld
         if ( this.classWorld == null )
@@ -765,7 +744,7 @@ public class DefaultPlexusContainer
             this.classWorld = new ClassWorld( DEFAULT_REALM_NAME, Thread.currentThread().getContextClassLoader() );
         }
 
-        containerRealm = realm;
+        containerRealm = c.getRealm();
 
         if ( containerRealm == null )
         {
@@ -776,10 +755,13 @@ public class DefaultPlexusContainer
             catch ( NoSuchRealmException e )
             {
                 List realms = new LinkedList( this.classWorld.getRealms() );
+
                 containerRealm = (ClassRealm) realms.get( 0 );
+
                 if ( containerRealm == null )
                 {
                     System.err.println( "No container realm! Expect errors." );
+
                     new Throwable().printStackTrace();
                 }
             }
@@ -793,9 +775,9 @@ public class DefaultPlexusContainer
 
         this.containerContext = new DefaultContext();
 
-        if ( context != null )
+        if ( c.getContext() != null )
         {
-            for ( Iterator it = context.entrySet().iterator(); it.hasNext(); )
+            for ( Iterator it = c.getContext().entrySet().iterator(); it.hasNext(); )
             {
                 Map.Entry entry = (Map.Entry) it.next();
 
@@ -808,6 +790,21 @@ public class DefaultPlexusContainer
         // ----------------------------------------------------------------------------
 
         // TODO: just store reference to the configuration in a String and use that in the configuration initialization
+
+        InputStream in = null;
+
+        if ( c.getContainerConfiguration() != null )
+        {
+            String resource = c.getContainerConfiguration();
+
+            if ( resource.startsWith( "/" ) )
+            {
+                resource = resource.substring( 1 );
+            }
+
+            in = toStream( resource );
+        }
+
         try
         {
             this.configurationReader = in == null ? null : ReaderFactory.newXmlReader( in );
@@ -821,6 +818,7 @@ public class DefaultPlexusContainer
         {
             // XXX this will set up the configuration and process it
             initialize();
+
             // XXX this will wipe out the configuration field - is this needed? If so,
             // why? can we remove the need to have a configuration field then?
             start();
@@ -917,8 +915,7 @@ public class DefaultPlexusContainer
     }
 
     /**
-     * @see org.codehaus.plexus.MutablePlexusContainer#discoverComponents(org.codehaus.plexus.classworlds.realm.ClassRealm,
-     *      boolean)
+     * @see org.codehaus.plexus.MutablePlexusContainer#discoverComponents(org.codehaus.plexus.classworlds.realm.ClassRealm,boolean)
      */
     public List discoverComponents( ClassRealm classRealm, boolean override )
         throws PlexusConfigurationException, ComponentRepositoryException
@@ -1090,7 +1087,7 @@ public class DefaultPlexusContainer
 
             PlexusConfiguration userConfiguration = PlexusTools
                 .buildConfiguration( "<User Specified Configuration Reader>",
-                                     getInterpolationConfigurationReader( configurationReader ) );
+                    getInterpolationConfigurationReader( configurationReader ) );
 
             // Merger of bootstrapConfiguration and user userConfiguration
 
@@ -1159,7 +1156,7 @@ public class DefaultPlexusContainer
                         reader = ReaderFactory.newXmlReader( componentConfigurationFile );
                         PlexusConfiguration componentConfiguration = PlexusTools
                             .buildConfiguration( componentConfigurationFile.getAbsolutePath(),
-                                                 getInterpolationConfigurationReader( reader ) );
+                                getInterpolationConfigurationReader( reader ) );
 
                         componentsConfiguration.addChild( componentConfiguration.getChild( "components" ) );
                     }
@@ -1440,46 +1437,31 @@ public class DefaultPlexusContainer
         return realm;
     }
 
-    private static InputStream toStream( File file )
-        throws PlexusContainerException
-    {
-        try
-        {
-            return file == null ? null : new FileInputStream( file );
-        }
-        catch ( FileNotFoundException e )
-        {
-            throw new PlexusContainerException( "Could not read file: " + file.getAbsolutePath() );
-        }
-    }
-
-    private static InputStream toStream( URL url )
-        throws PlexusContainerException
-    {
-        try
-        {
-            return url == null ? null : url.openStream();
-        }
-        catch ( IOException e )
-        {
-            throw new PlexusContainerException( "Could not read url: " + url );
-        }
-    }
-
-    private static InputStream toStream( String resource )
+    private InputStream toStream( String resource )
         throws PlexusContainerException
     {
         if ( resource == null )
         {
             return null;
         }
-        InputStream in = DefaultPlexusContainer.class.getResourceAsStream( resource );
-        if ( in == null )
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream( resource );
+
+        if ( is == null )
         {
-            throw new PlexusContainerException( "Could not load resource '" + resource + "'." );
+            try
+            {
+                return new FileInputStream( resource );
+            }
+            catch ( FileNotFoundException e )
+            {
+                return null;
+            }
         }
-        return in;
+
+        return is;
     }
+
 
     /**
      * Utility method to get a default lookup realm for a component.

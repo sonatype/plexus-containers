@@ -32,13 +32,18 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-classworlds</artifactId>
-        <version>1.2-alpha-8</version>
+        <version>1.2-alpha-9</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>1.4.4</version>
+        <version>1.4.5</version>
       </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-api</artifactId>
+        <version>1.0-alpha-30-SNAPSHOT</version>
+      </dependency>      
     </dependencies>
   </dependencyManagement>
 </project>

@@ -17,6 +17,8 @@ package org.codehaus.plexus.component.factory.java;
  */
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.ClassWorld;
@@ -50,7 +52,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        PlexusContainer container = new DefaultPlexusContainer( null, null, classWorld );
+        PlexusContainer container = new DefaultPlexusContainer( containerConfiguration( classWorld ));
 
         Object component = factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), container );
 
@@ -72,7 +74,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        PlexusContainer container = new DefaultPlexusContainer( null, null, classWorld );
+        PlexusContainer container = new DefaultPlexusContainer( containerConfiguration( classWorld ));
 
         factory.newInstance( componentDescriptor, classWorld.getRealm( "core" ), container );
     }
@@ -92,7 +94,7 @@ public class JavaComponentFactoryTest
 
         classWorld.newRealm( "core", Thread.currentThread().getContextClassLoader() );
 
-        PlexusContainer container = new DefaultPlexusContainer( null, null, classWorld );
+        PlexusContainer container = new DefaultPlexusContainer( containerConfiguration( classWorld ) );
 
         try
         {
@@ -104,5 +106,13 @@ public class JavaComponentFactoryTest
         {
             assertTrue( true );
         }
+    }
+
+    private ContainerConfiguration containerConfiguration( ClassWorld classWorld )
+    {
+        ContainerConfiguration c = new DefaultContainerConfiguration()
+            .setClassWorld( classWorld );
+
+        return c;
     }
 }
