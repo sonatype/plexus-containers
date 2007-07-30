@@ -1,25 +1,30 @@
 package org.codehaus.plexus;
 
-import junit.framework.TestCase;
-
-import java.net.URL;
-import java.util.Collections;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.test.ComponentA;
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
 public class DefaultComponentLookupManagerTest
-    extends TestCase
+    extends PlexusTestCase
 {
     public void testLookupsWithAndWithoutRoleHint()
         throws Exception
     {
-        URL resource = DefaultComponentLookupManagerTest.class.getResource( "components.xml" );
-        assertNotNull( resource );
-        DefaultPlexusContainer container = new DefaultPlexusContainer( "test",  Collections.EMPTY_MAP, resource );
+        String resource = getConfigurationName( "components.xml" );
 
-        /* Disable this test for now - re-enable it once the lookup( role ) is fixed - Andy
+        System.out.println( "resource = " + resource );
+
+        assertNotNull( resource );
+
+        ContainerConfiguration c = new DefaultContainerConfiguration()
+            .setName( "test" )
+            .setContainerConfiguration( resource );
+
+        DefaultPlexusContainer container = new DefaultPlexusContainer( c );
+
         try
         {
             container.lookup( ComponentA.ROLE );
@@ -30,6 +35,5 @@ public class DefaultComponentLookupManagerTest
         {
             // expected
         }
-        */
     }
 }

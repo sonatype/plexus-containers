@@ -76,32 +76,22 @@ public abstract class PlexusTestCase
 
         String config = getCustomConfigurationName();
 
+        ContainerConfiguration containerConfiguration = new DefaultContainerConfiguration()
+            .setName( "test" )
+            .setContext( context );
+
         if ( config != null )
         {
-            URL url = getClassLoader().getResource( config );
-
-            if ( url != null )
-            {
-                container = new DefaultPlexusContainer( "test", context, url );
-            }
-            else
-            {
-                container = new DefaultPlexusContainer( "test", context, new File( config ) );
-            }
+            containerConfiguration.setContainerConfiguration( config );
         }
         else
         {
-            URL url = getClassLoader().getResource( getConfigurationName( null ) );
+            String resource = getConfigurationName( null );
 
-            if ( url != null )
-            {
-                container = new DefaultPlexusContainer( "test", context, url );
-            }
-            else
-            {
-                container = new DefaultPlexusContainer( "test", context );
-            }
+            containerConfiguration.setContainerConfiguration( resource );
         }
+
+        container = new DefaultPlexusContainer( containerConfiguration );
     }
 
     protected void customizeContext( Context context )

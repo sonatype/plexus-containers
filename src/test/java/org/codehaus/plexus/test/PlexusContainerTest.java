@@ -17,6 +17,8 @@ package org.codehaus.plexus.test;
  */
 
 import junit.framework.TestCase;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
@@ -66,7 +68,12 @@ public class PlexusContainerTest
 
         context.put( "plexus.home", basedir + "/target/plexus-home" );
 
-        container = new DefaultPlexusContainer( "test", context, configuration );
+        ContainerConfiguration c = new DefaultContainerConfiguration()
+            .setName( "test" )
+            .setContext( context )
+            .setContainerConfiguration( configuration );
+                
+        container = new DefaultPlexusContainer( c );
     }
 
     public void tearDown()
