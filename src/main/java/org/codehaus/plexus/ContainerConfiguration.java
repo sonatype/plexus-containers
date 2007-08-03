@@ -31,6 +31,10 @@ public interface ContainerConfiguration
 
     String getContainerConfiguration();
 
+    ContainerConfiguration setContainerConfigurationURL( URL configuration );
+
+    URL getContainerConfigurationURL();
+
     ContainerConfiguration setRealm( ClassRealm realm );
 
     ClassRealm getRealm();    

@@ -24,6 +24,8 @@ public class DefaultContainerConfiguration
 
     private String containerConfiguration;
 
+    private URL containerConfigurationURL;
+
     public ContainerConfiguration setName( String name )
     {
         this.name = name;
@@ -69,6 +71,18 @@ public class DefaultContainerConfiguration
     public String getContainerConfiguration()
     {
         return containerConfiguration;
+    }
+
+    public ContainerConfiguration setContainerConfigurationURL( URL containerConfiguration )
+    {
+        this.containerConfigurationURL = containerConfiguration;
+
+        return this;
+    }
+
+    public URL getContainerConfigurationURL()
+    {
+        return containerConfigurationURL;
     }
 
     public String getName()
