@@ -800,6 +800,18 @@ public class DefaultPlexusContainer
 
         try
         {
+            if ( c.getContainerConfigurationURL() != null )
+            {
+                in = c.getContainerConfigurationURL().openStream();
+            }
+        }
+        catch ( IOException e )
+        {
+            throw new PlexusContainerException( "Error reading configuration URL", e );
+        }
+
+        try
+        {
             this.configurationReader = in == null ? null : ReaderFactory.newXmlReader( in );
         }
         catch ( IOException e )
