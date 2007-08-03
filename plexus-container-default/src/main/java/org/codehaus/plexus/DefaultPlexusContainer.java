@@ -730,6 +730,15 @@ public class DefaultPlexusContainer
     private void construct( ContainerConfiguration c )
         throws PlexusContainerException
     {
+        if ( c.getParentContainer() != null )
+        {
+            this.parentContainer = c.getParentContainer();
+
+            this.loggerManager = parentContainer.getLoggerManager();
+
+            this.containerRealm = getChildRealm( getName(), name, c.getParentContainer().getContainerRealm() );
+        }
+
         this.name = c.getName();
 
         // ----------------------------------------------------------------------------
