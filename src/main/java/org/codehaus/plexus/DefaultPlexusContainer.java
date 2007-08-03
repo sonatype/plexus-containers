@@ -795,14 +795,7 @@ public class DefaultPlexusContainer
 
         if ( c.getContainerConfiguration() != null )
         {
-            String resource = c.getContainerConfiguration();
-
-            if ( resource.startsWith( "/" ) )
-            {
-                resource = resource.substring( 1 );
-            }
-
-            in = toStream( resource );
+            in = toStream( c.getContainerConfiguration() );
         }
 
         try
@@ -1445,7 +1438,13 @@ public class DefaultPlexusContainer
             return null;
         }
 
-        InputStream is = getClass().getClassLoader().getResourceAsStream( resource );
+        String relativeResource = resource;
+        if ( resource.startsWith( "/" ) )
+        {
+            relativeResource = resource.substring( 1 );
+        }
+
+        InputStream is = getClass().getClassLoader().getResourceAsStream( relativeResource );
 
         if ( is == null )
         {
