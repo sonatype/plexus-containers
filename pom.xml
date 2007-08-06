@@ -42,7 +42,7 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-api</artifactId>
-        <version>1.0-alpha-31</version>
+        <version>1.0-alpha-32-SNAPSHOT</version>
       </dependency>      
     </dependencies>
   </dependencyManagement>
