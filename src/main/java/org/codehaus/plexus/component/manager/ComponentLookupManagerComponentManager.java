@@ -19,6 +19,9 @@ package org.codehaus.plexus.component.manager;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 
+/**
+ * @author <a href="mailto:kenney@neonics.com">Kenney Westerhof</a>
+ */
 public class ComponentLookupManagerComponentManager extends AbstractComponentManager
 {
     public void dispose()
