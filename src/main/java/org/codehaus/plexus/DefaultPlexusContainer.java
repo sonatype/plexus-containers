@@ -172,9 +172,14 @@ public class DefaultPlexusContainer
             return null;
         }
 
-        staticLookupRealm = realm;
-
         ClassRealm oldRealm = (ClassRealm) lookupRealm.get();
+
+        if ( oldRealm == null )
+        {
+            oldRealm = staticLookupRealm;
+        }
+
+        staticLookupRealm = realm;
 
         lookupRealm.set( realm );
 
@@ -196,7 +201,6 @@ public class DefaultPlexusContainer
     {
         construct( new DefaultContainerConfiguration() );
     }
-
 
     public DefaultPlexusContainer( ContainerConfiguration c )
         throws PlexusContainerException
