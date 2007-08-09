@@ -425,6 +425,24 @@ public class PlexusContainerTest
         assertTrue( two.getState() );
     }
 
+    public void testComponentCompositionWhereTargetFieldIsAPartialMap()
+        throws Exception
+    {
+        ActivityManager am = (ActivityManager) container.lookup( ActivityManager.ROLE, "slim" );
+
+        assertEquals( am.getActivityCount(), 1 );
+
+        Activity one = am.getActivity( "one" );
+
+        assertNotNull( one );
+
+        assertFalse( one.getState() );
+
+        am.execute( "one" );
+
+        assertTrue( one.getState() );
+    }
+
     public void testComponentCompositionWhereTargetFieldIsAList()
         throws Exception
     {
@@ -441,6 +459,22 @@ public class PlexusContainerTest
         assertTrue( ( (Valve) valves.get( 0 ) ).getState() );
 
         assertTrue( ( (Valve) valves.get( 1 ) ).getState() );
+    }
+
+    public void testComponentCompositionWhereTargetFieldIsAPartialList()
+        throws Exception
+    {
+        Pipeline pipeline = (Pipeline) container.lookup( Pipeline.ROLE, "slim" );
+
+        List valves = pipeline.getValves();
+
+        assertEquals( valves.size(), 1 );
+
+        assertFalse( ( (Valve) valves.get( 0 ) ).getState() );
+
+        pipeline.execute();
+
+        assertTrue( ( (Valve) valves.get( 0 ) ).getState() );
     }
 
     public void testLookupOfInternallyDefinedComponentConfigurator()

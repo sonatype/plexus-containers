@@ -16,10 +16,7 @@ package org.codehaus.plexus.component.repository.io;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.component.repository.ComponentDependency;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentRequirement;
-import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.component.repository.*;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
@@ -30,6 +27,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
+import java.util.LinkedList;
 
 
 /**
@@ -124,11 +123,29 @@ public class PlexusTools
         {
             PlexusConfiguration requirement = requirements[i];
 
-            ComponentRequirement cr = new ComponentRequirement();
+            ComponentRequirement cr;
+
+            PlexusConfiguration[] hints = requirement.getChild( "role-hints" ).getChildren( "role-hint" );
+            if ( hints != null && hints.length > 0 )
+            {
+                cr = new ComponentRequirementList();
+
+                List hintList = new LinkedList();
+                for ( int j = 0; j < hints.length; j++ )
+                {
+                    hintList.add( hints[j].getValue() );
+                }
+
+                ( (ComponentRequirementList) cr ).setRoleHints( hintList );
+            }
+            else
+            {
+                cr = new ComponentRequirement();
+
+                cr.setRoleHint( requirement.getChild( "role-hint" ).getValue() );
+            }
 
             cr.setRole( requirement.getChild( "role" ).getValue() );
-
-            cr.setRoleHint( requirement.getChild( "role-hint" ).getValue() );
 
             cr.setFieldName( requirement.getChild( "field-name" ).getValue() );
 

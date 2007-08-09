@@ -54,12 +54,6 @@ public interface ComponentLookupManager
     Object lookup( Class componentClass, ClassRealm realm )
         throws ComponentLookupException;
 
-    Map lookupMap( String role )
-        throws ComponentLookupException;
-
-    Map lookupMap( String role, ClassRealm realm )
-        throws ComponentLookupException;
-
     List lookupList( String role )
         throws ComponentLookupException;
 
@@ -72,9 +66,39 @@ public interface ComponentLookupManager
     List lookupList( Class role, ClassRealm realm )
         throws ComponentLookupException;
 
+    Map lookupMap( String role )
+        throws ComponentLookupException;
+
+    Map lookupMap( String role, ClassRealm realm )
+        throws ComponentLookupException;
+
     Map lookupMap( Class role )
         throws ComponentLookupException;
 
     Map lookupMap( Class role, ClassRealm realm )
+        throws ComponentLookupException;
+
+    List lookupList( String role, List hints )
+        throws ComponentLookupException;
+
+    List lookupList( String role, List hints, ClassRealm realm )
+        throws ComponentLookupException;
+
+    List lookupList( Class role, List hints )
+        throws ComponentLookupException;
+
+    List lookupList( Class role, List hints, ClassRealm realm )
+        throws ComponentLookupException;
+
+    Map lookupMap( String role, List hints )
+        throws ComponentLookupException;
+
+    Map lookupMap( String role, List hints, ClassRealm realm )
+        throws ComponentLookupException;
+
+    Map lookupMap( Class role, List hints )
+        throws ComponentLookupException;
+
+    Map lookupMap( Class role, List hints, ClassRealm realm )
         throws ComponentLookupException;
 }

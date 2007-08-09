@@ -158,7 +158,31 @@ public interface PlexusContainer
      * @param role a non-unique key for the desired components
      * @return a List of component objects
      */
+    List lookupList( String role, List roles )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a List of component objects with the given role.
+     * @param role a non-unique key for the desired components
+     * @return a List of component objects
+     */
     List lookupList( String role, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a List of component objects with the given role.
+     * @param role a non-unique key for the desired components
+     * @return a List of component objects
+     */
+    List lookupList( String role, List roles, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a List of component objects with the given role.
+     * @param role a non-unique class key for the desired components
+     * @return a List of component objects
+     */
+    List lookupList( Class role, List roles )
         throws ComponentLookupException;
 
     /**
@@ -174,7 +198,23 @@ public interface PlexusContainer
      * @param role a non-unique class key for the desired components
      * @return a List of component objects
      */
+    List lookupList( Class role, List roles, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a List of component objects with the given role.
+     * @param role a non-unique class key for the desired components
+     * @return a List of component objects
+     */
     List lookupList( Class role, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
+     * @param role a non-unique key for the desired components
+     * @return a Map of component objects
+     */
+    Map lookupMap( String role, List roles )
         throws ComponentLookupException;
 
     /**
@@ -190,6 +230,14 @@ public interface PlexusContainer
      * @param role a non-unique key for the desired components
      * @return a Map of component objects
      */
+    Map lookupMap( String role, List roles, ClassRealm realm )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
+     * @param role a non-unique key for the desired components
+     * @return a Map of component objects
+     */
     Map lookupMap( String role, ClassRealm realm )
         throws ComponentLookupException;
 
@@ -198,7 +246,23 @@ public interface PlexusContainer
      * @param role a non-unique class key for the desired components
      * @return a Map of component objects
      */
+    Map lookupMap( Class role, List roles )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
+     * @param role a non-unique class key for the desired components
+     * @return a Map of component objects
+     */
     Map lookupMap( Class role )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
+     * @param role a non-unique class key for the desired components
+     * @return a Map of component objects
+     */
+    Map lookupMap( Class role, List roles, ClassRealm realm )
         throws ComponentLookupException;
 
     /**

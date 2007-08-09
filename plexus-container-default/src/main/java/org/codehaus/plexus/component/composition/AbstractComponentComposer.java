@@ -20,6 +20,7 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.codehaus.plexus.component.repository.ComponentRequirementList;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -178,11 +179,16 @@ public abstract class AbstractComponentComposer
             Object assignment;
 
             String role = requirement.getRole();
-            String roleHint = requirement.getRoleHint();
+            List roleHints = null;
+
+            if ( requirement instanceof ComponentRequirementList)
+            {
+                roleHints = ( (ComponentRequirementList) requirement ).getRoleHints();
+            }
 
             if ( clazz.isArray() )
             {
-                List dependencies = container.lookupList( role, lookupRealm );
+                List dependencies = container.lookupList( role, roleHints, lookupRealm );
 
                 Object[] array = (Object[]) Array.newInstance( clazz, dependencies.size() );
 
@@ -214,7 +220,7 @@ public abstract class AbstractComponentComposer
             // have a meaningful superclass.
             else if ( Map.class.equals( clazz ) )
             {
-                assignment = container.lookupMap( role, lookupRealm );
+                assignment = container.lookupMap( role, roleHints, lookupRealm );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
@@ -222,7 +228,7 @@ public abstract class AbstractComponentComposer
             // have a meaningful superclass other than Collection.class, which we'll handle next.
             else if ( List.class.equals( clazz ) )
             {
-                assignment = container.lookupList( role, lookupRealm );
+                assignment = container.lookupList( role, roleHints, lookupRealm );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
@@ -232,12 +238,13 @@ public abstract class AbstractComponentComposer
             // check in for Collection.class.
             else if ( Set.class.equals( clazz ) || Collection.class.isAssignableFrom( clazz ) )
             {
-                assignment = container.lookupMap( role, lookupRealm );
+                assignment = container.lookupMap( role, roleHints, lookupRealm );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
             else
             {
+                String roleHint = requirement.getRoleHint();
                 assignment = container.lookup( role, roleHint, lookupRealm );
 
                 ComponentDescriptor componentDescriptor = container.getComponentDescriptor( role, roleHint, lookupRealm );

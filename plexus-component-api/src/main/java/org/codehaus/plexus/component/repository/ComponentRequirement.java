@@ -24,7 +24,7 @@ import org.codehaus.plexus.PlexusConstants;
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
-public final class ComponentRequirement
+public class ComponentRequirement
 {
     private String role;
 
@@ -119,9 +119,9 @@ public final class ComponentRequirement
     public String toString()
     {
         return "ComponentRequirement{" +
-            "role='" + role + "'" + ", " +
-            "roleHint='" + roleHint + "', " +
-            "fieldName='" + fieldName + "'" +
+            "role='" + getRole() + "'" + ", " +
+            "roleHint='" + getRoleHint() + "', " +
+            "fieldName='" + getFieldName() + "'" +
             "}";
     }
 
