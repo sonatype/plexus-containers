@@ -275,6 +275,30 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookupList( role, realm );
     }
 
+    public Map lookupMap( String role, List hints )
+        throws ComponentLookupException
+    {
+        return lookupMap( role, hints, getLookupRealm() );
+    }
+
+    public Map lookupMap( String role, List hints, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupMap( role, hints, realm );
+    }
+
+    public List lookupList( String role, List hints )
+        throws ComponentLookupException
+    {
+        return lookupList( role, hints, getLookupRealm() );
+    }
+
+    public List lookupList( String role, List hints, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupList( role, hints, realm );
+    }
+
     public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
@@ -334,6 +358,31 @@ public class DefaultPlexusContainer
         throws ComponentLookupException
     {
         return componentLookupManager.lookup( role, roleHint, realm );
+    }
+
+    public Map lookupMap( Class role, List hints )
+        throws ComponentLookupException
+    {
+        return lookupMap( role, hints, getLookupRealm() );
+
+    }
+
+    public Map lookupMap( Class role, List hints, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupMap( role, hints, realm );
+    }
+
+    public List lookupList( Class role, List hints )
+        throws ComponentLookupException
+    {
+        return lookupList( role, hints, getLookupRealm() );
+    }
+
+    public List lookupList( Class role, List hints, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupList( role, hints, realm );
     }
 
     // ----------------------------------------------------------------------

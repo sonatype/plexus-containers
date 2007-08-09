@@ -18,6 +18,7 @@ package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.codehaus.plexus.component.repository.ComponentRequirementList;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.codehaus.plexus.util.dag.DAG;
 
@@ -48,7 +49,19 @@ public class DefaultCompositionResolver
 
             try
             {
-                dag.addEdge( key, getDAGKey( requirement.getRole(), requirement.getRoleHint() ) );
+                if ( requirement instanceof ComponentRequirementList )
+                {
+                    Iterator iter = ( (ComponentRequirementList) requirement ).getRoleHints().iterator();
+
+                    while (iter.hasNext()) {
+                        String hint = (String) iter.next();
+                        dag.addEdge( key, getDAGKey( requirement.getRole(), hint ) );
+                    }
+                }
+                else
+                {
+                    dag.addEdge( key, getDAGKey( requirement.getRole(), requirement.getRoleHint() ) );
+                }
             }
             catch ( CycleDetectedException e )
             {
