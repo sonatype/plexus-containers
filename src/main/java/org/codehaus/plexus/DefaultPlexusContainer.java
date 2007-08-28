@@ -78,6 +78,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 
 /**
@@ -99,7 +100,7 @@ import java.util.WeakHashMap;
  * @author Jason van Zyl
  * @author Kenney Westerhof
  */
-public class DefaultPlexusContainer
+public class DefaultPlexusContainer    
     extends AbstractLogEnabled
     implements MutablePlexusContainer
 {
@@ -209,32 +210,220 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------------
-    // Inheritance of Containers
+    // Requirements
+    // ----------------------------------------------------------------------------
+    // o discover all components that are present in the artifact
+    // o create a separate realm for the components
+    // o retrieve all the dependencies for the artifact: this last part unfortunately
+    // only works in Maven where artifacts are downloaded
     // ----------------------------------------------------------------------------
 
-    protected DefaultPlexusContainer( String name, Map context, PlexusContainer parent, List discoveryListeners )
+    //TODO This needs to be connected to the parent realm most likely
+
+    public ClassRealm createComponentRealm( String id, List jars )
         throws PlexusContainerException
     {
-        this.parentContainer = parent;
+        ClassRealm componentRealm;
 
-        this.loggerManager = parentContainer.getLoggerManager();
-
-        this.containerRealm = getChildRealm( getName(), name, parent.getContainerRealm() );
-
-        for ( Iterator it = discoveryListeners.iterator(); it.hasNext(); )
+        try
         {
-            registerComponentDiscoveryListener( (ComponentDiscoveryListener) it.next() );
+            // XXX this could NOT be a child realm for this container!
+
+            ClassRealm realm = classWorld.getRealm( id );
+            getLogger()
+                .warn( "Reusing existing component realm: " + id + " - no components detected!", new Throwable() );
+            return realm;
+        }
+        catch ( NoSuchRealmException e )
+        {
+        }
+
+        try
+        {
+            componentRealm = containerRealm.createChildRealm( id );
+        }
+        catch ( DuplicateRealmException e )
+        {
+            throw new PlexusContainerException( "Error creating child realm.", e );
+        }
+
+        try
+        {
+            for ( Iterator it = jars.iterator(); it.hasNext(); )
+            {
+                componentRealm.addURL( ( (File) it.next() ).toURI().toURL() );
+            }
+        }
+        catch ( MalformedURLException e )
+        {
+            throw new PlexusContainerException( "Error adding JARs to realm.", e );
+        }
+
+        getLogger().debug( "Created component realm: " + id );
+
+        // ----------------------------------------------------------------------------
+        // Discover the components that are present in the new componentRealm.
+        // ----------------------------------------------------------------------------
+
+        try
+        {
+            discoverComponents( componentRealm );
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            throw new PlexusContainerException( "Error configuring discovered component.", e );
+        }
+        catch ( ComponentRepositoryException e )
+        {
+            throw new PlexusContainerException( "Error resolving discovered component.", e );
+        }
+
+        return componentRealm;
+    }
+
+    //
+    // Make sure the lookups and classloaders are connected
+    //
+    public PlexusContainer createChildContainer( String name, Set urls )
+    //    throws PlexusContainerException
+    {
+    //    return createChildContainer( name, new ClassRealm( name, urls ) );
+        return null;
+    }
+
+    public PlexusContainer createChildContainer( String name, ClassRealm realm )
+        throws PlexusContainerException
+    {
+        if ( hasChildContainer( name ) )
+        {
+            throw new DuplicateChildContainerException( getName(), name );
         }
 
         ContainerConfiguration c = new DefaultContainerConfiguration()
             .setName( name )
-            .setContext( context )
-            .setClassWorld( containerRealm.getWorld() )
-            .setRealm( containerRealm );
+            .setParentContainer( this )
+            .setClassWorld( new ClassWorld( name, realm ) );
 
-        construct( c );
+        return new DefaultPlexusContainer( c );
     }
 
+    boolean initialized;
+
+    private void construct( ContainerConfiguration c )
+        throws PlexusContainerException
+    {
+        if ( c.getParentContainer() != null )
+        {
+            this.parentContainer = c.getParentContainer();
+
+            this.loggerManager = parentContainer.getLoggerManager();
+
+            this.containerRealm = (ClassRealm) c.getClassWorld().getRealms().iterator().next();
+        }
+
+        this.name = c.getName();
+
+        // ----------------------------------------------------------------------------
+        // ClassWorld
+        // ----------------------------------------------------------------------------
+
+        this.classWorld = c.getClassWorld();
+
+        // Make sure we have a valid ClassWorld
+        if ( this.classWorld == null )
+        {
+            this.classWorld = new ClassWorld( DEFAULT_REALM_NAME, Thread.currentThread().getContextClassLoader() );
+        }
+
+        containerRealm = c.getRealm();
+
+        if ( containerRealm == null )
+        {
+            try
+            {
+                containerRealm = this.classWorld.getRealm( DEFAULT_REALM_NAME );
+            }
+            catch ( NoSuchRealmException e )
+            {
+                List realms = new LinkedList( this.classWorld.getRealms() );
+
+                containerRealm = (ClassRealm) realms.get( 0 );
+
+                if ( containerRealm == null )
+                {
+                    System.err.println( "No container realm! Expect errors." );
+
+                    new Throwable().printStackTrace();
+                }
+            }
+        }
+
+        setLookupRealm( containerRealm );
+
+        // ----------------------------------------------------------------------------
+        // Context
+        // ----------------------------------------------------------------------------
+
+        this.containerContext = new DefaultContext();
+
+        if ( c.getContext() != null )
+        {
+            for ( Iterator it = c.getContext().entrySet().iterator(); it.hasNext(); )
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+
+                addContextValue( entry.getKey(), entry.getValue() );
+            }
+        }
+
+        // ----------------------------------------------------------------------------
+        // Configuration
+        // ----------------------------------------------------------------------------
+
+        // TODO: just store reference to the configuration in a String and use that in the configuration initialization
+
+        InputStream in = null;
+
+        if ( c.getContainerConfiguration() != null )
+        {
+            in = toStream( c.getContainerConfiguration() );
+        }
+
+        try
+        {
+            if ( c.getContainerConfigurationURL() != null )
+            {
+                in = c.getContainerConfigurationURL().openStream();
+            }
+        }
+        catch ( IOException e )
+        {
+            throw new PlexusContainerException( "Error reading configuration URL", e );
+        }
+
+        try
+        {
+            this.configurationReader = in == null ? null : ReaderFactory.newXmlReader( in );
+        }
+        catch ( IOException e )
+        {
+            throw new PlexusContainerException( "Error reading configuration file", e );
+        }
+
+        try
+        {
+            // XXX this will set up the configuration and process it
+            initialize();
+
+            // XXX this will wipe out the configuration field - is this needed? If so,
+            // why? can we remove the need to have a configuration field then?
+            start();
+        }
+        finally
+        {
+            IOUtil.close( this.configurationReader );
+        }
+    }    
     // ----------------------------------------------------------------------------
     // Lookup
     // ----------------------------------------------------------------------------
@@ -413,164 +602,6 @@ public class DefaultPlexusContainer
         return (PlexusContainer) childContainers.get( name );
     }
 
-    // ----------------------------------------------------------------------------
-    // Requirements
-    // ----------------------------------------------------------------------------
-    // o discover all components that are present in the artifact
-    // o create a separate realm for the components
-    // o retrieve all the dependencies for the artifact: this last part unfortunately
-    // only works in Maven where artifacts are downloaded
-    // ----------------------------------------------------------------------------
-    public ClassRealm createComponentRealm( String id, List jars )
-        throws PlexusContainerException
-    {
-        ClassRealm componentRealm;
-
-        try
-        {
-            // XXX this could NOT be a child realm for this container!
-
-            ClassRealm realm = classWorld.getRealm( id );
-            getLogger()
-                .warn( "Reusing existing component realm: " + id + " - no components detected!", new Throwable() );
-            return realm;
-        }
-        catch ( NoSuchRealmException e )
-        {
-        }
-
-        try
-        {
-            componentRealm = containerRealm.createChildRealm( id );
-        }
-        catch ( DuplicateRealmException e )
-        {
-            throw new PlexusContainerException( "Error creating child realm.", e );
-        }
-
-        try
-        {
-            for ( Iterator it = jars.iterator(); it.hasNext(); )
-            {
-                componentRealm.addURL( ( (File) it.next() ).toURI().toURL() );
-            }
-        }
-        catch ( MalformedURLException e )
-        {
-            throw new PlexusContainerException( "Error adding JARs to realm.", e );
-        }
-
-        getLogger().debug( "Created component realm: " + id );
-
-        // ----------------------------------------------------------------------------
-        // Discover the components that are present in the new componentRealm.
-        // ----------------------------------------------------------------------------
-
-        try
-        {
-            discoverComponents( componentRealm );
-        }
-        catch ( PlexusConfigurationException e )
-        {
-            throw new PlexusContainerException( "Error configuring discovered component.", e );
-        }
-        catch ( ComponentRepositoryException e )
-        {
-            throw new PlexusContainerException( "Error resolving discovered component.", e );
-        }
-
-        return componentRealm;
-    }
-
-    // ----------------------------------------------------------------------------
-    // The method from alpha-9 for creating child containers
-    // ----------------------------------------------------------------------------
-
-    /**
-     * @deprecated
-     */
-    public PlexusContainer createChildContainer( String name, List classpathJars, Map context )
-        throws PlexusContainerException
-    {
-        return createChildContainer( name, classpathJars, context, Collections.EMPTY_LIST );
-    }
-
-    // not sure this is the best strategy, i might just want to take the world. what are the strategies
-    // for getting this work properly
-    //
-    //
-    // container with classworld and in the case of developing with maven and wanting to startup
-    // waffle what do i need:
-    //
-    // add project deps to container
-    // have new components discoveryed
-    // use classes from parent container so that the classloaders are hooked up
-    //
-    // so do i want to make a classloader or use a realm
-    public PlexusContainer createChildContainer( String name, ClassLoader classLoader )
-        throws PlexusContainerException
-    {
-        if ( hasChildContainer( name ) )
-        {
-            throw new DuplicateChildContainerException( getName(), name );
-        }
-
-        ContainerConfiguration c = new DefaultContainerConfiguration()
-            .setName( name )
-            .setClassWorld( new ClassWorld( name, classLoader ) );
-
-        return new DefaultPlexusContainer( c );
-    }
-
-    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
-        throws PlexusContainerException
-    {
-        if ( hasChildContainer( name ) )
-        {
-            throw new DuplicateChildContainerException( getName(), name );
-        }
-
-        DefaultPlexusContainer child = new DefaultPlexusContainer( name, context, this, discoveryListeners );
-
-        for ( Iterator i = classpathJars.iterator(); i.hasNext(); )
-        {
-            File jar = (File) i.next();
-
-            child.addJarResource( jar );
-        }
-
-        childContainers.put( name, child );
-
-        return child;
-    }
-
-    private static ClassRealm getChildRealm( String parentName, String name, ClassRealm containerRealm )
-        throws PlexusContainerException
-    {
-        String childRealmId = parentName + ".child-container[" + name + "]";
-
-        try
-        {
-            // FIXME: an existing realm probably is in use and already
-            // has a parent realm; is it safe to change that?
-            ClassRealm childRealm = containerRealm.getWorld().getRealm( childRealmId );
-            childRealm.setParentRealm( containerRealm );
-
-            return childRealm;
-        }
-        catch ( NoSuchRealmException e )
-        {
-            try
-            {
-                return containerRealm.createChildRealm( childRealmId );
-            }
-            catch ( DuplicateRealmException impossibleError )
-            {
-                throw new PlexusContainerException( "Error creating new realm: After getRealm() failed, newRealm() "
-                    + "produced duplication error on same id!", impossibleError );
-            }
-        }
-    }
 
     // XXX remove
     public void setName( String name )
@@ -778,123 +809,7 @@ public class DefaultPlexusContainer
     // Lifecycle Management
     // ----------------------------------------------------------------------
 
-    boolean initialized;
 
-    private void construct( ContainerConfiguration c )
-        throws PlexusContainerException
-    {
-        if ( c.getParentContainer() != null )
-        {
-            this.parentContainer = c.getParentContainer();
-
-            this.loggerManager = parentContainer.getLoggerManager();
-
-            this.containerRealm = getChildRealm( getName(), name, c.getParentContainer().getContainerRealm() );
-        }
-
-        this.name = c.getName();
-
-        // ----------------------------------------------------------------------------
-        // ClassWorld
-        // ----------------------------------------------------------------------------
-
-        this.classWorld = c.getClassWorld();
-
-        // Make sure we have a valid ClassWorld
-        if ( this.classWorld == null )
-        {
-            this.classWorld = new ClassWorld( DEFAULT_REALM_NAME, Thread.currentThread().getContextClassLoader() );
-        }
-
-        containerRealm = c.getRealm();
-
-        if ( containerRealm == null )
-        {
-            try
-            {
-                containerRealm = this.classWorld.getRealm( DEFAULT_REALM_NAME );
-            }
-            catch ( NoSuchRealmException e )
-            {
-                List realms = new LinkedList( this.classWorld.getRealms() );
-
-                containerRealm = (ClassRealm) realms.get( 0 );
-
-                if ( containerRealm == null )
-                {
-                    System.err.println( "No container realm! Expect errors." );
-
-                    new Throwable().printStackTrace();
-                }
-            }
-        }
-
-        setLookupRealm( containerRealm );
-
-        // ----------------------------------------------------------------------------
-        // Context
-        // ----------------------------------------------------------------------------
-
-        this.containerContext = new DefaultContext();
-
-        if ( c.getContext() != null )
-        {
-            for ( Iterator it = c.getContext().entrySet().iterator(); it.hasNext(); )
-            {
-                Map.Entry entry = (Map.Entry) it.next();
-
-                addContextValue( entry.getKey(), entry.getValue() );
-            }
-        }
-
-        // ----------------------------------------------------------------------------
-        // Configuration
-        // ----------------------------------------------------------------------------
-
-        // TODO: just store reference to the configuration in a String and use that in the configuration initialization
-
-        InputStream in = null;
-
-        if ( c.getContainerConfiguration() != null )
-        {
-            in = toStream( c.getContainerConfiguration() );
-        }
-
-        try
-        {
-            if ( c.getContainerConfigurationURL() != null )
-            {
-                in = c.getContainerConfigurationURL().openStream();
-            }
-        }
-        catch ( IOException e )
-        {
-            throw new PlexusContainerException( "Error reading configuration URL", e );
-        }
-
-        try
-        {
-            this.configurationReader = in == null ? null : ReaderFactory.newXmlReader( in );
-        }
-        catch ( IOException e )
-        {
-            throw new PlexusContainerException( "Error reading configuration file", e );
-        }
-
-        try
-        {
-            // XXX this will set up the configuration and process it
-            initialize();
-
-            // XXX this will wipe out the configuration field - is this needed? If so,
-            // why? can we remove the need to have a configuration field then?
-            start();
-        }
-        finally
-        {
-            IOUtil.close( this.configurationReader );
-        }
-    }
 
     protected void initialize()
         throws PlexusContainerException
@@ -1116,6 +1031,8 @@ public class DefaultPlexusContainer
                     + cr.getResource( PlexusConstants.BOOTSTRAP_CONFIGURATION ) + ")";
                 cr = cr.getParentRealm();
             }
+
+            containerRealm.display();
 
             throw new IllegalStateException( "The internal default plexus-bootstrap.xml is missing. "
                 + "This is highly irregular, your plexus JAR is most likely corrupt. Realms:" + realmStack );
