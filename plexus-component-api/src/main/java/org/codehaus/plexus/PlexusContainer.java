@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The core component of Plexus. This is the entry-point for loading and accessing other components, as well as an
@@ -542,10 +543,10 @@ public interface PlexusContainer
      */
     void setParentPlexusContainer( PlexusContainer container );
 
-    PlexusContainer createChildContainer( String name, List classpathJars, Map context )
+    PlexusContainer createChildContainer( String name, Set urls )
         throws PlexusContainerException;
 
-    public PlexusContainer createChildContainer( String name, List classpathJars, Map context, List discoveryListeners )
+    public PlexusContainer createChildContainer( String name, ClassRealm realm )
         throws PlexusContainerException;
 
     // ----------------------------------------------------------------------------
