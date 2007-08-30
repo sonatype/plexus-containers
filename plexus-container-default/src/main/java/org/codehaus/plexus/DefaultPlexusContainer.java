@@ -304,7 +304,10 @@ public class DefaultPlexusContainer
             .setParentContainer( this )
             .setClassWorld( new ClassWorld( name, realm ) );
 
-        return new DefaultPlexusContainer( c );
+        PlexusContainer childContainer=new DefaultPlexusContainer( c );
+        childContainers.put( name, childContainer );
+        
+        return childContainer;
     }
 
     boolean initialized;
