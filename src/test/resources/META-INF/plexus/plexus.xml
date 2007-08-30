@@ -5,5 +5,9 @@
       <role-hint>testFactory1</role-hint>
       <implementation>org.codehaus.plexus.component.factory.TestComponentFactory1</implementation>
     </component>
-  </components>
+    <component>
+      <role>org.codehaus.plexus.test.CountInstancesComponent</role>
+      <implementation>org.codehaus.plexus.test.CountInstancesComponent</implementation>
+    </component>
+	</components>
 </plexus>

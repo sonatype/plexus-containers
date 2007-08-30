@@ -17,6 +17,13 @@
           <excludes>
             <exclude>**/Test*.java</exclude>
             <exclude>**/Abstract*.java</exclude>
+ 
+			<!-- 
+				Waiting for createChildContainer( String name, Set urls ) returning not null value. 
+				Waiting for PLX-349 fixed.   	
+			-->
+            <exclude>**/DefaultPlexusContainerChildTest.java</exclude>
+
           </excludes>
         </configuration>
       </plugin>
