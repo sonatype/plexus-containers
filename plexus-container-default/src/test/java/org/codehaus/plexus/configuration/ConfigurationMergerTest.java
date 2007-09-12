@@ -120,5 +120,15 @@ public class ConfigurationMergerTest
         assertEquals( "my-resource", resources[1].getName() );
 
         assertEquals( "${my.home}/resources", resources[1].getValue() );
+
+        // ------------------------------------------------------------------------
+        // Test Component Manager Merging
+        // ------------------------------------------------------------------------
+
+        PlexusConfiguration[] componentManagers = cc.getChild( "component-manager-manager" ).getChild( "component-managers" ).getChildren( "component-manager" );
+
+        assertEquals( 6, componentManagers.length );
+
+        assertEquals( "frankie", componentManagers[0].getChild( "id" ).getValue() );
     }
 }

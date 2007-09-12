@@ -227,11 +227,8 @@ public class DefaultPlexusContainer
 
         try
         {
-            // XXX this could NOT be a child realm for this container!
-
             ClassRealm realm = classWorld.getRealm( id );
-            getLogger()
-                .warn( "Reusing existing component realm: " + id + " - no components detected!", new Throwable() );
+
             return realm;
         }
         catch ( NoSuchRealmException e )
