@@ -136,7 +136,18 @@ public class PlexusConfigurationMerger
         // Component manager manager
         // ----------------------------------------------------------------------
 
-        mergedConfiguration.addChild( system.getChild( "component-manager-manager" ) );
+        PlexusConfiguration componentManagerManager =  user.getChild( "component-manager-manager" );
+
+        if ( componentManagerManager.getChildCount() != 0 )
+        {
+            mergedConfiguration.addChild( componentManagerManager );
+
+            copyComponentManagers( system.getChild( "component-manager-manager" ), componentManagerManager );
+        }
+        else
+        {
+            mergedConfiguration.addChild( system.getChild( "component-manager-manager" ) );
+        }
 
         // ----------------------------------------------------------------------
         // Component discoverer manager
@@ -229,6 +240,35 @@ public class PlexusConfigurationMerger
         PlexusConfiguration handlers[] = source.getChild( "resources" ).getChildren();
 
         XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "resources" );
+
+        for ( int i = 0; i < handlers.length; i++ )
+        {
+            dest.addChild( handlers[i] );
+        }
+    }
+
+    private static void copyComponentManagers( PlexusConfiguration source, PlexusConfiguration destination )
+    {
+        try
+        {
+            XmlPlexusConfiguration id = (XmlPlexusConfiguration) destination.getChild( "default-component-manager-id" );
+
+            String sid = source.getChild( "default-component-manager-id" ).getValue();
+
+            if ( id.getValue() == null )
+            {
+                id.setValue( sid );   
+            }
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            // do nothing
+        }
+
+
+        PlexusConfiguration handlers[] = source.getChild( "component-managers" ).getChildren( "component-manager" );
+
+        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-managers" );
 
         for ( int i = 0; i < handlers.length; i++ )
         {

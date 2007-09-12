@@ -18,11 +18,19 @@
     <implementation>org.codehaus.plexus.personality.avalon.AvalonComponentRepository</implementation>
   </component-repository>
 
+  <component-manager-manager>
+    <component-managers>
+      <component-manager implementation="org.codehaus.plexus.component.manager.FrankieComponentManager">
+        <id>frankie</id>
+      </component-manager>
+    </component-managers>
+  </component-manager-manager>
+
   <!--
-   |
-   | Lifecycle handler Manager.
-   |
-   -->
+  |
+  | Lifecycle handler Manager.
+  |
+  -->
   <lifecycle-handler-manager implementation='org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager'>
     <default-lifecycle-handler-id>avalon</default-lifecycle-handler-id>
     <lifecycle-handlers>
@@ -126,12 +134,12 @@
       <instantiation-strategy>singleton-keep-alive</instantiation-strategy>
       <configuration/>
     </component>
-    
+
     <!--
-     |
-     | H Service
-     |
-     -->
+    |
+    | H Service
+    |
+    -->
 
     <component>
       <role>org.codehaus.plexus.ServiceH</role>
@@ -170,7 +178,7 @@
         <bleh name="bleh"/>
       </configuration>
     </component>
-    
+
   </components>
 
 </plexus>
