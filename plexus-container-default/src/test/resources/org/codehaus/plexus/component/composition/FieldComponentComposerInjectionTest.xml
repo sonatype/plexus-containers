@@ -1,0 +1,24 @@
+<plexus>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.component.composition.ComponentF</role>
+      <implementation>org.codehaus.plexus.component.composition.ComponentF</implementation>
+      <componentComposer>field</componentComposer>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.component.composition.ComponentC</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.component.composition.ComponentC</role>
+      <role-hint>c1</role-hint>
+      <implementation>org.codehaus.plexus.component.composition.DefaultComponentC</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.component.composition.ComponentC</role>
+      <role-hint>c2</role-hint>
+      <implementation>org.codehaus.plexus.component.composition.DefaultComponentC</implementation>
+    </component>
+  </components>
+</plexus>
