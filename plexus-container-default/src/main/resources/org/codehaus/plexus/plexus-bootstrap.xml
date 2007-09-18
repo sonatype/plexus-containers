@@ -158,6 +158,7 @@
 
   <component-composer-manager
       implementation="org.codehaus.plexus.component.composition.DefaultComponentComposerManager">
+    <default-component-composer-id>field</default-component-composer-id>
     <component-composers>
       <component-composer implementation="org.codehaus.plexus.component.composition.FieldComponentComposer">
         <id>field</id>

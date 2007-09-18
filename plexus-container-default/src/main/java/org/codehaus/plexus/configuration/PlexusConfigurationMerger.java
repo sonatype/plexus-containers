@@ -39,9 +39,15 @@ public class PlexusConfigurationMerger
     // -----------------------------------+-----------------------------------------------------------------
     // resources                          | user wins, but system resources show through
     // -----------------------------------+-----------------------------------------------------------------
-    // component-manager-manager          | user ignore
+    // component-manager-manager          | user wins, but system resources show through
+	// -----------------------------------+-----------------------------------------------------------------
+	// component-discoverer-manager       | user wins, but system resources show through
+	// -----------------------------------+-----------------------------------------------------------------
+	// component-factory-manager          | user wins, but system resources show through
     // -----------------------------------+-----------------------------------------------------------------
     // lifecycle-handler-manager          | user wins, but system lifecycles show through
+	// -----------------------------------+-----------------------------------------------------------------
+	// component-composer-manager         | user wins, but system lifecycles show through
     // -----------------------------------+-----------------------------------------------------------------
     // components                         | user
     // -----------------------------------+-----------------------------------------------------------------
@@ -302,6 +308,22 @@ public class PlexusConfigurationMerger
 
     private static void copyComponentComposers( PlexusConfiguration source, PlexusConfiguration destination )
     {
+        try
+        {
+            XmlPlexusConfiguration id = (XmlPlexusConfiguration) destination.getChild( "default-component-composer-id" );
+
+            String sid = source.getChild( "default-component-composer-id" ).getValue();
+
+            if ( id.getValue() == null )
+            {
+                id.setValue( sid );
+            }
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            // do nothing
+        }
+
         PlexusConfiguration composers[] = source.getChild( "component-composers" ).getChildren( "component-composer" );
 
         XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-composers" );

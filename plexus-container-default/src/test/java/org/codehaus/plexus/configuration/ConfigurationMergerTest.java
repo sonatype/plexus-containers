@@ -130,5 +130,17 @@ public class ConfigurationMergerTest
         assertEquals( 6, componentManagers.length );
 
         assertEquals( "frankie", componentManagers[0].getChild( "id" ).getValue() );
+        
+        // ------------------------------------------------------------------------
+        // Test Component Composer Merging
+        // ------------------------------------------------------------------------
+        
+        PlexusConfiguration[] componentComposers = cc.getChild( "component-composer-manager" ).getChild( "component-composers" ).getChildren( "component-composer" );
+        
+        assertEquals( 5, componentComposers.length );
+        
+        assertEquals( "custom", componentComposers[0].getChild( "id" ).getValue() );
+        
+        assertEquals( "custom", cc.getChild( "component-composer-manager" ).getChild( "default-composer-manager-id" ).getValue() );
     }
 }

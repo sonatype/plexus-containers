@@ -33,10 +33,10 @@ import java.util.Map;
 public class DefaultComponentComposerManager
     implements ComponentComposerManager
 {
-    private static final String DEFAULT_COMPONENT_COMPOSER_ID = "field";
-
+	private String defaultComponentComposerId;
+	
     private Map composerMap = new HashMap();
-
+    
     private List componentComposers;
 
     /**
@@ -63,7 +63,7 @@ public class DefaultComponentComposerManager
 
         if ( componentComposerId == null || componentComposerId.trim().length() == 0 )
         {
-            componentComposerId = DEFAULT_COMPONENT_COMPOSER_ID;
+            componentComposerId = defaultComponentComposerId;
         }
 
         ComponentComposer componentComposer = getComponentComposer( componentComposerId );

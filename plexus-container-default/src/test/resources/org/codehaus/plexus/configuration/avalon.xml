@@ -26,6 +26,15 @@
     </component-managers>
   </component-manager-manager>
 
+  <component-composer-manager>
+    <default-composer-manager-id>custom</default-composer-manager-id>
+    <component-composers>
+      <component-composer implementation="org.codehaus.plexus.component.manager.CustomComponentComposer">
+        <id>custom</id>
+      </component-composer>
+    </component-composers>
+  </component-composer-manager>
+
   <!--
   |
   | Lifecycle handler Manager.
