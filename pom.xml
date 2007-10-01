@@ -12,6 +12,7 @@
   <version>1.0-alpha-33-SNAPSHOT</version>
   <modules>
     <module>plexus-component-api</module>
+    <module>plexus-component-annotations</module>
     <module>plexus-container-default</module>
   </modules>
   <scm>
