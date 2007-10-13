@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component.repository.exception;
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -27,14 +29,17 @@ public class ComponentLookupException
     extends Exception
 {
     private static final long serialVersionUID = 3767774496798908291L;
+    private final ClassRealm realm;
 
     /**
      * Construct a new <code>ComponentLookupException</code> instance.
      * @param message exception message
+     * @param realm
      */
-    public ComponentLookupException( String message )
+    public ComponentLookupException( String message, ClassRealm realm )
     {
         super( message );
+        this.realm = realm;
     }
 
     /**
@@ -42,8 +47,14 @@ public class ComponentLookupException
      * @param message exception message
      * @param cause causing exception to chain
      */
-    public ComponentLookupException( String message, Throwable cause )
+    public ComponentLookupException( String message, ClassRealm realm, Throwable cause )
     {
         super( message, cause );
+        this.realm = realm;
+    }
+
+    public ClassRealm getRealm()
+    {
+        return realm;
     }
 }
