@@ -51,8 +51,6 @@ public abstract class AbstractComponentManager
 
     private int connections;
 
-    private String id = null;
-
     public ComponentManager copy()
     {
         try
@@ -71,11 +69,6 @@ public abstract class AbstractComponentManager
     public ComponentDescriptor getComponentDescriptor()
     {
         return componentDescriptor;
-    }
-
-    public String getId()
-    {
-        return id;
     }
 
     public LifecycleHandler getLifecycleHandler()

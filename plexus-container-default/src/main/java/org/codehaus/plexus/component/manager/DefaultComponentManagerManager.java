@@ -27,14 +27,12 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
  *
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  *
  * @version $Id$
  */
@@ -43,13 +41,36 @@ public class DefaultComponentManagerManager
 {
     private Map activeComponentManagers = new HashMap();
 
-    private List componentManagers = null;
+    private Map componentManagers = null;
 
-    private String defaultComponentManagerId = null;
+    private String defaultComponentManagerId = "singleton";
 
     private LifecycleHandlerManager lifecycleHandlerManager;
 
     private Map componentManagersByComponent = Collections.synchronizedMap( new HashMap() );
+
+    public DefaultComponentManagerManager()
+    {
+        addComponentManager( new PerLookupComponentManager() );
+
+        addComponentManager( new ClassicSingletonComponentManager() );
+
+        addComponentManager( new KeepAliveSingletonComponentManager() );
+
+        addComponentManager( new ContainerComponentManager() );
+
+        addComponentManager( new ComponentLookupManagerComponentManager() );
+    }
+
+    public void addComponentManager( ComponentManager componentManager )
+    {
+        if ( componentManagers == null )
+        {
+            componentManagers = new HashMap();
+        }
+
+        componentManagers.put( componentManager.getId(), componentManager );
+    }
 
     public void setLifecycleHandlerManager( LifecycleHandlerManager lifecycleHandlerManager )
     {
@@ -59,19 +80,14 @@ public class DefaultComponentManagerManager
     private ComponentManager copyComponentManager( String id )
         throws UndefinedComponentManagerException
     {
-        ComponentManager componentManager = null;
+        ComponentManager componentManager = (ComponentManager) componentManagers.get( id );
 
-        for ( Iterator iterator = componentManagers.iterator(); iterator.hasNext(); )
+        if ( componentManager == null )
         {
-            componentManager = (ComponentManager) iterator.next();
-
-            if ( id.equals( componentManager.getId() ) )
-            {
-                return componentManager.copy();
-            }
+            throw new UndefinedComponentManagerException( "Specified component manager cannot be found: " + id );
         }
 
-        throw new UndefinedComponentManagerException( "Specified component manager cannot be found: " + id );
+        return componentManager.copy();
     }
 
 
@@ -101,11 +117,9 @@ public class DefaultComponentManagerManager
 
         componentManager.initialize();
 
-        if ( StringUtils.equals( role, descriptor.getRole() ) &&
-            StringUtils.equals( roleHint, descriptor.getRoleHint() ) )
+        if ( StringUtils.equals( role, descriptor.getRole() ) && StringUtils.equals( roleHint, descriptor.getRoleHint() ) )
         {
-            activeComponentManagers.put( descriptor.getRealmId() + "/" + descriptor.getRole() + "/" +
-                                         descriptor.getRoleHint(), componentManager );
+            activeComponentManagers.put( descriptor.getRealmId() + "/" + descriptor.getRole() + "/" + descriptor.getRoleHint(), componentManager );
         }
         else
         {
@@ -120,17 +134,11 @@ public class DefaultComponentManagerManager
         return (ComponentManager) componentManagersByComponent.get( component );
     }
 
-//    public ComponentManager findComponentManagerByComponentKey( String componentKey )
-//    {
-//        return findComponentManagerByComponentKey( componentKey, container.getLookupRealm() );
-//    }
-
     public ComponentManager findComponentManagerByComponentKey( String role, String roleHint, ClassRealm lookupRealm )
     {
         while ( lookupRealm != null )
         {
-            ComponentManager mgr = (ComponentManager) activeComponentManagers.get( lookupRealm.getId() + "/"
-                + role + "/" + roleHint );
+            ComponentManager mgr = (ComponentManager) activeComponentManagers.get( lookupRealm.getId() + "/" + role + "/" + roleHint );
 
             if ( mgr != null )
             {

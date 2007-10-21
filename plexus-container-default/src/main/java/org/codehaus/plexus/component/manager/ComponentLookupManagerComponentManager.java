@@ -24,6 +24,11 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
  */
 public class ComponentLookupManagerComponentManager extends AbstractComponentManager
 {
+    public String getId()
+    {
+        return "component-lookup-manager";
+    }
+    
     public void dispose()
         throws ComponentLifecycleException
     {

@@ -40,6 +40,11 @@ public class ClassicSingletonComponentManager
 
     private Map singletonMap;
 
+    public String getId()
+    {
+        return "singleton";
+    }
+
     public void release( Object component )
         throws ComponentLifecycleException
     {

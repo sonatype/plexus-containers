@@ -21,6 +21,11 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
 
 public class ContainerComponentManager extends AbstractComponentManager
 {
+    public String getId()
+    {
+        return "container";
+    }
+
     public void dispose()
         throws ComponentLifecycleException
     {

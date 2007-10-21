@@ -35,6 +35,11 @@ public class KeepAliveSingletonComponentManager
 
     private Object singleton;
 
+    public String getId()
+    {
+        return "singleton-keep-alive";    
+    }
+
     public void release( Object component )
     {
         synchronized( lock )

@@ -23,13 +23,18 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
 /**
  * Creates a new component manager for every lookup
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  *
  * @version $Id$
  */
 public class PerLookupComponentManager
     extends AbstractComponentManager
 {
+    public String getId()
+    {
+        return "per-lookup";
+    }
+    
     public void dispose()
     {
     }
