@@ -27,7 +27,7 @@ public class InitializeLifecycleHandlerManagerPhase
     public void initializeCoreComponent( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        PlexusConfiguration configuration = context.getContainerConfiguration();
+        PlexusConfiguration configuration = context.getContainerXmlConfiguration();
 
         PlexusConfiguration c = configuration.getChild( "lifecycle-handler-manager" );
 

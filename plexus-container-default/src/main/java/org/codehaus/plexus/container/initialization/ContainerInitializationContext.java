@@ -16,6 +16,7 @@ package org.codehaus.plexus.container.initialization;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -32,17 +33,25 @@ public class ContainerInitializationContext
 
     ClassRealm containerRealm;
 
-    PlexusConfiguration containerConfiguration;
+    PlexusConfiguration containerXmlConfiguration;
+
+    ContainerConfiguration containerConfiguration;
 
     public ContainerInitializationContext( DefaultPlexusContainer container,
                                            ClassWorld classWorld,
                                            ClassRealm containerRealm,
-                                           PlexusConfiguration configuration )
+                                           PlexusConfiguration configuration,
+                                           ContainerConfiguration containerConfiguration )
     {
         this.container = container;
+
         this.classWorld = classWorld;
+
         this.containerRealm = containerRealm;
-        this.containerConfiguration = configuration;
+
+        this.containerXmlConfiguration = configuration;
+
+        this.containerConfiguration = containerConfiguration;
     }
 
     public DefaultPlexusContainer getContainer()
@@ -60,7 +69,12 @@ public class ContainerInitializationContext
         return containerRealm;
     }
 
-    public PlexusConfiguration getContainerConfiguration()
+    public PlexusConfiguration getContainerXmlConfiguration()
+    {
+        return containerXmlConfiguration;
+    }
+
+    public ContainerConfiguration getContainerConfiguration()
     {
         return containerConfiguration;
     }

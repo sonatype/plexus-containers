@@ -140,4 +140,9 @@ public class DefaultContainerConfiguration
             "org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase",
 
         };
+
+    public String getComponentLookupManager()
+    {
+        return "org.codehaus.plexus.DefaultComponentLookupManager";        
+    }
 }

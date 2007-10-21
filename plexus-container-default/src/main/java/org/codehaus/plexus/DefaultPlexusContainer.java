@@ -843,13 +843,13 @@ public class DefaultPlexusContainer
         initialized = true;
     }
 
-    protected void initializePhases( ContainerConfiguration c )
+    protected void initializePhases( ContainerConfiguration containerConfiguration )
         throws PlexusContainerException
     {
-        String[] initPhases = c.getInitializationPhases();
+        String[] initPhases = containerConfiguration.getInitializationPhases();
 
         ContainerInitializationContext initializationContext =
-            new ContainerInitializationContext( this, classWorld, containerRealm, configuration );
+            new ContainerInitializationContext( this, classWorld, containerRealm, configuration, containerConfiguration );
 
         for ( int i = 0; i < initPhases.length; i++ )
         {

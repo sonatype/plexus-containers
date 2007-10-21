@@ -4,8 +4,6 @@
 
   <!-- Bootstrap components -->
 
-  <component-lookup-manager implementation="org.codehaus.plexus.DefaultComponentLookupManager"/>
-
   <component-repository implementation="org.codehaus.plexus.component.repository.DefaultComponentRepository">
     <composition-resolver implementation="org.codehaus.plexus.component.composition.DefaultCompositionResolver"/>
   </component-repository>

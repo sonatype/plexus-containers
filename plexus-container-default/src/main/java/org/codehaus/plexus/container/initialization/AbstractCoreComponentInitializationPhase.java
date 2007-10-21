@@ -23,9 +23,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
-/**
- * @author Jason van Zyl
- */
+/** @author Jason van Zyl */
 public abstract class AbstractCoreComponentInitializationPhase
     extends AbstractContainerInitializationPhase
 {
@@ -41,9 +39,9 @@ public abstract class AbstractCoreComponentInitializationPhase
         throws ContainerInitializationException;
 
     protected ComponentDescriptor setupCoreComponent( String role,
-                                       BasicComponentConfigurator configurator,
-                                       PlexusConfiguration c,
-                                       PlexusContainer container )
+                                                      BasicComponentConfigurator configurator,
+                                                      PlexusConfiguration c,
+                                                      PlexusContainer container )
         throws ContainerInitializationException
     {
         String implementation = c.getAttribute( "implementation", null );
@@ -66,7 +64,7 @@ public abstract class AbstractCoreComponentInitializationPhase
 
         componentDescriptor.setRealmId( container.getContainerRealm().getId() );
 
-        PlexusConfiguration configuration = new XmlPlexusConfiguration( "containerConfiguration" );
+        PlexusConfiguration configuration = new XmlPlexusConfiguration( "containerXmlConfiguration" );
 
         configuration.addChild( c );
 
@@ -82,5 +80,18 @@ public abstract class AbstractCoreComponentInitializationPhase
         }
 
         return componentDescriptor;
+    }
+
+    protected Object getCoreComponent( String clazz, ContainerInitializationContext context )
+        throws ContainerInitializationException
+    {
+        try
+        {
+            return context.getContainerRealm().loadClass( clazz ).newInstance();
+        }
+        catch ( Exception e )
+        {
+            throw new ContainerInitializationException( "Error instantiating core component " + clazz + ": ", e );
+        }
     }
 }

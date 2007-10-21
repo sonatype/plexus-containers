@@ -42,5 +42,7 @@ public interface ContainerConfiguration
     // Programmatic Container Initialization and Setup
 
     String[] getInitializationPhases();
+
+    String getComponentLookupManager();
 }
 

@@ -28,7 +28,7 @@ public class InitializeSystemPropertiesPhase
         throws ContainerInitializationException
     {
         PlexusConfiguration[] systemProperties =
-            context.getContainerConfiguration().getChild( "system-properties" ).getChildren( "property" );
+            context.getContainerXmlConfiguration().getChild( "system-properties" ).getChildren( "property" );
 
         for ( int i = 0; i < systemProperties.length; ++i )
         {
