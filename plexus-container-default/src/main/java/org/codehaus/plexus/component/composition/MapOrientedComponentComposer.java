@@ -50,6 +50,11 @@ public class MapOrientedComponentComposer
     //
     // ----------------------------------------------------------------------
 
+    public String getId()
+    {
+        return "map-oriented";
+    }
+
     public void verifyComponentSuitability( Object component )
         throws CompositionException
     {

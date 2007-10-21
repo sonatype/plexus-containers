@@ -45,6 +45,11 @@ public class SetterComponentComposer
 {
     public static final String PROPERTY_DESCRIPTORS = SetterComponentComposer.class.getName() + ":property.descriptors";
 
+    public String getId()
+    {
+        return "setter";
+    }
+
     public Map createCompositionContext( Object component,
                                          ComponentDescriptor descriptor )
         throws CompositionException

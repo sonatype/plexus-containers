@@ -2,6 +2,12 @@ package org.codehaus.plexus;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.composition.ComponentComposerManager;
+import org.codehaus.plexus.component.composition.DefaultComponentComposerManager;
+import org.codehaus.plexus.component.composition.FieldComponentComposer;
+import org.codehaus.plexus.component.composition.MapOrientedComponentComposer;
+import org.codehaus.plexus.component.composition.NoOpComponentComposer;
+import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase;
@@ -159,5 +165,32 @@ public class DefaultContainerConfiguration
     public ComponentLookupManager getComponentLookupManager()
     {
         return new DefaultComponentLookupManager();
+    }
+
+    private ComponentComposerManager componentComposerManager;
+
+    public ContainerConfiguration setComponentComposerManager( ComponentComposerManager componentComposerManager )
+    {
+        this.componentComposerManager = componentComposerManager;
+
+        return this;
+    }
+
+    public ComponentComposerManager getComponentComposerManager()
+    {
+        if ( componentComposerManager == null )
+        {
+            componentComposerManager = new DefaultComponentComposerManager();
+
+            componentComposerManager.addComponentComposer( new FieldComponentComposer() );
+
+            componentComposerManager.addComponentComposer( new SetterComponentComposer() );
+
+            componentComposerManager.addComponentComposer( new MapOrientedComponentComposer() );
+
+            componentComposerManager.addComponentComposer( new NoOpComponentComposer() );            
+        }
+
+        return componentComposerManager;
     }
 }

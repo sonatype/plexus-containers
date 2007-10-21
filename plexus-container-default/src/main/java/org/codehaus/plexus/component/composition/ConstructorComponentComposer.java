@@ -35,6 +35,11 @@ import java.util.Map;
 public class ConstructorComponentComposer
     extends AbstractComponentComposer
 {
+    public String getId()
+    {
+        return "constructor";
+    }
+
     public void assignRequirement( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    ComponentRequirement requirement,

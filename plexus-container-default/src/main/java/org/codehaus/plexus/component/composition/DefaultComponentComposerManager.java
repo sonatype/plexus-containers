@@ -33,15 +33,20 @@ import java.util.Map;
 public class DefaultComponentComposerManager
     implements ComponentComposerManager
 {
-	private String defaultComponentComposerId;
-	
-    private Map composerMap = new HashMap();
-    
-    private List componentComposers;
+	private String defaultComponentComposerId = "field";
 
-    /**
-     * @deprecated
-     */
+    private Map componentComposers;
+
+    public void addComponentComposer( ComponentComposer componentComposer )
+    {
+        if ( componentComposers == null )
+        {
+            componentComposers = new HashMap();
+        }
+
+        componentComposers.put( componentComposer.getId(), componentComposer );
+    }
+
     public void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
         throws UndefinedComponentComposerException, CompositionException
     {
@@ -74,41 +79,14 @@ public class DefaultComponentComposerManager
     protected ComponentComposer getComponentComposer( String id )
         throws UndefinedComponentComposerException
     {
-        ComponentComposer retValue = null;
+        ComponentComposer componentComposer = (ComponentComposer) componentComposers.get( id );
 
-        if ( composerMap.containsKey( id ) )
-        {
-            retValue = (ComponentComposer) composerMap.get( id );
-        }
-        else
-        {
-            retValue = findComponentComposer( id );
-        }
-
-        if ( retValue == null )
+        if ( componentComposer == null )
         {
             throw new UndefinedComponentComposerException( "Specified component composer cannot be found: " + id );
         }
 
-        return retValue;
-    }
+        return componentComposer;
 
-    private ComponentComposer findComponentComposer( String id )
-    {
-        ComponentComposer retValue = null;
-
-        for ( Iterator iterator = componentComposers.iterator(); iterator.hasNext(); )
-        {
-            ComponentComposer componentComposer = (ComponentComposer) iterator.next();
-
-            if ( componentComposer.getId().equals( id ) )
-            {
-                retValue = componentComposer;
-
-                break;
-            }
-        }
-
-        return retValue;
     }
 }

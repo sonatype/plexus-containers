@@ -35,7 +35,7 @@ public class NoOpComponentComposer
 {
     public String getId()
     {
-        return null;
+        return "noop";
     }
 
     public void assignRequirement( Object component,

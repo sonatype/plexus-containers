@@ -38,6 +38,11 @@ import java.util.Map;
 public class FieldComponentComposer
     extends AbstractComponentComposer
 {
+    public String getId()
+    {
+        return "field";
+    }
+
     public void assignRequirement( Object component,
                                    ComponentDescriptor componentDescriptor,
                                    ComponentRequirement requirement,

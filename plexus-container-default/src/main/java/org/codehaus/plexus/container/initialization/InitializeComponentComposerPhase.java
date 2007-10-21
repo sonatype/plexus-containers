@@ -27,10 +27,6 @@ public class InitializeComponentComposerPhase
     public void initializeCoreComponent( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        PlexusConfiguration configuration = context.getContainerXmlConfiguration();
-
-        PlexusConfiguration c = configuration.getChild( "component-composer-manager" );
-
-        setupCoreComponent( "component-composer-manager", configurator, c, context.getContainer() );
+        context.getContainer().setComponentComposerManager( context.getContainerConfiguration().getComponentComposerManager() );
     }
 }

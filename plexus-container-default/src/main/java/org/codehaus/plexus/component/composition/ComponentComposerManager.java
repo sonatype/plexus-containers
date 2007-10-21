@@ -29,9 +29,8 @@ public interface ComponentComposerManager
 {
     String ROLE = ComponentComposerManager.class.getName();
 
-    /**
-     * @deprecated
-     */
+    void addComponentComposer( ComponentComposer componentComposer );
+
     void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
         throws CompositionException, UndefinedComponentComposerException;
 

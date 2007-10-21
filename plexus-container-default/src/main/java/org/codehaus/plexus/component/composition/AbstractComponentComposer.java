@@ -46,8 +46,6 @@ public abstract class AbstractComponentComposer
     extends AbstractLogEnabled
     implements ComponentComposer
 {
-    private String id;
-
     // ----------------------------------------------------------------------
     // Composition Life Cycle
     // ----------------------------------------------------------------------
@@ -225,10 +223,5 @@ public abstract class AbstractComponentComposer
                 "in object of type " + component.getClass().getName() + " because the requirement " + requirement +
                 " was missing (lookup realm: " + lookupRealm.getId() + ")", e );
         }
-    }
-
-    public String getId()
-    {
-        return id;
     }
 }
