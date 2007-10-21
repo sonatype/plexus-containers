@@ -16,7 +16,7 @@ package org.codehaus.plexus.container.initialization;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 
 /**
  * @author Jason van Zyl
@@ -27,12 +27,10 @@ public class InitializeComponentDiscovererManagerPhase
     public void initializeCoreComponent( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        PlexusConfiguration configuration = context.getContainerXmlConfiguration();
+        ComponentDiscovererManager componentDiscovererManager = context.getContainerConfiguration().getComponentDiscovererManager();
 
-        PlexusConfiguration c = configuration.getChild( "component-discoverer-manager" );
+        componentDiscovererManager.initialize();
 
-        setupCoreComponent( "component-discoverer-manager", configurator, c, context.getContainer() );
-
-        context.getContainer().getComponentDiscovererManager().initialize();
+        context.getContainer().setComponentDiscovererManager( componentDiscovererManager );
     }
 }

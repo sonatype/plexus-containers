@@ -33,8 +33,6 @@ public class DefaultComponentDiscovererManager
 
     public DefaultComponentDiscovererManager()
     {
-        addComponentDiscoverer( new DefaultComponentDiscoverer() );
-        addComponentDiscoverer( new PlexusXmlComponentDiscoverer() );        
     }
 
     public void addComponentDiscoverer( ComponentDiscoverer discoverer )

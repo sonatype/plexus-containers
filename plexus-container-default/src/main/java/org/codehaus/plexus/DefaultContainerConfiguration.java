@@ -8,6 +8,10 @@ import org.codehaus.plexus.component.composition.FieldComponentComposer;
 import org.codehaus.plexus.component.composition.MapOrientedComponentComposer;
 import org.codehaus.plexus.component.composition.NoOpComponentComposer;
 import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
+import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
+import org.codehaus.plexus.component.discovery.DefaultComponentDiscoverer;
+import org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager;
+import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
@@ -167,6 +171,29 @@ public class DefaultContainerConfiguration
     public ComponentLookupManager getComponentLookupManager()
     {
         return new DefaultComponentLookupManager();
+    }
+
+    private ComponentDiscovererManager componentDiscovererManager;
+
+    public ComponentDiscovererManager getComponentDiscovererManager()
+    {
+        if ( componentDiscovererManager == null )
+        {
+            componentDiscovererManager = new DefaultComponentDiscovererManager();
+
+            componentDiscovererManager.addComponentDiscoverer( new DefaultComponentDiscoverer() );
+
+            componentDiscovererManager.addComponentDiscoverer( new PlexusXmlComponentDiscoverer() );                    
+        }
+
+        return componentDiscovererManager;
+    }
+
+    public ContainerConfiguration setComponentDiscovererManager( ComponentDiscovererManager componentDiscovererManager )
+    {
+        this.componentDiscovererManager = componentDiscovererManager;
+
+        return this;
     }
 
     private ComponentRepository componentRepository;

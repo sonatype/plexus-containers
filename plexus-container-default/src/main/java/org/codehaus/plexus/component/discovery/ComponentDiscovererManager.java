@@ -21,6 +21,8 @@ import java.util.Map;
 
 public interface ComponentDiscovererManager
 {
+    void addComponentDiscoverer( ComponentDiscoverer componentDiscoverer );
+
     List getComponentDiscoverers();
 
     Map getComponentDiscoveryListeners();
