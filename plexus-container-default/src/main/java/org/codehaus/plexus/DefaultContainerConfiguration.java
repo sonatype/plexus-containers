@@ -38,6 +38,24 @@ import org.codehaus.plexus.container.initialization.InitializeResourcesPhase;
 import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase;
 import org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase;
 import org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase;
+import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
+import org.codehaus.plexus.lifecycle.BootstrapLifecycleHandler;
+import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
+import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
+import org.codehaus.plexus.lifecycle.PassiveLifecycleHandler;
+import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.AutoConfigurePhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.CompositionPhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.ConfigurablePhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.ContextualizePhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.DisposePhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializePhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.LogDisablePhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.LogEnablePhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.ServiceablePhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.StartPhase;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.StopPhase;
 
 import java.net.URL;
 import java.util.Map;
@@ -298,5 +316,87 @@ public class DefaultContainerConfiguration
         }
 
         return componentComposerManager;
+    }
+
+    // Lifecycle handler manager
+
+    private LifecycleHandlerManager lifecycleHandlerManager;
+
+    public ContainerConfiguration addLifecycleHandler( LifecycleHandler lifecycleHandler )
+    {
+        getLifecycleHandlerManager().addLifecycleHandler( lifecycleHandler );
+
+        return this;
+    }
+
+    public ContainerConfiguration setLifecycleHandlerManager( LifecycleHandlerManager lifecycleHandlerManager )
+    {
+        this.lifecycleHandlerManager = lifecycleHandlerManager;
+
+        return this;
+    }
+
+    public LifecycleHandlerManager getLifecycleHandlerManager()
+    {
+        if ( lifecycleHandlerManager == null )
+        {
+            lifecycleHandlerManager = new DefaultLifecycleHandlerManager();
+
+            // Plexus
+            LifecycleHandler plexus = new PlexusLifecycleHandler();
+            // Begin
+            plexus.addBeginSegment( new LogEnablePhase() );
+            plexus.addBeginSegment( new CompositionPhase() );
+            plexus.addBeginSegment( new ContextualizePhase() );
+            plexus.addBeginSegment( new AutoConfigurePhase() );
+            plexus.addBeginSegment( new ServiceablePhase() );
+            plexus.addBeginSegment( new InitializePhase() );
+            plexus.addBeginSegment( new StartPhase() );
+            // End
+            plexus.addEndSegment( new StopPhase() );
+            plexus.addEndSegment( new DisposePhase() );
+            plexus.addEndSegment( new LogDisablePhase() );
+            lifecycleHandlerManager.addLifecycleHandler( plexus );
+
+            // Basic
+            LifecycleHandler basic = new BasicLifecycleHandler( "basic" );
+            // Begin
+            basic.addBeginSegment( new LogEnablePhase() );
+            basic.addBeginSegment( new ContextualizePhase() );
+            basic.addBeginSegment( new AutoConfigurePhase() );
+            basic.addBeginSegment( new InitializePhase() );
+            basic.addBeginSegment( new StartPhase() );
+            // End
+            basic.addEndSegment( new StopPhase() );
+            basic.addEndSegment( new DisposePhase() );
+            basic.addEndSegment( new LogDisablePhase() );
+            lifecycleHandlerManager.addLifecycleHandler( basic );
+
+            // Plexus configurable
+            LifecycleHandler plexusConfigurable = new BasicLifecycleHandler( "plexus-configurable" );
+            // Begin
+            plexusConfigurable.addBeginSegment( new LogEnablePhase() );
+            plexusConfigurable.addBeginSegment( new ContextualizePhase() );
+            plexusConfigurable.addBeginSegment( new ConfigurablePhase() );
+            plexusConfigurable.addBeginSegment( new ServiceablePhase() );
+            plexusConfigurable.addBeginSegment( new InitializePhase() );
+            plexusConfigurable.addBeginSegment( new StartPhase() );
+            // End
+            plexusConfigurable.addEndSegment( new StopPhase() );
+            plexusConfigurable.addEndSegment( new DisposePhase() );
+            plexusConfigurable.addEndSegment( new LogDisablePhase() );
+            lifecycleHandlerManager.addLifecycleHandler( plexusConfigurable );
+
+            // Passive
+            LifecycleHandler passive = new PassiveLifecycleHandler();
+            lifecycleHandlerManager.addLifecycleHandler( passive );
+
+            // Bootstrap
+            LifecycleHandler bootstrap = new BootstrapLifecycleHandler();
+            bootstrap.addBeginSegment( new ContextualizePhase() );
+            lifecycleHandlerManager.addLifecycleHandler( bootstrap );
+        }
+
+        return lifecycleHandlerManager;
     }
 }

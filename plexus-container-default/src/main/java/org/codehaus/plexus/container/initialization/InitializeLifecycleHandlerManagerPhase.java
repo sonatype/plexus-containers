@@ -16,7 +16,7 @@ package org.codehaus.plexus.container.initialization;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 
 /**
  * @author Jason van Zyl
@@ -27,13 +27,10 @@ public class InitializeLifecycleHandlerManagerPhase
     public void initializeCoreComponent( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        PlexusConfiguration configuration = context.getContainerXmlConfiguration();
+        LifecycleHandlerManager lhm = context.getContainerConfiguration().getLifecycleHandlerManager();
 
-        PlexusConfiguration c = configuration.getChild( "lifecycle-handler-manager" );
+        lhm.initialize();
 
-        setupCoreComponent( "lifecycle-handler-manager", configurator, c, context.getContainer() );
-
-        context.getContainer().getLifecycleHandlerManager().initialize();
+        context.getContainer().setLifecycleHandlerManager( lhm );
     }
-
 }

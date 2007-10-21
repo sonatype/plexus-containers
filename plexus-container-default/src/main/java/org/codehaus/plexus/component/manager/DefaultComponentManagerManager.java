@@ -148,18 +148,7 @@ public class DefaultComponentManagerManager
     {
         String lifecycleHandlerId = descriptor.getLifecycleHandler();
 
-        LifecycleHandler lifecycleHandler;
-
-        if ( lifecycleHandlerId == null )
-        {
-            lifecycleHandler = lifecycleHandlerManager.getDefaultLifecycleHandler();
-        }
-        else
-        {
-            lifecycleHandler = lifecycleHandlerManager.getLifecycleHandler( lifecycleHandlerId );
-        }
-
-        return lifecycleHandler;
+        return lifecycleHandlerManager.getLifecycleHandler( lifecycleHandlerId );
     }
 
     // ----------------------------------------------------------------------

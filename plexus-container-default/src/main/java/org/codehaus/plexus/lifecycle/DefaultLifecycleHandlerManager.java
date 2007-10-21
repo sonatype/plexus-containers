@@ -16,24 +16,34 @@ package org.codehaus.plexus.lifecycle;
  * limitations under the License.
  */
 
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- *
+ * @author Jason van Zyl
  * @version $Id$
  */
 public class DefaultLifecycleHandlerManager
     implements LifecycleHandlerManager
 {
-    private List lifecycleHandlers = null;
+    private Map lifecycleHandlers;
 
     private String defaultLifecycleHandlerId = "plexus";
 
+    public void addLifecycleHandler( LifecycleHandler lifecycleHandler )
+    {
+        if ( lifecycleHandlers == null )
+        {
+            lifecycleHandlers = new HashMap();
+        }
+
+        lifecycleHandlers.put( lifecycleHandler.getId(), lifecycleHandler );
+    }
+
     public void initialize()
     {
-        for ( Iterator iterator = lifecycleHandlers.iterator(); iterator.hasNext(); )
+        for ( Iterator iterator = lifecycleHandlers.values().iterator(); iterator.hasNext(); )
         {
             LifecycleHandler lifecycleHandler = (LifecycleHandler) iterator.next();
 
@@ -44,24 +54,18 @@ public class DefaultLifecycleHandlerManager
     public LifecycleHandler getLifecycleHandler( String id )
         throws UndefinedLifecycleHandlerException
     {
-        LifecycleHandler lifecycleHandler = null;
-
-        for ( Iterator iterator = lifecycleHandlers.iterator(); iterator.hasNext(); )
+        if ( id == null )
         {
-            lifecycleHandler = (LifecycleHandler) iterator.next();
-
-            if ( id.equals( lifecycleHandler.getId() ) )
-            {
-                return lifecycleHandler;
-            }
+            id = defaultLifecycleHandlerId;
         }
 
-        throw new UndefinedLifecycleHandlerException( "Specified lifecycle handler cannot be found: " + id );
-    }
+        LifecycleHandler lifecycleHandler = ( LifecycleHandler) lifecycleHandlers.get( id );
 
-    public LifecycleHandler getDefaultLifecycleHandler()
-        throws UndefinedLifecycleHandlerException
-    {
-        return getLifecycleHandler( defaultLifecycleHandlerId );
-    }
+        if ( lifecycleHandler == null )
+        {
+            throw new UndefinedLifecycleHandlerException( "Specified lifecycle handler cannot be found: " + id );
+        }
+
+        return lifecycleHandler;
+    }   
 }

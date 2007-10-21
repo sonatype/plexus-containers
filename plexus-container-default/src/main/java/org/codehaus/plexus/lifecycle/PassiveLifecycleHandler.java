@@ -19,6 +19,11 @@ package org.codehaus.plexus.lifecycle;
 public class PassiveLifecycleHandler
     extends AbstractLifecycleHandler
 {
+    public String getId()
+    {
+        return "passive";
+    }
+
     /** @see org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable#initialize */
     public void initialize()
     {

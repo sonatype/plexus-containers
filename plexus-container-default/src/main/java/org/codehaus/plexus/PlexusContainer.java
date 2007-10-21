@@ -17,7 +17,6 @@ package org.codehaus.plexus;
  */
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -396,22 +395,6 @@ public interface PlexusContainer
      * @return true if this container has a component with the given role/role-hint
      */
     boolean hasComponent( String role, String roleHint );
-
-    /**
-     * Attempts to suspend execution of the component.
-     * @param component a plexus component
-     * @throws ComponentLifecycleException
-     */
-    void suspend( Object component )
-        throws ComponentLifecycleException;
-
-    /**
-     * Attempts to resume execution of the component.
-     * @param component a plexus component
-     * @throws ComponentLifecycleException
-     */
-    void resume( Object component )
-        throws ComponentLifecycleException;
 
     /**
      * Disposes of this container, which in turn disposes all of it's components. This container should also remove

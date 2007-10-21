@@ -140,32 +140,6 @@ public abstract class AbstractComponentManager
         }
     }
 
-    public void suspend( Object component )
-        throws ComponentLifecycleException
-    {
-        try
-        {
-            getLifecycleHandler().suspend( component, this );
-        }
-        catch ( PhaseExecutionException e )
-        {
-            throw new ComponentLifecycleException( "Error suspending component", e );
-        }
-    }
-
-    public void resume( Object component )
-        throws ComponentLifecycleException
-    {
-        try
-        {
-            getLifecycleHandler().resume( component, this );
-        }
-        catch ( PhaseExecutionException e )
-        {
-            throw new ComponentLifecycleException( "Error suspending component", e );
-        }
-    }
-
     protected void endComponentLifecycle( Object component )
         throws ComponentLifecycleException
     {

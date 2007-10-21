@@ -30,8 +30,7 @@ public interface LifecycleHandlerManager
 {
     void initialize();
 
-    LifecycleHandler getDefaultLifecycleHandler()
-        throws UndefinedLifecycleHandlerException;
+    void addLifecycleHandler( LifecycleHandler lifecycleHandler );
 
     LifecycleHandler getLifecycleHandler( String id )
         throws UndefinedLifecycleHandlerException;

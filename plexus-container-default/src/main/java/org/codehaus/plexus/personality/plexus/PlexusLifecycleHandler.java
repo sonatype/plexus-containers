@@ -23,6 +23,11 @@ public class PlexusLifecycleHandler
 {
     public static String COMPONENT_CONFIGURATOR = "component.configurator";
 
+    public String getId()
+    {
+        return "plexus";
+    }
+
     public PlexusLifecycleHandler()
     {
         super();

@@ -56,12 +56,6 @@ public interface ComponentManager
     void release( Object component )
         throws ComponentLifecycleException;
 
-    void suspend( Object component )
-        throws ComponentLifecycleException;
-
-    void resume( Object component )
-        throws ComponentLifecycleException;
-
     Object getComponent()
         throws ComponentInstantiationException, ComponentLifecycleException;
 

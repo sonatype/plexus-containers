@@ -28,69 +28,38 @@ import java.util.List;
 public abstract class AbstractLifecycleHandler
     implements LifecycleHandler
 {
-    private String id = null;
-
-    private String name = null;
-
     private List beginSegment;
 
-    private List suspendSegment;
-
-    private List resumeSegment;
-
     private List endSegment;
-
-    public AbstractLifecycleHandler()
-    {
-        beginSegment = new ArrayList();
-
-        suspendSegment = new ArrayList();
-
-        resumeSegment = new ArrayList();
-
-        endSegment = new ArrayList();
-    }
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
 
     // ----------------------------------------------------------------------
     // Begin Segment
     // ----------------------------------------------------------------------
+
+    public void addBeginSegment( Phase phase )
+    {
+        if ( beginSegment == null )
+        {
+            beginSegment = new ArrayList();
+        }
+
+        beginSegment.add( phase );
+    }
 
     public List getBeginSegment()
     {
         return beginSegment;
     }
 
-    // ----------------------------------------------------------------------
-    // Suspend Segment
-    // ----------------------------------------------------------------------
-
-    public List getSuspendSegment()
+    public void addEndSegment( Phase phase )
     {
-        return suspendSegment;
+        if ( endSegment == null )
+        {
+            endSegment = new ArrayList();
+        }
+
+        endSegment.add( phase );
     }
-
-    // ----------------------------------------------------------------------
-    // Resume Segment
-    // ----------------------------------------------------------------------
-
-    public List getResumeSegment()
-    {
-        return resumeSegment;
-    }
-
-    // ----------------------------------------------------------------------
-    // End Segment
-    // ----------------------------------------------------------------------
 
     public List getEndSegment()
     {
@@ -128,39 +97,6 @@ public abstract class AbstractLifecycleHandler
             phase.execute( component, manager, realm );
         }
     }
-
-    public void suspend( Object component, ComponentManager manager )
-        throws PhaseExecutionException
-    {
-        if ( segmentIsEmpty( getSuspendSegment() ) )
-        {
-            return;
-        }
-
-        for ( Iterator i = getSuspendSegment().iterator(); i.hasNext(); )
-        {
-            Phase phase = (Phase) i.next();
-
-            phase.execute( component, manager, manager.getContainer().getLookupRealm( component ) );
-        }
-    }
-
-    public void resume( Object component, ComponentManager manager )
-        throws PhaseExecutionException
-    {
-        if ( segmentIsEmpty( getResumeSegment() ) )
-        {
-            return;
-        }
-
-        for ( Iterator i = getResumeSegment().iterator(); i.hasNext(); )
-        {
-            Phase phase = (Phase) i.next();
-
-            phase.execute( component, manager, manager.getContainer().getLookupRealm( component ) );
-        }
-    }
-
 
     /**
      * End a component's lifecycle.

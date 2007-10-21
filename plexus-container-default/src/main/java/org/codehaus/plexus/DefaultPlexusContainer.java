@@ -773,37 +773,9 @@ public class DefaultPlexusContainer
         return componentRepository.hasComponent( role, roleHint, realm );
     }
 
-    public void suspend( Object component )
-        throws ComponentLifecycleException
-    {
-        if ( component == null )
-        {
-            return;
-        }
-
-        ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentInstance( component );
-
-        componentManager.suspend( component );
-    }
-
-    public void resume( Object component )
-        throws ComponentLifecycleException
-    {
-        if ( component == null )
-        {
-            return;
-        }
-
-        ComponentManager componentManager = componentManagerManager.findComponentManagerByComponentInstance( component );
-
-        componentManager.resume( component );
-    }
-
     // ----------------------------------------------------------------------
     // Lifecycle Management
     // ----------------------------------------------------------------------
-
-
 
     protected void initialize( ContainerConfiguration containerConfiguration )
         throws PlexusContainerException

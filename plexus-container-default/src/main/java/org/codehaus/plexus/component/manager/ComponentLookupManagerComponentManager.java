@@ -22,7 +22,8 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
 /**
  * @author <a href="mailto:kenney@neonics.com">Kenney Westerhof</a>
  */
-public class ComponentLookupManagerComponentManager extends AbstractComponentManager
+public class ComponentLookupManagerComponentManager
+    extends AbstractComponentManager
 {
     public String getId()
     {

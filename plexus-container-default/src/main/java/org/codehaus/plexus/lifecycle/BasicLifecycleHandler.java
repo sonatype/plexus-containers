@@ -19,6 +19,18 @@ package org.codehaus.plexus.lifecycle;
 public class BasicLifecycleHandler
     extends AbstractLifecycleHandler
 {
+    protected String id;
+
+    public BasicLifecycleHandler( String id )
+    {
+        this.id = id;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
     /** @see org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable#initialize */
     public void initialize()
     {

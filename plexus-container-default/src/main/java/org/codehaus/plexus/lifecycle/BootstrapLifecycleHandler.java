@@ -19,6 +19,11 @@ package org.codehaus.plexus.lifecycle;
 public class BootstrapLifecycleHandler
     extends AbstractLifecycleHandler
 {
+    public String getId()
+    {
+        return "bootstrap";
+    }
+
     /** @see org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable#initialize */
     public void initialize()
     {
