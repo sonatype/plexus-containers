@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.composition.autowire;
+package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 
 /*
  * Copyright 2001-2006 Codehaus Foundation.
@@ -16,11 +16,9 @@ package org.codehaus.plexus.component.composition.autowire;
  * limitations under the License.
  */
 
-/**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id$
- */
-public class DefaultTwo
-    implements Two
+public interface Suspendable
 {
+    void suspend();
+
+    void resume();
 }

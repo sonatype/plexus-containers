@@ -1247,37 +1247,6 @@ public class DefaultPlexusContainer
     }
 
     // ----------------------------------------------------------------------
-    // Autowire Support
-    // ----------------------------------------------------------------------
-
-    // note:jvz Currently this only works for setters as I'm experimenting for
-    // webwork. I would like the API for autowiring to be simple so we could easily look
-    // for constructors with parameters and use that method of composition before attempting
-    // the use of setters or private fields.
-
-    public Object autowire( Object component )
-        throws CompositionException
-    {
-        SetterComponentComposer composer = new SetterComponentComposer();
-
-        composer.assembleComponent( component, null, this );
-
-        return component;
-    }
-
-    public Object createAndAutowire( String clazz )
-        throws CompositionException, ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
-        Object component = containerRealm.loadClass( clazz ).newInstance();
-
-        SetterComponentComposer composer = new SetterComponentComposer();
-
-        composer.assembleComponent( component, null, this );
-
-        return component;
-    }
-
-    // ----------------------------------------------------------------------
     // Reloading
     // ----------------------------------------------------------------------
 

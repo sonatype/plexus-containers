@@ -38,7 +38,6 @@ import java.util.Set;
 
 /**
  * @author Jason van Zyl
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  * @todo just pass around a containerContext {component,descriptor,container}
  * @todo cleanup error messaging, pull out of autowire composer and generalize
@@ -63,20 +62,6 @@ public abstract class AbstractComponentComposer
         throws CompositionException
     {
         return Collections.EMPTY_MAP;
-    }
-
-    public List gleanAutowiringRequirements( Map compositionContext,
-                                             PlexusContainer container, ClassRealm classRealm )
-        throws CompositionException
-    {
-        return Collections.EMPTY_LIST;
-    }
-
-    public final List gleanAutowiringRequirements( Map compositionContext,
-                                             PlexusContainer container )
-        throws CompositionException
-    {
-        return Collections.EMPTY_LIST;
     }
 
     /**
@@ -108,36 +93,7 @@ public abstract class AbstractComponentComposer
         // POJO to wire up.
         // ----------------------------------------------------------------------
 
-        List requirements;
-
-        if ( componentDescriptor == null )
-        {
-            // Create a componentDescriptor to keep everything happy when we're trying to autowire.
-
-            componentDescriptor = new ComponentDescriptor();
-
-            componentDescriptor.setImplementation( component.getClass().getName() );
-
-            componentDescriptor.setRole( component.getClass().getName() );
-
-            requirements = gleanAutowiringRequirements( compositionContext, container, lookupRealm );
-
-            componentDescriptor.addRequirements( requirements );
-
-            try
-            {
-                container.addComponentDescriptor( componentDescriptor );
-            }
-            catch ( ComponentRepositoryException e )
-            {
-                // this should never happen, we never took into account creating component
-                // descriptors on the fly by gleaning information.
-            }
-        }
-        else
-        {
-            requirements = componentDescriptor.getRequirements();
-        }
+        List requirements = componentDescriptor.getRequirements();
 
         for ( Iterator i = requirements.iterator(); i.hasNext(); )
         {

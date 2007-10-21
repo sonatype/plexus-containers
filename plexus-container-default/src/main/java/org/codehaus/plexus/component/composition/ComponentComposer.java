@@ -54,9 +54,6 @@ public interface ComponentComposer
     Map createCompositionContext( Object component, ComponentDescriptor descriptor )
         throws CompositionException;
 
-    List gleanAutowiringRequirements( Map compositionContext, PlexusContainer container )
-        throws CompositionException;
-
     /**
      * @deprecated
      */

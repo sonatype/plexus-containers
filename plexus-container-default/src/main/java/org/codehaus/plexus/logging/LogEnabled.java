@@ -1,4 +1,4 @@
-package org.codehaus.plexus.component.composition.autowire;
+package org.codehaus.plexus.logging;
 
 /*
  * Copyright 2001-2006 Codehaus Foundation.
@@ -17,32 +17,9 @@ package org.codehaus.plexus.component.composition.autowire;
  */
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  * @version $Id$
  */
-public class Autowire
+public interface LogEnabled
 {
-    private One one;
-
-    private Two two;
-
-    public One getOne()
-    {
-        return one;
-    }
-
-    public void setOne( One one )
-    {
-        this.one = one;
-    }
-
-    public Two getTwo()
-    {
-        return two;
-    }
-
-    public void setTwo( Two two )
-    {
-        this.two = two;
-    }
+    void enableLogging( Logger logger );
 }
