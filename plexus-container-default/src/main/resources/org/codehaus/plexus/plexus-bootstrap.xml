@@ -2,35 +2,6 @@
 
   <!-- Remember if you add anything to this file make sure you deal with the additions in the configuration merger. -->
 
-  <container-initialization>
-    <initialization-phases>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeResourcesPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.InitializeContextPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase"/>
-      <initialization-phase implementation="org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase"/>
-      <initialization-phase
-          implementation="org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase"/>
-    </initialization-phases>
-  </container-initialization>
-
   <!-- Bootstrap components -->
 
   <component-lookup-manager implementation="org.codehaus.plexus.DefaultComponentLookupManager"/>

@@ -413,7 +413,7 @@ public class DefaultPlexusContainer
         try
         {
             // XXX this will set up the configuration and process it
-            initialize();
+            initialize( c );
 
             // XXX this will wipe out the configuration field - is this needed? If so,
             // why? can we remove the need to have a configuration field then?
@@ -811,7 +811,7 @@ public class DefaultPlexusContainer
 
 
 
-    protected void initialize()
+    protected void initialize( ContainerConfiguration containerConfiguration )
         throws PlexusContainerException
     {
         if ( initialized )
@@ -821,9 +821,9 @@ public class DefaultPlexusContainer
 
         try
         {
-            initializeConfiguration();
+            initializeConfiguration( containerConfiguration );
 
-            initializePhases();
+            initializePhases( containerConfiguration );
         }
         catch ( ContextException e )
         {
@@ -849,41 +849,27 @@ public class DefaultPlexusContainer
         initialized = true;
     }
 
-    protected void initializePhases()
+    protected void initializePhases( ContainerConfiguration c )
         throws PlexusContainerException
     {
-        PlexusConfiguration initializationConfiguration = configuration.getChild( "container-initialization" );
+        String[] initPhases = c.getInitializationPhases();
 
-        ContainerInitializationContext initializationContext = new ContainerInitializationContext(
-            this,
-            classWorld,
-            containerRealm,
-            configuration );
+        ContainerInitializationContext initializationContext =
+            new ContainerInitializationContext( this, classWorld, containerRealm, configuration );
 
-        // PLXAPI: I think we might only ever need one of these so maybe we can create it with a constructor
-        // and store it.
-        ComponentConfigurator c = new BasicComponentConfigurator();
-
-        try
+        for ( int i = 0; i < initPhases.length; i++ )
         {
-            c.configureComponent( this, initializationConfiguration, containerRealm );
-        }
-        catch ( ComponentConfigurationException e )
-        {
-            throw new PlexusContainerException( "Error setting container initialization initializationPhases.", e );
-        }
-
-        for ( Iterator iterator = initializationPhases.iterator(); iterator.hasNext(); )
-        {
-            ContainerInitializationPhase phase = (ContainerInitializationPhase) iterator.next();
+            String clazz = initPhases[i];
 
             try
             {
+                ContainerInitializationPhase phase = (ContainerInitializationPhase) containerRealm.loadClass( clazz ).newInstance();
+
                 phase.execute( initializationContext );
             }
-            catch ( ContainerInitializationException e )
+            catch ( Exception e )
             {
-                throw new PlexusContainerException( "Error initializaing container in " + phase + ".", e );
+                throw new PlexusContainerException( "Error initializaing container in " + clazz + ".", e );
             }
         }
     }
@@ -1013,7 +999,7 @@ public class DefaultPlexusContainer
 
     // TODO: put this in a separate helper class and turn into a component if possible, too big.
 
-    protected void initializeConfiguration()
+    protected void initializeConfiguration( ContainerConfiguration c )
         throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException,
         ContextException, IOException
     {

@@ -37,6 +37,10 @@ public interface ContainerConfiguration
 
     ContainerConfiguration setRealm( ClassRealm realm );
 
-    ClassRealm getRealm();    
+    ClassRealm getRealm();
+
+    // Programmatic Container Initialization and Setup
+
+    String[] getInitializationPhases();
 }
 

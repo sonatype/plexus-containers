@@ -18,6 +18,7 @@ package org.codehaus.plexus.container.initialization;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 
 import java.util.Map;
@@ -55,8 +56,10 @@ public class InitializeLoggerManagerPhase
             }
         }
 
+        Logger logger = loggerManager.getLoggerForComponent( PlexusContainer.class.getName() );
+
         //TODO: the container should allow this logger manager change, don't use the DefaultPlexusContainer 
-        context.getContainer().enableLogging( loggerManager.getLoggerForComponent( PlexusContainer.class.getName() ) );
+        context.getContainer().enableLogging( logger );
     }
 
 }

@@ -29,13 +29,13 @@ public class StartLoadOnStartComponentsPhase
     public void execute( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        PlexusConfiguration[] loadOnStartComponents = context.getContainer().getConfiguration().getChild(
-            "load-on-start" ).getChildren( "component" );
+        PlexusConfiguration[] loadOnStartComponents =
+            context.getContainer().getConfiguration().getChild( "load-on-start" ).getChildren( "component" );
 
-        context.getContainer().getLogger().debug(
-            "Found " + loadOnStartComponents.length + " components to load on start" );
+        context.getContainer().getLogger().debug( "Found " + loadOnStartComponents.length + " components to load on start" );
 
         ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
+
         Thread.currentThread().setContextClassLoader( context.getContainerRealm() );
 
         try
@@ -58,15 +58,13 @@ public class StartLoadOnStartComponentsPhase
 
                 if ( roleHint.equals( "*" ) )
                 {
-                    context.getContainer().getLogger().info(
-                        "Loading on start all components with [role]: " + "[" + role + "]" );
+                    context.getContainer().getLogger().info( "Loading on start all components with [role]: " + "[" + role + "]" );
 
                     context.getContainer().lookupList( role );
                 }
                 else
                 {
-                    context.getContainer().getLogger().info(
-                        "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
+                    context.getContainer().getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
 
                     context.getContainer().lookup( role, roleHint );
                 }

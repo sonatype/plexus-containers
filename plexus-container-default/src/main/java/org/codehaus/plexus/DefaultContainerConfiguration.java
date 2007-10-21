@@ -6,9 +6,7 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import java.net.URL;
 import java.util.Map;
 
-/**
- * @author Jason van Zyl
- */
+/** @author Jason van Zyl */
 public class DefaultContainerConfiguration
     implements ContainerConfiguration
 {
@@ -109,4 +107,37 @@ public class DefaultContainerConfiguration
     {
         return realm;
     }
+
+    // Programmatic Container Initialization and Setup
+
+    public ContainerConfiguration setInitializationPhases( String[] initializationPhases )
+    {
+        this.initializationPhases = initializationPhases;
+
+        return this;
+    }
+
+    public String[] getInitializationPhases()
+    {
+        return initializationPhases;
+    }
+
+    private String[] initializationPhases =
+        {
+            "org.codehaus.plexus.container.initialization.InitializeResourcesPhase",
+            "org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase",
+            "org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase",
+            "org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase",
+            "org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase",
+            "org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase",
+            "org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase",
+            "org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase",
+            "org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase",
+            "org.codehaus.plexus.container.initialization.InitializeContextPhase",
+            "org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase",
+            "org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase",
+            "org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase",
+            "org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase",
+
+        };
 }
