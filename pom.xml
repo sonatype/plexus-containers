@@ -11,7 +11,6 @@
   <name>Parent Plexus Container POM</name>
   <version>1.0-alpha-34-SNAPSHOT</version>
   <modules>
-    <module>plexus-component-api</module>
     <module>plexus-component-annotations</module>
     <module>plexus-container-default</module>
   </modules>
@@ -39,11 +38,6 @@
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>1.4.5</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-component-api</artifactId>
-        <version>1.0-alpha-34-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
