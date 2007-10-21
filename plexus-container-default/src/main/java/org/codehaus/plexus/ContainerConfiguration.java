@@ -2,6 +2,7 @@ package org.codehaus.plexus;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 
 import java.net.URL;
 import java.util.Map;
@@ -41,8 +42,8 @@ public interface ContainerConfiguration
 
     // Programmatic Container Initialization and Setup
 
-    String[] getInitializationPhases();
+    ContainerInitializationPhase[] getInitializationPhases();
 
-    String getComponentLookupManager();
+    ComponentLookupManager getComponentLookupManager();
 }
 

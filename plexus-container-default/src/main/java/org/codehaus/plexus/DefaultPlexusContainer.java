@@ -846,24 +846,22 @@ public class DefaultPlexusContainer
     protected void initializePhases( ContainerConfiguration containerConfiguration )
         throws PlexusContainerException
     {
-        String[] initPhases = containerConfiguration.getInitializationPhases();
+        ContainerInitializationPhase[] initPhases = containerConfiguration.getInitializationPhases();
 
         ContainerInitializationContext initializationContext =
             new ContainerInitializationContext( this, classWorld, containerRealm, configuration, containerConfiguration );
 
         for ( int i = 0; i < initPhases.length; i++ )
         {
-            String clazz = initPhases[i];
+            ContainerInitializationPhase phase = initPhases[i];
 
             try
             {
-                ContainerInitializationPhase phase = (ContainerInitializationPhase) containerRealm.loadClass( clazz ).newInstance();
-
                 phase.execute( initializationContext );
             }
             catch ( Exception e )
             {
-                throw new PlexusContainerException( "Error initializaing container in " + clazz + ".", e );
+                throw new PlexusContainerException( "Error initializaing container in " + phase.getClass().getName() + ".", e );
             }
         }
     }

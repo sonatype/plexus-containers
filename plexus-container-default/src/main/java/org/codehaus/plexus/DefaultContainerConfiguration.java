@@ -2,6 +2,21 @@ package org.codehaus.plexus;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
+import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
+import org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase;
+import org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase;
+import org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase;
+import org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase;
+import org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase;
+import org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase;
+import org.codehaus.plexus.container.initialization.InitializeContextPhase;
+import org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase;
+import org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase;
+import org.codehaus.plexus.container.initialization.InitializeResourcesPhase;
+import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase;
+import org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase;
+import org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase;
 
 import java.net.URL;
 import java.util.Map;
@@ -110,39 +125,39 @@ public class DefaultContainerConfiguration
 
     // Programmatic Container Initialization and Setup
 
-    public ContainerConfiguration setInitializationPhases( String[] initializationPhases )
+    public ContainerConfiguration setInitializationPhases( ContainerInitializationPhase[] initializationPhases )
     {
         this.initializationPhases = initializationPhases;
 
         return this;
     }
 
-    public String[] getInitializationPhases()
+    public ContainerInitializationPhase[] getInitializationPhases()
     {
         return initializationPhases;
     }
 
-    private String[] initializationPhases =
+    private ContainerInitializationPhase[] initializationPhases =
         {
-            "org.codehaus.plexus.container.initialization.InitializeResourcesPhase",
-            "org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase",
-            "org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase",
-            "org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase",
-            "org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase",
-            "org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase",
-            "org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase",
-            "org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase",
-            "org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase",
-            "org.codehaus.plexus.container.initialization.InitializeContextPhase",
-            "org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase",
-            "org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase",
-            "org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase",
-            "org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase",
+            new InitializeResourcesPhase(),
+            new InitializeComponentRepositoryPhase(),
+            new InitializeLifecycleHandlerManagerPhase(),
+            new InitializeComponentManagerManagerPhase(),
+            new InitializeComponentDiscovererManagerPhase(),
+            new InitializeComponentFactoryManagerPhase(),
+            new InitializeComponentLookupManagerPhase(),
+            new InitializeComponentComposerPhase(),
+            new InitializeLoggerManagerPhase(),
+            new InitializeContextPhase(),
+            new InitializeSystemPropertiesPhase(),
+            new RegisterComponentDiscoveryListenersPhase(),
+            new ComponentDiscoveryPhase(),
+            new StartLoadOnStartComponentsPhase(),
 
         };
 
-    public String getComponentLookupManager()
+    public ComponentLookupManager getComponentLookupManager()
     {
-        return "org.codehaus.plexus.DefaultComponentLookupManager";        
+        return new DefaultComponentLookupManager();
     }
 }

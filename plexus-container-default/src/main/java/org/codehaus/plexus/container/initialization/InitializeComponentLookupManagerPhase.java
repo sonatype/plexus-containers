@@ -29,8 +29,7 @@ public class InitializeComponentLookupManagerPhase
     public void initializeCoreComponent( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        ComponentLookupManager lookupManager = (ComponentLookupManager) getCoreComponent(
-            context.getContainerConfiguration().getComponentLookupManager(), context );
+        ComponentLookupManager lookupManager = context.getContainerConfiguration().getComponentLookupManager();
 
         context.getContainer().setComponentLookupManager( lookupManager );
 
