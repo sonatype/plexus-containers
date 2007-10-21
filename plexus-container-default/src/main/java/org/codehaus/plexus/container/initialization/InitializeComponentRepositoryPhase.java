@@ -16,8 +16,8 @@ package org.codehaus.plexus.container.initialization;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
  * @author Jason van Zyl
@@ -28,25 +28,21 @@ public class InitializeComponentRepositoryPhase
     public void initializeCoreComponent( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        PlexusConfiguration configuration = context.getContainerXmlConfiguration();
+        ComponentRepository componentRepository = context.getContainerConfiguration().getComponentRepository();
 
-        PlexusConfiguration c = configuration.getChild( "component-repository" );
+        componentRepository.configure( context.getContainerXmlConfiguration() );
 
-        setupCoreComponent( "component-repository", configurator, c, context.getContainer() );
-
-        context.getContainer().getComponentRepository().configure( configuration );
-
-        context.getContainer().getComponentRepository().setClassRealm( context.getContainer().getContainerRealm() );
+        componentRepository.setClassRealm( context.getContainer().getContainerRealm() );
 
         try
         {
-            context.getContainer().getComponentRepository().initialize();
+            componentRepository.initialize();
         }
         catch ( ComponentRepositoryException e )
         {
             throw new ContainerInitializationException( "Error initializing component repository.", e );
         }
 
+        context.getContainer().setComponentRepository( componentRepository );
     }
-
 }

@@ -8,6 +8,8 @@ import org.codehaus.plexus.component.composition.FieldComponentComposer;
 import org.codehaus.plexus.component.composition.MapOrientedComponentComposer;
 import org.codehaus.plexus.component.composition.NoOpComponentComposer;
 import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
+import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase;
@@ -166,6 +168,26 @@ public class DefaultContainerConfiguration
     {
         return new DefaultComponentLookupManager();
     }
+
+    private ComponentRepository componentRepository;
+
+    public ContainerConfiguration setComponentRepository( ComponentRepository componentRepository )
+    {
+        this.componentRepository = componentRepository;
+
+        return this;
+    }
+
+    public ComponentRepository getComponentRepository()
+    {
+        if ( componentRepository == null )
+        {
+            componentRepository = new DefaultComponentRepository();
+        }
+
+        return componentRepository;
+    }
+
 
     private ComponentComposerManager componentComposerManager;
 

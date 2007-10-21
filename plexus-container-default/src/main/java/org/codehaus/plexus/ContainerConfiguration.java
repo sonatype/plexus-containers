@@ -3,6 +3,7 @@ package org.codehaus.plexus;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
+import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 
 import java.net.URL;
@@ -46,6 +47,10 @@ public interface ContainerConfiguration
     ContainerInitializationPhase[] getInitializationPhases();
 
     ComponentLookupManager getComponentLookupManager();
+
+    ContainerConfiguration setComponentRepository( ComponentRepository componentRepository );
+
+    ComponentRepository getComponentRepository();
 
     ContainerConfiguration setComponentComposerManager( ComponentComposerManager componentComposerManager );
 
