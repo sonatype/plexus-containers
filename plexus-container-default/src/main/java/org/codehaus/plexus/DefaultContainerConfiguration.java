@@ -39,12 +39,9 @@ import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPh
 import org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase;
 import org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase;
 import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
-import org.codehaus.plexus.lifecycle.BootstrapLifecycleHandler;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
-import org.codehaus.plexus.lifecycle.PassiveLifecycleHandler;
-import org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.AutoConfigurePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.CompositionPhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.ConfigurablePhase;
@@ -343,7 +340,7 @@ public class DefaultContainerConfiguration
             lifecycleHandlerManager = new DefaultLifecycleHandlerManager();
 
             // Plexus
-            LifecycleHandler plexus = new PlexusLifecycleHandler();
+            LifecycleHandler plexus = new BasicLifecycleHandler( "plexus" );
             // Begin
             plexus.addBeginSegment( new LogEnablePhase() );
             plexus.addBeginSegment( new CompositionPhase() );
@@ -388,11 +385,11 @@ public class DefaultContainerConfiguration
             lifecycleHandlerManager.addLifecycleHandler( plexusConfigurable );
 
             // Passive
-            LifecycleHandler passive = new PassiveLifecycleHandler();
+            LifecycleHandler passive = new BasicLifecycleHandler( "passive" );
             lifecycleHandlerManager.addLifecycleHandler( passive );
 
             // Bootstrap
-            LifecycleHandler bootstrap = new BootstrapLifecycleHandler();
+            LifecycleHandler bootstrap = new BasicLifecycleHandler( "bootstrap" );
             bootstrap.addBeginSegment( new ContextualizePhase() );
             lifecycleHandlerManager.addLifecycleHandler( bootstrap );
         }
