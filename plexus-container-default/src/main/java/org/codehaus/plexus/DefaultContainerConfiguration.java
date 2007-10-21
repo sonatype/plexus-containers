@@ -12,6 +12,8 @@ import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.DefaultComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
+import org.codehaus.plexus.component.factory.ComponentFactoryManager;
+import org.codehaus.plexus.component.factory.DefaultComponentFactoryManager;
 import org.codehaus.plexus.component.manager.ClassicSingletonComponentManager;
 import org.codehaus.plexus.component.manager.ComponentLookupManagerComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
@@ -199,6 +201,25 @@ public class DefaultContainerConfiguration
     public ContainerConfiguration setComponentDiscovererManager( ComponentDiscovererManager componentDiscovererManager )
     {
         this.componentDiscovererManager = componentDiscovererManager;
+
+        return this;
+    }
+
+    private ComponentFactoryManager componentFactoryManager;
+
+    public ComponentFactoryManager getComponentFactoryManager()
+    {
+        if ( componentFactoryManager == null )
+        {
+            componentFactoryManager = new DefaultComponentFactoryManager();                        
+        }
+
+        return componentFactoryManager;
+    }
+
+    public ContainerConfiguration setComponentFactoryManager( ComponentFactoryManager componentFactoryManager )
+    {
+        this.componentFactoryManager = componentFactoryManager;
 
         return this;
     }

@@ -17,7 +17,7 @@ package org.codehaus.plexus.container.initialization;
  */
 
 import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
@@ -30,24 +30,23 @@ public class InitializeComponentFactoryManagerPhase
     public void initializeCoreComponent( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        PlexusConfiguration configuration = context.getContainerXmlConfiguration();
+        ComponentFactoryManager componentFactoryManager = context.getContainerConfiguration().getComponentFactoryManager();
 
-        PlexusConfiguration c = configuration.getChild( "component-factory-manager" );
-
-        setupCoreComponent( "component-factory-manager", configurator, c, context.getContainer() );
-
-        if ( context.getContainer().getComponentFactoryManager() instanceof Contextualizable )
+        if ( componentFactoryManager instanceof Contextualizable )
         {
+            //TODO: this is wrong here jvz.
             context.getContainer().getContext().put( PlexusConstants.PLEXUS_KEY, context.getContainer() );
 
             try
             {
-                ( (Contextualizable) context.getContainer().getComponentFactoryManager() ).contextualize( context.getContainer().getContext() );
+                ( (Contextualizable) componentFactoryManager).contextualize( context.getContainer().getContext() );
             }
             catch ( ContextException e )
             {
                 throw new ContainerInitializationException( "Error contextualization component factory manager.", e );
             }
         }
+
+        context.getContainer().setComponentFactoryManager( componentFactoryManager );
     }
 }
