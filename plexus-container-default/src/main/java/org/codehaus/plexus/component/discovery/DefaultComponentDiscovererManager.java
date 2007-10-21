@@ -16,6 +16,7 @@ package org.codehaus.plexus.component.discovery;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,6 +30,22 @@ public class DefaultComponentDiscovererManager
     private List listeners;
 
     private Map componentDiscoveryListeners;
+
+    public DefaultComponentDiscovererManager()
+    {
+        addComponentDiscoverer( new DefaultComponentDiscoverer() );
+        addComponentDiscoverer( new PlexusXmlComponentDiscoverer() );        
+    }
+
+    public void addComponentDiscoverer( ComponentDiscoverer discoverer )
+    {
+        if ( componentDiscoverers == null )
+        {
+            componentDiscoverers = new ArrayList();
+        }
+
+        componentDiscoverers.add( discoverer );
+    }
 
     public List getComponentDiscoverers()
     {
