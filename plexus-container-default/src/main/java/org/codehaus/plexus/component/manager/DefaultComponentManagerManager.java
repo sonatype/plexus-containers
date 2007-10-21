@@ -49,19 +49,6 @@ public class DefaultComponentManagerManager
 
     private Map componentManagersByComponent = Collections.synchronizedMap( new HashMap() );
 
-    public DefaultComponentManagerManager()
-    {
-        addComponentManager( new PerLookupComponentManager() );
-
-        addComponentManager( new ClassicSingletonComponentManager() );
-
-        addComponentManager( new KeepAliveSingletonComponentManager() );
-
-        addComponentManager( new ContainerComponentManager() );
-
-        addComponentManager( new ComponentLookupManagerComponentManager() );
-    }
-
     public void addComponentManager( ComponentManager componentManager )
     {
         if ( componentManagers == null )

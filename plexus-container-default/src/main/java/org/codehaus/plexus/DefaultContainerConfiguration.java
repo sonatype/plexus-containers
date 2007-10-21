@@ -12,6 +12,13 @@ import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.DefaultComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
+import org.codehaus.plexus.component.manager.ClassicSingletonComponentManager;
+import org.codehaus.plexus.component.manager.ComponentLookupManagerComponentManager;
+import org.codehaus.plexus.component.manager.ComponentManagerManager;
+import org.codehaus.plexus.component.manager.ContainerComponentManager;
+import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
+import org.codehaus.plexus.component.manager.KeepAliveSingletonComponentManager;
+import org.codehaus.plexus.component.manager.PerLookupComponentManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
@@ -192,6 +199,35 @@ public class DefaultContainerConfiguration
     public ContainerConfiguration setComponentDiscovererManager( ComponentDiscovererManager componentDiscovererManager )
     {
         this.componentDiscovererManager = componentDiscovererManager;
+
+        return this;
+    }
+
+    private ComponentManagerManager componentManagerManager;
+
+    public ComponentManagerManager getComponentManagerManager()
+    {
+        if ( componentManagerManager == null )
+        {
+            componentManagerManager = new DefaultComponentManagerManager();
+
+            componentManagerManager.addComponentManager( new PerLookupComponentManager() );
+
+            componentManagerManager.addComponentManager( new ClassicSingletonComponentManager() );
+
+            componentManagerManager.addComponentManager( new KeepAliveSingletonComponentManager() );
+
+            componentManagerManager.addComponentManager( new ContainerComponentManager() );
+
+            componentManagerManager.addComponentManager( new ComponentLookupManagerComponentManager() );
+        }
+
+        return componentManagerManager;
+    }
+
+    public ContainerConfiguration setComponentManagerManager( ComponentManagerManager componentManagerManager )
+    {
+        this.componentManagerManager = componentManagerManager;
 
         return this;
     }
