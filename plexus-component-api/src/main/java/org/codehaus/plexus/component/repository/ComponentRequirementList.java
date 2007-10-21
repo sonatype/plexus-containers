@@ -10,8 +10,9 @@ import java.util.Iterator;
  * @version $Id$
  * @since 1.0
  */
-public final class ComponentRequirementList
-        extends ComponentRequirement {
+public class ComponentRequirementList
+    extends ComponentRequirement 
+{
     private List roleHints;
 
     public List getRoleHints()

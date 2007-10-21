@@ -16,7 +16,11 @@ package org.codehaus.plexus.component.collections;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -28,138 +32,148 @@ public class ComponentList
     extends AbstractComponentCollection
     implements List
 {
-    private List components;
-
-    public ComponentList( String role,
-                          List components )
+    public ComponentList( PlexusContainer container,
+                          String role,
+                          List roleHints
+    )
     {
-        super( role );
-
-        this.components = components;
+        super( container, role, roleHints );
     }
 
     public int size()
     {
-        return components.size() ;
+        return getList().size() ;
     }
 
     public boolean isEmpty()
     {
-        return components.isEmpty() ;
+        return getList().isEmpty() ;
     }
 
     public boolean contains( Object object )
     {
-        return components.contains( object ) ;
+        return getList().contains( object ) ;
     }
 
     public Iterator iterator()
     {
-        return components.iterator() ;
+        return getList().iterator() ;
     }
 
     public Object[] toArray()
     {
-        return components.toArray() ;
+        return getList().toArray() ;
     }
 
     public Object[] toArray( Object[] ts )
     {
-        return components.toArray( ts ) ;
+        return getList().toArray( ts ) ;
     }
 
     public boolean add( Object object )
     {
-        return components.add( object ) ;
+        return getList().add( object ) ;
     }
 
     public boolean remove( Object object )
     {
-        return components.isEmpty() ;
+        return getList().isEmpty() ;
     }
 
     public boolean containsAll( Collection collection )
     {
-        return components.containsAll( collection ) ;
+        return getList().containsAll( collection ) ;
     }
 
     public boolean addAll( Collection collection )
     {
-        return components.addAll( collection ) ;
+        return getList().addAll( collection ) ;
     }
 
     public boolean addAll( int i, Collection collection )
     {
-        return components.addAll( i, collection ) ;
+        return getList().addAll( i, collection ) ;
     }
 
     public boolean removeAll( Collection collection )
     {
-        return components.removeAll( collection ) ;
+        return getList().removeAll( collection ) ;
     }
 
     public boolean retainAll( Collection collection )
     {
-        return components.retainAll( collection ) ;
+        return getList().retainAll( collection ) ;
     }
 
     public void clear()
     {
-        components.clear() ;
+        getList().clear() ;
     }
 
     public boolean equals( Object object )
     {
-        return components.equals( object ) ;
+        return getList().equals( object ) ;
     }
 
     public int hashCode()
     {
-        return components.hashCode() ;
+        return getList().hashCode() ;
     }
 
     public Object get( int i )
     {
-        return components.get( i ) ;
+        return getList().get( i ) ;
     }
 
     public Object set( int i, Object object )
     {
-        return components.set( i, object ) ;
+        return getList().set( i, object ) ;
     }
 
     public void add( int i, Object object )
     {
-        components.add( i, object ) ;
+        getList().add( i, object ) ;
     }
 
     public Object remove( int i )
     {
-        return components.remove( i ) ;
+        return getList().remove( i ) ;
     }
 
     public int indexOf( Object object )
     {
-        return components.indexOf( object ) ;
+        return getList().indexOf( object ) ;
     }
 
     public int lastIndexOf( Object object )
     {
-        return components.lastIndexOf( object ) ;
+        return getList().lastIndexOf( object ) ;
     }
 
     public ListIterator listIterator()
     {
-        return components.listIterator() ;
+        return getList().listIterator() ;
     }
 
     public ListIterator listIterator( int i )
     {
-        return components.listIterator( i ) ;
+        return getList().listIterator( i ) ;
     }
 
     public List subList( int i, int i1 )
     {
-        return components.subList( i, i1 ) ;
+        return getList().subList( i, i1 ) ;
+    }
+
+    private List getList()
+    {
+        try
+        {
+            return container.lookupList( role, roleHints );
+        }
+        catch ( ComponentLookupException e )
+        {
+            return Collections.EMPTY_LIST;
+        }
     }
 }

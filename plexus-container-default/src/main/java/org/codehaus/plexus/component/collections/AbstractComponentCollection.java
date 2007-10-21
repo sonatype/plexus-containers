@@ -1,5 +1,9 @@
 package org.codehaus.plexus.component.collections;
 
+import org.codehaus.plexus.PlexusContainer;
+
+import java.util.List;
+
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -25,23 +29,23 @@ package org.codehaus.plexus.component.collections;
 
 public class AbstractComponentCollection
 {
+    /** The reference to the PlexusContainer */
+    protected PlexusContainer container;
+
     /** The role of the components we are holding in this Collection. */
     protected String role;
 
     /** The role hint of the components we are holding in this Collection. */
-    protected String roleHint;
+    protected List roleHints;
 
-    public AbstractComponentCollection( String role )
+    public AbstractComponentCollection( PlexusContainer container,
+                                        String role,
+                                        List roleHints )
     {
+        this.container = container;
+
         this.role = role;
-    }
 
-
-    public AbstractComponentCollection( String role,
-                                        String roleHint )
-    {
-        this( role );
-
-        this.roleHint = roleHint;
+        this.roleHints = roleHints;
     }
 }

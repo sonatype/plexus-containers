@@ -77,9 +77,6 @@ public class FieldComponentComposer
         }
         catch ( IllegalArgumentException e )
         {
-//            System.out.println( "[" + component + ":" + ((ClassRealm) component.getClass().getClassLoader() ).getId() + "]" +
-//                "[" + assignment + ":" + ((ClassRealm)assignment.getClass().getClassLoader()).getId() + "]");
-
             Class c = requirement.getAssignment().getClass();
 
             String msg="";

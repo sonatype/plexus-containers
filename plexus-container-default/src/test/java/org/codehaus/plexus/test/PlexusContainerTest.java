@@ -430,7 +430,7 @@ public class PlexusContainerTest
     {
         ActivityManager am = (ActivityManager) container.lookup( ActivityManager.ROLE, "slim" );
 
-        assertEquals( am.getActivityCount(), 1 );
+        assertEquals( 1, am.getActivityCount() );
 
         Activity one = am.getActivity( "one" );
 

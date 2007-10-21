@@ -18,6 +18,8 @@ package org.codehaus.plexus.component.composition;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.collections.ComponentList;
+import org.codehaus.plexus.component.collections.ComponentMap;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentRequirementList;
@@ -179,6 +181,7 @@ public abstract class AbstractComponentComposer
             Object assignment;
 
             String role = requirement.getRole();
+
             List roleHints = null;
 
             if ( requirement instanceof ComponentRequirementList)
@@ -220,7 +223,9 @@ public abstract class AbstractComponentComposer
             // have a meaningful superclass.
             else if ( Map.class.equals( clazz ) )
             {
-                assignment = container.lookupMap( role, roleHints, lookupRealm );
+                //assignment = container.lookupMap( role, roleHints, lookupRealm );
+
+                assignment = new ComponentMap( container, role, roleHints );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
@@ -228,7 +233,9 @@ public abstract class AbstractComponentComposer
             // have a meaningful superclass other than Collection.class, which we'll handle next.
             else if ( List.class.equals( clazz ) )
             {
-                assignment = container.lookupList( role, roleHints, lookupRealm );
+                //assignment = container.lookupList( role, roleHints, lookupRealm );
+
+                assignment = new ComponentList( container, role, roleHints );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }

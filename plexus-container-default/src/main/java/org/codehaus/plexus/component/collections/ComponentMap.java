@@ -16,7 +16,12 @@ package org.codehaus.plexus.component.collections;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,86 +30,94 @@ public class ComponentMap
     extends AbstractComponentCollection
     implements Map
 {
-    /** The Map of components we are holding keyed by role hint. */
-    private Map components;
-
-    public ComponentMap( String role,
-                         Map components )
+    public ComponentMap( PlexusContainer container,
+                         String role,
+                         List roleHints )
     {
-        super( role );
-
-        this.components = components;
+        super( container, role, roleHints );
     }
 
     public int size()
     {
-        return components.size();
+        return getMap().size();
     }
 
     public boolean isEmpty()
     {
-        return components.isEmpty();
+        return getMap().isEmpty();
     }
 
     public boolean containsKey( Object key )
     {
-        return components.containsKey( key );
+        return getMap().containsKey( key );
     }
 
     public boolean containsValue( Object value )
     {
-        return components.containsValue( value );
+        return getMap().containsValue( value );
     }
 
     public Object get( Object key )
     {
-        return components.get( key );
+        return getMap().get( key );
     }
 
     public Object put( Object key,
                        Object value )
     {
-        return components.put( key, value );
+        return getMap().put( key, value );
     }
 
     public Object remove( Object object )
     {
-        return components.remove( object );
+        return getMap().remove( object );
     }
 
 
     public void putAll( Map map )
     {
-        components.putAll( map );
+        getMap().putAll( map );
     }
 
     public void clear()
     {
-        components.clear();
+        getMap().clear();
     }
 
     public Set keySet()
     {
-        return components.keySet();
+        return getMap().keySet();
     }
 
     public Collection values()
     {
-        return components.values();
+        return getMap().values();
     }
 
     public Set entrySet()
     {
-        return components.entrySet();
+        return getMap().entrySet();
     }
 
     public boolean equals( Object object )
     {
-        return components.equals( object );
+        return getMap().equals( object );
     }
 
     public int hashCode()
     {
-        return components.hashCode();
+        return getMap().hashCode();
+    }
+
+    private Map getMap()
+    {
+        try
+        {
+            return container.lookupMap( role, roleHints );
+        }
+        catch ( ComponentLookupException e )
+        {
+            return Collections.EMPTY_MAP;
+        }
     }
 }
