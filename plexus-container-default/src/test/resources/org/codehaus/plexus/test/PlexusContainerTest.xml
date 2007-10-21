@@ -18,42 +18,7 @@
     <property name="foo" value="bar"/>
   </system-properties>
 
-  <component-discoverer-manager implementation="org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager">
-    <!--
-    <listeners>
-      <listener implementation="org.codehaus.plexus.component.discovery.DiscoveryListenerDescriptor">
-        <role>org.codehaus.plexus.test.discovery.PluginManager</role>
-      </listener>
-    </listeners>
-    <component-discoverers>
-      <component-discoverer implementation="org.codehaus.plexus.test.discovery.MavenPluginDiscoverer"/>
-    </component-discoverers>
-    -->
-  </component-discoverer-manager>
-
-  <lifecycle-handler-manager implementation="org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager">
-    <lifecycle-handlers>
-      <lifecycle-handler implementation="org.codehaus.plexus.test.SimpleLifecycleHandler">
-        <id>arbitrary</id>
-        <name>Arbitrary Lifecycle Handler</name>
-        <begin-segment>
-          <phase implementation="org.codehaus.plexus.test.lifecycle.phase.EenyPhase"/>
-          <phase implementation="org.codehaus.plexus.test.lifecycle.phase.MeenyPhase"/>
-          <phase implementation="org.codehaus.plexus.test.lifecycle.phase.MinyPhase"/>
-          <phase implementation="org.codehaus.plexus.test.lifecycle.phase.MoPhase"/>
-        </begin-segment>
-        <suspend-segment>
-        </suspend-segment>
-        <resume-segment>
-        </resume-segment>
-        <end-segment>
-        </end-segment>
-      </lifecycle-handler>
-    </lifecycle-handlers>
-  </lifecycle-handler-manager>
-
   <components>
-
     <component>
       <role>org.codehaus.plexus.test.discovery.PluginManager</role>
       <implementation>org.codehaus.plexus.test.discovery.MockMavenPluginManager</implementation>

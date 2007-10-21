@@ -28,6 +28,11 @@ import org.codehaus.plexus.lifecycle.AbstractLifecycleHandler;
 public class SimpleLifecycleHandler
     extends AbstractLifecycleHandler
 {
+    public String getId()
+    {
+        return "simple";
+    }
+
     public void initialize()
     {
     }

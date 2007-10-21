@@ -22,7 +22,6 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 public class DiscoveredComponentFactoryTest
     extends PlexusTestCase
 {
-
     public void testShouldFindComponentFactoriesDefinedInBothPlexusXmlAndComponentsXml()
         throws Exception
     {
@@ -51,8 +50,11 @@ public class DiscoveredComponentFactoryTest
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setComponentFactory( factoryId );
+
         descriptor.setRole( "role" );
+
         descriptor.setRoleHint( "hint" );
+
         descriptor.setImplementation( "something interesting" );
 
         getContainer().addComponentDescriptor( descriptor );
@@ -60,7 +62,7 @@ public class DiscoveredComponentFactoryTest
         Object component = lookup( "role", "hint" );
 
         assertTrue( component instanceof TestFactoryResultComponent );
+
         assertEquals( factoryId, ( (TestFactoryResultComponent) component ).getFactoryId() );
     }
-
 }

@@ -22,6 +22,12 @@ import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
+import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
+import org.codehaus.plexus.test.lifecycle.phase.EenyPhase;
+import org.codehaus.plexus.test.lifecycle.phase.MeenyPhase;
+import org.codehaus.plexus.test.lifecycle.phase.MinyPhase;
+import org.codehaus.plexus.test.lifecycle.phase.MoPhase;
 import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
 import org.codehaus.plexus.test.map.Activity;
@@ -68,12 +74,19 @@ public class PlexusContainerTest
 
         context.put( "plexus.home", basedir + "/target/plexus-home" );
 
-        ContainerConfiguration c = new DefaultContainerConfiguration()
+        LifecycleHandler arbitrary = new BasicLifecycleHandler( "arbitrary" );
+        arbitrary.addBeginSegment( new EenyPhase() );
+        arbitrary.addBeginSegment( new MeenyPhase() );
+        arbitrary.addBeginSegment( new MinyPhase() );
+        arbitrary.addBeginSegment( new MoPhase() );
+
+        ContainerConfiguration containerConfiguration = new DefaultContainerConfiguration()
             .setName( "test" )
             .setContext( context )
-            .setContainerConfiguration( configuration );
-                
-        container = new DefaultPlexusContainer( c );
+            .setContainerConfiguration( configuration )
+            .addLifecycleHandler( arbitrary );
+
+        container = new DefaultPlexusContainer( containerConfiguration );
     }
 
     public void tearDown()

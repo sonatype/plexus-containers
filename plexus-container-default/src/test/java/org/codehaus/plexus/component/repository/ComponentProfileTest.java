@@ -60,6 +60,11 @@ public class ComponentProfileTest
     class MockLifecycleHandler
         extends AbstractLifecycleHandler
     {
+        public String getId()
+        {
+            return "mock";
+        }
+
         public void initialize()
         {
         }
