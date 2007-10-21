@@ -1,6 +1,6 @@
 <plexus>
 
-  <!-- Remember if you add anything to this file make sure you deal with the additions in the configuration mergere. -->
+  <!-- Remember if you add anything to this file make sure you deal with the additions in the configuration merger. -->
 
   <container-initialization>
     <initialization-phases>
