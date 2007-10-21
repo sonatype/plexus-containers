@@ -20,6 +20,7 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
+import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
 import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
@@ -132,7 +133,7 @@ public class DefaultComponentRepository
 
     private ComponentRealmDescriptorMaps componentRealmDescriptorMaps = new ComponentRealmDescriptorMaps();
 
-    private CompositionResolver compositionResolver;
+    private CompositionResolver compositionResolver = new DefaultCompositionResolver();
 
     private ClassRealm classRealm;
 
