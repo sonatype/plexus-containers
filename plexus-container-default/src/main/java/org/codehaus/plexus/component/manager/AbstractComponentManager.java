@@ -207,14 +207,7 @@ public abstract class AbstractComponentManager
 
         try
         {
-            if ( componentFactoryId != null )
-            {
-                componentFactory = container.getComponentFactoryManager().findComponentFactory( componentFactoryId );
-            }
-            else
-            {
-                componentFactory = container.getComponentFactoryManager().getDefaultComponentFactory();
-            }
+            componentFactory = container.getComponentFactoryManager().findComponentFactory( componentFactoryId );
 
             ClassRealm componentRealm;
 

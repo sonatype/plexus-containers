@@ -27,13 +27,18 @@ import java.lang.reflect.Modifier;
 /**
  * Component Factory for components written in Java Language which have default no parameter constructor
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
 public class JavaComponentFactory
     extends AbstractComponentFactory
 {
+    public String getId()
+    {
+        return "java";
+    }
+
     public Object newInstance( ComponentDescriptor componentDescriptor,
                                ClassRealm classRealm,
                                PlexusContainer container )
