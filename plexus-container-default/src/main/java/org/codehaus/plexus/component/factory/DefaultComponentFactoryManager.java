@@ -45,11 +45,11 @@ public class DefaultComponentFactoryManager
 
         try
         {
-            return (ComponentFactory) container.lookup( ComponentFactory.ROLE, id, container.getLookupRealm() );
+            return (ComponentFactory) container.lookup( ComponentFactory.ROLE, id );
         }
         catch ( ComponentLookupException e )
         {
-            throw new UndefinedComponentFactoryException( "Specified component factory cannot be found: " + id );
+            throw new UndefinedComponentFactoryException( "Specified component factory cannot be found: " + id, e );
         }
     }
 

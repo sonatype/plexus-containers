@@ -26,4 +26,6 @@ package org.codehaus.plexus.component.factory;
 public abstract class AbstractComponentFactory
     implements ComponentFactory
 {
+    // This is for backward compatibility
+    private String id;
 }

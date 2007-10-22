@@ -72,8 +72,6 @@ public class ComponentDiscoveryPhase
         // listener is listed in the plexus.xml file that will be discovered and processed
         // before the components.xml are discovered in JARs and processed.
 
-        // System.out.println("\n\n\n************\nScanning realm " + realm.getId() + "\n************\n\n");
-
         List discoveredComponentDescriptors = new ArrayList();
 
         for ( Iterator i = container.getComponentDiscovererManager().getComponentDiscoverers().iterator(); i.hasNext(); )
@@ -102,18 +100,13 @@ public class ComponentDiscoveryPhase
 
                         // Use the parent realm to search for the original descriptor. It won't
                         // be in the current realm (yet).
-                        ComponentDescriptor orig = container.getComponentDescriptor(
-                            componentDescriptor.getRole(),
-                            componentDescriptor.getRoleHint(),
-                            realm );
-
-                        // System.out.println("Found new descriptor: " + componentDescriptor.getHumanReadableKey() + "
-                        // realm="+ componentDescriptor.getRealmId() );
-                        // System.out.println(" Existing descriptor: " + (orig == null ? "none":
-                        // orig.getHumanReadableKey() + " realm= " + orig.getRealmId() ) );
+                        ComponentDescriptor orig = container.getComponentDescriptor( componentDescriptor.getRole(), 
+                            componentDescriptor.getRoleHint(), realm );
 
                         if ( orig == null )
                         {
+                            componentDescriptor.setRealmId( realm.getId() );
+
                             container.addComponentDescriptor( componentDescriptor );
 
                             // We only want to add components that have not yet been
