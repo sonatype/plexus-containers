@@ -85,7 +85,7 @@ public class FieldComponentComposer
             Class c = requirement.getAssignment().getClass();
 
             String msg="";
-            while ( c != null && !c.isAssignableFrom( Object.class ) )
+            while ( ( c != null ) && !c.isAssignableFrom( Object.class ) )
             {
                 Class[] ifaces = c.getInterfaces();
 
@@ -95,7 +95,7 @@ public class FieldComponentComposer
                 {
                     msg += "\n    Interface "
                         + ifaces[i];
-                    
+
                     if ( ifaces[i].getClassLoader() != null )
                     {
                         msg += "; realm: "
@@ -120,7 +120,7 @@ public class FieldComponentComposer
                 + "\nfield type: "
                 + field.getType()
                 + " realm: ";
-            
+
             if ( field.getType().getClassLoader() != null )
             {
                 compositionMsg += ( field.getType().getClassLoader() instanceof ClassRealm
@@ -130,9 +130,9 @@ public class FieldComponentComposer
 
                 compositionMsg += getURLs( field.getType().getClassLoader() );
             }
-            
+
             compositionMsg += "\nvalue type: " + requirement.getAssignment().getClass() + " realm: ";
-            
+
             if ( requirement.getAssignment().getClass().getClassLoader() != null )
             {
                 compositionMsg += ( requirement.getAssignment().getClass().getClassLoader() instanceof ClassRealm
@@ -163,7 +163,7 @@ public class FieldComponentComposer
         {
             return "";
         }
-        
+
         String msg = "";
 
         if ( classLoader instanceof URLClassLoader )
@@ -226,7 +226,15 @@ public class FieldComponentComposer
                                     ComponentDescriptor componentDescriptor )
         throws CompositionException
     {
-        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses( fieldName, component.getClass() );
+        Field field;
+        try
+        {
+            field = ReflectionUtils.getFieldByNameIncludingSuperclasses( fieldName, component.getClass() );
+        }
+        catch( NoClassDefFoundError e )
+        {
+            throw new CompositionException( "Embedded NoClassDefFoundError while looking up " + Field.class.getName() + " for: " + fieldName + " in: " + componentDescriptor.getImplementation(), e );
+        }
 
         if ( field == null )
         {
