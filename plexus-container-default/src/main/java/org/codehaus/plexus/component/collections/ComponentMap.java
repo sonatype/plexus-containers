@@ -21,6 +21,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,8 @@ public class ComponentMap
     extends AbstractComponentCollection
     implements Map
 {
+    private Map internal;
+
     public ComponentMap( PlexusContainer container,
                          String role,
                          List roleHints )
@@ -65,23 +68,12 @@ public class ComponentMap
     public Object put( Object key,
                        Object value )
     {
-        return getMap().put( key, value );
+        return getInternalMap().put( key, value );
     }
-
-    public Object remove( Object object )
-    {
-        return getMap().remove( object );
-    }
-
 
     public void putAll( Map map )
     {
-        getMap().putAll( map );
-    }
-
-    public void clear()
-    {
-        getMap().clear();
+        getInternalMap().putAll( map );
     }
 
     public Set keySet()
@@ -109,15 +101,41 @@ public class ComponentMap
         return getMap().hashCode();
     }
 
+    public Object remove( Object object )
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void clear()
+    {
+        throw new UnsupportedOperationException();
+    }
+
     private Map getMap()
     {
         try
         {
-            return container.lookupMap( role, roleHints );
+            Map map = getInternalMap();
+
+            map.putAll( container.lookupMap( role, roleHints ) );
+
+            return map;
         }
         catch ( ComponentLookupException e )
         {
             return Collections.EMPTY_MAP;
         }
     }
+
+    // Internal Map
+
+    private Map getInternalMap()
+    {
+        if ( internal == null )
+        {
+            internal = new HashMap();
+        }
+
+        return internal;
+    }    
 }
