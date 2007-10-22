@@ -199,6 +199,7 @@ public class DefaultPlexusContainer
     public ClassRealm getLookupRealm()
     {
         ClassRealm cr = (ClassRealm) lookupRealm.get();
+
         return cr == null ? staticLookupRealm : cr;
     }
 

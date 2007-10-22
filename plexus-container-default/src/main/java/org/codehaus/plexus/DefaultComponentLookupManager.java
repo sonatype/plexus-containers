@@ -136,7 +136,7 @@ public class DefaultComponentLookupManager
                 String message = "Component descriptor cannot be found in the component repository: " + componentRole
                     + " [" + roleHint + "]" + " (lookup realm: " + realm + ").";
 
-                throw new ComponentLookupException( message, realm );
+                throw new ComponentLookupException( message, componentRole, roleHint, realm );
             }
 
             componentManager = createComponentManager( descriptor, componentRole, roleHint, realm );
@@ -148,13 +148,11 @@ public class DefaultComponentLookupManager
         }
         catch ( ComponentInstantiationException e )
         {
-            throw new ComponentLookupException( "Unable to lookup component '" + componentRole
-                + "', it could not be created", realm, e );
+            throw new ComponentLookupException( "Unable to lookup component '" + componentRole + "', it could not be created.", componentRole, roleHint, realm, e );
         }
         catch ( ComponentLifecycleException e )
         {
-            throw new ComponentLookupException( "Unable to lookup component '" + componentRole
-                + "', it could not be started", realm, e );
+            throw new ComponentLookupException( "Unable to lookup component '" + componentRole + "', it could not be started.", componentRole, roleHint, realm, e );
         }
 
         container.getComponentManagerManager().associateComponentWithComponentManager( component, componentManager );
@@ -367,14 +365,14 @@ public class DefaultComponentLookupManager
             String message = "Cannot create component manager for " + descriptor.getRole() + " ["
                 + descriptor.getRoleHint() + "], so we cannot provide a component instance.";
 
-            throw new ComponentLookupException( message, realm, e );
+            throw new ComponentLookupException( message, role, roleHint, realm, e );
         }
         catch ( UndefinedLifecycleHandlerException e )
         {
             String message = "Cannot create component manager for " + descriptor.getRole() + " ["
                 + descriptor.getRoleHint() + "], so we cannot provide a component instance.";
 
-            throw new ComponentLookupException( message, realm, e );
+            throw new ComponentLookupException( message, role, roleHint, realm, e );
         }
 
         return componentManager;

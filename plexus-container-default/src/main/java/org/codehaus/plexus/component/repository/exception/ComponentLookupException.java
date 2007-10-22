@@ -22,39 +22,52 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
  * The exception which is thrown by a component repository when
  * the requested component cannot be found.
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @version $Id$
  */
 public class ComponentLookupException
     extends Exception
 {
-    private static final long serialVersionUID = 3767774496798908291L;
-    private final ClassRealm realm;
+    private String LS = System.getProperty( "line.separator" );
 
-    /**
-     * Construct a new <code>ComponentLookupException</code> instance.
-     * @param message exception message
-     * @param realm
-     */
-    public ComponentLookupException( String message, ClassRealm realm )
+    private String role;
+
+    private String roleHint;
+
+    private ClassRealm realm;
+
+    public ComponentLookupException( String message, String role, String roleHint, ClassRealm realm )
     {
         super( message );
+
+        this.role = role;
+
+        this.roleHint = roleHint;
+
         this.realm = realm;
     }
 
-    /**
-     * Construct a new <code>ComponentLookupException</code> instance.
-     * @param message exception message
-     * @param cause causing exception to chain
-     */
-    public ComponentLookupException( String message, ClassRealm realm, Throwable cause )
+    public ComponentLookupException( String message, String role, String roleHint, ClassRealm realm, Throwable cause )
     {
         super( message, cause );
+
+        this.role = role;
+
+        this.roleHint = roleHint;
+
         this.realm = realm;
     }
 
-    public ClassRealm getRealm()
+    public String getMessage()
     {
-        return realm;
+        StringBuffer sb = new StringBuffer()
+            .append( super.getMessage() ).append( LS )
+            .append( "      role: ").append( role ).append( LS )
+            .append( "  roleHint: ").append( roleHint ).append( LS )
+            .append( "classRealm: ").append( realm.getId() );
+        
+        realm.display();
+
+        return sb.toString();
     }
 }

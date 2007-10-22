@@ -45,7 +45,7 @@ public class DefaultComponentFactoryManager
 
         try
         {
-            return (ComponentFactory) container.lookup( ComponentFactory.ROLE, id );
+            return (ComponentFactory) container.lookup( ComponentFactory.ROLE, id, container.getLookupRealm() );
         }
         catch ( ComponentLookupException e )
         {
