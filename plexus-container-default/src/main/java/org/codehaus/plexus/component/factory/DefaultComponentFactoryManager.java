@@ -38,7 +38,7 @@ public class DefaultComponentFactoryManager
     public ComponentFactory findComponentFactory( String id )
         throws UndefinedComponentFactoryException
     {
-        if ( id == null )
+        if ( id == null || id.equals( "java" ) ) 
         {
             return defaultComponentFactory;
         }

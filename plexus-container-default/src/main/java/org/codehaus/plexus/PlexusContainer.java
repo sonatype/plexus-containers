@@ -546,4 +546,7 @@ public interface PlexusContainer
      * @return
      */
     ClassRealm getLookupRealm( Object component );
+
+    void addComponent( Object component, String role )
+        throws ComponentRepositoryException;
 }

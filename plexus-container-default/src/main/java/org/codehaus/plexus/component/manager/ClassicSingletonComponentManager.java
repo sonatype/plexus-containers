@@ -28,7 +28,7 @@ import java.util.Map;
  * This ensures only a single manager of a a component exists. Once no
  * more connections for this component exists it is disposed.
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mailto:bert@tuaworks.co.nz">Bert van Brakel</a>
  *
  * @version $Id$

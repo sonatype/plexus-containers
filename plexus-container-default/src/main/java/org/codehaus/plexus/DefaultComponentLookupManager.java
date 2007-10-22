@@ -351,7 +351,7 @@ public class DefaultComponentLookupManager
     //
     // ----------------------------------------------------------------------------
 
-    private ComponentManager createComponentManager( ComponentDescriptor descriptor, String role, String roleHint, ClassRealm realm )
+    public ComponentManager createComponentManager( ComponentDescriptor descriptor, String role, String roleHint, ClassRealm realm )
         throws ComponentLookupException
     {
         ComponentManager componentManager;

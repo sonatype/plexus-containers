@@ -52,8 +52,6 @@ public class JavaComponentFactory
 
             implementationClass = classRealm.loadClass( implementation );
 
-            //System.out.println("Loaded class " + implementation + " from realm " + classRealm.getId() + ", actual "
-
             int modifiers = implementationClass.getModifiers();
 
             if ( Modifier.isInterface( modifiers ) )

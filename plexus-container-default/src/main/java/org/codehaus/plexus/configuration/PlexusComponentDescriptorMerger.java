@@ -61,15 +61,19 @@ public class PlexusComponentDescriptorMerger
         // dom, otherwise merge it.
 
         Xpp3Dom targetDom = null;
-        try
+
+        if ( target.getConfiguration() != null )
         {
-            targetDom = Xpp3DomBuilder.build( new StringReader( target.getConfiguration().toString() ) );
-        }
-        catch ( XmlPullParserException e1 )
-        {
-        }
-        catch ( IOException e1 )
-        {
+            try
+            {
+                targetDom = Xpp3DomBuilder.build( new StringReader( target.getConfiguration().toString() ) );
+            }
+            catch ( XmlPullParserException e1 )
+            {
+            }
+            catch ( IOException e1 )
+            {
+            }
         }
 
         if ( targetDom != null )

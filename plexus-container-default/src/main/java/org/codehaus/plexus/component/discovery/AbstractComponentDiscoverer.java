@@ -36,7 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */
@@ -77,9 +77,13 @@ public abstract class AbstractComponentDiscoverer
             // testcase, most components are in the root classloader so that needs to be scanned,
             // but for child realms, we don't.
             if ( classRealm.getParentRealm() != null )
+            {
                 resources = classRealm.findRealmResources( getComponentDescriptorLocation() );
+            }
             else
+            {
                 resources = classRealm.findResources( getComponentDescriptorLocation() );
+            }
         }
         catch ( IOException e )
         {

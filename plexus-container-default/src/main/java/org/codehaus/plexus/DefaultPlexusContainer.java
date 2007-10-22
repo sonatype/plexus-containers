@@ -68,6 +68,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -153,6 +154,20 @@ public class DefaultPlexusContainer
     protected boolean reloadingEnabled;
 
     private ThreadLocal lookupRealm = new ThreadLocal();
+
+    public void addComponent( Object component, String role )
+        throws ComponentRepositoryException
+    {
+        ComponentDescriptor cd = new ComponentDescriptor();
+
+        cd.setRole( role );
+
+        cd.setRoleHint( PlexusConstants.PLEXUS_DEFAULT_HINT );
+
+        cd.setImplementation( role );
+
+        addComponentDescriptor( cd );
+    }
 
     /**
      * Used for getLookupRealm for threads when the threadlocal

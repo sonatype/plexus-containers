@@ -206,6 +206,7 @@ public abstract class AbstractComponentComposer
             else
             {
                 String roleHint = requirement.getRoleHint();
+
                 assignment = container.lookup( role, roleHint, lookupRealm );
 
                 ComponentDescriptor componentDescriptor = container.getComponentDescriptor( role, roleHint, lookupRealm );

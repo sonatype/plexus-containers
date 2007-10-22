@@ -27,13 +27,7 @@ public class DefaultComponentDiscovererManager
 {
     private List componentDiscoverers;
 
-    private List listeners;
-
-    private Map componentDiscoveryListeners;
-
-    public DefaultComponentDiscovererManager()
-    {
-    }
+    private Map listeners;
 
     public void addComponentDiscoverer( ComponentDiscoverer discoverer )
     {
@@ -50,52 +44,47 @@ public class DefaultComponentDiscovererManager
         return componentDiscoverers;
     }
 
+    // Listeners
+
     public Map getComponentDiscoveryListeners()
     {
-        return componentDiscoveryListeners;
+        if ( listeners == null )
+        {
+            listeners = new LinkedHashMap();
+        }
+
+        return listeners;
     }
 
     public void registerComponentDiscoveryListener( ComponentDiscoveryListener listener )
     {
-        if ( componentDiscoveryListeners == null )
-        {
-            componentDiscoveryListeners = new LinkedHashMap();
-        }
+        listeners = getComponentDiscoveryListeners();
 
-        //TODO: want to know the listener by id, but this creates an API incompatibility with maven 2.0.4
-
-        //if ( !componentDiscoveryListeners.containsKey( listener.getId() ) )
-        if ( !componentDiscoveryListeners.containsKey( listener ) )
+        if ( !listeners.containsKey( listener ) )
         {
-            componentDiscoveryListeners.put( listener, listener );
-            //componentDiscoveryListeners.put( listener.getId(), listener );
+            listeners.put( listener, listener );
         }
     }
 
     public void removeComponentDiscoveryListener( ComponentDiscoveryListener listener )
     {
-        if ( componentDiscoveryListeners != null )
+        if ( listeners != null )
         {
-            componentDiscoveryListeners.remove( listener );
+            listeners.remove( listener );
         }
     }
 
     public void fireComponentDiscoveryEvent( ComponentDiscoveryEvent event )
     {
-        if ( componentDiscoveryListeners != null )
+        if ( listeners != null )
         {
-            for ( Iterator i = componentDiscoveryListeners.values().iterator(); i.hasNext(); )
+            for ( Iterator i = listeners.values().iterator(); i.hasNext(); )
             {
                 ComponentDiscoveryListener listener = (ComponentDiscoveryListener) i.next();
 
                 listener.componentDiscovered( event );
             }
         }
-    }
-
-    public List getListeners()
-    {
-        return listeners;
     }
 
     // ----------------------------------------------------------------------

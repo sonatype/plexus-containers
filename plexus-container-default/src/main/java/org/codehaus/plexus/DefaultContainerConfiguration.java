@@ -8,7 +8,9 @@ import org.codehaus.plexus.component.composition.FieldComponentComposer;
 import org.codehaus.plexus.component.composition.MapOrientedComponentComposer;
 import org.codehaus.plexus.component.composition.NoOpComponentComposer;
 import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
+import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
+import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.discovery.DefaultComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
@@ -36,7 +38,6 @@ import org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerMa
 import org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeResourcesPhase;
 import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase;
-import org.codehaus.plexus.container.initialization.RegisterComponentDiscoveryListenersPhase;
 import org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase;
 import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
@@ -179,14 +180,13 @@ public class DefaultContainerConfiguration
             new InitializeComponentRepositoryPhase(),
             new InitializeLifecycleHandlerManagerPhase(),
             new InitializeComponentManagerManagerPhase(),
-            new InitializeComponentDiscovererManagerPhase(),
             new InitializeComponentFactoryManagerPhase(),
             new InitializeComponentLookupManagerPhase(),
             new InitializeComponentComposerPhase(),
             new InitializeLoggerManagerPhase(),
             new InitializeContextPhase(),
             new InitializeSystemPropertiesPhase(),
-            new RegisterComponentDiscoveryListenersPhase(),
+            new InitializeComponentDiscovererManagerPhase(),
             new ComponentDiscoveryPhase(),
             new StartLoadOnStartComponentsPhase(),
 
@@ -197,20 +197,22 @@ public class DefaultContainerConfiguration
         return new DefaultComponentLookupManager();
     }
 
+    // Component discoverer
+
     private ComponentDiscovererManager componentDiscovererManager;
 
-    public ComponentDiscovererManager getComponentDiscovererManager()
+    public ContainerConfiguration addComponentDiscoveryListener( ComponentDiscoveryListener componentDiscoveryListener )
     {
-        if ( componentDiscovererManager == null )
-        {
-            componentDiscovererManager = new DefaultComponentDiscovererManager();
+        getComponentDiscovererManager().registerComponentDiscoveryListener( componentDiscoveryListener );
 
-            componentDiscovererManager.addComponentDiscoverer( new DefaultComponentDiscoverer() );
+        return this;
+    }
 
-            componentDiscovererManager.addComponentDiscoverer( new PlexusXmlComponentDiscoverer() );                    
-        }
+    public ContainerConfiguration addComponentDiscoverer( ComponentDiscoverer componentDiscoverer )
+    {
+        ((DefaultComponentDiscovererManager)getComponentDiscovererManager()).addComponentDiscoverer( componentDiscoverer );
 
-        return componentDiscovererManager;
+        return this;
     }
 
     public ContainerConfiguration setComponentDiscovererManager( ComponentDiscovererManager componentDiscovererManager )
@@ -219,6 +221,21 @@ public class DefaultContainerConfiguration
 
         return this;
     }
+
+    public ComponentDiscovererManager getComponentDiscovererManager()
+    {
+        if ( componentDiscovererManager == null )
+        {
+            componentDiscovererManager = new DefaultComponentDiscovererManager();
+
+            ((DefaultComponentDiscovererManager)componentDiscovererManager).addComponentDiscoverer( new DefaultComponentDiscoverer() );
+
+            ((DefaultComponentDiscovererManager)componentDiscovererManager).addComponentDiscoverer( new PlexusXmlComponentDiscoverer() );
+        }
+
+        return componentDiscovererManager;
+    }
+
 
     private ComponentFactoryManager componentFactoryManager;
 

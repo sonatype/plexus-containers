@@ -17,6 +17,8 @@ package org.codehaus.plexus;
  */
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.manager.ComponentManager;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import java.util.List;

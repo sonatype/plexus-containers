@@ -17,6 +17,9 @@ package org.codehaus.plexus.container.initialization;
  */
 
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
+import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
+
+import java.util.Iterator;
 
 /**
  * @author Jason van Zyl
@@ -32,5 +35,27 @@ public class InitializeComponentDiscovererManagerPhase
         componentDiscovererManager.initialize();
 
         context.getContainer().setComponentDiscovererManager( componentDiscovererManager );
+
+        for ( Iterator i = componentDiscovererManager.getComponentDiscoveryListeners().values().iterator(); i.hasNext(); )
+        {
+            ComponentDiscoveryListener listener = (ComponentDiscoveryListener) i.next();
+
+            try
+            {
+                // This is a hack until we have completely live components
+
+                context.getContainer().addComponent( listener, listener.getClass().getName() );
+
+                context.getContainer().getComponentDiscovererManager().removeComponentDiscoveryListener( listener );
+            
+                ComponentDiscoveryListener cdl = (ComponentDiscoveryListener) context.getContainer().lookup( listener.getClass().getName() );
+
+                context.getContainer().getComponentDiscovererManager().registerComponentDiscoveryListener( cdl );
+            }
+            catch ( Exception e )
+            {
+                throw new ContainerInitializationException( "Error initializing component discovery listener.", e );
+            }
+        }
     }
 }
