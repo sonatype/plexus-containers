@@ -63,8 +63,6 @@ public class ConsoleLoggerManager
 
     private boolean bootTimeLogger = false;
 
-    /**
-     */
     public ConsoleLoggerManager()
     {
     }

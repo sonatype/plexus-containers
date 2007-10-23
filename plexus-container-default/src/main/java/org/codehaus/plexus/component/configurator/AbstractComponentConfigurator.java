@@ -41,8 +41,8 @@ import java.lang.reflect.Method;
 public abstract class AbstractComponentConfigurator
     implements ComponentConfigurator
 {
-    // TODO: configured as a component
-    protected ConverterLookup converterLookup = new DefaultConverterLookup();
+    /** @plexus.requirement */
+    protected ConverterLookup converterLookup;
 
     public void configureComponent( Object component,
                                     PlexusConfiguration configuration,

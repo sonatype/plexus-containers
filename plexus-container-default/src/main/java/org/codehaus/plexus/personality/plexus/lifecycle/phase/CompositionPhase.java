@@ -43,10 +43,7 @@ public class CompositionPhase
 
         try
         {
-            manager.getContainer().getComponentComposerManager().assembleComponent( object,
-                                                                                    descriptor,
-                                                                                    manager.getContainer(),
-                                                                                    lookupRealm );
+            manager.getContainer().getComponentComposerManager().assembleComponent( object, descriptor, manager.getContainer(), lookupRealm );
         }
         catch ( CompositionException e )
         {

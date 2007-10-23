@@ -80,6 +80,8 @@ public class DefaultContainerConfiguration
     {
         this.name = name;
 
+        
+
         return this;
     }
 
@@ -407,6 +409,7 @@ public class DefaultContainerConfiguration
 
             // Bootstrap
             LifecycleHandler bootstrap = new BasicLifecycleHandler( "bootstrap" );
+            bootstrap.addBeginSegment( new CompositionPhase() );
             bootstrap.addBeginSegment( new ContextualizePhase() );
             lifecycleHandlerManager.addLifecycleHandler( bootstrap );
         }

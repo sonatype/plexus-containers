@@ -25,7 +25,7 @@ package org.codehaus.plexus.component.configurator;
  */
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
@@ -49,14 +49,10 @@ import java.util.Vector;
  * @version $Id$
  */
 public abstract class AbstractComponentConfiguratorTest
-    extends TestCase
+    extends PlexusTestCase
 {
-    public AbstractComponentConfiguratorTest( String s )
-    {
-        super( s );
-    }
-
-    protected abstract ComponentConfigurator getComponentConfigurator();
+    protected abstract ComponentConfigurator getComponentConfigurator()
+        throws Exception;
 
     public void testComponentConfigurator()
         throws Exception

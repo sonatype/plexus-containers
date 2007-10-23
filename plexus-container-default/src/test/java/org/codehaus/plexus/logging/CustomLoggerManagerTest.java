@@ -17,6 +17,9 @@ package org.codehaus.plexus.logging;
  */
 
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
+
+//TODO: this test will get nuked, this needs to be done programmatically
 
 /**
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
@@ -32,6 +35,6 @@ public class CustomLoggerManagerTest
 
         assertNotNull( manager );
 
-        assertEquals( MockLoggerManager.class.getName(), manager.getClass().getName() );
+        assertEquals( ConsoleLoggerManager.class.getName(), manager.getClass().getName() );
     }
 }

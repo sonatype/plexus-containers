@@ -154,8 +154,6 @@ public class DefaultConverterLookup
         registerDefaultConverter( new UrlConverter() );
 
         registerDefaultConverter( new UriConverter() );
-
-        //registerDefaultConverter( new BigIntegerConverter() );
     }
 
     private void registerDefaultCompositeConverters()
@@ -173,5 +171,4 @@ public class DefaultConverterLookup
         // this converter should be always registred as the last one
         registerDefaultConverter( new ObjectWithFieldsConverter() );
     }
-
 }

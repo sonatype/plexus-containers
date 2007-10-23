@@ -27,14 +27,10 @@ package org.codehaus.plexus.component.configurator;
 public class BasicComponentConfiguratorTest
     extends AbstractComponentConfiguratorTest
 {
-    public BasicComponentConfiguratorTest( String s )
-    {
-        super( s );
-    }
-
     protected ComponentConfigurator getComponentConfigurator()
+        throws Exception
     {
-         return new BasicComponentConfigurator();
+         return (ComponentConfigurator) lookup( BasicComponentConfigurator.ROLE );
     }
 
 }

@@ -28,10 +28,11 @@ import org.codehaus.plexus.util.StringUtils;
 public class AutoConfigurePhase
     extends AbstractPhase
 {
-    public static final String DEFAULT_CONFIGURATOR_ID = "basic";
+    public static final String DEFAULT_CONFIGURATOR_ID = "default";
 
     public void execute( Object object,
-                         ComponentManager manager, ClassRealm lookupRealm )
+                         ComponentManager manager,
+                         ClassRealm lookupRealm )
         throws PhaseExecutionException
     {
         try
@@ -45,23 +46,19 @@ public class AutoConfigurePhase
                 configuratorId = DEFAULT_CONFIGURATOR_ID;
             }
 
-            ComponentConfigurator componentConfigurator =
-                (ComponentConfigurator) manager.getContainer().lookup( ComponentConfigurator.ROLE, configuratorId, lookupRealm );
+            ComponentConfigurator componentConfigurator = (ComponentConfigurator) manager.getContainer().lookup( ComponentConfigurator.ROLE,
+                configuratorId, lookupRealm );
 
             if ( descriptor.hasConfiguration() )
             {
-                ClassRealm realm =
-                    manager.getContainer().getComponentRealm( manager.getComponentDescriptor().getRealmId() );
+                ClassRealm realm = manager.getContainer().getComponentRealm( manager.getComponentDescriptor().getRealmId() );
 
-                //PLXAPI: we should probably be using the component realm.
-                componentConfigurator.configureComponent( object, manager.getComponentDescriptor().getConfiguration(),
-                                                          realm );
+                componentConfigurator.configureComponent( object, manager.getComponentDescriptor().getConfiguration(), realm );
             }
         }
         catch ( ComponentLookupException e )
         {
-            throw new PhaseExecutionException(
-                "Unable to auto-configure component as its configurator could not be found", e );
+            throw new PhaseExecutionException( "Unable to auto-configure component as its configurator could not be found", e );
         }
         catch ( ComponentConfigurationException e )
         {

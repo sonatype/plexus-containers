@@ -37,20 +37,27 @@ public class MapOrientedComponentProcessingTest
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setRole( TestMapOrientedComponent.ROLE );
+
         descriptor.setImplementation( TestMapOrientedComponent.ROLE );
+
         descriptor.setComponentComposer( "map-oriented" );
+
         descriptor.setComponentConfigurator( "map-oriented" );
 
         ComponentRequirement requirement = new ComponentRequirement();
+
         requirement.setFieldName( "testRequirement" );
+
         requirement.setRole( LoggerManager.ROLE );
 
         descriptor.addRequirement( requirement );
 
         XmlPlexusConfiguration param = new XmlPlexusConfiguration( "testParameter" );
+
         param.setValue( "testValue" );
 
         PlexusConfiguration configuration = new XmlPlexusConfiguration( "configuration" );
+
         configuration.addChild( param );
 
         descriptor.setConfiguration( configuration );

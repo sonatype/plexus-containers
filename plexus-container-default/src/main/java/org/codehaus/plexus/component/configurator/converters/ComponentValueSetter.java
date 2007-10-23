@@ -84,8 +84,9 @@ public class ComponentValueSetter
 
         if ( setterTypeConverter == null && fieldTypeConverter == null )
         {
-            throw new ComponentConfigurationException( "Cannot find converter for " + setterParamType.getName() +
-                ( fieldType != null && ! fieldType.equals( setterParamType ) ? " or " + fieldType.getName() : "" ) );
+            throw new ComponentConfigurationException(
+                "Cannot find converter for " + setterParamType.getName() + ( fieldType != null && !fieldType.equals(
+                    setterParamType ) ? " or " + fieldType.getName() : "" ) );
         }
     }
 

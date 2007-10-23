@@ -1,22 +1,27 @@
 <plexus>
   <!-- Internal components -->
   <components>
-    <component>
-      <role>org.codehaus.plexus.logging.LoggerManager</role>
-      <role-hint>default</role-hint>
-      <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
-      <lifecycle-handler>basic</lifecycle-handler>
-      <configuration>
-        <threshold>info</threshold>
-      </configuration>
-    </component>
+    <!-- This is for container requirements but we should do this programmatically -->
     <component>
       <role>org.codehaus.plexus.PlexusContainer</role>
       <implementation>org.codehaus.plexus.DefaultPlexusContainer</implementation>
       <lifecycle-handler>passive</lifecycle-handler>
       <instantiation-strategy>container</instantiation-strategy>
     </component>
-    <!-- Component configurator -->
+    <!-- Component Configurators -->
+    <component>
+      <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
+      <role-hint>default</role-hint>
+      <implementation>org.codehaus.plexus.component.configurator.BasicComponentConfigurator</implementation>
+      <lifecycle-handler>bootstrap</lifecycle-handler>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
+          <role-hint>default</role-hint>
+        </requirement>
+      </requirements>
+    </component>
+    <!-- This is duplicated because lots of things expect the "basic" role hint -->
     <component>
       <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
       <role-hint>basic</role-hint>
@@ -41,22 +46,12 @@
         </requirement>
       </requirements>
     </component>
+    <!-- Convert Lookup -->
     <component>
       <role>org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup</role>
       <role-hint>default</role-hint>
-      <implementation>org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup
-      </implementation>
-      <requirements>
-        <requirement>
-          <role>org.codehaus.plexus.component.configurator.converters.ConfigurationConverter</role>
-          <field-name>converters</field-name>
-        </requirement>
-      </requirements>
-    </component>
-    <component>
-      <role>org.codehaus.plexus.ComponentLookupManager</role>
-      <role-hint>default</role-hint>
-      <instantiation-strategy>component-lookup-manager</instantiation-strategy>
+      <implementation>org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup</implementation>
+      <lifecycle-handler>bootstrap</lifecycle-handler>
     </component>
   </components>
 </plexus>

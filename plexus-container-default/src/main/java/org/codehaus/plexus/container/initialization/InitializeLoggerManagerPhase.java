@@ -16,12 +16,13 @@ package org.codehaus.plexus.container.initialization;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
-
-import java.util.Map;
+import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
 /**
  * @author Jason van Zyl
@@ -41,25 +42,30 @@ public class InitializeLoggerManagerPhase
 
         if ( loggerManager == null )
         {
+            ComponentDescriptor cd = new ComponentDescriptor();
+
+            cd.setRole( LoggerManager.ROLE );
+
+            cd.setRoleHint( PlexusConstants.PLEXUS_DEFAULT_HINT );
+
+            cd.setImplementation( ConsoleLoggerManager.class.getName() );
+
             try
             {
-                /* as we do not know what logger role hint has been configured pull the first logger we find. Andy
-                 * TODO - figure how to make this more determanistic? */
-                Map loggers = context.getContainer().lookupMap( LoggerManager.ROLE );
-                loggerManager = (LoggerManager) loggers.get( loggers.keySet().iterator().next() );
-
-                context.getContainer().setLoggerManager( loggerManager );
+                context.getContainer().addComponentDescriptor( cd );
             }
-            catch ( ComponentLookupException e )
+            catch ( ComponentRepositoryException e )
             {
-                throw new ContainerInitializationException( "Unable to locate logger manager", e );
+                throw new ContainerInitializationException( "Error setting up logging manager.", e );
             }
+
+            loggerManager = new ConsoleLoggerManager( "info" );
+
+            context.getContainer().setLoggerManager( loggerManager );            
         }
 
         Logger logger = loggerManager.getLoggerForComponent( PlexusContainer.class.getName() );
 
-        //TODO: the container should allow this logger manager change, don't use the DefaultPlexusContainer 
         context.getContainer().enableLogging( logger );
     }
-
 }
