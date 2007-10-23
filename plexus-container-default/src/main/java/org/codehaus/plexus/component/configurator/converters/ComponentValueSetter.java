@@ -19,6 +19,7 @@ package org.codehaus.plexus.component.configurator.converters;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.util.ReflectionUtils;
@@ -28,9 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
-/**
- * @author <a href="mailto:kenney@codehaus.org">Kenney Westerhof</a>
- */
+/** @author <a href="mailto:kenney@codehaus.org">Kenney Westerhof</a> */
 public class ComponentValueSetter
 {
     private Object object;
@@ -53,13 +52,18 @@ public class ComponentValueSetter
 
     private ConfigurationListener listener;
 
-    public ComponentValueSetter( String fieldName, Object object, ConverterLookup lookup )
+    public ComponentValueSetter( String fieldName,
+                                 Object object,
+                                 ConverterLookup lookup )
         throws ComponentConfigurationException
     {
         this( fieldName, object, lookup, null );
     }
 
-    public ComponentValueSetter( String fieldName, Object object, ConverterLookup lookup, ConfigurationListener listener )
+    public ComponentValueSetter( String fieldName,
+                                 Object object,
+                                 ConverterLookup lookup,
+                                 ConfigurationListener listener )
         throws ComponentConfigurationException
     {
         this.fieldName = fieldName;
@@ -200,11 +204,13 @@ public class ComponentValueSetter
         {
             throw new ComponentConfigurationException( "Setter " + exceptionInfo +
                 " threw exception when called with parameter '" + value + "': " + e.getTargetException().getMessage(),
-                                                       e );
+                e );
         }
     }
 
-    public void configure( PlexusConfiguration config, ClassLoader cl, ExpressionEvaluator evaluator )
+    public void configure( PlexusConfiguration config,
+                           ClassLoader cl,
+                           ExpressionEvaluator evaluator )
         throws ComponentConfigurationException
     {
         Object value = null;
@@ -215,19 +221,18 @@ public class ComponentValueSetter
         {
             try
             {
-                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), cl,
-                                                               evaluator, listener );
+                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), cl, evaluator, listener );
 
                 if ( value != null )
                 {
                     setValueUsingSetter( value );
+
                     return;
                 }
             }
             catch ( ComponentConfigurationException e )
             {
-                if ( fieldTypeConverter == null ||
-                    fieldTypeConverter.getClass().equals( setterTypeConverter.getClass() ) )
+                if ( fieldTypeConverter == null || fieldTypeConverter.getClass().equals( setterTypeConverter.getClass() ) )
                 {
                     throw e;
                 }
@@ -255,8 +260,7 @@ public class ComponentValueSetter
         // either no value or setting went wrong. Try
         // new converter.
 
-        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), cl, evaluator,
-                                                      listener );
+        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), cl, evaluator, listener );
 
         if ( value != null )
         {

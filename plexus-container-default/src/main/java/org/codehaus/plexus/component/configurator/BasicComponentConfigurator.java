@@ -57,5 +57,4 @@ public class BasicComponentConfigurator
 
         converter.processConfiguration( converterLookup, component, containerRealm, configuration, expressionEvaluator, listener );
     }
-
 }

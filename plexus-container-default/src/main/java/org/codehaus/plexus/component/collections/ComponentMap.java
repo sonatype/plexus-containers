@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.collections;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import java.util.Collection;
@@ -34,10 +35,11 @@ public class ComponentMap
     private Map internal;
 
     public ComponentMap( PlexusContainer container,
+                         ClassRealm realm,
                          String role,
                          List roleHints )
     {
-        super( container, role, roleHints );
+        super( container, realm, role, roleHints );
     }
 
     public int size()
@@ -117,7 +119,7 @@ public class ComponentMap
         {
             Map map = getInternalMap();
 
-            map.putAll( container.lookupMap( role, roleHints ) );
+            map.putAll( container.lookupMap( role, roleHints, realm ) );
 
             return map;
         }

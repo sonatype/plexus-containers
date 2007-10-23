@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.collections;
  */
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import java.util.Collection;
@@ -33,11 +34,12 @@ public class ComponentList
     implements List
 {
     public ComponentList( PlexusContainer container,
+                          ClassRealm realm,
                           String role,
                           List roleHints
     )
     {
-        super( container, role, roleHints );
+        super( container, realm, role, roleHints );
     }
 
     public int size()
@@ -169,7 +171,7 @@ public class ComponentList
     {
         try
         {
-            return container.lookupList( role, roleHints );
+            return container.lookupList( role, roleHints, realm );
         }
         catch ( ComponentLookupException e )
         {

@@ -56,9 +56,9 @@ import org.codehaus.plexus.component.configurator.converters.composite.Propertie
 public class DefaultConverterLookup
     implements ConverterLookup
 {
-    private List converters = new LinkedList();
+    private List converters;
 
-    private List customConverters = new LinkedList();
+    private List customConverters;
 
     private Map converterMap = new HashMap();
 
@@ -71,18 +71,28 @@ public class DefaultConverterLookup
 
     public void registerConverter( ConfigurationConverter converter )
     {
+        if ( customConverters == null )
+        {
+            customConverters = new LinkedList();    
+        }
+
         customConverters.add( converter );
     }
 
     protected void registerDefaultConverter( ConfigurationConverter converter )
     {
+        if ( converters == null )
+        {
+            converters = new LinkedList();
+        }
+
         converters.add( converter );
     }
 
     public ConfigurationConverter lookupConverterForType( Class type )
         throws ComponentConfigurationException
     {
-        ConfigurationConverter retValue;
+        ConfigurationConverter retValue = null;
 
         if ( converterMap.containsKey( type ) )
         {
@@ -90,7 +100,10 @@ public class DefaultConverterLookup
         }
         else
         {
-            retValue = findConverterForType( customConverters, type );
+            if ( customConverters != null )
+            {
+                retValue = findConverterForType( customConverters, type );
+            }
 
             if ( retValue == null )
             {

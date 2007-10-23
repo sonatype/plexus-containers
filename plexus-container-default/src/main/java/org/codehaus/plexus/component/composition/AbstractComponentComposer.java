@@ -138,7 +138,7 @@ public abstract class AbstractComponentComposer
 
             List roleHints = null;
 
-            if ( requirement instanceof ComponentRequirementList)
+            if ( requirement instanceof ComponentRequirementList )
             {
                 roleHints = ( (ComponentRequirementList) requirement ).getRoleHints();
             }
@@ -179,17 +179,17 @@ public abstract class AbstractComponentComposer
             {
                 //assignment = container.lookupMap( role, roleHints, lookupRealm );
 
-                assignment = new ComponentMap( container, role, roleHints );
+                assignment = new ComponentMap( container, lookupRealm, role, roleHints );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
             // List.class.isAssignableFrom( clazz ) doesn't make sense, since List.class doesn't really
             // have a meaningful superclass other than Collection.class, which we'll handle next.
             else if ( List.class.equals( clazz ) )
-            {
-                //assignment = container.lookupList( role, roleHints, lookupRealm );
+            {                    
+                //assignment = container.lookupList( role, lookupRealm );
 
-                assignment = new ComponentList( container, role, roleHints );
+                assignment = new ComponentList( container, lookupRealm, role, roleHints );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }

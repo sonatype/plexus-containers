@@ -1,6 +1,7 @@
 package org.codehaus.plexus.component.collections;
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.util.List;
 
@@ -38,11 +39,17 @@ public class AbstractComponentCollection
     /** The role hint of the components we are holding in this Collection. */
     protected List roleHints;
 
+    /** The realm we need to lookup in */
+    protected ClassRealm realm;
+
     public AbstractComponentCollection( PlexusContainer container,
+                                        ClassRealm realm,
                                         String role,
                                         List roleHints )
     {
         this.container = container;
+
+        this.realm = realm;
 
         this.role = role;
 
