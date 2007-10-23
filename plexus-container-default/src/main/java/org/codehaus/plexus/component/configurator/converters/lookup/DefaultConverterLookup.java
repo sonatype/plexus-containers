@@ -82,7 +82,7 @@ public class DefaultConverterLookup
     public ConfigurationConverter lookupConverterForType( Class type )
         throws ComponentConfigurationException
     {
-        ConfigurationConverter retValue = null;
+        ConfigurationConverter retValue;
 
         if ( converterMap.containsKey( type ) )
         {

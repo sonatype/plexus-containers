@@ -32,15 +32,17 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
  */
 public class BasicComponentConfigurator
     extends AbstractComponentConfigurator
 {
-    public void configureComponent( Object component, PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator, ClassRealm containerRealm,
+    public void configureComponent( Object component,
+                                    PlexusConfiguration configuration,
+                                    ExpressionEvaluator expressionEvaluator,
+                                    ClassRealm containerRealm,
                                     ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -53,8 +55,7 @@ public class BasicComponentConfigurator
 
         ObjectWithFieldsConverter converter = new ObjectWithFieldsConverter();
 
-        converter.processConfiguration( converterLookup, component, containerRealm, configuration,
-                                        expressionEvaluator, listener );
+        converter.processConfiguration( converterLookup, component, containerRealm, configuration, expressionEvaluator, listener );
     }
 
 }

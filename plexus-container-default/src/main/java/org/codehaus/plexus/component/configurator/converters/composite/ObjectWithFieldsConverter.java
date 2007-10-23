@@ -43,11 +43,6 @@ import java.util.Map;
 public class ObjectWithFieldsConverter
     extends AbstractConfigurationConverter
 {
-    /**
-     * @param type
-     * @return
-     * @todo I am not sure what should go into this method
-     */
     public boolean canConvert( Class type )
     {
         boolean retValue = true;
@@ -69,12 +64,17 @@ public class ObjectWithFieldsConverter
         return retValue;
     }
 
-    public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
-                                     Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
+    public Object fromConfiguration( ConverterLookup converterLookup,
+                                     PlexusConfiguration configuration,
+                                     Class type,
+                                     Class baseType,
+                                     ClassLoader classLoader,
+                                     ExpressionEvaluator expressionEvaluator,
                                      ConfigurationListener listener )
         throws ComponentConfigurationException
     {
         Object retValue = fromExpression( configuration, expressionEvaluator, type );
+
         if ( retValue == null )
         {
             try
@@ -84,8 +84,7 @@ public class ObjectWithFieldsConverter
 
                 retValue = instantiateObject( implementation );
 
-                processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator,
-                                      listener );
+                processConfiguration( converterLookup, retValue, classLoader, configuration, expressionEvaluator, listener );
             }
             catch ( ComponentConfigurationException e )
             {
@@ -101,22 +100,30 @@ public class ObjectWithFieldsConverter
     }
 
 
-    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
+    public void processConfiguration( ConverterLookup converterLookup,
+                                      Object object,
+                                      ClassLoader classLoader,
                                       PlexusConfiguration configuration )
         throws ComponentConfigurationException
     {
         processConfiguration( converterLookup, object, classLoader, configuration, null );
     }
 
-    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
-                                      PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator )
+    public void processConfiguration( ConverterLookup converterLookup,
+                                      Object object,
+                                      ClassLoader classLoader,
+                                      PlexusConfiguration configuration,
+                                      ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
         processConfiguration( converterLookup, object, classLoader, configuration, expressionEvaluator, null );
     }
 
-    public void processConfiguration( ConverterLookup converterLookup, Object object, ClassLoader classLoader,
-                                      PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator,
+    public void processConfiguration( ConverterLookup converterLookup,
+                                      Object object,
+                                      ClassLoader classLoader,
+                                      PlexusConfiguration configuration,
+                                      ExpressionEvaluator expressionEvaluator,
                                       ConfigurationListener listener )
         throws ComponentConfigurationException
     {
@@ -128,8 +135,7 @@ public class ObjectWithFieldsConverter
 
             String elementName = childConfiguration.getName();
 
-            ComponentValueSetter valueSetter = new ComponentValueSetter( fromXML( elementName ), object,
-                                                                         converterLookup, listener );
+            ComponentValueSetter valueSetter = new ComponentValueSetter( fromXML( elementName ), object, converterLookup, listener );
 
             valueSetter.configure( childConfiguration, classLoader, expressionEvaluator );
         }

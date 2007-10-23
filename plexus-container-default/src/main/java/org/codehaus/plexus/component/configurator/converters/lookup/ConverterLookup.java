@@ -27,10 +27,9 @@ package org.codehaus.plexus.component.configurator.converters.lookup;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 
-/**
- * @version $Id$
- */
-public interface ConverterLookup{
+/** @version $Id$ */
+public interface ConverterLookup
+{
     void registerConverter( ConfigurationConverter converter );
 
     ConfigurationConverter lookupConverterForType( Class type )
