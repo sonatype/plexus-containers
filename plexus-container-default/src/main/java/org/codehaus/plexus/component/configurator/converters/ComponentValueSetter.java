@@ -179,8 +179,7 @@ public class ComponentValueSetter
             throw new ComponentConfigurationException( "No setter found" );
         }
 
-        String exceptionInfo = object.getClass().getName() + "." + setter.getName() + "( " +
-            setterParamType.getClass().getName() + " )";
+        String exceptionInfo = object.getClass().getName() + "." + setter.getName() + "( " + setterParamType.getClass().getName() + " )";
 
         if ( listener != null )
         {

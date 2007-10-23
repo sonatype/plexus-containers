@@ -49,7 +49,7 @@ public class DefaultComponentFactoryManager
         }
         catch ( ComponentLookupException e )
         {
-            throw new UndefinedComponentFactoryException( "Specified component factory cannot be found: " + id, e );
+            throw new UndefinedComponentFactoryException( "Specified component factory cannot be found: " + id );
         }
     }
 

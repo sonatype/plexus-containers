@@ -41,8 +41,15 @@ import java.lang.reflect.Method;
 public abstract class AbstractComponentConfigurator
     implements ComponentConfigurator
 {
-    /** @plexus.requirement */
-    protected ConverterLookup converterLookup;
+    /**
+     * This is being instantiated here because there are old component factories (beanshell) that directly access
+     * the converterLookup but do not yet state the ConverterLookup as a requirement in the component metadata.
+     * Once these are wired up as standard components properly then we won't have to instantiate the
+     * converter lookup here and we can let the container do it.
+     *
+     * @plexus.requirement
+     */
+    protected ConverterLookup converterLookup = new DefaultConverterLookup();
 
     public void configureComponent( Object component,
                                     PlexusConfiguration configuration,
@@ -85,7 +92,7 @@ public abstract class AbstractComponentConfigurator
         }
         catch ( Exception mnfe )
         {
-            // do nothing
+            mnfe.printStackTrace();
         }
 
         // TODO: here so extended classes without the method continue to work. should be removed
