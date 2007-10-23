@@ -32,14 +32,13 @@ public class ComponentMap
     extends AbstractComponentCollection
     implements Map
 {
-    private Map internal;
-
     public ComponentMap( PlexusContainer container,
                          ClassRealm realm,
                          String role,
-                         List roleHints )
+                         List roleHints,
+                         String hostComponent )
     {
-        super( container, realm, role, roleHints );
+        super( container, realm, role, roleHints, hostComponent );
     }
 
     public int size()
@@ -70,12 +69,14 @@ public class ComponentMap
     public Object put( Object key,
                        Object value )
     {
-        return getInternalMap().put( key, value );
+        throw new UnsupportedOperationException(
+            "You cannot modify this map. This map is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public void putAll( Map map )
     {
-        getInternalMap().putAll( map );
+        throw new UnsupportedOperationException(
+            "You cannot modify this map. This map is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public Set keySet()
@@ -105,7 +106,8 @@ public class ComponentMap
 
     public Object remove( Object object )
     {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(
+            "You cannot modify this map. This map is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public void clear()
@@ -117,27 +119,11 @@ public class ComponentMap
     {
         try
         {
-            Map map = getInternalMap();
-
-            map.putAll( container.lookupMap( role, roleHints, realm ) );
-
-            return map;
+            return container.lookupMap( role, roleHints, realm );
         }
         catch ( ComponentLookupException e )
         {
             return Collections.EMPTY_MAP;
         }
     }
-
-    // Internal Map
-
-    private Map getInternalMap()
-    {
-        if ( internal == null )
-        {
-            internal = new HashMap();
-        }
-
-        return internal;
-    }    
 }

@@ -59,16 +59,18 @@ public class FieldComponentComposer
             field.setAccessible( true );
         }
 
-        assignRequirementToField( component, field, container, requirement, lookupRealm );
+        assignRequirementToField( component, componentDescriptor, field, container, requirement, lookupRealm );
     }
 
     private List assignRequirementToField( Object component,
+                                           ComponentDescriptor hostComponentDescriptor,
                                            Field field,
                                            PlexusContainer container,
                                            ComponentRequirement requirementDescriptor, ClassRealm lookupRealm )
         throws CompositionException
     {
         Requirement requirement = findRequirement( component,
+                                                   hostComponentDescriptor,
                                                    field.getType(),
                                                    container,
                                                    requirementDescriptor,

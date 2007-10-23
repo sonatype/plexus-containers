@@ -62,10 +62,10 @@ public abstract class AbstractComponentComposer
         return Collections.EMPTY_MAP;
     }
 
-    /**
-     * @deprecated
-     */
-    public void assembleComponent( Object component, ComponentDescriptor componentDescriptor, PlexusContainer container )
+    /** @deprecated  */
+    public void assembleComponent( Object component,
+                                   ComponentDescriptor componentDescriptor,
+                                   PlexusContainer container )
         throws CompositionException
     {
         assembleComponent( component, componentDescriptor, container, container.getLookupRealm( component ) );
@@ -73,7 +73,8 @@ public abstract class AbstractComponentComposer
 
     public void assembleComponent( Object component,
                                    ComponentDescriptor componentDescriptor,
-                                   PlexusContainer container, ClassRealm lookupRealm )
+                                   PlexusContainer container,
+                                   ClassRealm lookupRealm )
         throws CompositionException
     {
         // ----------------------------------------------------------------------
@@ -101,28 +102,25 @@ public abstract class AbstractComponentComposer
         }
     }
 
-    /**
-     * @deprecated
-     */
-    public final void assignRequirement( Object component, ComponentDescriptor componentDescriptor,
-                                   ComponentRequirement componentRequirement, PlexusContainer container,
-                                   Map compositionContext )
+    /** @deprecated  */
+    public final void assignRequirement( Object component,
+                                         ComponentDescriptor componentDescriptor,
+                                         ComponentRequirement componentRequirement,
+                                         PlexusContainer container,
+                                         Map compositionContext )
         throws CompositionException
     {
-        assignRequirement( component,
-                           componentDescriptor,
-                           componentRequirement,
-                           container,
-                           compositionContext,
-                           container.getLookupRealm( component ) );
+        assignRequirement( component, componentDescriptor, componentRequirement, container, compositionContext,
+            container.getLookupRealm( component ) );
     }
 
 
-    public static Requirement findRequirement( Object component,
-                                               Class clazz,
-                                               PlexusContainer container,
-                                               ComponentRequirement requirement,
-                                               ClassRealm lookupRealm )
+    public Requirement findRequirement( Object component,
+                                        ComponentDescriptor hostComponentDescriptor,
+                                        Class clazz,
+                                        PlexusContainer container,
+                                        ComponentRequirement requirement,
+                                        ClassRealm lookupRealm )
         throws CompositionException
     {
         // We want to find all the requirements for a component and we want to ensure that the
@@ -177,19 +175,15 @@ public abstract class AbstractComponentComposer
             // have a meaningful superclass.
             else if ( Map.class.equals( clazz ) )
             {
-                //assignment = container.lookupMap( role, roleHints, lookupRealm );
-
-                assignment = new ComponentMap( container, lookupRealm, role, roleHints );
+                assignment = new ComponentMap( container, lookupRealm, role, roleHints, hostComponentDescriptor.getHumanReadableKey() );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }
             // List.class.isAssignableFrom( clazz ) doesn't make sense, since List.class doesn't really
             // have a meaningful superclass other than Collection.class, which we'll handle next.
             else if ( List.class.equals( clazz ) )
-            {                    
-                //assignment = container.lookupList( role, lookupRealm );
-
-                assignment = new ComponentList( container, lookupRealm, role, roleHints );
+            {
+                assignment = new ComponentList( container, lookupRealm, role, roleHints, hostComponentDescriptor.getHumanReadableKey() );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
             }

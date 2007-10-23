@@ -36,10 +36,11 @@ public class ComponentList
     public ComponentList( PlexusContainer container,
                           ClassRealm realm,
                           String role,
-                          List roleHints
+                          List roleHints,
+                          String hostComponent
     )
     {
-        super( container, realm, role, roleHints );
+        super( container, realm, role, roleHints, hostComponent );
     }
 
     public int size()
@@ -74,12 +75,14 @@ public class ComponentList
 
     public boolean add( Object object )
     {
-        return getList().add( object ) ;
+        throw new UnsupportedOperationException(
+            "You cannot modify this list. This list is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public boolean remove( Object object )
     {
-        return getList().isEmpty() ;
+        throw new UnsupportedOperationException(
+            "You cannot modify this list. This list is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public boolean containsAll( Collection collection )
@@ -89,12 +92,14 @@ public class ComponentList
 
     public boolean addAll( Collection collection )
     {
-        return getList().addAll( collection ) ;
+        throw new UnsupportedOperationException(
+            "You cannot modify this list. This list is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public boolean addAll( int i, Collection collection )
     {
-        return getList().addAll( i, collection ) ;
+        throw new UnsupportedOperationException(
+            "You cannot modify this list. This list is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public boolean removeAll( Collection collection )
@@ -129,17 +134,20 @@ public class ComponentList
 
     public Object set( int i, Object object )
     {
-        return getList().set( i, object ) ;
+        throw new UnsupportedOperationException(
+            "You cannot modify this list. This list is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public void add( int i, Object object )
     {
-        getList().add( i, object ) ;
+        throw new UnsupportedOperationException(
+            "You cannot modify this list. This list is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public Object remove( int i )
     {
-        return getList().remove( i ) ;
+        throw new UnsupportedOperationException(
+            "You cannot modify this list. This list is a requirement of " + hostComponent + " and managed by the container." );
     }
 
     public int indexOf( Object object )

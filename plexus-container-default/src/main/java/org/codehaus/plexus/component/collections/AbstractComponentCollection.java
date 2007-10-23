@@ -42,10 +42,14 @@ public class AbstractComponentCollection
     /** The realm we need to lookup in */
     protected ClassRealm realm;
 
+    /** The component that requires this collection of components */
+    protected String hostComponent; 
+
     public AbstractComponentCollection( PlexusContainer container,
                                         ClassRealm realm,
                                         String role,
-                                        List roleHints )
+                                        List roleHints,
+                                        String hostComponent )
     {
         this.container = container;
 
@@ -54,5 +58,7 @@ public class AbstractComponentCollection
         this.role = role;
 
         this.roleHints = roleHints;
-    }
+
+        this.hostComponent = hostComponent;
+    }    
 }

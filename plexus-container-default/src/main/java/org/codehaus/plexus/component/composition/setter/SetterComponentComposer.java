@@ -137,6 +137,7 @@ public class SetterComponentComposer
         throws CompositionException
     {
         Requirement requirement = findRequirement( component,
+                                                   descriptor,
                                                    propertyDescriptor.getPropertyType(),
                                                    container,
                                                    requirementDescriptor,
