@@ -65,4 +65,7 @@ public interface ComponentManager
     ComponentDescriptor getComponentDescriptor();
 
     MutablePlexusContainer getContainer();
+
+    void dissociateComponentRealm( ClassRealm realm )
+        throws ComponentLifecycleException;
 }

@@ -19,6 +19,7 @@ package org.codehaus.plexus.component.manager;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 
@@ -56,4 +57,7 @@ public interface ComponentManagerManager
     void associateComponentWithComponentManager( Object component, ComponentManager componentManager );
 
     void unassociateComponentWithComponentManager( Object component );
+
+    void dissociateComponentRealm( ClassRealm componentRealm )
+        throws ComponentLifecycleException;
 }

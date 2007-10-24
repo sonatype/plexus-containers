@@ -68,7 +68,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,7 +79,7 @@ import java.util.WeakHashMap;
  * @author Jason van Zyl
  * @author Kenney Westerhof
  */
-public class DefaultPlexusContainer    
+public class DefaultPlexusContainer
     extends AbstractLogEnabled
     implements MutablePlexusContainer
 {
@@ -298,7 +297,7 @@ public class DefaultPlexusContainer
 
         PlexusContainer childContainer=new DefaultPlexusContainer( c );
         childContainers.put( name, childContainer );
-        
+
         return childContainer;
     }
 
@@ -309,25 +308,25 @@ public class DefaultPlexusContainer
     {
         if ( c.getParentContainer() != null )
         {
-            this.parentContainer = c.getParentContainer();
+            parentContainer = c.getParentContainer();
 
-            this.loggerManager = parentContainer.getLoggerManager();
+            loggerManager = parentContainer.getLoggerManager();
 
-            this.containerRealm = (ClassRealm) c.getClassWorld().getRealms().iterator().next();
+            containerRealm = (ClassRealm) c.getClassWorld().getRealms().iterator().next();
         }
 
-        this.name = c.getName();
+        name = c.getName();
 
         // ----------------------------------------------------------------------------
         // ClassWorld
         // ----------------------------------------------------------------------------
 
-        this.classWorld = c.getClassWorld();
+        classWorld = c.getClassWorld();
 
         // Make sure we have a valid ClassWorld
-        if ( this.classWorld == null )
+        if ( classWorld == null )
         {
-            this.classWorld = new ClassWorld( DEFAULT_REALM_NAME, Thread.currentThread().getContextClassLoader() );
+            classWorld = new ClassWorld( DEFAULT_REALM_NAME, Thread.currentThread().getContextClassLoader() );
         }
 
         containerRealm = c.getRealm();
@@ -336,11 +335,11 @@ public class DefaultPlexusContainer
         {
             try
             {
-                containerRealm = this.classWorld.getRealm( DEFAULT_REALM_NAME );
+                containerRealm = classWorld.getRealm( DEFAULT_REALM_NAME );
             }
             catch ( NoSuchRealmException e )
             {
-                List realms = new LinkedList( this.classWorld.getRealms() );
+                List realms = new LinkedList( classWorld.getRealms() );
 
                 containerRealm = (ClassRealm) realms.get( 0 );
 
@@ -359,7 +358,7 @@ public class DefaultPlexusContainer
         // Context
         // ----------------------------------------------------------------------------
 
-        this.containerContext = new DefaultContext();
+        containerContext = new DefaultContext();
 
         if ( c.getContext() != null )
         {
@@ -398,7 +397,7 @@ public class DefaultPlexusContainer
 
         try
         {
-            this.configurationReader = in == null ? null : ReaderFactory.newXmlReader( in );
+            configurationReader = in == null ? null : ReaderFactory.newXmlReader( in );
         }
         catch ( IOException e )
         {
@@ -416,9 +415,9 @@ public class DefaultPlexusContainer
         }
         finally
         {
-            IOUtil.close( this.configurationReader );
+            IOUtil.close( configurationReader );
         }
-    }    
+    }
     // ----------------------------------------------------------------------------
     // Lookup
     // ----------------------------------------------------------------------------
@@ -607,7 +606,7 @@ public class DefaultPlexusContainer
     // XXX remove!
     public void setParentPlexusContainer( PlexusContainer container )
     {
-        this.parentContainer = container;
+        parentContainer = container;
     }
 
     // ----------------------------------------------------------------------
@@ -635,13 +634,13 @@ public class DefaultPlexusContainer
 
         ClassRealm tmpRealm = classRealm.getParentRealm();
 
-        while ( result == null && tmpRealm != null )
+        while ( ( result == null ) && ( tmpRealm != null ) )
         {
             result = componentRepository.getComponentDescriptor( role, hint, classRealm );
             tmpRealm = tmpRealm.getParentRealm();
         }
 
-        if ( result == null && parentContainer != null )
+        if ( ( result == null ) && ( parentContainer != null ) )
         {
             result = parentContainer.getComponentDescriptor( role, hint, classRealm );
         }
@@ -869,7 +868,7 @@ public class DefaultPlexusContainer
 
         boolean needToDisposeRealm = true;
 
-        if ( parentContainer != null && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) )
+        if ( ( parentContainer != null ) && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) )
         {
             needToDisposeRealm = false;
         }
@@ -1002,7 +1001,7 @@ public class DefaultPlexusContainer
         configuration = bootstrapConfiguration;
 
         if ( !containerContext.contains( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION )
-            || containerContext.get( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION ) != Boolean.TRUE )
+            || ( containerContext.get( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION ) != Boolean.TRUE ) )
         {
             PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
 
@@ -1120,7 +1119,7 @@ public class DefaultPlexusContainer
         {
             containerRealm.addURL( jar.toURI().toURL() );
 
-            if ( this.initialized )
+            if ( initialized )
             {
                 discoverComponents( containerRealm );
             }
@@ -1339,6 +1338,34 @@ public class DefaultPlexusContainer
         }
 
         return realm;
+    }
+
+    public void removeComponentRealm( ClassRealm realm )
+        throws PlexusContainerException
+    {
+        if ( getContainerRealm().getId().equals( realm.getId() ) )
+        {
+            throw new IllegalArgumentException(
+                                                "Cannot remove container realm: "
+                                                                + realm.getId()
+                                                                + "\n(trying to remove container realm as if it were a component realm)." );
+        }
+
+        componentRepository.removeComponentRealm( realm );
+        try
+        {
+            componentManagerManager.dissociateComponentRealm( realm );
+        }
+        catch ( ComponentLifecycleException e )
+        {
+            throw new PlexusContainerException( "Failed to dissociate component realm: " + realm.getId(), e );
+        }
+
+        ClassRealm lookupRealm = getLookupRealm();
+        if ( ( lookupRealm != null ) && lookupRealm.getId().equals( realm.getId() ) )
+        {
+            setLookupRealm( getContainerRealm() );
+        }
     }
 
     private InputStream toStream( String resource )

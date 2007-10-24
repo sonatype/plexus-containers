@@ -148,4 +148,12 @@ public class ClassicSingletonComponentManager
 
         lock = new Object();
     }
+
+    public void dissociateComponentRealm( ClassRealm realm )
+        throws ComponentLifecycleException
+    {
+        super.dissociateComponentRealm( realm );
+
+        singletonMap.remove( realm.getId() );
+    }
 }

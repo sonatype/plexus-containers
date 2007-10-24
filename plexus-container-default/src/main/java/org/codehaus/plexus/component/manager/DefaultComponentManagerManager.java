@@ -20,6 +20,7 @@ import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
@@ -27,6 +28,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -168,5 +170,27 @@ public class DefaultComponentManagerManager
     public void unassociateComponentWithComponentManager( Object component )
     {
         componentManagersByComponent.remove( component );
+    }
+
+    public void dissociateComponentRealm( ClassRealm componentRealm )
+        throws ComponentLifecycleException
+    {
+        for ( Iterator it = activeComponentManagers.entrySet().iterator(); it.hasNext(); )
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            String key = (String) entry.getKey();
+
+            ComponentManager componentManager = (ComponentManager) entry.getValue();
+
+            if ( key.startsWith( componentRealm.getId() ) )
+            {
+                componentManager.dispose();
+                it.remove();
+            }
+            else
+            {
+                componentManager.dissociateComponentRealm( componentRealm );
+            }
+        }
     }
 }

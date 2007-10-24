@@ -31,6 +31,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionExce
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public abstract class AbstractComponentManager
@@ -55,7 +56,7 @@ public abstract class AbstractComponentManager
     {
         try
         {
-            ComponentManager componentManager = (ComponentManager) this.clone();
+            ComponentManager componentManager = (ComponentManager) clone();
 
             return componentManager;
         }
@@ -235,5 +236,20 @@ public abstract class AbstractComponentManager
         throws ComponentInstantiationException, ComponentLifecycleException
     {
         return getComponent( container.getLookupRealm() );
+    }
+
+    public void dissociateComponentRealm( ClassRealm realm )
+        throws ComponentLifecycleException
+    {
+        for ( Iterator it = componentContextRealms.entrySet().iterator(); it.hasNext(); )
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            ClassRealm componentRealm = (ClassRealm) entry.getValue();
+
+            if ( componentRealm.getId().equals( realm.getId() ) )
+            {
+                it.remove();
+            }
+        }
     }
 }

@@ -61,7 +61,7 @@ public class DefaultComponentRepository
 
             Map maps = (Map) realmMaps.get( realm.getId() );
 
-            if ( maps != null &&  maps.containsKey( role ) )
+            if ( ( maps != null ) &&  maps.containsKey( role ) )
             {
                 Map hints = (Map) maps.get( role );
 
@@ -80,7 +80,7 @@ public class DefaultComponentRepository
 
             Map maps = (Map) realmMaps.get( realm.getId() );
 
-            if ( maps != null && maps.containsKey( role ) )
+            if ( ( maps != null ) && maps.containsKey( role ) )
             {
                 return (Map) maps.get( role );
             }
@@ -128,6 +128,11 @@ public class DefaultComponentRepository
             }
 
             return rm;
+        }
+
+        public void removeRealmMap( String realmId )
+        {
+            realmMaps.remove( realmId );
         }
     }
 
@@ -178,6 +183,11 @@ public class DefaultComponentRepository
     public void setClassRealm( ClassRealm classRealm )
     {
         this.classRealm = classRealm;
+    }
+
+    public void removeComponentRealm( ClassRealm classRealm )
+    {
+        componentRealmDescriptorMaps.removeRealmMap( classRealm.getId() );
     }
 
     // ----------------------------------------------------------------------

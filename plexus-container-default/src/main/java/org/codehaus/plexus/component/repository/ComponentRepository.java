@@ -56,4 +56,6 @@ public interface ComponentRepository
         throws ComponentImplementationNotFoundException;
 
     void setClassRealm( ClassRealm classRealm );
+
+    void removeComponentRealm( ClassRealm classRealm );
 }

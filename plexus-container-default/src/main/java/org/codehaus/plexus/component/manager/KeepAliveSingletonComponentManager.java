@@ -35,9 +35,11 @@ public class KeepAliveSingletonComponentManager
 
     private Object singleton;
 
+    private ClassRealm originatingRealm;
+
     public String getId()
     {
-        return "singleton-keep-alive";    
+        return "singleton-keep-alive";
     }
 
     public void release( Object component )
@@ -63,6 +65,8 @@ public class KeepAliveSingletonComponentManager
             if ( singleton != null )
             {
                 endComponentLifecycle( singleton );
+                singleton = null;
+                originatingRealm = null;
             }
         }
     }
@@ -75,11 +79,23 @@ public class KeepAliveSingletonComponentManager
             if ( singleton == null )
             {
                 singleton = createComponentInstance( realm );
+                originatingRealm = realm;
             }
 
             incrementConnectionCount();
 
             return singleton;
+        }
+    }
+
+    public void dissociateComponentRealm( ClassRealm realm )
+        throws ComponentLifecycleException
+    {
+        super.dissociateComponentRealm( realm );
+
+        if ( ( originatingRealm != null ) && originatingRealm.getId().equals( realm.getId() ) )
+        {
+            dispose();
         }
     }
 }

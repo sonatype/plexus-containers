@@ -524,6 +524,15 @@ public interface PlexusContainer
     ClassRealm getComponentRealm( String realmId );
 
     /**
+     * Dissociate the realm with the specified id from the container. This will
+     * remove all components contained in the realm from the component repository.
+     *
+     * @param componentRealm Realm to remove from the container.
+     */
+    void removeComponentRealm( ClassRealm componentRealm )
+        throws PlexusContainerException;
+
+    /**
      * Returns the lookup realm for this container, which is either
      * the container realm or the realm set by {@see MutablePlexusContainer#setLookupRealm(ClassRealm)}.
      */
