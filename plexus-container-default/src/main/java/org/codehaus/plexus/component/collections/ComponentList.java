@@ -19,12 +19,16 @@ package org.codehaus.plexus.component.collections;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 /**
  * @author Jason van Zyl
@@ -177,13 +181,29 @@ public class ComponentList
 
     private List getList()
     {
-        try
+        Set realms = getLookupRealms();
+
+        Set components = new LinkedHashSet();
+
+        for ( Iterator it = realms.iterator(); it.hasNext(); )
         {
-            return container.lookupList( role, roleHints, realm );
+            ClassRealm r = (ClassRealm) it.next();
+
+            try
+            {
+                components.addAll( container.lookupList( role, roleHints, r ) );
+            }
+            catch ( ComponentLookupException e )
+            {
+                logger.debug( "Failed to lookup list for role: "
+                              + role
+                              + "(hints: "
+                              + ( roleHints == null ? "-none-"
+                                              : StringUtils.join( roleHints.iterator(), ", " ) )
+                              + ") in realm:\n" + realm, e );
+            }
         }
-        catch ( ComponentLookupException e )
-        {
-            return Collections.EMPTY_LIST;
-        }
+
+        return components.isEmpty() ? Collections.EMPTY_LIST : new ArrayList( components );
     }
 }
