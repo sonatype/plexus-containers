@@ -19,12 +19,16 @@ package org.codehaus.plexus.component.collections;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 /**
  * @author Jason van Zyl
@@ -33,6 +37,8 @@ public class ComponentList
     extends AbstractComponentCollection
     implements List
 {
+    private List components;
+
     public ComponentList( PlexusContainer container,
                           ClassRealm realm,
                           String role,
@@ -177,13 +183,32 @@ public class ComponentList
 
     private List getList()
     {
-        try
+        if ( ( components == null ) || requiresUpdate() )
         {
-            return container.lookupList( role, roleHints, realm );
+            Set c = new LinkedHashSet();
+
+            for ( Iterator it = getLookupRealms().iterator(); it.hasNext(); )
+            {
+                ClassRealm r = (ClassRealm) it.next();
+
+                try
+                {
+                    c.addAll( container.lookupList( role, roleHints, r ) );
+                }
+                catch ( ComponentLookupException e )
+                {
+                    logger.debug( "Failed to lookup list for role: "
+                                  + role
+                                  + "(hints: "
+                                  + ( roleHints == null ? "-none-"
+                                                  : StringUtils.join( roleHints.iterator(), ", " ) )
+                                  + ") in realm:\n" + realm, e );
+                }
+            }
+
+            components = c.isEmpty() ? Collections.EMPTY_LIST : new ArrayList( c );
         }
-        catch ( ComponentLookupException e )
-        {
-            return Collections.EMPTY_LIST;
-        }
+
+        return components;
     }
 }
