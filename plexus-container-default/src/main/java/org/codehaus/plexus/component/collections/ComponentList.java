@@ -37,6 +37,8 @@ public class ComponentList
     extends AbstractComponentCollection
     implements List
 {
+    private List components;
+
     public ComponentList( PlexusContainer container,
                           ClassRealm realm,
                           String role,
@@ -181,29 +183,32 @@ public class ComponentList
 
     private List getList()
     {
-        Set realms = getLookupRealms();
-
-        Set components = new LinkedHashSet();
-
-        for ( Iterator it = realms.iterator(); it.hasNext(); )
+        if ( ( components == null ) || requiresUpdate() )
         {
-            ClassRealm r = (ClassRealm) it.next();
+            Set c = new LinkedHashSet();
 
-            try
+            for ( Iterator it = getLookupRealms().iterator(); it.hasNext(); )
             {
-                components.addAll( container.lookupList( role, roleHints, r ) );
+                ClassRealm r = (ClassRealm) it.next();
+
+                try
+                {
+                    c.addAll( container.lookupList( role, roleHints, r ) );
+                }
+                catch ( ComponentLookupException e )
+                {
+                    logger.debug( "Failed to lookup list for role: "
+                                  + role
+                                  + "(hints: "
+                                  + ( roleHints == null ? "-none-"
+                                                  : StringUtils.join( roleHints.iterator(), ", " ) )
+                                  + ") in realm:\n" + realm, e );
+                }
             }
-            catch ( ComponentLookupException e )
-            {
-                logger.debug( "Failed to lookup list for role: "
-                              + role
-                              + "(hints: "
-                              + ( roleHints == null ? "-none-"
-                                              : StringUtils.join( roleHints.iterator(), ", " ) )
-                              + ") in realm:\n" + realm, e );
-            }
+
+            components = c.isEmpty() ? Collections.EMPTY_LIST : new ArrayList( c );
         }
 
-        return components.isEmpty() ? Collections.EMPTY_LIST : new ArrayList( components );
+        return components;
     }
 }

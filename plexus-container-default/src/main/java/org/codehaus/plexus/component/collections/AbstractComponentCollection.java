@@ -57,6 +57,12 @@ public class AbstractComponentCollection
     /** Used to log errors in the component lookup process. */
     protected Logger logger;
 
+    private Set lookupRealms;
+
+    private int lastRealmCount = -1;
+
+    private int lastComponentCount = -1;
+
     public AbstractComponentCollection( PlexusContainer container,
                                         ClassRealm realm,
                                         String role,
@@ -84,28 +90,57 @@ public class AbstractComponentCollection
      */
     protected Set getLookupRealms()
     {
-        Set realms = new LinkedHashSet();
-
-        realms.add( realm );
-
         Collection allRealms = realm.getWorld().getRealms();
 
-        int lastSize = 0;
-        while( realms.size() > lastSize )
+        if ( realmsHaveChanged() )
         {
-            lastSize = realms.size();
+            lookupRealms = new LinkedHashSet();
 
-            for ( Iterator it = allRealms.iterator(); it.hasNext(); )
+            lookupRealms.add( realm );
+
+            int lastSize = 0;
+            while( lookupRealms.size() > lastSize )
             {
-                ClassRealm r = (ClassRealm) it.next();
+                lastSize = lookupRealms.size();
 
-                if ( ( r.getParentRealm() != null ) && realms.contains( r.getParentRealm() ) )
+                for ( Iterator it = allRealms.iterator(); it.hasNext(); )
                 {
-                    realms.add( r );
+                    ClassRealm r = (ClassRealm) it.next();
+
+                    if ( ( r.getParentRealm() != null ) && lookupRealms.contains( r.getParentRealm() ) )
+                    {
+                        lookupRealms.add( r );
+                    }
                 }
             }
         }
 
-        return realms;
+        return lookupRealms;
+    }
+
+    private boolean realmsHaveChanged()
+    {
+        return ( lookupRealms == null ) || ( realm.getWorld().getRealms().size() != lastRealmCount );
+    }
+
+    protected boolean requiresUpdate()
+    {
+        if ( realmsHaveChanged() )
+        {
+            return true;
+        }
+
+        int count = 0;
+        for ( Iterator it = getLookupRealms().iterator(); it.hasNext(); )
+        {
+            ClassRealm r = (ClassRealm) it.next();
+            count += container.getComponentDescriptorList( role, r ).size();
+        }
+
+        boolean result = count != lastComponentCount;
+
+        lastComponentCount = count;
+
+        return result;
     }
 }

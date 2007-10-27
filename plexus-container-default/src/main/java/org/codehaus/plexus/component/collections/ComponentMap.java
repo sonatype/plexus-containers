@@ -22,7 +22,6 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.util.StringUtils;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,6 +33,8 @@ public class ComponentMap
     extends AbstractComponentCollection
     implements Map
 {
+    private Map components;
+
     public ComponentMap( PlexusContainer container,
                          ClassRealm realm,
                          String role,
@@ -119,42 +120,32 @@ public class ComponentMap
 
     private Map getMap()
     {
-        Set realms = getLookupRealms();
-
-        Map components = new LinkedHashMap();
-
-        for ( Iterator it = realms.iterator(); it.hasNext(); )
+        if ( ( components == null ) || requiresUpdate() )
         {
-            ClassRealm r = (ClassRealm) it.next();
+            components = new LinkedHashMap();
 
-            try
+            for ( Iterator it = getLookupRealms().iterator(); it.hasNext(); )
             {
-//                logger.debug( "Looking up map of components for role: "
-//                              + role
-//                              + " (hints: "
-//                              + ( roleHints == null ? "-none-"
-//                                              : StringUtils.join( roleHints.iterator(), ", " ) )
-//                              + ") in realm with id: " + r.getId() );
+                ClassRealm r = (ClassRealm) it.next();
 
-                Map found = container.lookupMap( role, roleHints, r );
+                try
+                {
+                    Map found = container.lookupMap( role, roleHints, r );
 
-//                logger.debug( "Found:\n" + (( found == null ) || found.isEmpty() ? "-none-" : StringUtils.join( found.values().iterator(), "\n" ) ) );
-
-                components.putAll( found );
-            }
-            catch ( ComponentLookupException e )
-            {
-                logger.debug( "Failed to lookup list for role: "
-                              + role
-                              + "(hints: "
-                              + ( roleHints == null ? "-none-"
-                                              : StringUtils.join( roleHints.iterator(), ", " ) )
-                              + ") in realm:\n" + realm, e );
+                    components.putAll( found );
+                }
+                catch ( ComponentLookupException e )
+                {
+                    logger.debug( "Failed to lookup list for role: "
+                                  + role
+                                  + "(hints: "
+                                  + ( roleHints == null ? "-none-"
+                                                  : StringUtils.join( roleHints.iterator(), ", " ) )
+                                  + ") in realm:\n" + realm, e );
+                }
             }
         }
 
-//        logger.debug( "Total components mapped for role: " + role + " --> " + components.size() );
-
-        return components.isEmpty() ? Collections.EMPTY_MAP : components;
+        return components;
     }
 }
