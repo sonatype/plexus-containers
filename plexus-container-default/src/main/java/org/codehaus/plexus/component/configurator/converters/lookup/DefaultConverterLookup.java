@@ -71,9 +71,12 @@ public class DefaultConverterLookup
 
     public void registerConverter( ConfigurationConverter converter )
     {
-        if ( customConverters == null )
+        List oldConverters = customConverters;
+        customConverters = new LinkedList();
+
+        if ( oldConverters != null )
         {
-            customConverters = new LinkedList();    
+            customConverters.addAll( oldConverters );
         }
 
         customConverters.add( converter );
