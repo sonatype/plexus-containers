@@ -20,13 +20,12 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
-/**
- * @author Jason van Zyl
- */
+/** @author Jason van Zyl */
 public class InitializeLoggerManagerPhase
     extends AbstractCoreComponentInitializationPhase
 {
@@ -37,31 +36,40 @@ public class InitializeLoggerManagerPhase
 
         // ----------------------------------------------------------------------
         // The logger manager may have been set programmatically so we need
-        // to check. If it hasn't
+        // to check. If it hasn't then we will try to look up a logger manager
+        // that may have been specified in the plexus.xml file. If that doesn't
+        // work then we'll programmatcially stuff in the console logger.
         // ----------------------------------------------------------------------
 
         if ( loggerManager == null )
         {
-            ComponentDescriptor cd = new ComponentDescriptor();
-
-            cd.setRole( LoggerManager.ROLE );
-
-            cd.setRoleHint( PlexusConstants.PLEXUS_DEFAULT_HINT );
-
-            cd.setImplementation( ConsoleLoggerManager.class.getName() );
-
             try
             {
-                context.getContainer().addComponentDescriptor( cd );
+                loggerManager = (LoggerManager) context.getContainer().lookup( LoggerManager.class );
             }
-            catch ( ComponentRepositoryException e )
+            catch ( ComponentLookupException e )
             {
-                throw new ContainerInitializationException( "Error setting up logging manager.", e );
+                ComponentDescriptor cd = new ComponentDescriptor();
+
+                cd.setRole( LoggerManager.ROLE );
+
+                cd.setRoleHint( PlexusConstants.PLEXUS_DEFAULT_HINT );
+
+                cd.setImplementation( ConsoleLoggerManager.class.getName() );
+
+                try
+                {
+                    context.getContainer().addComponentDescriptor( cd );
+                }
+                catch ( ComponentRepositoryException cre )
+                {
+                    throw new ContainerInitializationException( "Error setting up logging manager.", cre );
+                }
+
+                loggerManager = new ConsoleLoggerManager( "info" );
             }
 
-            loggerManager = new ConsoleLoggerManager( "info" );
-
-            context.getContainer().setLoggerManager( loggerManager );            
+            context.getContainer().setLoggerManager( loggerManager );
         }
 
         Logger logger = loggerManager.getLoggerForComponent( PlexusContainer.class.getName() );

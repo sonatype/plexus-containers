@@ -35,6 +35,6 @@ public class CustomLoggerManagerTest
 
         assertNotNull( manager );
 
-        assertEquals( ConsoleLoggerManager.class.getName(), manager.getClass().getName() );
+        assertEquals( MockLoggerManager.class.getName(), manager.getClass().getName() );
     }
 }
