@@ -54,10 +54,5 @@ public class PerLookupComponentManager
         endComponentLifecycle( component );
         // non cleanup map references for per-lookup cause leak
         componentContextRealms.remove( component );
-
-        if ( !connected() )
-        {
-            System.out.println( "manager for: " + componentDescriptor.getImplementation() + " ready for removal." );
-        }
     }
 }
