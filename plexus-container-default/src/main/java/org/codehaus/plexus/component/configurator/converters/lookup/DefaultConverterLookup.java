@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.plexus.component.collections.ComponentMap;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.BooleanConverter;
@@ -69,14 +70,22 @@ public class DefaultConverterLookup
         registerDefaultCompositeConverters();
     }
 
-    public void registerConverter( ConfigurationConverter converter )
+    public synchronized void registerConverter( ConfigurationConverter converter )
     {
-        List oldConverters = customConverters;
-        customConverters = new LinkedList();
-
-        if ( oldConverters != null )
+        if ( customConverters == null )
         {
-            customConverters.addAll( oldConverters );
+            customConverters = new LinkedList();
+        }
+        // FIXME: Why is this using active collections at all??
+        else if ( ( customConverters instanceof ComponentMap ) )
+        {
+            List oldConverters = customConverters;
+            customConverters = new LinkedList();
+
+            if ( oldConverters != null )
+            {
+                customConverters.addAll( oldConverters );
+            }
         }
 
         customConverters.add( converter );
