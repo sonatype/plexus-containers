@@ -169,7 +169,11 @@ public class DefaultComponentManagerManager
 
     public void unassociateComponentWithComponentManager( Object component )
     {
-        componentManagersByComponent.remove( component );
+        Object removed = componentManagersByComponent.remove( component );
+        if ( removed instanceof PerLookupComponentManager )
+        {
+            System.out.println( "Removed component manager: " + removed );
+        }
     }
 
     public void dissociateComponentRealm( ClassRealm componentRealm )

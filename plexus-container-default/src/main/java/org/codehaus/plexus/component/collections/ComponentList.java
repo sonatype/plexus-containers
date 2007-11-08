@@ -18,20 +18,21 @@ package org.codehaus.plexus.component.collections;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * @author Jason van Zyl
+ * FIXME: [jdcasey] We need to review the efficiency (in speed and memory) of this collection...
  */
 public class ComponentList
     extends AbstractComponentCollection
@@ -51,12 +52,12 @@ public class ComponentList
 
     public int size()
     {
-        return getList().size() ;
+        return getComponentDescriptorMap().size() ;
     }
 
     public boolean isEmpty()
     {
-        return getList().isEmpty() ;
+        return getComponentDescriptorMap().isEmpty() ;
     }
 
     public boolean contains( Object object )
@@ -116,11 +117,6 @@ public class ComponentList
     public boolean retainAll( Collection collection )
     {
         return getList().retainAll( collection ) ;
-    }
-
-    public void clear()
-    {
-        getList().clear() ;
     }
 
     public boolean equals( Object object )
@@ -183,32 +179,51 @@ public class ComponentList
 
     private List getList()
     {
-        if ( ( components == null ) || requiresUpdate() )
+        // NOTE: If we cache the component map, we have a problem with releasing any of the
+        // components in this map...we need to be able to release them all.
+        if ( ( components == null ) || checkUpdate() )
         {
-            Set c = new LinkedHashSet();
+            Set componentSet = new LinkedHashSet();
 
-            for ( Iterator it = getLookupRealms().iterator(); it.hasNext(); )
+            Map descriptorMap = getComponentDescriptorMap();
+            Map lookupRealms = getLookupRealmMap();
+
+            for ( Iterator it = descriptorMap.entrySet().iterator(); it.hasNext(); )
             {
-                ClassRealm r = (ClassRealm) it.next();
+                Map.Entry entry = (Map.Entry) it.next();
+                String roleHint = (String) entry.getKey();
+                String realmId = ( (ComponentDescriptor) entry.getValue() ).getRealmId();
 
-                try
+                ClassRealm realm = (ClassRealm) lookupRealms.get( realmId );
+
+                Object component = lookup( role, roleHint, realm );
+                if ( component != null )
                 {
-                    c.addAll( container.lookupList( role, roleHints, r ) );
-                }
-                catch ( ComponentLookupException e )
-                {
-                    logger.debug( "Failed to lookup list for role: "
-                                  + role
-                                  + "(hints: "
-                                  + ( roleHints == null ? "-none-"
-                                                  : StringUtils.join( roleHints.iterator(), ", " ) )
-                                  + ") in realm:\n" + realm, e );
+                    componentSet.add( component );
                 }
             }
 
-            components = c.isEmpty() ? Collections.EMPTY_LIST : new ArrayList( c );
+            components = new ArrayList( componentSet );
         }
 
         return components;
+    }
+
+    protected void releaseAllCallback()
+    {
+        if ( components != null )
+        {
+            try
+            {
+                container.releaseAll( components );
+            }
+            catch ( ComponentLifecycleException e )
+            {
+                logger.debug( "Error releasing components in active collection: " + e.getMessage(), e );
+            }
+
+            components.clear();
+            components = null;
+        }
     }
 }

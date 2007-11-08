@@ -34,7 +34,7 @@ public class PerLookupComponentManager
     {
         return "per-lookup";
     }
-    
+
     public void dispose()
     {
     }
@@ -50,8 +50,14 @@ public class PerLookupComponentManager
     public void release( Object component )
         throws ComponentLifecycleException
     {
+        decrementConnectionCount();
         endComponentLifecycle( component );
         // non cleanup map references for per-lookup cause leak
         componentContextRealms.remove( component );
+
+        if ( !connected() )
+        {
+            System.out.println( "manager for: " + componentDescriptor.getImplementation() + " ready for removal." );
+        }
     }
 }

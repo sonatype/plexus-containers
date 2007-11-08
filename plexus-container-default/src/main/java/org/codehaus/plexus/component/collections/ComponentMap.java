@@ -18,8 +18,8 @@ package org.codehaus.plexus.component.collections;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.util.StringUtils;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,7 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/** @author Jason van Zyl */
+/**
+ * @author Jason van Zyl
+ * FIXME: [jdcasey] We need to review the efficiency (in speed and memory) of this collection...
+ */
 public class ComponentMap
     extends AbstractComponentCollection
     implements Map
@@ -46,17 +49,18 @@ public class ComponentMap
 
     public int size()
     {
-        return getMap().size();
+        return getComponentDescriptorMap().size();
     }
 
     public boolean isEmpty()
     {
-        return getMap().isEmpty();
+        return getComponentDescriptorMap().isEmpty();
     }
 
     public boolean containsKey( Object key )
     {
-        return getMap().containsKey( key );
+        Map descriptorMap = getComponentDescriptorMap();
+        return descriptorMap.containsKey( key );
     }
 
     public boolean containsValue( Object value )
@@ -66,7 +70,18 @@ public class ComponentMap
 
     public Object get( Object key )
     {
-        return getMap().get( key );
+        Map descriptorMap = getComponentDescriptorMap();
+        if ( descriptorMap.containsKey( key ) )
+        {
+            Map lookupRealms = getLookupRealmMap();
+
+            ComponentDescriptor desc = (ComponentDescriptor) descriptorMap.get( key );
+            ClassRealm realm = (ClassRealm) lookupRealms.get( desc.getRealmId() );
+
+            return lookup( role, (String) key, realm );
+        }
+
+        return null;
     }
 
     public Object put( Object key,
@@ -113,39 +128,50 @@ public class ComponentMap
             "You cannot modify this map. This map is a requirement of " + hostComponent + " and managed by the container." );
     }
 
-    public void clear()
-    {
-        throw new UnsupportedOperationException();
-    }
-
     private Map getMap()
     {
-        if ( ( components == null ) || requiresUpdate() )
+        if ( ( components == null ) || checkUpdate() )
         {
             components = new LinkedHashMap();
 
-            for ( Iterator it = getLookupRealms().iterator(); it.hasNext(); )
+            Map descriptorMap = getComponentDescriptorMap();
+            Map lookupRealms = getLookupRealmMap();
+
+            for ( Iterator it = descriptorMap.entrySet().iterator(); it.hasNext(); )
             {
-                ClassRealm r = (ClassRealm) it.next();
+                Map.Entry entry = (Map.Entry) it.next();
+                String roleHint = (String) entry.getKey();
+                String realmId = ( (ComponentDescriptor) entry.getValue() ).getRealmId();
 
-                try
-                {
-                    Map found = container.lookupMap( role, roleHints, r );
+                ClassRealm realm = (ClassRealm) lookupRealms.get( realmId );
 
-                    components.putAll( found );
-                }
-                catch ( ComponentLookupException e )
+                Object component = lookup( role, roleHint, realm );
+                if ( component != null )
                 {
-                    logger.debug( "Failed to lookup list for role: "
-                                  + role
-                                  + "(hints: "
-                                  + ( roleHints == null ? "-none-"
-                                                  : StringUtils.join( roleHints.iterator(), ", " ) )
-                                  + ") in realm:\n" + realm, e );
+                    components.put( roleHint, component );
                 }
             }
         }
 
         return components;
     }
+
+    protected void releaseAllCallback()
+    {
+        if ( components != null )
+        {
+            try
+            {
+                container.releaseAll( components );
+            }
+            catch ( ComponentLifecycleException e )
+            {
+                logger.debug( "Error releasing components in active collection: " + e.getMessage(), e );
+            }
+
+            components.clear();
+            components = null;
+        }
+    }
+
 }

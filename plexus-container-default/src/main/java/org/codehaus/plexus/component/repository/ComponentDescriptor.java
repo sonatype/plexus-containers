@@ -18,6 +18,8 @@ package org.codehaus.plexus.component.repository;
 
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.ProtoXmlPlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +186,7 @@ public class ComponentDescriptor
      */
     public void setRoleHint( String roleHint )
     {
-        if ( roleHint == null || roleHint.trim().equals( "" ) )
+        if ( ( roleHint == null ) || roleHint.trim().equals( "" ) )
         {
             this.roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
         }
@@ -273,6 +275,11 @@ public class ComponentDescriptor
      */
     public PlexusConfiguration getConfiguration()
     {
+        if ( configuration instanceof ProtoXmlPlexusConfiguration )
+        {
+            return ( (ProtoXmlPlexusConfiguration) configuration ).read();
+        }
+
         return configuration;
     }
 
@@ -283,7 +290,14 @@ public class ComponentDescriptor
      */
     public void setConfiguration( PlexusConfiguration configuration )
     {
-        this.configuration = configuration;
+        if ( configuration instanceof XmlPlexusConfiguration )
+        {
+            this.configuration = new ProtoXmlPlexusConfiguration( (XmlPlexusConfiguration) configuration );
+        }
+        else
+        {
+            this.configuration = configuration;
+        }
     }
 
     /**
@@ -542,12 +556,12 @@ public class ComponentDescriptor
             String role = getRole();
             String otherRole = otherDescriptor.getRole();
 
-            isEqual = isEqual && ( role == otherRole || role.equals( otherRole ) );
+            isEqual = isEqual && ( ( role == otherRole ) || role.equals( otherRole ) );
 
             String roleHint = getRoleHint();
             String otherRoleHint = otherDescriptor.getRoleHint();
 
-            isEqual = isEqual && ( roleHint == otherRoleHint || roleHint.equals( otherRoleHint ) );
+            isEqual = isEqual && ( ( roleHint == otherRoleHint ) || roleHint.equals( otherRoleHint ) );
 
             return isEqual;
         }

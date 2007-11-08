@@ -144,7 +144,7 @@ public abstract class AbstractComponentManager
     protected void endComponentLifecycle( Object component )
         throws ComponentLifecycleException
     {
-        ClassRealm contextRealm = (ClassRealm) componentContextRealms.get( component );
+        ClassRealm contextRealm = (ClassRealm) componentContextRealms.remove( component );
         if ( contextRealm == null )
         {
             contextRealm = container.getLookupRealm( component );
