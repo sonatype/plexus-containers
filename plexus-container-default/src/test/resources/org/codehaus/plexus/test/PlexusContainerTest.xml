@@ -204,14 +204,43 @@
       </requirements>
     </component>
     <component>
-      <role>org.codehaus.plexus.test.list.Valve</role>
-      <role-hint>one</role-hint>
-      <implementation>org.codehaus.plexus.test.list.ValveOne</implementation>
+      <role>org.codehaus.plexus.test.list.Pipeline</role>
+      <role-hint>chubby</role-hint>
+      <implementation>org.codehaus.plexus.test.list.DefaultPipeline</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.list.Valve</role>
+          <field-name>valveMap</field-name>
+          <role-hints>
+            <role-hint>one</role-hint>
+            <role-hint>two</role-hint>
+            <role-hint>three</role-hint>
+            <role-hint>four</role-hint>
+          </role-hints>
+        </requirement>
+      </requirements>
     </component>
+
+    <!-- Three is on the top here to make sure it's read first but ordered last -->
+    <component>
+      <role>org.codehaus.plexus.test.list.Valve</role>
+      <role-hint>four</role-hint>
+      <implementation>org.codehaus.plexus.test.list.ValveFour</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.test.list.Valve</role>
+      <role-hint>three</role-hint>
+      <implementation>org.codehaus.plexus.test.list.ValveThree</implementation>
+    </component>    
     <component>
       <role>org.codehaus.plexus.test.list.Valve</role>
       <role-hint>two</role-hint>
       <implementation>org.codehaus.plexus.test.list.ValveTwo</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.test.list.Valve</role>
+      <role-hint>one</role-hint>
+      <implementation>org.codehaus.plexus.test.list.ValveOne</implementation>
     </component>
 
     <component>

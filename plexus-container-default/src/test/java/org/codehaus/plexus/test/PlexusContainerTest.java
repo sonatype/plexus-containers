@@ -30,9 +30,14 @@ import org.codehaus.plexus.test.lifecycle.phase.MinyPhase;
 import org.codehaus.plexus.test.lifecycle.phase.MoPhase;
 import org.codehaus.plexus.test.list.Pipeline;
 import org.codehaus.plexus.test.list.Valve;
+import org.codehaus.plexus.test.list.ValveFour;
+import org.codehaus.plexus.test.list.ValveOne;
+import org.codehaus.plexus.test.list.ValveThree;
+import org.codehaus.plexus.test.list.ValveTwo;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -488,6 +493,26 @@ public class PlexusContainerTest
         pipeline.execute();
 
         assertTrue( ( (Valve) valves.get( 0 ) ).getState() );
+    }
+
+    public void testComponentCompositionWhereTargetFieldAMapThatMustRetainTheOrderOfComponentsGivenASetOfRoleHints()
+        throws Exception
+    {
+        Pipeline pipeline = (Pipeline) container.lookup( Pipeline.ROLE, "chubby" );
+
+        Map valveMap = pipeline.getValveMap();
+
+        List valves = new ArrayList( valveMap.values() );
+
+        assertEquals( "Expecting three valves.", 4, valves.size() );
+
+        assertTrue( "Expecting valve one.", valves.get(0) instanceof ValveOne );
+
+        assertTrue( "Expecting valve two.", valves.get(1) instanceof ValveTwo );
+
+        assertTrue( "Expecting valve three.", valves.get(2) instanceof ValveThree );
+
+        assertTrue( "Expecting valve four.", valves.get(3) instanceof ValveFour );        
     }
 
     public void testLookupOfInternallyDefinedComponentConfigurator()
