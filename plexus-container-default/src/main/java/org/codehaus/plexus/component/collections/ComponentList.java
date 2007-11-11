@@ -82,8 +82,25 @@ public class ComponentList
 
     public boolean add( Object object )
     {
+        if ( components == null )
+        {
+            components = new ArrayList();
+        }
+
+        components.add( object );
+
+        /*
+
+        PLX-352
+        This is strictly to support the hack in the Ant Run plugin that tries to poke in a custom converter. We need
+        a better way to register converters to plexus and not hit the default converter lookup directly.
+
+
         throw new UnsupportedOperationException(
             "You cannot modify this list. This list is a requirement of " + hostComponent + " and managed by the container." );
+        */
+
+        return true;
     }
 
     public boolean remove( Object object )
