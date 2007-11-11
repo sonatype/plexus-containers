@@ -16,39 +16,14 @@ package org.codehaus.plexus.test.list;
  * limitations under the License.
  */
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /**
  *
- * 
+ *
  * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
  *
  * @version $Id$
  */
-public class DefaultPipeline
-    implements Pipeline
+public class ValveThree
+    extends AbstractValve
 {
-    private List valves;
-
-    private Map valveMap;
-
-    public void execute()
-    {
-        for ( Iterator i = valves.iterator(); i.hasNext(); )
-        {
-            ((Valve) i.next()).execute();
-        }
-    }
-
-    public List getValves()
-    {
-        return valves;
-    }
-
-    public Map getValveMap()
-    {
-        return valveMap;
-    }
 }

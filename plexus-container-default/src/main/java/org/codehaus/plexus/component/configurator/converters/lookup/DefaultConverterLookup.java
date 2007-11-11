@@ -77,9 +77,12 @@ public class DefaultConverterLookup
             customConverters = new LinkedList();
         }
         // FIXME: Why is this using active collections at all??
+        // This is being used by the AntRun plugin which pokes in a custom converter. Ideally a component
+        // should be able to contribute converters to plexus which having to resort to this. jvz.
         else if ( ( customConverters instanceof ComponentList ) )
         {
             List oldConverters = customConverters;
+
             customConverters = new LinkedList();
 
             if ( oldConverters != null )
