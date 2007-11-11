@@ -9,12 +9,12 @@
     <parent>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-containers</artifactId>
-        <version>1.0-alpha-39</version>
+        <version>1.0-alpha-40-SNAPSHOT</version>
     </parent>
 
     <artifactId>plexus-component-annotations</artifactId>
     <name>Plexus Component Annotations</name>
-    <version>1.0-alpha-7</version>
+    <version>1.0-alpha-8-SNAPSHOT</version>
 
     <build>
         <plugins>
