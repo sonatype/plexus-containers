@@ -5,6 +5,7 @@ import org.codehaus.plexus.component.collections.ComponentList;
 import org.codehaus.plexus.component.collections.ComponentMap;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.composition.AbstractComponentComposer;
+import org.codehaus.plexus.PlexusContainer;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +21,35 @@ import java.util.Set;
 public aspect ActiveCollectionsCleanupAspect
 {
 
-    private Map collectionsByComponent = new HashMap();
+    private Map PlexusContainer.collectionsByComponent = new HashMap();
+
+    private pointcut inContainer( PlexusContainer container ):
+        execution( public * PlexusContainer+.*( .. ) )
+        && this( container );
+
+    private pointcut containerStopped( PlexusContainer container ):
+        execution( void PlexusContainer+.dispose() )
+        && this( container );
+
+    after( PlexusContainer container ): containerStopped( container )
+    {
+        for ( Iterator collectionSetIterator = container.collectionsByComponent.values().iterator(); collectionSetIterator.hasNext(); )
+        {
+            Set collections = (Set) collectionSetIterator.next();
+
+            if ( collections != null )
+            {
+                for ( Iterator it = collections.iterator(); it.hasNext(); )
+                {
+                    AbstractComponentCollection collection = (AbstractComponentCollection) it.next();
+                    collection.clear();
+                }
+            }
+        }
+
+        container.collectionsByComponent.clear();
+        container.collectionsByComponent = null;
+    }
 
     private pointcut componentMapCreation( Object hostComponent, ComponentMap collection ):
         execution( ComponentMap.new( .. ) )
@@ -28,14 +57,18 @@ public aspect ActiveCollectionsCleanupAspect
         && args( hostComponent, .. )
         && this( collection );
 
-    after( Object hostComponent, ComponentMap collection ):
-        componentMapCreation( hostComponent, collection )
+    private pointcut componentMapCreationWormhole( Object hostComponent, ComponentMap collection, PlexusContainer container ):
+        cflowbelow( inContainer( container ) )
+        && componentMapCreation( hostComponent, collection );
+
+    after( Object hostComponent, ComponentMap collection, PlexusContainer container ):
+        componentMapCreationWormhole( hostComponent, collection, container )
     {
-        Set collections = (Set) collectionsByComponent.get( hostComponent );
+        Set collections = (Set) container.collectionsByComponent.get( hostComponent );
         if ( collections == null )
         {
             collections = new HashSet();
-            collectionsByComponent.put( hostComponent, collections );
+            container.collectionsByComponent.put( hostComponent, collections );
         }
 
         collections.add( collection );
@@ -47,14 +80,18 @@ public aspect ActiveCollectionsCleanupAspect
         && args( hostComponent, .. )
         && this( collection );
 
-    after( Object hostComponent, ComponentList collection ):
-        componentListCreation( hostComponent, collection )
+    private pointcut componentListCreationWormhole( Object hostComponent, ComponentList collection, PlexusContainer container ):
+        cflowbelow( inContainer( container ) )
+        && componentListCreation( hostComponent, collection );
+
+    after( Object hostComponent, ComponentList collection, PlexusContainer container ):
+        componentListCreationWormhole( hostComponent, collection, container )
     {
-        Set collections = (Set) collectionsByComponent.get( hostComponent );
+        Set collections = (Set) container.collectionsByComponent.get( hostComponent );
         if ( collections == null )
         {
             collections = new HashSet();
-            collectionsByComponent.put( hostComponent, collections );
+            container.collectionsByComponent.put( hostComponent, collections );
         }
 
         collections.add( collection );
@@ -64,9 +101,14 @@ public aspect ActiveCollectionsCleanupAspect
         call( void ComponentManager+.release( Object ) )
         && args( component );
 
-    after( Object component ): activeCollectionOwnerReleased( component )
+    private pointcut activeCollectionOwnerReleasedWormhole( Object component, PlexusContainer container ):
+        cflowbelow( inContainer( container ) )
+        && activeCollectionOwnerReleased( component );
+
+    after( Object component, PlexusContainer container ):
+        activeCollectionOwnerReleasedWormhole( component, container )
     {
-        Set collections = (Set) collectionsByComponent.remove( component );
+        Set collections = (Set) container.collectionsByComponent.remove( component );
         if ( collections != null )
         {
             for ( Iterator it = collections.iterator(); it.hasNext(); )

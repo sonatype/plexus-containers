@@ -137,6 +137,7 @@ public class DefaultPlexusContainer
 
     protected boolean reloadingEnabled;
 
+    // TODO: Is there a more threadpool-friendly way to do this?
     private ThreadLocal lookupRealm = new ThreadLocal();
 
     public void addComponent( Object component, String role )
@@ -864,34 +865,41 @@ public class DefaultPlexusContainer
 
     public void dispose()
     {
-        disposeAllComponents();
-
-        boolean needToDisposeRealm = true;
-
-        if ( ( parentContainer != null ) && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) )
-        {
-            needToDisposeRealm = false;
-        }
-
-        if ( parentContainer != null )
-        {
-            parentContainer.removeChildContainer( getName() );
-
-            parentContainer = null;
-        }
-
         try
         {
-            containerRealm.setParentRealm( null );
+            disposeAllComponents();
 
-            if ( needToDisposeRealm )
+            boolean needToDisposeRealm = true;
+
+            if ( ( parentContainer != null ) && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) )
             {
-                classWorld.disposeRealm( containerRealm.getId() );
+                needToDisposeRealm = false;
+            }
+
+            if ( parentContainer != null )
+            {
+                parentContainer.removeChildContainer( getName() );
+
+                parentContainer = null;
+            }
+
+            try
+            {
+                containerRealm.setParentRealm( null );
+
+                if ( needToDisposeRealm )
+                {
+                    classWorld.disposeRealm( containerRealm.getId() );
+                }
+            }
+            catch ( NoSuchRealmException e )
+            {
+                getLogger().debug( "Failed to dispose realm for exiting container: " + getName(), e );
             }
         }
-        catch ( NoSuchRealmException e )
+        finally
         {
-            getLogger().debug( "Failed to dispose realm for exiting container: " + getName(), e );
+            lookupRealm.set( null );
         }
     }
 
