@@ -25,6 +25,8 @@ import org.codehaus.plexus.component.manager.KeepAliveSingletonComponentManager;
 import org.codehaus.plexus.component.manager.PerLookupComponentManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
+import org.codehaus.plexus.configuration.source.ConfigurationSource;
+import org.codehaus.plexus.configuration.source.ContainerConfigurationSource;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase;
@@ -75,6 +77,8 @@ public class DefaultContainerConfiguration
     private String containerConfiguration;
 
     private URL containerConfigurationURL;
+
+    private ConfigurationSource configurationSource;
 
     public ContainerConfiguration setName( String name )
     {
@@ -415,5 +419,24 @@ public class DefaultContainerConfiguration
         }
 
         return lifecycleHandlerManager;
+    }
+
+    // Configuration Sources
+
+    public ContainerConfiguration setConfigurationSource( ConfigurationSource configurationSource )
+    {
+        this.configurationSource = configurationSource;
+
+        return this;
+    }
+
+    public ConfigurationSource getConfigurationSource()
+    {
+        if ( configurationSource == null )
+        {
+            configurationSource = new ContainerConfigurationSource();
+        }
+
+        return configurationSource;
     }
 }

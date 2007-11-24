@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Component instantiation description.
  *
- * @author <a href="mailto:jason@zenplex.com">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter</a>
  * @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$

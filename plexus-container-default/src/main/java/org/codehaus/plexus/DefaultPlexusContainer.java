@@ -36,11 +36,7 @@ import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
-import org.codehaus.plexus.configuration.processor.ConfigurationProcessingException;
-import org.codehaus.plexus.configuration.processor.ConfigurationProcessor;
-import org.codehaus.plexus.configuration.processor.ConfigurationResourceNotFoundException;
-import org.codehaus.plexus.configuration.processor.DirectoryConfigurationResourceHandler;
-import org.codehaus.plexus.configuration.processor.FileConfigurationResourceHandler;
+import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationContext;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
@@ -52,7 +48,6 @@ import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
-import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.plexus.util.ReaderFactory;
@@ -66,7 +61,6 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -123,6 +117,8 @@ public class DefaultPlexusContainer
     protected ComponentComposerManager componentComposerManager;
 
     protected LoggerManager loggerManager;
+
+    protected ConfigurationSource configurationSource;
 
     // ----------------------------------------------------------------------------
     //
@@ -317,6 +313,8 @@ public class DefaultPlexusContainer
         }
 
         name = c.getName();
+
+        configurationSource = c.getConfigurationSource();
 
         // ----------------------------------------------------------------------------
         // ClassWorld
@@ -548,7 +546,6 @@ public class DefaultPlexusContainer
         throws ComponentLookupException
     {
         return lookupMap( role, hints, getLookupRealm() );
-
     }
 
     public Map lookupMap( Class role, List hints, ClassRealm realm )
@@ -796,14 +793,6 @@ public class DefaultPlexusContainer
         {
             throw new PlexusContainerException( "Error processing configuration", e );
         }
-        catch ( ConfigurationProcessingException e )
-        {
-            throw new PlexusContainerException( "Error processing configuration", e );
-        }
-        catch ( ConfigurationResourceNotFoundException e )
-        {
-            throw new PlexusContainerException( "Error processing configuration", e );
-        }
         catch ( PlexusConfigurationException e )
         {
             throw new PlexusContainerException( "Error configuring components", e );
@@ -972,7 +961,7 @@ public class DefaultPlexusContainer
     // TODO: put this in a separate helper class and turn into a component if possible, too big.
 
     protected void initializeConfiguration( ContainerConfiguration c )
-        throws ConfigurationProcessingException, ConfigurationResourceNotFoundException, PlexusConfigurationException,
+        throws PlexusConfigurationException,
         ContextException, IOException
     {
         // System userConfiguration
@@ -1018,8 +1007,6 @@ public class DefaultPlexusContainer
             if ( plexusConfiguration != null )
             {
                 configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
-
-                processConfigurationsDirectory();
             }
         }
 
@@ -1034,90 +1021,12 @@ public class DefaultPlexusContainer
             // Merger of bootstrapConfiguration and user userConfiguration
 
             configuration = PlexusConfigurationMerger.merge( userConfiguration, configuration );
-
-            processConfigurationsDirectory();
         }
-
-        // ---------------------------------------------------------------------------
-        // Now that we have the configuration we will use the ConfigurationProcessor
-        // to inline any external configuration instructions.
-        //
-        // At his point the variables in the configuration have already been
-        // interpolated so we can send in an empty Map because the containerContext
-        // values are already there.
-        // ---------------------------------------------------------------------------
-
-        ConfigurationProcessor p = new ConfigurationProcessor();
-
-        p.addConfigurationResourceHandler( new FileConfigurationResourceHandler() );
-
-        p.addConfigurationResourceHandler( new DirectoryConfigurationResourceHandler() );
-
-        configuration = p.process( configuration, Collections.EMPTY_MAP );
     }
 
     protected Reader getInterpolationConfigurationReader( Reader reader )
     {
         return new InterpolationFilterReader( reader, new ContextMapAdapter( containerContext ) );
-    }
-
-    /**
-     * Process any additional component configuration files that have been specified. The specified directory is scanned
-     * recursively so configurations can be within nested directories to help with component organization.
-     */
-    private void processConfigurationsDirectory()
-        throws PlexusConfigurationException
-    {
-        String s = configuration.getChild( "configurations-directory" ).getValue( null );
-
-        if ( s != null )
-        {
-            PlexusConfiguration componentsConfiguration = configuration.getChild( "components" );
-
-            File configurationsDirectory = new File( s );
-
-            if ( configurationsDirectory.exists() && configurationsDirectory.isDirectory() )
-            {
-                List componentConfigurationFiles;
-                try
-                {
-                    componentConfigurationFiles = FileUtils.getFiles( configurationsDirectory, "**/*.conf", "**/*.xml" );
-                }
-                catch ( IOException e )
-                {
-                    throw new PlexusConfigurationException( "Unable to locate configuration files", e );
-                }
-
-                for ( Iterator i = componentConfigurationFiles.iterator(); i.hasNext(); )
-                {
-                    File componentConfigurationFile = (File) i.next();
-
-                    Reader reader = null;
-                    try
-                    {
-                        reader = ReaderFactory.newXmlReader( componentConfigurationFile );
-                        PlexusConfiguration componentConfiguration = PlexusTools
-                            .buildConfiguration( componentConfigurationFile.getAbsolutePath(),
-                                getInterpolationConfigurationReader( reader ) );
-
-                        componentsConfiguration.addChild( componentConfiguration.getChild( "components" ) );
-                    }
-                    catch ( FileNotFoundException e )
-                    {
-                        throw new PlexusConfigurationException( "File " + componentConfigurationFile
-                            + " disappeared before processing", e );
-                    }
-                    catch ( IOException e )
-                    {
-                        throw new PlexusConfigurationException( "IO error while reading " + componentConfigurationFile, e );
-                    }
-                    finally
-                    {
-                        IOUtil.close( reader );
-                    }
-                }
-            }
-        }
     }
 
     public void addJarResource( File jar )
@@ -1422,5 +1331,10 @@ public class DefaultPlexusContainer
             return getLookupRealm();
         }
 
+    }
+
+    public ConfigurationSource getConfigurationSource()
+    {
+        return configurationSource;
     }
 }

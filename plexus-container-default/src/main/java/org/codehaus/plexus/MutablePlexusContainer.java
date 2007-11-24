@@ -27,6 +27,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -107,4 +108,6 @@ public interface MutablePlexusContainer
 
     Object lookup( String role, String roleHint, ClassRealm realm )
         throws ComponentLookupException;
+
+    ConfigurationSource getConfigurationSource();
 }

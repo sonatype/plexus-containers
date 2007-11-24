@@ -22,6 +22,8 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 import org.codehaus.plexus.util.StringUtils;
 
@@ -29,6 +31,8 @@ public class AutoConfigurePhase
     extends AbstractPhase
 {
     public static final String DEFAULT_CONFIGURATOR_ID = "default";
+
+    private ConfigurationSource configurationSource;
 
     public void execute( Object object,
                          ComponentManager manager,
@@ -46,10 +50,11 @@ public class AutoConfigurePhase
                 configuratorId = DEFAULT_CONFIGURATOR_ID;
             }
 
-            ComponentConfigurator componentConfigurator = (ComponentConfigurator) manager.getContainer().lookup( ComponentConfigurator.ROLE,
-                configuratorId, lookupRealm );
+            ComponentConfigurator componentConfigurator = (ComponentConfigurator) manager.getContainer().lookup( ComponentConfigurator.ROLE, configuratorId, lookupRealm );
 
-            if ( descriptor.hasConfiguration() )
+            PlexusConfiguration configuration = manager.getContainer().getConfigurationSource().getConfiguration( descriptor );
+
+            if ( configuration != null )
             {
                 ClassRealm realm = manager.getContainer().getComponentRealm( manager.getComponentDescriptor().getRealmId() );
 

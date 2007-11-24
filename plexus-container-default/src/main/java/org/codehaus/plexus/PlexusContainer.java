@@ -22,6 +22,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -557,5 +558,5 @@ public interface PlexusContainer
     ClassRealm getLookupRealm( Object component );
 
     void addComponent( Object component, String role )
-        throws ComponentRepositoryException;
+        throws ComponentRepositoryException;    
 }
