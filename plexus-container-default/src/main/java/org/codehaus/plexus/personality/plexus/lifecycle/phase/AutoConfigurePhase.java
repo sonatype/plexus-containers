@@ -58,7 +58,7 @@ public class AutoConfigurePhase
             {
                 ClassRealm realm = manager.getContainer().getComponentRealm( manager.getComponentDescriptor().getRealmId() );
 
-                componentConfigurator.configureComponent( object, manager.getComponentDescriptor().getConfiguration(), realm );
+                componentConfigurator.configureComponent( object, configuration, realm );
             }
         }
         catch ( ComponentLookupException e )
