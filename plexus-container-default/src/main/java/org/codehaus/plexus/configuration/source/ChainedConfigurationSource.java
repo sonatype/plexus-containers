@@ -9,12 +9,21 @@ import java.util.Iterator;
 /**
  * A configuration source that delegates to any number of underlying configuration sources.
  *
+ * If you are an application author and want to create a custom source of configuration for the components
+ * in your application then you would most likely want to create a chained configuration source where you
+ * can decide the order of processing, but still have the container perform its default behavior.
+ *
  * @author Jason van Zyl
  */
 public class ChainedConfigurationSource
     implements ConfigurationSource
 {
     private List configurationSources;
+
+    public ChainedConfigurationSource( List configurationSources )
+    {
+        this.configurationSources = configurationSources;
+    }
 
     public PlexusConfiguration getConfiguration( ComponentDescriptor componentDescriptor )
     {

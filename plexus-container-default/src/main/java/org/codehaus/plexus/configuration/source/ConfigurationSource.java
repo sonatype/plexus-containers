@@ -15,11 +15,3 @@ public interface ConfigurationSource
 {
     PlexusConfiguration getConfiguration( ComponentDescriptor componentDescriptor );
 }
-
-/*
-
-We want to be able to read in a single application configuration, which holds all the configuration
-necessary for a particlar set of components.
-
-
-*/

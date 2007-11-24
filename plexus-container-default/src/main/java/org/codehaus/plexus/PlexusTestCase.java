@@ -91,9 +91,21 @@ public abstract class PlexusTestCase
             containerConfiguration.setContainerConfiguration( resource );
         }
 
+        customizeContainerConfiguration( containerConfiguration );
+
         container = new DefaultPlexusContainer( containerConfiguration );
     }
 
+    /**
+     * Allow custom test case implementations do augment the default container configuration before
+     * executing tests.
+     * 
+     * @param containerConfiguration
+     */
+    protected void customizeContainerConfiguration( ContainerConfiguration containerConfiguration )
+    {
+    }
+    
     protected void customizeContext( Context context )
         throws Exception
     {
