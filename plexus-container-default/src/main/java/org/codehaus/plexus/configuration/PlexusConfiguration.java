@@ -53,6 +53,14 @@ public interface PlexusConfiguration
      */
     String getValue( String defaultValue );
 
+    /**
+     * Set the value of a configuration element and return the PlexusConfiguration object
+     * so that further operations can be carried out.
+     * @param value
+     * @return
+     */
+    PlexusConfiguration setValue( String value );
+
     // ----------------------------------------------------------------------
     // Attribute handling
     // ----------------------------------------------------------------------
@@ -125,6 +133,21 @@ public interface PlexusConfiguration
      * @param configuration the child configuration to add
      */
     void addChild( PlexusConfiguration configuration );
+
+    /**
+     * Add a child element with a given name and return the newly created element.
+     * @param name
+     * @return
+     */
+    PlexusConfiguration addChild( String name );
+
+    /**
+     * Add a child element with a given name, and given value and return the
+     * newly created element.
+     * @param name
+     * @return
+     */
+    PlexusConfiguration addChild( String name, String value );
 
     /**
      * Returns the number of directly children under this configuration.

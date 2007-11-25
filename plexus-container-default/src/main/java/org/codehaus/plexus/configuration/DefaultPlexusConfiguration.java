@@ -1,4 +1,4 @@
-package org.codehaus.plexus.configuration.xml;
+package org.codehaus.plexus.configuration;
 
 /*
  * Copyright 2001-2006 Codehaus Foundation.
@@ -17,27 +17,28 @@ package org.codehaus.plexus.configuration.xml;
  */
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * @version $Id$
  */
-public class XmlPlexusConfiguration
+public class DefaultPlexusConfiguration
     implements PlexusConfiguration
 {
     private Xpp3Dom dom;
 
-    public XmlPlexusConfiguration()
+    public DefaultPlexusConfiguration()
     {
         this( "configuration" );
     }
 
-    public XmlPlexusConfiguration( String name )
+    public DefaultPlexusConfiguration( String name )
     {
         this.dom = new Xpp3Dom( name );
     }
 
-    public XmlPlexusConfiguration( Xpp3Dom dom )
+    public DefaultPlexusConfiguration( Xpp3Dom dom )
     {
         this.dom = dom;
     }

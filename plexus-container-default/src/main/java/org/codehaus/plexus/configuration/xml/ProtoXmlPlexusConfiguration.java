@@ -67,6 +67,22 @@ public class ProtoXmlPlexusConfiguration
         store( config );
     }
 
+    public PlexusConfiguration addChild( String name )
+    {
+        XmlPlexusConfiguration config = read();
+        PlexusConfiguration configuration = config.addChild( name );
+        store( config );
+        return configuration;
+    }
+
+    public PlexusConfiguration addChild( String name, String value )
+    {
+        XmlPlexusConfiguration config = read();
+        PlexusConfiguration configuration = config.addChild( name ).setValue( value );
+        store( config );
+        return configuration;
+    }
+
     public String getAttribute( String paramName )
         throws PlexusConfigurationException
     {
@@ -124,6 +140,13 @@ public class ProtoXmlPlexusConfiguration
         throws PlexusConfigurationException
     {
         return read().getValue();
+    }
+
+    public PlexusConfiguration setValue( String value )
+    {
+        read().setValue( value );
+
+        return this;
     }
 
     public String getValue( String defaultValue )
