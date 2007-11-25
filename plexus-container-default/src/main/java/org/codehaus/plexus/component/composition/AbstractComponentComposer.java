@@ -24,8 +24,8 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentRequirementList;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.logging.Logger;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -39,8 +39,6 @@ import java.util.Set;
 /**
  * @author Jason van Zyl
  * @version $Id$
- * @todo just pass around a containerContext {component,descriptor,container}
- * @todo cleanup error messaging, pull out of autowire composer and generalize
  */
 public abstract class AbstractComponentComposer
     extends AbstractLogEnabled
@@ -196,6 +194,18 @@ public abstract class AbstractComponentComposer
                 assignment = container.lookupMap( role, roleHints, lookupRealm );
 
                 componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
+            }
+            else if ( Logger.class.equals( clazz ) )
+            {
+                assignment = container.getLoggerManager().getLoggerForComponent( hostComponentDescriptor.getRole() );
+
+                componentDescriptors = null;
+            }
+            else if ( PlexusContainer.class.equals( clazz ) )
+            {
+                assignment = container;
+
+                componentDescriptors = null;
             }
             else
             {

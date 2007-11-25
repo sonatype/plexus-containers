@@ -19,7 +19,6 @@ import org.codehaus.plexus.component.factory.DefaultComponentFactoryManager;
 import org.codehaus.plexus.component.manager.ClassicSingletonComponentManager;
 import org.codehaus.plexus.component.manager.ComponentLookupManagerComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
-import org.codehaus.plexus.component.manager.ContainerComponentManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
 import org.codehaus.plexus.component.manager.KeepAliveSingletonComponentManager;
 import org.codehaus.plexus.component.manager.PerLookupComponentManager;
@@ -83,8 +82,6 @@ public class DefaultContainerConfiguration
     public ContainerConfiguration setName( String name )
     {
         this.name = name;
-
-        
 
         return this;
     }
@@ -275,8 +272,6 @@ public class DefaultContainerConfiguration
             componentManagerManager.addComponentManager( new ClassicSingletonComponentManager() );
 
             componentManagerManager.addComponentManager( new KeepAliveSingletonComponentManager() );
-
-            componentManagerManager.addComponentManager( new ContainerComponentManager() );
 
             componentManagerManager.addComponentManager( new ComponentLookupManagerComponentManager() );
         }

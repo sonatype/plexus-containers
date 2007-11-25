@@ -28,8 +28,8 @@ public class DefaultComponentA
 {
     private ComponentB componentB;
 
-
     private String host;
+
     private String port;
 
     // Just so we can retrieve the value of componentB for testing. */

@@ -2,12 +2,6 @@
   <!-- Internal components -->
   <components>
     <!-- This is for container requirements but we should do this programmatically -->
-    <component>
-      <role>org.codehaus.plexus.PlexusContainer</role>
-      <implementation>org.codehaus.plexus.DefaultPlexusContainer</implementation>
-      <lifecycle-handler>passive</lifecycle-handler>
-      <instantiation-strategy>container</instantiation-strategy>
-    </component>
     <!-- Component Configurators -->
     <component>
       <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
