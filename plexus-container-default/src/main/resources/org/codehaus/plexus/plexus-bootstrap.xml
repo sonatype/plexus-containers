@@ -1,7 +1,5 @@
 <plexus>
-  <!-- Internal components -->
   <components>
-    <!-- This is for container requirements but we should do this programmatically -->
     <!-- Component Configurators -->
     <component>
       <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
