@@ -22,7 +22,6 @@ import org.codehaus.plexus.context.DefaultContext;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +34,9 @@ import java.util.Map;
 public abstract class PlexusTestCase
     extends TestCase
 {
-    protected PlexusContainer container;
+    private PlexusContainer container;
 
-    protected Map context;
+    private Map context;
 
     private static String basedir;
 
@@ -45,7 +44,11 @@ public abstract class PlexusTestCase
         throws Exception
     {
         basedir = getBasedir();
+    }
 
+    protected void setupContainer()
+        throws Exception
+    {
         // ----------------------------------------------------------------------------
         // Context Setup
         // ----------------------------------------------------------------------------
@@ -123,7 +126,13 @@ public abstract class PlexusTestCase
     }
 
     protected PlexusContainer getContainer()
+        throws Exception
     {
+        if ( container == null )
+        {
+            setupContainer();
+        }
+
         return container;
     }
 
@@ -237,6 +246,7 @@ public abstract class PlexusTestCase
         }
 
         basedir = System.getProperty( "basedir" );
+
         if ( basedir == null )
         {
             basedir = new File( "" ).getAbsolutePath();

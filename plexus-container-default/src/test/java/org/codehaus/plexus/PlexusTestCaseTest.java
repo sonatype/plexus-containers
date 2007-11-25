@@ -85,7 +85,7 @@ public class PlexusTestCaseTest
             }
         };
 
-        tc.setUp();
+        tc.setupContainer();
 
         // Assert that the load on start component has started.
 
