@@ -38,6 +38,8 @@ public class ComponentSetDescriptor
 
     private String id;
 
+    private String source;
+
     /**
      * Returns a list of components in this set.
      * @return a list of components
@@ -155,5 +157,15 @@ public class ComponentSetDescriptor
         sb.append( "---" );
 
         return sb.toString();
+    }
+
+    public String getSource()
+    {
+        return source;
+    }
+
+    public void setSource( String source )
+    {
+        this.source = source;
     }
 }

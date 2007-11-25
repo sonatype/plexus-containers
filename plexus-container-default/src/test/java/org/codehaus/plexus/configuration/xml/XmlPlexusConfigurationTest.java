@@ -91,5 +91,16 @@ public final class XmlPlexusConfigurationTest
 // TODO: uncomment once maven can test the latest plexus-utils
 //        assertEquals( "<singleton attribute=\"attribute\"/>\n", c.getChild( "singleton" ).toString() );
     }
+
+    public void testProgrammaticConfigurationCreation()
+        throws Exception
+    {
+        String viewRoot = "/path/to/viewRoot";
+        
+        PlexusConfiguration c = new XmlPlexusConfiguration( "configuration" )
+            .addChild( "viewRoot", viewRoot );
+
+        assertEquals( viewRoot, c.getChild( "viewRoot" ).getValue() );
+    }
 }
 

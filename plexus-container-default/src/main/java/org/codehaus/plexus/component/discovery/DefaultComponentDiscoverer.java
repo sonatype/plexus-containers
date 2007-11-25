@@ -66,6 +66,7 @@ public class DefaultComponentDiscoverer
             }
 
             componentDescriptor.setSource( source );
+
             componentDescriptor.setComponentType( "plexus" );
 
             componentDescriptors.add( componentDescriptor );
@@ -73,7 +74,7 @@ public class DefaultComponentDiscoverer
 
         componentSetDescriptor.setComponents( componentDescriptors );
 
-        // TODO: read and store the dependencies
+        componentSetDescriptor.setSource( source );
 
         return componentSetDescriptor;
     }
