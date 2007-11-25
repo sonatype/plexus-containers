@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Contains a set of ComponentDescriptors and the set's dependencies.
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */

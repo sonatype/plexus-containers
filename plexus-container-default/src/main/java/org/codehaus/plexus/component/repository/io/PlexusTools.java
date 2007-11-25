@@ -32,7 +32,7 @@ import java.util.LinkedList;
 
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl 
  * @version $Id$
  * @todo these are all really tools for dealing with xml configurations so they
  * should be packaged as such.

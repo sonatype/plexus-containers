@@ -19,7 +19,7 @@ package org.codehaus.plexus.personality.plexus.lifecycle.phase;
 /**
  *
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  *
  * @version $Id$
  */

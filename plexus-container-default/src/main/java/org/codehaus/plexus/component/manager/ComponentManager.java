@@ -30,7 +30,7 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
  * manager deals with only one component class, though may handle multiple
  * instances of this class.
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  *
  * @version $Id$
  */

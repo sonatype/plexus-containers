@@ -22,7 +22,7 @@ import org.codehaus.plexus.component.repository.io.PlexusTools;
 import java.io.StringReader;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @version $Id$
  */
 public abstract class ConfigurationTestHelper

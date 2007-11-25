@@ -31,7 +31,7 @@ import java.util.List;
 /**
  *
  * 
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  *
  * @version $Id$
  */

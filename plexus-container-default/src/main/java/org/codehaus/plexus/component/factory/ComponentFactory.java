@@ -22,7 +22,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /** A <code>ServiceFactory</code> is responsible for instantiating a component.
  *
- *  @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ *  @author Jason van Zyl
  *  @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  *
  *  @version $Id$

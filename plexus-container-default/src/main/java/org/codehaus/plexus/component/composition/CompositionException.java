@@ -19,7 +19,7 @@ package org.codehaus.plexus.component.composition;
 /**
  * Thrown when component composition goes awry.
  * 
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl 
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */

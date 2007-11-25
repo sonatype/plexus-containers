@@ -22,7 +22,7 @@ import junit.framework.TestCase;
  * This is the start of the sketch which outlines some of the things
  * I would like to do with components during runtime.
  *
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  *
  * @version $Id$
  */

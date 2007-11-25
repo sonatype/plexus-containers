@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 import java.lang.reflect.Field;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @version $Id$
  */
 public class DefaultComponentComposerUsingSuperclassesTest

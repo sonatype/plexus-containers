@@ -21,7 +21,7 @@ package org.codehaus.plexus.component.repository;
  * properly, for example, a required jar file. See Apache Maven for an
  * example of a dependency in action.
  * 
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
  */

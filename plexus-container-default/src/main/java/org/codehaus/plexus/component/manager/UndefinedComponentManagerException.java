@@ -17,7 +17,7 @@ package org.codehaus.plexus.component.manager;
  */
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
+ * @author Jason van Zyl
  * @version $Id$
  */
 public class UndefinedComponentManagerException
