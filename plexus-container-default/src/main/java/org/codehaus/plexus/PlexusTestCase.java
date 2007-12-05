@@ -16,7 +16,6 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.DefaultContext;
 
@@ -24,6 +23,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import junit.framework.TestCase;
 
 /**
  * @author Jason van Zyl
@@ -47,7 +48,6 @@ public abstract class PlexusTestCase
     }
 
     protected void setupContainer()
-        throws Exception
     {
         // ----------------------------------------------------------------------------
         // Context Setup
@@ -96,21 +96,28 @@ public abstract class PlexusTestCase
 
         customizeContainerConfiguration( containerConfiguration );
 
-        container = new DefaultPlexusContainer( containerConfiguration );
+        try
+        {
+            container = new DefaultPlexusContainer( containerConfiguration );
+        }
+        catch ( PlexusContainerException e )
+        {
+            e.printStackTrace();
+            fail( "Failed to create plexus container." );
+        }
     }
 
     /**
      * Allow custom test case implementations do augment the default container configuration before
      * executing tests.
-     * 
+     *
      * @param containerConfiguration
      */
     protected void customizeContainerConfiguration( ContainerConfiguration containerConfiguration )
     {
     }
-    
+
     protected void customizeContext( Context context )
-        throws Exception
     {
     }
 
@@ -126,7 +133,6 @@ public abstract class PlexusTestCase
     }
 
     protected PlexusContainer getContainer()
-        throws Exception
     {
         if ( container == null )
         {
@@ -154,7 +160,6 @@ public abstract class PlexusTestCase
     }
 
     protected String getConfigurationName( String subname )
-        throws Exception
     {
         return getClass().getName().replace( '.', '/' ) + ".xml";
     }
