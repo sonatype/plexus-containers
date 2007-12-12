@@ -714,8 +714,8 @@ public class DefaultPlexusContainer
             }
             else
             {
-                getLogger()
-                    .warn( "Component manager not found for returned component. Ignored. component=" + component );
+                // This needs to be tracked down but the user doesn't need to see this
+                getLogger().debug( "Component manager not found for returned component. Ignored. component=" + component );
             }
         }
         else
