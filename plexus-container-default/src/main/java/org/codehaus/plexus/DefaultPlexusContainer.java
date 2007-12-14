@@ -1332,6 +1332,11 @@ public class DefaultPlexusContainer
         }
 
     }
+    
+    public void setConfigurationSource( ConfigurationSource configurationSource ) 
+    {
+        this.configurationSource = configurationSource;
+    }
 
     public ConfigurationSource getConfigurationSource()
     {

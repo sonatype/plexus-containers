@@ -41,4 +41,9 @@ public class ChainedConfigurationSource
 
         return null;
     }
+    
+    public List getConfigurationSources()
+    {
+        return configurationSources;
+    }
 }

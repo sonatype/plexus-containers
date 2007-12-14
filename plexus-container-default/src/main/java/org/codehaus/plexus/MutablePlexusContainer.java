@@ -75,7 +75,11 @@ public interface MutablePlexusContainer
     void setLoggerManager( LoggerManager loggerManager );
 
     Logger getLogger();
+    
+    void setConfigurationSource( ConfigurationSource configurationSource );
 
+    ConfigurationSource getConfigurationSource();
+    
     // Configuration
 
     void setConfiguration( PlexusConfiguration configuration );
@@ -109,5 +113,4 @@ public interface MutablePlexusContainer
     Object lookup( String role, String roleHint, ClassRealm realm )
         throws ComponentLookupException;
 
-    ConfigurationSource getConfigurationSource();
 }

@@ -1,5 +1,8 @@
 package org.codehaus.plexus;
 
+import java.net.URL;
+import java.util.Map;
+
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
@@ -25,7 +28,6 @@ import org.codehaus.plexus.component.manager.PerLookupComponentManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
-import org.codehaus.plexus.configuration.source.ContainerConfigurationSource;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase;
@@ -34,6 +36,7 @@ import org.codehaus.plexus.container.initialization.InitializeComponentFactoryMa
 import org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase;
+import org.codehaus.plexus.container.initialization.InitializeConfigurationSourcePhase;
 import org.codehaus.plexus.container.initialization.InitializeContextPhase;
 import org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase;
@@ -55,9 +58,6 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.LogEnablePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.ServiceablePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.StartPhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.StopPhase;
-
-import java.net.URL;
-import java.util.Map;
 
 /** @author Jason van Zyl */
 public class DefaultContainerConfiguration
@@ -186,6 +186,7 @@ public class DefaultContainerConfiguration
             new InitializeComponentFactoryManagerPhase(),
             new InitializeComponentLookupManagerPhase(),
             new InitializeComponentComposerPhase(),
+            new InitializeConfigurationSourcePhase(),
             new InitializeLoggerManagerPhase(),
             new InitializeContextPhase(),
             new InitializeSystemPropertiesPhase(),
@@ -427,11 +428,6 @@ public class DefaultContainerConfiguration
 
     public ConfigurationSource getConfigurationSource()
     {
-        if ( configurationSource == null )
-        {
-            configurationSource = new ContainerConfigurationSource();
-        }
-
         return configurationSource;
     }
 }
