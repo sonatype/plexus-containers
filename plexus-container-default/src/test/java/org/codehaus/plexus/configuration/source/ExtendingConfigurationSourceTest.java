@@ -21,16 +21,13 @@ public class ExtendingConfigurationSourceTest
 
         ChainedConfigurationSource ccs = (ChainedConfigurationSource) cs;
 
+        // we have 3 config sources overall
         assertEquals( 3, ccs.getConfigurationSources().size() );
 
+        // and the last in the source list is container source
         assertEquals( ContainerConfigurationSource.class.getName(), ccs
-            .getConfigurationSources().get( 0 ).getClass().getName() );
-
-        assertEquals( ADummyConfigurationSource.class.getName(), ccs
-            .getConfigurationSources().get( 1 ).getClass().getName() );
-
-        assertEquals( AnotherDummyConfigurationSource.class.getName(), ccs
             .getConfigurationSources().get( 2 ).getClass().getName() );
+
     }
 
 }

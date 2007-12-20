@@ -27,7 +27,10 @@ import org.codehaus.plexus.configuration.source.ChainedConfigurationSource;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.configuration.source.ContainerConfigurationSource;
 
-/** @author Jason van Zyl */
+/**
+ * @author Jason van Zyl
+ * @author cstamas
+ */
 public class InitializeConfigurationSourcePhase
     extends AbstractCoreComponentInitializationPhase
 {
@@ -40,7 +43,7 @@ public class InitializeConfigurationSourcePhase
         // The configurationSource may have been set programmatically so we need
         // to check. If it hasn't then we will try to look up a configurationSource
         // that may have been specified in the plexus.xml file. If that doesn't
-        // work then we'll programmatcially stuff in the console logger.
+        // work then we'll programmatcially stuff in the default container config source.
         // ----------------------------------------------------------------------
 
         if ( configurationSource == null )
@@ -68,16 +71,18 @@ public class InitializeConfigurationSourcePhase
                 else
                 {
                     // extending
-                    
                     List userConfigurationSources = context.getContainer().lookupList( ConfigurationSource.class );
 
                     if ( userConfigurationSources.size() > 0 )
                     {
                         List configurationSources = new ArrayList( userConfigurationSources.size() + 1 );
 
-                        configurationSources.add( new ContainerConfigurationSource() );
-
+                        // adding user provied ones to be able to interfere
                         configurationSources.addAll( userConfigurationSources );
+
+                        // at the end adding the container source, to make sure config will be returned
+                        // from plexus.xml if no user interference is given
+                        configurationSources.add( new ContainerConfigurationSource() );
 
                         configurationSource = new ChainedConfigurationSource( configurationSources );
 
