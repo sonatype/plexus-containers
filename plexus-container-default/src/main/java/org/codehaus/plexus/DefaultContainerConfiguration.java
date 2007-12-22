@@ -36,12 +36,13 @@ import org.codehaus.plexus.container.initialization.InitializeComponentFactoryMa
 import org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase;
-import org.codehaus.plexus.container.initialization.InitializeConfigurationSourcePhase;
+import org.codehaus.plexus.container.initialization.InitializeContainerConfigurationSourcePhase;
 import org.codehaus.plexus.container.initialization.InitializeContextPhase;
 import org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeResourcesPhase;
 import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase;
+import org.codehaus.plexus.container.initialization.InitializeUserConfigurationSourcePhase;
 import org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase;
 import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
@@ -186,12 +187,13 @@ public class DefaultContainerConfiguration
             new InitializeComponentFactoryManagerPhase(),
             new InitializeComponentLookupManagerPhase(),
             new InitializeComponentComposerPhase(),
-            new InitializeConfigurationSourcePhase(),
+            new InitializeContainerConfigurationSourcePhase(),
             new InitializeLoggerManagerPhase(),
             new InitializeContextPhase(),
             new InitializeSystemPropertiesPhase(),
             new InitializeComponentDiscovererManagerPhase(),
             new ComponentDiscoveryPhase(),
+            new InitializeUserConfigurationSourcePhase(),
             new StartLoadOnStartComponentsPhase(),
 
         };

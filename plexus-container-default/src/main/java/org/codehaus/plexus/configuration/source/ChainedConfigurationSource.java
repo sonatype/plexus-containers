@@ -1,18 +1,17 @@
 package org.codehaus.plexus.configuration.source;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
+
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
- * A configuration source that delegates to any number of underlying configuration sources.
- *
- * If you are an application author and want to create a custom source of configuration for the components
- * in your application then you would most likely want to create a chained configuration source where you
- * can decide the order of processing, but still have the container perform its default behavior.
- *
+ * A configuration source that delegates to any number of underlying configuration sources. If you are an application
+ * author and want to create a custom source of configuration for the components in your application then you would most
+ * likely want to create a chained configuration source where you can decide the order of processing, but still have the
+ * container perform its default behavior.
+ * 
  * @author Jason van Zyl
  */
 public class ChainedConfigurationSource
@@ -41,7 +40,7 @@ public class ChainedConfigurationSource
 
         return null;
     }
-    
+
     public List getConfigurationSources()
     {
         return configurationSources;
