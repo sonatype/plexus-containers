@@ -145,7 +145,7 @@ public abstract class AbstractComponentComposer
 
                 Object[] array = (Object[]) Array.newInstance( clazz, dependencies.size() );
 
-                componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
+                componentDescriptors = container.getComponentDescriptorList( role, roleHints, lookupRealm );
 
                 try
                 {
@@ -175,7 +175,7 @@ public abstract class AbstractComponentComposer
             {
                 assignment = new ComponentMap( container, lookupRealm, role, roleHints, hostComponentDescriptor.getHumanReadableKey() );
 
-                componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
+                componentDescriptors = container.getComponentDescriptorList( role, roleHints, lookupRealm );
             }
             // List.class.isAssignableFrom( clazz ) doesn't make sense, since List.class doesn't really
             // have a meaningful superclass other than Collection.class, which we'll handle next.
@@ -183,7 +183,7 @@ public abstract class AbstractComponentComposer
             {
                 assignment = new ComponentList( container, lookupRealm, role, roleHints, hostComponentDescriptor.getHumanReadableKey() );
 
-                componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
+                componentDescriptors = container.getComponentDescriptorList( role, roleHints, lookupRealm );
             }
             // Set.class.isAssignableFrom( clazz ) doesn't make sense, since Set.class doesn't really
             // have a meaningful superclass other than Collection.class, and that would make this
@@ -193,7 +193,7 @@ public abstract class AbstractComponentComposer
             {
                 assignment = container.lookupMap( role, roleHints, lookupRealm );
 
-                componentDescriptors = container.getComponentDescriptorList( role, lookupRealm );
+                componentDescriptors = container.getComponentDescriptorList( role, roleHints, lookupRealm );
             }
             else if ( Logger.class.equals( clazz ) )
             {

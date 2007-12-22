@@ -347,6 +347,15 @@ public interface PlexusContainer
     List getComponentDescriptorList( String role, ClassRealm componentRealm );
 
     /**
+     * Returns a List of ComponentDescriptors with the given role in a requested order driven by
+     * roleHints list. Searches up the hierarchy until all are found, an
+     * empty List if none are found.
+     * @param role a non-unique key for the desired components
+     * @return a List of component descriptors
+     */
+    List getComponentDescriptorList( String role, List roleHints, ClassRealm componentRealm );
+
+    /**
      * Adds a component descriptor to this container. componentDescriptor should have realmId set.
      * @param componentDescriptor
      * @throws ComponentRepositoryException

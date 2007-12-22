@@ -151,8 +151,7 @@ public class DefaultPlexusContainer
     }
 
     /**
-     * Used for getLookupRealm for threads when the threadlocal
-     * doesn't contain a value.
+     * Used for getLookupRealm for threads when the threadlocal doesn't contain a value.
      */
     private ClassRealm staticLookupRealm;
 
@@ -209,7 +208,7 @@ public class DefaultPlexusContainer
     // only works in Maven where artifacts are downloaded
     // ----------------------------------------------------------------------------
 
-    //TODO This needs to be connected to the parent realm most likely
+    // TODO This needs to be connected to the parent realm most likely
 
     public ClassRealm createComponentRealm( String id, List jars )
         throws PlexusContainerException
@@ -273,9 +272,9 @@ public class DefaultPlexusContainer
     // Make sure the lookups and classloaders are connected
     //
     public PlexusContainer createChildContainer( String name, Set urls )
-    //    throws PlexusContainerException
+    // throws PlexusContainerException
     {
-    //    return createChildContainer( name, new ClassRealm( name, urls ) );
+        // return createChildContainer( name, new ClassRealm( name, urls ) );
         return null;
     }
 
@@ -288,11 +287,9 @@ public class DefaultPlexusContainer
         }
 
         ContainerConfiguration c = new DefaultContainerConfiguration()
-            .setName( name )
-            .setParentContainer( this )
-            .setClassWorld( new ClassWorld( name, realm ) );
+            .setName( name ).setParentContainer( this ).setClassWorld( new ClassWorld( name, realm ) );
 
-        PlexusContainer childContainer=new DefaultPlexusContainer( c );
+        PlexusContainer childContainer = new DefaultPlexusContainer( c );
         childContainers.put( name, childContainer );
 
         return childContainer;
@@ -417,6 +414,7 @@ public class DefaultPlexusContainer
             IOUtil.close( configurationReader );
         }
     }
+
     // ----------------------------------------------------------------------------
     // Lookup
     // ----------------------------------------------------------------------------
@@ -594,7 +592,6 @@ public class DefaultPlexusContainer
         return (PlexusContainer) childContainers.get( name );
     }
 
-
     // XXX remove
     public void setName( String name )
     {
@@ -686,6 +683,32 @@ public class DefaultPlexusContainer
         return new ArrayList( componentDescriptors.values() );
     }
 
+    public List getComponentDescriptorList( String role, List roleHints, ClassRealm realm )
+    {
+        if ( roleHints != null )
+        {
+            ArrayList descriptors = new ArrayList( roleHints.size() );
+
+            for ( Iterator i = roleHints.iterator(); i.hasNext(); )
+            {
+                String roleHint = (String) i.next();
+
+                ComponentDescriptor cd = getComponentDescriptor( role, roleHint, realm );
+
+                if ( cd != null )
+                {
+                    descriptors.add( cd );
+                }
+            }
+            return descriptors;
+        }
+        else
+        {
+            return getComponentDescriptorList( role, realm );
+        }
+
+    }
+
     public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         throws ComponentRepositoryException
     {
@@ -715,7 +738,8 @@ public class DefaultPlexusContainer
             else
             {
                 // This needs to be tracked down but the user doesn't need to see this
-                getLogger().debug( "Component manager not found for returned component. Ignored. component=" + component );
+                getLogger().debug(
+                    "Component manager not found for returned component. Ignored. component=" + component );
             }
         }
         else
@@ -810,8 +834,12 @@ public class DefaultPlexusContainer
     {
         ContainerInitializationPhase[] initPhases = containerConfiguration.getInitializationPhases();
 
-        ContainerInitializationContext initializationContext =
-            new ContainerInitializationContext( this, classWorld, containerRealm, configuration, containerConfiguration );
+        ContainerInitializationContext initializationContext = new ContainerInitializationContext(
+            this,
+            classWorld,
+            containerRealm,
+            configuration,
+            containerConfiguration );
 
         for ( int i = 0; i < initPhases.length; i++ )
         {
@@ -823,7 +851,8 @@ public class DefaultPlexusContainer
             }
             catch ( Exception e )
             {
-                throw new PlexusContainerException( "Error initializaing container in " + phase.getClass().getName() + ".", e );
+                throw new PlexusContainerException( "Error initializaing container in " + phase.getClass().getName()
+                    + ".", e );
             }
         }
     }
@@ -831,7 +860,8 @@ public class DefaultPlexusContainer
     // We need to be aware of dependencies between discovered components when the listed component
     // as the discovery listener itself depends on components that need to be discovered.
     public List discoverComponents( ClassRealm classRealm )
-        throws PlexusConfigurationException, ComponentRepositoryException
+        throws PlexusConfigurationException,
+            ComponentRepositoryException
     {
         return discoverComponents( classRealm, false );
     }
@@ -840,7 +870,8 @@ public class DefaultPlexusContainer
      * @see org.codehaus.plexus.MutablePlexusContainer#discoverComponents(org.codehaus.plexus.classworlds.realm.ClassRealm,boolean)
      */
     public List discoverComponents( ClassRealm classRealm, boolean override )
-        throws PlexusConfigurationException, ComponentRepositoryException
+        throws PlexusConfigurationException,
+            ComponentRepositoryException
     {
         return ComponentDiscoveryPhase.discoverComponents( this, classRealm, override );
     }
@@ -860,7 +891,8 @@ public class DefaultPlexusContainer
 
             boolean needToDisposeRealm = true;
 
-            if ( ( parentContainer != null ) && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) )
+            if ( ( parentContainer != null )
+                && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) )
             {
                 needToDisposeRealm = false;
             }
@@ -962,7 +994,8 @@ public class DefaultPlexusContainer
 
     protected void initializeConfiguration( ContainerConfiguration c )
         throws PlexusConfigurationException,
-        ContextException, IOException
+            ContextException,
+            IOException
     {
         // System userConfiguration
 
@@ -985,8 +1018,9 @@ public class DefaultPlexusContainer
                 + "This is highly irregular, your plexus JAR is most likely corrupt. Realms:" + realmStack );
         }
 
-        PlexusConfiguration bootstrapConfiguration = PlexusTools
-            .buildConfiguration( PlexusConstants.BOOTSTRAP_CONFIGURATION, ReaderFactory.newXmlReader( is ) );
+        PlexusConfiguration bootstrapConfiguration = PlexusTools.buildConfiguration(
+            PlexusConstants.BOOTSTRAP_CONFIGURATION,
+            ReaderFactory.newXmlReader( is ) );
 
         // Some of this could probably be collapsed as having a plexus.xml in your
         // META-INF/plexus directory is probably a better solution then specifying
@@ -1014,9 +1048,9 @@ public class DefaultPlexusContainer
         {
             // User userConfiguration
 
-            PlexusConfiguration userConfiguration = PlexusTools
-                .buildConfiguration( "<User Specified Configuration Reader>",
-                    getInterpolationConfigurationReader( configurationReader ) );
+            PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration(
+                "<User Specified Configuration Reader>",
+                getInterpolationConfigurationReader( configurationReader ) );
 
             // Merger of bootstrapConfiguration and user userConfiguration
 
@@ -1262,10 +1296,8 @@ public class DefaultPlexusContainer
     {
         if ( getContainerRealm().getId().equals( realm.getId() ) )
         {
-            throw new IllegalArgumentException(
-                                                "Cannot remove container realm: "
-                                                                + realm.getId()
-                                                                + "\n(trying to remove container realm as if it were a component realm)." );
+            throw new IllegalArgumentException( "Cannot remove container realm: " + realm.getId()
+                + "\n(trying to remove container realm as if it were a component realm)." );
         }
 
         componentRepository.removeComponentRealm( realm );
@@ -1316,7 +1348,6 @@ public class DefaultPlexusContainer
         return is;
     }
 
-
     /**
      * Utility method to get a default lookup realm for a component.
      */
@@ -1332,8 +1363,8 @@ public class DefaultPlexusContainer
         }
 
     }
-    
-    public void setConfigurationSource( ConfigurationSource configurationSource ) 
+
+    public void setConfigurationSource( ConfigurationSource configurationSource )
     {
         this.configurationSource = configurationSource;
     }

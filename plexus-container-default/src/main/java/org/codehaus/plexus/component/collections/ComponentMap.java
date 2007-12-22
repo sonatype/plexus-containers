@@ -21,6 +21,8 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -29,8 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author Jason van Zyl
- * FIXME: [jdcasey] We need to review the efficiency (in speed and memory) of this collection...
+ * @author Jason van Zyl FIXME: [jdcasey] We need to review the efficiency (in speed and memory) of this collection...
  */
 public class ComponentMap
     extends AbstractComponentCollection
@@ -38,11 +39,7 @@ public class ComponentMap
 {
     private Map components;
 
-    public ComponentMap( PlexusContainer container,
-                         ClassRealm realm,
-                         String role,
-                         List roleHints,
-                         String hostComponent )
+    public ComponentMap( PlexusContainer container, ClassRealm realm, String role, List roleHints, String hostComponent )
     {
         super( container, realm, role, roleHints, hostComponent );
     }
@@ -84,17 +81,16 @@ public class ComponentMap
         return null;
     }
 
-    public Object put( Object key,
-                       Object value )
+    public Object put( Object key, Object value )
     {
-        throw new UnsupportedOperationException(
-            "You cannot modify this map. This map is a requirement of " + hostComponent + " and managed by the container." );
+        throw new UnsupportedOperationException( "You cannot modify this map. This map is a requirement of "
+            + hostComponent + " and managed by the container." );
     }
 
     public void putAll( Map map )
     {
-        throw new UnsupportedOperationException(
-            "You cannot modify this map. This map is a requirement of " + hostComponent + " and managed by the container." );
+        throw new UnsupportedOperationException( "You cannot modify this map. This map is a requirement of "
+            + hostComponent + " and managed by the container." );
     }
 
     public Set keySet()
@@ -124,8 +120,8 @@ public class ComponentMap
 
     public Object remove( Object object )
     {
-        throw new UnsupportedOperationException(
-            "You cannot modify this map. This map is a requirement of " + hostComponent + " and managed by the container." );
+        throw new UnsupportedOperationException( "You cannot modify this map. This map is a requirement of "
+            + hostComponent + " and managed by the container." );
     }
 
     private Map getMap()
@@ -137,18 +133,38 @@ public class ComponentMap
             Map descriptorMap = getComponentDescriptorMap();
             Map lookupRealms = getLookupRealmMap();
 
-            for ( Iterator it = descriptorMap.entrySet().iterator(); it.hasNext(); )
+            if ( roleHints != null )
             {
-                Map.Entry entry = (Map.Entry) it.next();
-                String roleHint = (String) entry.getKey();
-                String realmId = ( (ComponentDescriptor) entry.getValue() ).getRealmId();
-
-                ClassRealm realm = (ClassRealm) lookupRealms.get( realmId );
-
-                Object component = lookup( role, roleHint, realm );
-                if ( component != null )
+                // we must follow the order given in roleHints
+                for ( Iterator hints = roleHints.iterator(); hints.hasNext(); )
                 {
-                    components.put( roleHint, component );
+                    String roleHint = (String) hints.next();
+
+                    ComponentDescriptor cd = (ComponentDescriptor) descriptorMap.get( roleHint );
+                    ClassRealm realm = (ClassRealm) lookupRealms.get( cd.getRealmId() );
+
+                    Object component = lookup( role, roleHint, realm );
+                    if ( component != null )
+                    {
+                        components.put( roleHint, component );
+                    }
+                }
+            }
+            else
+            {
+                for ( Iterator it = descriptorMap.entrySet().iterator(); it.hasNext(); )
+                {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    String roleHint = (String) entry.getKey();
+                    String realmId = ( (ComponentDescriptor) entry.getValue() ).getRealmId();
+
+                    ClassRealm realm = (ClassRealm) lookupRealms.get( realmId );
+
+                    Object component = lookup( role, roleHint, realm );
+                    if ( component != null )
+                    {
+                        components.put( roleHint, component );
+                    }
                 }
             }
         }
