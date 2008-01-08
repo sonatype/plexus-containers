@@ -64,9 +64,17 @@ public class ComponentLookupException
             .append( super.getMessage() ).append( LS )
             .append( "      role: ").append( role ).append( LS )
             .append( "  roleHint: ").append( roleHint ).append( LS )
-            .append( "classRealm: ").append( realm.getId() );
-        
-        realm.display();
+            .append( "classRealm: ");
+
+        if ( realm != null )
+        {
+            sb.append( realm.getId() );
+            realm.display();
+        }
+        else
+        {
+            sb.append( "none specified" );
+        }
 
         return sb.toString();
     }
