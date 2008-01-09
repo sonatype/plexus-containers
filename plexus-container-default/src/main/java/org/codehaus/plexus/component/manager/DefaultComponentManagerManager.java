@@ -41,7 +41,7 @@ import java.util.Map;
 public class DefaultComponentManagerManager
     implements ComponentManagerManager
 {
-    private Map activeComponentManagers = new HashMap();
+    private Map activeComponentManagers = Collections.synchronizedMap( new HashMap() );
 
     private Map componentManagers = null;
 

@@ -7,6 +7,7 @@ import org.codehaus.plexus.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -94,7 +95,7 @@ public abstract class AbstractComponentCollection
      */
     protected ClassRealm[] getLookupRealms()
     {
-        Collection allRealms = realm.getWorld().getRealms();
+        Collection allRealms = Collections.synchronizedCollection( realm.getWorld().getRealms() );
 
         if ( realmsHaveChanged() )
         {
