@@ -95,7 +95,7 @@ public abstract class AbstractComponentCollection
      */
     protected ClassRealm[] getLookupRealms()
     {
-        Collection allRealms = Collections.synchronizedCollection( realm.getWorld().getRealms() );
+        Collection allRealms = new ArrayList( realm.getWorld().getRealms() );
 
         if ( realmsHaveChanged() )
         {
