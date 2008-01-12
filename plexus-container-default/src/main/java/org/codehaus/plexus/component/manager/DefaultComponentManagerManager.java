@@ -55,7 +55,7 @@ public class DefaultComponentManagerManager
     {
         if ( componentManagers == null )
         {
-            componentManagers = new HashMap();
+            componentManagers = Collections.synchronizedMap( new HashMap() );
         }
 
         componentManagers.put( componentManager.getId(), componentManager );
@@ -175,21 +175,24 @@ public class DefaultComponentManagerManager
     public void dissociateComponentRealm( ClassRealm componentRealm )
         throws ComponentLifecycleException
     {
-        for ( Iterator it = activeComponentManagers.entrySet().iterator(); it.hasNext(); )
+        synchronized (activeComponentManagers) // synchronized Map cannot be iterated without synchronized block.
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            String key = (String) entry.getKey();
-
-            ComponentManager componentManager = (ComponentManager) entry.getValue();
-
-            if ( key.startsWith( componentRealm.getId() ) )
+            for ( Iterator it = activeComponentManagers.entrySet().iterator(); it.hasNext(); )
             {
-                componentManager.dispose();
-                it.remove();
-            }
-            else
-            {
-                componentManager.dissociateComponentRealm( componentRealm );
+                Map.Entry entry = (Map.Entry) it.next();
+                String key = (String) entry.getKey();
+
+                ComponentManager componentManager = (ComponentManager) entry.getValue();
+
+                if ( key.startsWith( componentRealm.getId() ) )
+                {
+                    componentManager.dispose();
+                    it.remove();
+                }
+                else
+                {
+                    componentManager.dissociateComponentRealm( componentRealm );
+                }
             }
         }
     }
