@@ -30,9 +30,11 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
@@ -47,8 +49,9 @@ public abstract class AbstractComponentManager
      * Contains a mapping from singleton instances to the realms
      * they were used to configure with. This realm will be used to
      * call all lifecycle methods.
+     * @return a synchronized map, make sure to synchronize the map when iterating.
      */
-    protected Map componentContextRealms = new HashMap();
+    protected Map componentContextRealms = Collections.synchronizedMap(new HashMap());
 
     private int connections;
 
@@ -241,14 +244,19 @@ public abstract class AbstractComponentManager
     public void dissociateComponentRealm( ClassRealm realm )
         throws ComponentLifecycleException
     {
-        for ( Iterator it = componentContextRealms.entrySet().iterator(); it.hasNext(); )
+        Set entries = componentContextRealms.entrySet();
+        
+        synchronized ( componentContextRealms ) 
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            ClassRealm componentRealm = (ClassRealm) entry.getValue();
-
-            if ( componentRealm.getId().equals( realm.getId() ) )
+            for ( Iterator it = entries.iterator(); it.hasNext(); )
             {
-                it.remove();
+                Map.Entry entry = (Map.Entry) it.next();
+                ClassRealm componentRealm = (ClassRealm) entry.getValue();
+
+                if ( componentRealm.getId().equals( realm.getId() ) )
+                {
+                    it.remove();
+                }
             }
         }
     }
