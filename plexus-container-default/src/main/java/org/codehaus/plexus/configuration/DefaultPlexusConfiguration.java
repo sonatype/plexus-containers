@@ -16,7 +16,6 @@ package org.codehaus.plexus.configuration;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
@@ -35,7 +34,7 @@ public class DefaultPlexusConfiguration
 
     public DefaultPlexusConfiguration( String name )
     {
-        this.dom = new Xpp3Dom( name );
+        dom = new Xpp3Dom( name );
     }
 
     public DefaultPlexusConfiguration( Xpp3Dom dom )
@@ -78,7 +77,12 @@ public class DefaultPlexusConfiguration
         return value;
     }
 
-    public PlexusConfiguration setValue( String value )
+    public void setValue( String value )
+    {
+        dom.setValue( value );
+    }
+
+    public PlexusConfiguration setValueAndGetSelf( String value )
     {
         dom.setValue( value );
 
@@ -196,7 +200,7 @@ public class DefaultPlexusConfiguration
 
     public PlexusConfiguration addChild( String name, String value )
     {
-        addChild( new XmlPlexusConfiguration( name ).setValue( value ) );
+        addChild( new XmlPlexusConfiguration( name ).setValueAndGetSelf( value ) );
 
         return this;
     }
