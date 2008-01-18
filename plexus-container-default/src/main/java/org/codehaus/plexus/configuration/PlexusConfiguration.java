@@ -54,12 +54,19 @@ public interface PlexusConfiguration
     String getValue( String defaultValue );
 
     /**
+     * Set the value of a configuration element.
+     * @param value
+     * @return
+     */
+    void setValue( String value );
+
+    /**
      * Set the value of a configuration element and return the PlexusConfiguration object
      * so that further operations can be carried out.
      * @param value
      * @return
      */
-    PlexusConfiguration setValue( String value );
+    PlexusConfiguration setValueAndGetSelf( String value );
 
     // ----------------------------------------------------------------------
     // Attribute handling

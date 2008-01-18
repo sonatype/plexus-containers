@@ -78,7 +78,7 @@ public class ProtoXmlPlexusConfiguration
     public PlexusConfiguration addChild( String name, String value )
     {
         XmlPlexusConfiguration config = read();
-        PlexusConfiguration configuration = config.addChild( name ).setValue( value );
+        PlexusConfiguration configuration = config.addChild( name ).setValueAndGetSelf( value );
         store( config );
         return configuration;
     }
@@ -142,7 +142,12 @@ public class ProtoXmlPlexusConfiguration
         return read().getValue();
     }
 
-    public PlexusConfiguration setValue( String value )
+    public void setValue( String value )
+    {
+        read().setValue( value );
+    }
+
+    public PlexusConfiguration setValueAndGetSelf( String value )
     {
         read().setValue( value );
 

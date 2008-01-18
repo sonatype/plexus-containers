@@ -34,7 +34,7 @@ public class XmlPlexusConfiguration
 
     public XmlPlexusConfiguration( String name )
     {
-        this.dom = new Xpp3Dom( name );
+        dom = new Xpp3Dom( name );
     }
 
     public XmlPlexusConfiguration( Xpp3Dom dom )
@@ -77,7 +77,12 @@ public class XmlPlexusConfiguration
         return value;
     }
 
-    public PlexusConfiguration setValue( String value )
+    public void setValue( String value )
+    {
+        dom.setValue( value );
+    }
+
+    public PlexusConfiguration setValueAndGetSelf( String value )
     {
         dom.setValue( value );
 
@@ -195,7 +200,7 @@ public class XmlPlexusConfiguration
 
     public PlexusConfiguration addChild( String name, String value )
     {
-        addChild( new XmlPlexusConfiguration( name ).setValue( value ) );
+        addChild( new XmlPlexusConfiguration( name ).setValueAndGetSelf( value ) );
 
         return this;
     }
