@@ -16,8 +16,10 @@ package org.codehaus.plexus.configuration;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * @version $Id$
@@ -25,26 +27,40 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 public class DefaultPlexusConfiguration
     implements PlexusConfiguration
 {
-    private Xpp3Dom dom;
 
-    public DefaultPlexusConfiguration()
+    private String name;
+
+    private String value;
+
+    /** private TreeMap<String, String> attributes; */
+    private LinkedHashMap attributes;
+
+    /** private TreeMap<String, List<PlexusConfiguration>> children; */
+    private LinkedHashMap children;
+
+    protected DefaultPlexusConfiguration()
     {
         this( "configuration" );
     }
 
-    public DefaultPlexusConfiguration( String name )
+    protected DefaultPlexusConfiguration( String name )
     {
-        dom = new Xpp3Dom( name );
+        this( name, null );
     }
 
-    public DefaultPlexusConfiguration( Xpp3Dom dom )
+    protected DefaultPlexusConfiguration( String name, String value )
     {
-        this.dom = dom;
-    }
+        super();
 
-    public Xpp3Dom getXpp3Dom()
-    {
-        return dom;
+        this.name = name;
+
+        this.value = value;
+
+        // J5: this.attributes = new TreeMap<String, String>();
+        this.attributes = new LinkedHashMap();
+
+        // J5: this.children = new TreeMap<String, List<PlexusConfiguration>>();
+        this.children = new LinkedHashMap();
     }
 
     // ----------------------------------------------------------------------
@@ -53,7 +69,12 @@ public class DefaultPlexusConfiguration
 
     public String getName()
     {
-        return dom.getName();
+        return name;
+    }
+
+    public void setName( String name )
+    {
+        this.name = name;
     }
 
     // ----------------------------------------------------------------------
@@ -62,12 +83,12 @@ public class DefaultPlexusConfiguration
 
     public String getValue()
     {
-        return dom.getValue();
+        return value;
     }
 
     public String getValue( String defaultValue )
     {
-        String value = dom.getValue();
+        String value = getValue();
 
         if ( value == null )
         {
@@ -77,14 +98,14 @@ public class DefaultPlexusConfiguration
         return value;
     }
 
-    public void setValue( String value )
+    public void setValue( String val )
     {
-        dom.setValue( value );
+        value = val;
     }
 
-    public PlexusConfiguration setValueAndGetSelf( String value )
+    public PlexusConfiguration setValueAndGetSelf( String val )
     {
-        dom.setValue( value );
+        setValue( val );
 
         return this;
     }
@@ -92,40 +113,36 @@ public class DefaultPlexusConfiguration
     // ----------------------------------------------------------------------
     // Attribute handling
     // ----------------------------------------------------------------------
-
     public void setAttribute( String name, String value )
     {
-        dom.setAttribute( name, value );
-    }
-
-    public String getAttribute( String name, String defaultValue )
-    {
-        String attribute = getAttribute( name );
-
-        if ( attribute == null )
-        {
-            attribute = defaultValue;
-        }
-
-        return attribute;
+        attributes.put( name, value );
     }
 
     public String getAttribute( String name )
     {
-        return dom.getAttribute( name );
+        return (String) attributes.get( name );
+    }
+
+    public String getAttribute( String name, String defaultValue )
+    {
+        String value = getAttribute( name );
+
+        if ( value == null )
+        {
+            value = defaultValue;
+        }
+
+        return value;
     }
 
     public String[] getAttributeNames()
     {
-        return dom.getAttributeNames();
+        return (String[]) attributes.keySet().toArray( new String[attributes.size()] );
     }
 
     // ----------------------------------------------------------------------
     // Child handling
     // ----------------------------------------------------------------------
-
-    // The behaviour of getChild* that we adopted from avalon is that if the child
-    // does not exist then we create the child.
 
     public PlexusConfiguration getChild( String name )
     {
@@ -134,200 +151,114 @@ public class DefaultPlexusConfiguration
 
     public PlexusConfiguration getChild( int i )
     {
-        return new XmlPlexusConfiguration( dom.getChild( i ) );
+        return getChildren()[i];
     }
 
     public PlexusConfiguration getChild( String name, boolean createChild )
     {
-        Xpp3Dom child = dom.getChild( name );
+        List childs = (List) children.get( name );
 
-        if ( child == null )
+        boolean noneFound = ( childs == null || childs.size() == 0 );
+
+        if ( noneFound && createChild )
         {
-            if ( createChild )
-            {
-                child = new Xpp3Dom( name );
+            addChild( name );
 
-                dom.addChild( child );
-            }
-            else
-            {
-                return null;
-            }
+            return getChild( name, false );
         }
-
-        return new XmlPlexusConfiguration( child );
+        else if ( noneFound && !createChild )
+        {
+            return null;
+        }
+        else
+        {
+            return (PlexusConfiguration) childs.get( 0 );
+        }
     }
 
     public PlexusConfiguration[] getChildren()
     {
-        Xpp3Dom[] doms = dom.getChildren();
+        ArrayList childs = new ArrayList();
 
-        PlexusConfiguration[] children = new XmlPlexusConfiguration[doms.length];
-
-        for ( int i = 0; i < children.length; i++ )
+        for ( Iterator i = children.keySet().iterator(); i.hasNext(); )
         {
-            children[i] = new XmlPlexusConfiguration( doms[i] );
+            List childList = (List) children.get( i.next() );
+
+            if ( childList != null )
+            {
+                childs.addAll( childList );
+            }
         }
 
-        return children;
+        return (PlexusConfiguration[]) childs.toArray( new PlexusConfiguration[childs.size()] );
     }
 
     public PlexusConfiguration[] getChildren( String name )
     {
-        Xpp3Dom[] doms = dom.getChildren( name );
+        ArrayList childs = new ArrayList();
 
-        PlexusConfiguration[] children = new XmlPlexusConfiguration[doms.length];
+        List childList = (List) children.get( name );
 
-        for ( int i = 0; i < children.length; i++ )
+        if ( childList != null )
         {
-            children[i] = new XmlPlexusConfiguration( doms[i] );
+            childs.addAll( childList );
         }
 
-        return children;
+        return (PlexusConfiguration[]) childs.toArray( new PlexusConfiguration[childs.size()] );
     }
 
-    public void addChild( PlexusConfiguration configuration )
+    public void addChild( PlexusConfiguration child )
     {
-        dom.addChild( ( (XmlPlexusConfiguration) configuration ).getXpp3Dom() );
+        if ( !children.containsKey( child.getName() ) )
+        {
+            children.put( child.getName(), new ArrayList() );
+        }
+
+        ( (List) children.get( child.getName() ) ).add( child );
     }
 
     public PlexusConfiguration addChild( String name )
     {
-        addChild( new XmlPlexusConfiguration( name ) );
+        // we are using reflection to try to create same class childs as parent is,
+        // since many Maven and Maven plugins stuff casts the incoming result of this call
+        // to the evil XmlPlexusConfiguration
+        PlexusConfiguration child = null;
+
+        try
+        {
+            child = (PlexusConfiguration) this.getClass().newInstance();
+
+            child.setName( name );
+        }
+        catch ( Exception e )
+        {
+            // we have a PlexusConfiguration that has no constructor(name)
+            child = new DefaultPlexusConfiguration( name );
+        }
+
+        addChild( child );
 
         return this;
     }
 
     public PlexusConfiguration addChild( String name, String value )
     {
-        addChild( new XmlPlexusConfiguration( name ).setValueAndGetSelf( value ) );
+        PlexusConfiguration child = new DefaultPlexusConfiguration( name, value );
+
+        addChild( child );
 
         return this;
     }
 
-    public void addAllChildren( PlexusConfiguration other )
-    {
-        PlexusConfiguration[] children = other.getChildren();
-
-        for ( int i = 0; i < children.length; i++ )
-        {
-            addChild( children[i] );
-        }
-    }
-
     public int getChildCount()
     {
-        return dom.getChildCount();
-    }
+        int result = 0;
 
-    // ----------------------------------------------------------------------
-    //
-    // ----------------------------------------------------------------------
-
-    public String toString()
-    {
-        StringBuffer sb = new StringBuffer();
-
-        int depth = 0;
-
-        display( this, sb, depth );
-
-        return sb.toString();
-    }
-
-    private void display( PlexusConfiguration c, StringBuffer sb, int depth )
-    {
-        int count = c.getChildCount();
-
-        if (count == 0)
+        for ( Iterator i = children.keySet().iterator(); i.hasNext(); )
         {
-            displayTag( c, sb, depth );
-        }
-        else
-        {
-            sb.append( indent( depth ) ).
-                append( '<' ).
-                append( c.getName() );
-
-            attributes( c, sb );
-
-            sb.append( '>' ).
-                append( '\n' );
-
-            for ( int i = 0; i < count; i++ )
-            {
-                PlexusConfiguration child = c.getChild( i );
-
-                display( child, sb, depth + 1 );
-            }
-
-            sb.append( indent( depth ) ).
-                append( '<' ).
-                append( '/' ).
-                append( c.getName() ).
-                append( '>' ).
-                append( '\n' );
-        }
-    }
-
-    private void displayTag( PlexusConfiguration c, StringBuffer sb, int depth )
-    {
-        String value = c.getValue( null );
-
-        if ( value != null )
-        {
-            sb.append( indent( depth ) ).
-                append( '<' ).
-                append( c.getName() );
-
-            attributes( c, sb );
-
-            sb.append( '>' ).
-                append( c.getValue( null ) ).
-                append( '<' ).
-                append( '/' ).
-                append( c.getName() ).
-                append( '>' ).
-                append( '\n' );
-        }
-        else
-        {
-            sb.append( indent( depth ) ).
-                append( '<' ).
-                append( c.getName() );
-
-            attributes( c, sb );
-
-            sb.append( '/' ).
-                append( '>' ).
-                append( "\n" );
-        }
-    }
-
-    private void attributes( PlexusConfiguration c, StringBuffer sb )
-    {
-        String[] names = c.getAttributeNames();
-
-        for ( int i = 0; i < names.length; i++ )
-        {
-            sb.append( ' ' ).
-                append( names[i] ).
-                append( '=' ).
-                append( '"' ).
-                append( c.getAttribute( names[i], null ) ).
-                append( '"' );
-        }
-    }
-
-    private String indent( int depth )
-    {
-        StringBuffer sb = new StringBuffer();
-
-        for ( int i = 0; i < depth; i++ )
-        {
-            sb.append( ' ' );
+            result += ( (List) children.get( i.next() ) ).size();
         }
 
-        return sb.toString();
+        return result;
     }
 }

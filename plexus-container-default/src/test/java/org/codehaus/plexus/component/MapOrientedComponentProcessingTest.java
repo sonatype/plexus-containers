@@ -16,7 +16,10 @@ package org.codehaus.plexus.component;
  * limitations under the License.
  */
 
+import java.util.Map;
+
 import junit.framework.TestCase;
+
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -24,8 +27,6 @@ import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.logging.LoggerManager;
-
-import java.util.Map;
 
 public class MapOrientedComponentProcessingTest
     extends TestCase
@@ -52,7 +53,7 @@ public class MapOrientedComponentProcessingTest
 
         descriptor.addRequirement( requirement );
 
-        XmlPlexusConfiguration param = new XmlPlexusConfiguration( "testParameter" );
+        PlexusConfiguration param = new XmlPlexusConfiguration( "testParameter" );
 
         param.setValue( "testValue" );
 

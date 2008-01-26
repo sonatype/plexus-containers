@@ -18,8 +18,6 @@ package org.codehaus.plexus.component.repository;
 
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.ProtoXmlPlexusConfiguration;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -275,11 +273,6 @@ public class ComponentDescriptor
      */
     public PlexusConfiguration getConfiguration()
     {
-        if ( configuration instanceof ProtoXmlPlexusConfiguration )
-        {
-            return ( (ProtoXmlPlexusConfiguration) configuration ).read();
-        }
-
         return configuration;
     }
 
@@ -290,14 +283,7 @@ public class ComponentDescriptor
      */
     public void setConfiguration( PlexusConfiguration configuration )
     {
-        if ( configuration instanceof XmlPlexusConfiguration )
-        {
-            this.configuration = new ProtoXmlPlexusConfiguration( (XmlPlexusConfiguration) configuration );
-        }
-        else
-        {
-            this.configuration = configuration;
-        }
+         this.configuration = configuration;
     }
 
     /**

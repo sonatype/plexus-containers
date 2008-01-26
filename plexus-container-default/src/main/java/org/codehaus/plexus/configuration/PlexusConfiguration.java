@@ -32,6 +32,12 @@ public interface PlexusConfiguration
      * @return the name of this configuration
      */
     String getName();
+    
+    /**
+     * Sets the name of this configuration.
+     * @param name
+     */
+    void setName(String name);
 
     // ----------------------------------------------------------------------
     // Value handling
@@ -71,6 +77,13 @@ public interface PlexusConfiguration
     // ----------------------------------------------------------------------
     // Attribute handling
     // ----------------------------------------------------------------------
+    
+    /**
+     * Sets an attribute on this configuration.
+     * @param name
+     * @param value
+     */
+    void setAttribute( String name, String value );
 
     /**
      * Returns an array of attribute names.

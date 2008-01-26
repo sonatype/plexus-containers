@@ -64,7 +64,7 @@ public final class XmlPlexusConfigurationTest
     public void testGetChild()
         throws Exception
     {
-        XmlPlexusConfiguration child = (XmlPlexusConfiguration) configuration.getChild( "child" );
+        PlexusConfiguration child = (XmlPlexusConfiguration) configuration.getChild( "child" );
 
         assertNotNull( child );
 

@@ -1,5 +1,7 @@
 package org.codehaus.plexus.configuration;
 
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -15,8 +17,6 @@ package org.codehaus.plexus.configuration;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 
 /**
  * @todo This merger explicity uses the XML implementation of the plexus configuration but
@@ -54,7 +54,7 @@ public class PlexusConfigurationMerger
 
     public static PlexusConfiguration merge( PlexusConfiguration user, PlexusConfiguration system )
     {
-        XmlPlexusConfiguration mergedConfiguration = new XmlPlexusConfiguration( "plexus" );
+        PlexusConfiguration mergedConfiguration = new XmlPlexusConfiguration( "plexus" );
 
         // ----------------------------------------------------------------------
         // Load on start
@@ -245,7 +245,7 @@ public class PlexusConfigurationMerger
     {
         PlexusConfiguration handlers[] = source.getChild( "resources" ).getChildren();
 
-        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "resources" );
+        PlexusConfiguration dest = destination.getChild( "resources" );
 
         for ( int i = 0; i < handlers.length; i++ )
         {
@@ -257,7 +257,7 @@ public class PlexusConfigurationMerger
     {
         try
         {
-            XmlPlexusConfiguration id = (XmlPlexusConfiguration) destination.getChild( "default-component-manager-id" );
+            PlexusConfiguration id = destination.getChild( "default-component-manager-id" );
 
             String sid = source.getChild( "default-component-manager-id" ).getValue();
 
@@ -274,7 +274,7 @@ public class PlexusConfigurationMerger
 
         PlexusConfiguration handlers[] = source.getChild( "component-managers" ).getChildren( "component-manager" );
 
-        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-managers" );
+        PlexusConfiguration dest = destination.getChild( "component-managers" );
 
         for ( int i = 0; i < handlers.length; i++ )
         {
@@ -286,7 +286,7 @@ public class PlexusConfigurationMerger
     {
         PlexusConfiguration handlers[] = source.getChild( "component-discoverers" ).getChildren( "component-discoverer" );
 
-        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-discoverers" );
+        PlexusConfiguration dest = destination.getChild( "component-discoverers" );
 
         for ( int i = 0; i < handlers.length; i++ )
         {
@@ -298,7 +298,7 @@ public class PlexusConfigurationMerger
     {
         PlexusConfiguration handlers[] = source.getChild( "component-factories" ).getChildren( "component-factory" );
 
-        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-factories" );
+        PlexusConfiguration dest = destination.getChild( "component-factories" );
 
         for ( int i = 0; i < handlers.length; i++ )
         {
@@ -310,7 +310,7 @@ public class PlexusConfigurationMerger
     {
         try
         {
-            XmlPlexusConfiguration id = (XmlPlexusConfiguration) destination.getChild( "default-component-composer-id" );
+            PlexusConfiguration id = destination.getChild( "default-component-composer-id" );
 
             String sid = source.getChild( "default-component-composer-id" ).getValue();
 
@@ -326,7 +326,7 @@ public class PlexusConfigurationMerger
 
         PlexusConfiguration composers[] = source.getChild( "component-composers" ).getChildren( "component-composer" );
 
-        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "component-composers" );
+        PlexusConfiguration dest = destination.getChild( "component-composers" );
 
         for ( int i = 0; i < composers.length; i++ )
         {
@@ -338,7 +338,7 @@ public class PlexusConfigurationMerger
     {
         PlexusConfiguration handlers[] = source.getChild( "lifecycle-handlers" ).getChildren( "lifecycle-handler" );
 
-        XmlPlexusConfiguration dest = (XmlPlexusConfiguration) destination.getChild( "lifecycle-handlers" );
+        PlexusConfiguration dest = destination.getChild( "lifecycle-handlers" );
 
         for ( int i = 0; i < handlers.length; i++ )
         {

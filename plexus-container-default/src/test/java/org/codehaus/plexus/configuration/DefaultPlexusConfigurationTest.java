@@ -19,19 +19,85 @@ package org.codehaus.plexus.configuration;
 import junit.framework.TestCase;
 
 /**
- * @author Jason van Zyl
+ * @author <a href="mailto:rantene@hotmail.com">Ran Tene</a>
  * @version $Id$
  */
 public final class DefaultPlexusConfigurationTest
     extends TestCase
 {
+    private DefaultPlexusConfiguration configuration;
+
+    public void setUp()
+    {
+        configuration = new DefaultPlexusConfiguration( "a" );
+    }
+
+    public void testWithHelper()
+        throws Exception
+    {
+        PlexusConfiguration c = ConfigurationTestHelper.getTestConfiguration();
+
+        ConfigurationTestHelper.testConfiguration( c );
+    }
+
+    public void testGetValue()
+        throws Exception
+    {
+        String orgValue = "Original String";
+        configuration.setValue( orgValue );
+        assertEquals( orgValue, configuration.getValue() );
+    }
+
+    public void testGetAttribute()
+        throws Exception
+    {
+        String key = "key";
+        String value = "original value";
+        String defaultStr = "default";
+        configuration.setAttribute( key, value );
+        assertEquals( value, configuration.getAttribute( key, defaultStr ) );
+        assertEquals( defaultStr, configuration.getAttribute( "newKey", defaultStr ) );
+    }
+
+    public void testGetChild()
+        throws Exception
+    {
+        DefaultPlexusConfiguration child = (DefaultPlexusConfiguration) configuration.getChild( "child" );
+
+        assertNotNull( child );
+
+        child.setValue( "child value" );
+
+        assertEquals( 1, configuration.getChildCount() );
+
+        child = (DefaultPlexusConfiguration) configuration.getChild( "child" );
+
+        assertNotNull( child );
+
+        assertEquals( "child value", child.getValue() );
+
+        assertEquals( 1, configuration.getChildCount() );
+    }
+
+    public void testToString()
+        throws Exception
+    {
+        // TODO: this currently works since getTestConfiguration() invokes PlexusTools.buildConfiguration()
+        // and it returns XmlPlexusConfiguration actually.
+        PlexusConfiguration c = ConfigurationTestHelper.getTestConfiguration();
+
+        assertEquals( "<string string=\"string\">string</string>\n", c.getChild( "string" ).toString() );
+
+        // TODO: uncomment once maven can test the latest plexus-utils
+        assertEquals( "<singleton attribute=\"attribute\"/>\n", c.getChild( "singleton" ).toString() );
+    }
+
     public void testProgrammaticConfigurationCreation()
         throws Exception
     {
         String viewRoot = "/path/to/viewRoot";
 
-        PlexusConfiguration c = new DefaultPlexusConfiguration()
-            .addChild( "viewRoot", viewRoot );
+        PlexusConfiguration c = new DefaultPlexusConfiguration( "configuration" ).addChild( "viewRoot", viewRoot );
 
         assertEquals( viewRoot, c.getChild( "viewRoot" ).getValue() );
     }

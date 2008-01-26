@@ -16,19 +16,21 @@ package org.codehaus.plexus.component.repository.io;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.component.repository.*;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
-import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
+
+import org.codehaus.plexus.component.repository.ComponentDependency;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
+import org.codehaus.plexus.component.repository.ComponentRequirementList;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.configuration.io.XmlPlexusConfigurationReader;
 
 
 /**
@@ -44,11 +46,15 @@ public class PlexusTools
     {
         try
         {
-            return new XmlPlexusConfiguration( Xpp3DomBuilder.build( configuration ) );
+            XmlPlexusConfigurationReader reader = new XmlPlexusConfigurationReader();
+            
+            PlexusConfiguration result = reader.read( configuration );
+
+            return result;
         }
-        catch ( XmlPullParserException e )
+        catch ( PlexusConfigurationException e )
         {
-            throw new PlexusConfigurationException( "Failed to parse configuration resource: \'" + resourceName + "\'\nError was: \'" + e.getLocalizedMessage() + "\'", e );
+            throw new PlexusConfigurationException( "PlexusConfigurationException building configuration from: " + resourceName, e );
         }
         catch ( IOException e )
         {
