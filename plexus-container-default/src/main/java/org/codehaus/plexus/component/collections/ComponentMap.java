@@ -21,8 +21,6 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -38,6 +36,8 @@ public class ComponentMap
     implements Map
 {
     private Map components;
+
+    private Map customAdditions = new LinkedHashMap();
 
     public ComponentMap( PlexusContainer container, ClassRealm realm, String role, List roleHints, String hostComponent )
     {
@@ -83,14 +83,26 @@ public class ComponentMap
 
     public Object put( Object key, Object value )
     {
-        throw new UnsupportedOperationException( "You cannot modify this map. This map is a requirement of "
-            + hostComponent + " and managed by the container." );
+        logger.warn( "Custom "
+                     + role
+                     + " implementations should NOT be added directly to this Map. Instead, add them as Plexus components." );
+
+        Object prev = customAdditions.put( key, value );
+        if ( prev == null )
+        {
+            prev = getComponentMap().get( key );
+        }
+
+        return prev;
     }
 
     public void putAll( Map map )
     {
-        throw new UnsupportedOperationException( "You cannot modify this map. This map is a requirement of "
-            + hostComponent + " and managed by the container." );
+        logger.warn( "Custom "
+                     + role
+                     + " implementations should NOT be added directly to this Map. Instead, add them as Plexus components." );
+
+        customAdditions.putAll( map );
     }
 
     public Set keySet()
@@ -118,13 +130,31 @@ public class ComponentMap
         return getMap().hashCode();
     }
 
-    public Object remove( Object object )
+    public Object remove( Object key )
     {
-        throw new UnsupportedOperationException( "You cannot modify this map. This map is a requirement of "
-            + hostComponent + " and managed by the container." );
+        logger.warn( "Items in this Map should NOT be removed directly. If the matching entry is a component, it will NOT be removed." );
+
+        if ( customAdditions.containsKey( key ) )
+        {
+            return customAdditions.remove( key );
+        }
+
+        return null;
     }
 
     private Map getMap()
+    {
+        Map result = getComponentMap();
+
+        if ( !customAdditions.isEmpty() )
+        {
+            result.putAll( customAdditions );
+        }
+
+        return result;
+    }
+
+    private Map getComponentMap()
     {
         if ( ( components == null ) || checkUpdate() )
         {

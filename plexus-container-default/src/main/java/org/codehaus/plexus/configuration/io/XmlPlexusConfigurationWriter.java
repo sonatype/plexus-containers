@@ -1,11 +1,11 @@
 package org.codehaus.plexus.configuration.io;
 
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-
-import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 public class XmlPlexusConfigurationWriter
     implements PlexusConfigurationWriter
@@ -42,7 +42,8 @@ public class XmlPlexusConfigurationWriter
 
             attributes( c, w );
 
-            w.append( '>' ).append( '\n' );
+            w.write( '>' );
+            w.write( '\n' );
 
             for ( int i = 0; i < count; i++ )
             {
