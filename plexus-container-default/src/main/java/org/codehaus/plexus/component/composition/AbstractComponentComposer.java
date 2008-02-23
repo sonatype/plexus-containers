@@ -143,7 +143,7 @@ public abstract class AbstractComponentComposer
             {
                 List dependencies = container.lookupList( role, roleHints, lookupRealm );
 
-                Object[] array = (Object[]) Array.newInstance( clazz, dependencies.size() );
+                Object[] array = (Object[]) Array.newInstance( clazz.getComponentType(), dependencies.size() );
 
                 componentDescriptors = container.getComponentDescriptorList( role, roleHints, lookupRealm );
 
