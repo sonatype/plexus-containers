@@ -16,25 +16,23 @@ package org.codehaus.plexus.component.manager;
 * limitations under the License.
 */
 
-import org.codehaus.classworlds.ClassRealmAdapter;
-import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.factory.ComponentFactory;
-import org.codehaus.plexus.component.factory.ComponentInstantiationException;
-import org.codehaus.plexus.component.factory.UndefinedComponentFactoryException;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
-import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
-
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.builder.AbstractComponentBuildListener;
+import org.codehaus.plexus.component.builder.ComponentBuilder;
+import org.codehaus.plexus.component.builder.XBeanComponentBuilder;
+import org.codehaus.plexus.component.factory.ComponentInstantiationException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
 public abstract class AbstractComponentManager
     implements ComponentManager, Cloneable
@@ -42,6 +40,8 @@ public abstract class AbstractComponentManager
     protected MutablePlexusContainer container;
 
     protected ComponentDescriptor componentDescriptor;
+
+    protected ComponentBuilder builder;
 
     private LifecycleHandler lifecycleHandler;
 
@@ -55,12 +55,22 @@ public abstract class AbstractComponentManager
 
     private int connections;
 
+    protected AbstractComponentManager() {
+        builder = createComponentBuilder();
+    }
+
+    protected ComponentBuilder createComponentBuilder() {
+        return new XBeanComponentBuilder(this);
+        // return new DefaultComponentBuilder(this);
+    }
+
     public ComponentManager copy()
     {
         try
         {
-            ComponentManager componentManager = (ComponentManager) clone();
-
+            // todo replace with a copy constructor... clone sucks
+            AbstractComponentManager componentManager = (AbstractComponentManager) clone();
+            componentManager.builder = componentManager.createComponentBuilder();
             return componentManager;
         }
         catch ( CloneNotSupportedException e )
@@ -122,26 +132,11 @@ public abstract class AbstractComponentManager
     protected Object createComponentInstance( ClassRealm realm )
         throws ComponentInstantiationException, ComponentLifecycleException
     {
-        Object component = createComponentInstance( componentDescriptor, realm );
-
-        componentContextRealms.put( component, realm );
-
-        startComponentLifecycle( component, realm );
-
-        return component;
-    }
-
-    protected void startComponentLifecycle( Object component, ClassRealm realm )
-        throws ComponentLifecycleException
-    {
-        try
-        {
-            getLifecycleHandler().start( component, this, realm );
-        }
-        catch ( PhaseExecutionException e )
-        {
-            throw new ComponentLifecycleException( "Error starting component", e );
-        }
+        return builder.build(componentDescriptor, realm, new AbstractComponentBuildListener() {
+            public void componentCreated(ComponentDescriptor componentDescriptor, Object component, ClassRealm realm) {
+                componentContextRealms.put( component, realm );
+            }
+        });
     }
 
     protected void endComponentLifecycle( Object component )
@@ -171,68 +166,6 @@ public abstract class AbstractComponentManager
     public Logger getLogger()
     {
         return container.getLogger();
-    }
-
-    protected Object createComponentInstance( ComponentDescriptor componentDescriptor,
-                                              ClassRealm realm )
-        throws ComponentInstantiationException, ComponentLifecycleException
-    {
-        String componentFactoryId = componentDescriptor.getComponentFactory();
-
-        ComponentFactory componentFactory;
-
-        Object component;
-
-        try
-        {
-            componentFactory = container.getComponentFactoryManager().findComponentFactory( componentFactoryId );
-
-            ClassRealm componentRealm;
-
-            if ( realm == null )
-            {
-                componentRealm = container.getComponentRealm( componentDescriptor.getRealmId() );
-            }
-            else
-            {
-                componentRealm = realm;
-            }
-
-            try
-            {
-                component = componentFactory.newInstance( componentDescriptor, componentRealm, container );
-            }
-            catch ( AbstractMethodError e )
-            {
-                // ----------------------------------------------------------------------------
-                // For compatibility with old ComponentFactories that use old ClassWorlds
-                // ----------------------------------------------------------------------------
-
-                org.codehaus.classworlds.ClassRealm cr = ClassRealmAdapter.getInstance( componentRealm );
-
-                Method method;
-
-                try
-                {
-                    method = componentFactory.getClass().getMethod( "newInstance", new Class[]{
-                        ComponentDescriptor.class, org.codehaus.classworlds.ClassRealm.class, PlexusContainer.class} );
-
-                    component = method.invoke( componentFactory, new Object[]{componentDescriptor, cr, container} );
-                }
-                catch ( Exception mnfe )
-                {
-                    throw new ComponentInstantiationException(
-                        "Unable to create component as factory '" + componentFactoryId + "' could not be found", e );
-                }
-            }
-        }
-        catch ( UndefinedComponentFactoryException e )
-        {
-            throw new ComponentInstantiationException(
-                "Unable to create component as factory '" + componentFactoryId + "' could not be found", e );
-        }
-
-        return component;
     }
 
     public Object getComponent()
