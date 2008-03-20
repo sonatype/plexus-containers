@@ -19,6 +19,7 @@ package org.codehaus.plexus.container.initialization;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
+ * @deprecated ComponentComposerManager is no longer used
  * @author Jason van Zyl
  */
 public class InitializeComponentComposerPhase

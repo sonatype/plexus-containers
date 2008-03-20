@@ -21,6 +21,7 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /**
+ * @deprecated ComponentComposerManager is no longer used
  * @author Jason van Zyl
  * @author <a href="michal.maczka@dimatics.com">Michal Maczka</a>
  * @version $Id$

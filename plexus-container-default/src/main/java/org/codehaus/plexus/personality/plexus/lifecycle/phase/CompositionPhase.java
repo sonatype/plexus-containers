@@ -24,6 +24,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.lifecycle.phase.AbstractPhase;
 
 /**
+ * @deprecated ComponentComposerManager is no longer used
  * @todo this little example works but is indicative of of some decoupling that
  * needs to happen wrt the lifecycle handlers. We should be able to specify by
  * configuration which entities for a lifecycle handler are required.

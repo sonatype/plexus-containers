@@ -94,8 +94,14 @@ public interface ContainerConfiguration
 
     // Component composer
 
+    /**
+     * @deprecated ComponentComposerManager is no longer used
+     */
     ContainerConfiguration setComponentComposerManager( ComponentComposerManager componentComposerManager );
 
+    /**
+     * @deprecated ComponentComposerManager is no longer used
+     */
     ComponentComposerManager getComponentComposerManager();
 
     // Lifecycle handler manager

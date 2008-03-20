@@ -1225,11 +1225,17 @@ public class DefaultPlexusContainer
         this.componentLookupManager = componentLookupManager;
     }
 
+    /**
+     * @deprecated ComponentComposerManager is no longer used
+     */
     public ComponentComposerManager getComponentComposerManager()
     {
         return componentComposerManager;
     }
 
+    /**
+     * @deprecated ComponentComposerManager is no longer used
+     */
     public void setComponentComposerManager( ComponentComposerManager componentComposerManager )
     {
         this.componentComposerManager = componentComposerManager;

@@ -6,11 +6,9 @@ import java.util.Map;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.ComponentComposerManager;
-import org.codehaus.plexus.component.composition.DefaultComponentComposerManager;
-import org.codehaus.plexus.component.composition.FieldComponentComposer;
-import org.codehaus.plexus.component.composition.MapOrientedComponentComposer;
-import org.codehaus.plexus.component.composition.NoOpComponentComposer;
-import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
+import org.codehaus.plexus.component.composition.ComponentComposer;
+import org.codehaus.plexus.component.composition.CompositionException;
+import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
@@ -27,6 +25,7 @@ import org.codehaus.plexus.component.manager.KeepAliveSingletonComponentManager;
 import org.codehaus.plexus.component.manager.PerLookupComponentManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
@@ -48,8 +47,6 @@ import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.AutoConfigurePhase;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.CompositionPhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.ConfigurablePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.ContextualizePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.DisposePhase;
@@ -308,32 +305,32 @@ public class DefaultContainerConfiguration
         return componentRepository;
     }
 
-
-    private ComponentComposerManager componentComposerManager;
-
+    /**
+     * @deprecated ComponentComposerManager is no longer used
+     */
     public ContainerConfiguration setComponentComposerManager( ComponentComposerManager componentComposerManager )
     {
-        this.componentComposerManager = componentComposerManager;
-
         return this;
     }
 
+    /**
+     * @deprecated ComponentComposerManager is no longer used
+     */
     public ComponentComposerManager getComponentComposerManager()
     {
-        if ( componentComposerManager == null )
-        {
-            componentComposerManager = new DefaultComponentComposerManager();
+        return new ComponentComposerManager() {
+            public void addComponentComposer(ComponentComposer componentComposer) {
+                throw new UnsupportedOperationException("ComponentComposerManager is no longer used");
+            }
 
-            componentComposerManager.addComponentComposer( new FieldComponentComposer() );
+            public void assembleComponent(Object component, ComponentDescriptor componentDescriptor, PlexusContainer container) throws CompositionException, UndefinedComponentComposerException {
+                throw new UnsupportedOperationException("ComponentComposerManager is no longer used");
+            }
 
-            componentComposerManager.addComponentComposer( new SetterComponentComposer() );
-
-            componentComposerManager.addComponentComposer( new MapOrientedComponentComposer() );
-
-            componentComposerManager.addComponentComposer( new NoOpComponentComposer() );            
-        }
-
-        return componentComposerManager;
+            public void assembleComponent(Object component, ComponentDescriptor componentDescriptor, PlexusContainer container, ClassRealm lookupRealm) throws CompositionException, UndefinedComponentComposerException {
+                throw new UnsupportedOperationException("ComponentComposerManager is no longer used");
+            }
+        };
     }
 
     // Lifecycle handler manager
@@ -364,9 +361,9 @@ public class DefaultContainerConfiguration
             LifecycleHandler plexus = new BasicLifecycleHandler( "plexus" );
             // Begin
             plexus.addBeginSegment( new LogEnablePhase() );
-            plexus.addBeginSegment( new CompositionPhase() );
+//            plexus.addBeginSegment( new CompositionPhase() );
             plexus.addBeginSegment( new ContextualizePhase() );
-            plexus.addBeginSegment( new AutoConfigurePhase() );
+//            plexus.addBeginSegment( new AutoConfigurePhase() );
             plexus.addBeginSegment( new ServiceablePhase() );
             plexus.addBeginSegment( new InitializePhase() );
             plexus.addBeginSegment( new StartPhase() );
@@ -381,7 +378,7 @@ public class DefaultContainerConfiguration
             // Begin
             basic.addBeginSegment( new LogEnablePhase() );
             basic.addBeginSegment( new ContextualizePhase() );
-            basic.addBeginSegment( new AutoConfigurePhase() );
+//            basic.addBeginSegment( new AutoConfigurePhase() );
             basic.addBeginSegment( new InitializePhase() );
             basic.addBeginSegment( new StartPhase() );
             // End
@@ -411,7 +408,7 @@ public class DefaultContainerConfiguration
 
             // Bootstrap
             LifecycleHandler bootstrap = new BasicLifecycleHandler( "bootstrap" );
-            bootstrap.addBeginSegment( new CompositionPhase() );
+//            bootstrap.addBeginSegment( new CompositionPhase() );
             bootstrap.addBeginSegment( new ContextualizePhase() );
             lifecycleHandlerManager.addLifecycleHandler( bootstrap );
         }

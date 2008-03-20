@@ -66,8 +66,14 @@ public interface MutablePlexusContainer
 
     void setComponentLookupManager( ComponentLookupManager componentLookupManager );
 
+    /**
+     * @deprecated ComponentComposerManager is no longer used
+     */
     ComponentComposerManager getComponentComposerManager();
 
+    /**
+     * @deprecated ComponentComposerManager is no longer used
+     */
     void setComponentComposerManager( ComponentComposerManager componentComposerManager );
 
     LoggerManager getLoggerManager();

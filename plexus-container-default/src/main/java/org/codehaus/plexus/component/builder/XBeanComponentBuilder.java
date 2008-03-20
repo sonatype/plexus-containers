@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.beans.Introspector;
 
 import org.apache.xbean.recipe.AbstractRecipe;
 import org.apache.xbean.recipe.ConstructionException;
@@ -35,6 +36,10 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import static org.codehaus.plexus.component.CastUtils.cast;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
+import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
+import org.codehaus.plexus.component.configurator.converters.composite.MapConverter;
+import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.collections.ComponentList;
 import org.codehaus.plexus.component.collections.ComponentMap;
 import org.codehaus.plexus.component.factory.ComponentFactory;
@@ -111,37 +116,41 @@ public class XBeanComponentBuilder implements ComponentBuilder {
             recipe.allow(Option.FIELD_INJECTION);
             recipe.allow(Option.PRIVATE_PROPERTIES);
 
-            // MapOrientedComponent don't get normal requirement injection
-            if (isMapOrientedClass(typeName, realm)) {
+            // MapOrientedComponents don't get normal injection
+            if (!isMapOrientedClass(typeName, realm)) {
                 for (ComponentRequirement requirement : cast(descriptor.getRequirements(), ComponentRequirement.class)) {
                     String name = requirement.getFieldName();
-                    // todo why are field names null?
-                    if (name != null) {
-                        RequirementRecipe requirementRecipe = new RequirementRecipe(descriptor, requirement, componentManager.getContainer());
+                    if (name == null) {
+                        name = requirement.getRole();
+                        name = name.substring(name.lastIndexOf('.') + 1);
+                        name = Introspector.decapitalize(name);
+                    }
 
-                        recipe.setProperty(name, requirementRecipe);
+                    if (name == null) throw new NullPointerException("name is null");
+                    
+                    RequirementRecipe requirementRecipe = new RequirementRecipe(descriptor, requirement, componentManager.getContainer());
+
+                    recipe.setProperty(name, requirementRecipe);
+                }
+
+                // add configuration data
+                PlexusConfiguration configuration = descriptor.getConfiguration();
+                if (configuration != null) {
+                    for (String name : configuration.getAttributeNames()) {
+                        String value;
+                        try {
+                            value = configuration.getAttribute(name);
+                        } catch (PlexusConfigurationException e) {
+                            throw new ComponentInstantiationException("Error getting value for attribute " + name, e);
+                        }
+                        recipe.setProperty(name, value);
+                    }
+                    for (PlexusConfiguration child : configuration.getChildren()) {
+                        recipe.setProperty(child.getName(), child.getValue());
                     }
                 }
             }
 
-            // add configuration data
-            PlexusConfiguration configuration = descriptor.getConfiguration();
-            if (configuration != null) {
-                for (String name : configuration.getAttributeNames()) {
-                    String value;
-                    try {
-                        value = configuration.getAttribute(name);
-                    } catch (PlexusConfigurationException e) {
-                        throw new ComponentInstantiationException("Error getting value for attribute " + name, e);
-                    }
-                    recipe.setProperty(name, value);
-                }
-//                for (PlexusConfiguration child : configuration.getChildren()) {
-//                    // todo wrap with xstream recipe
-//                }
-            }
-
-            // JavaComponentFactory
             Object object;
             ComponentFactory componentFactory = componentManager.getContainer().getComponentFactoryManager().findComponentFactory(descriptor.getComponentFactory());
             if (JavaComponentFactory.class.equals(componentFactory.getClass())) {
@@ -157,7 +166,7 @@ public class XBeanComponentBuilder implements ComponentBuilder {
             // todo figure out how to easily let xbean do this map oriented stuff (if it is actually used in plexus)
             if (object instanceof MapOrientedComponent) {
                 MapOrientedComponent mapOrientedComponent = (MapOrientedComponent) object;
-                addComponentRequirements(descriptor, mapOrientedComponent);
+                processMapOrientedComponent(descriptor, mapOrientedComponent, realm);
             }
 
             return object;
@@ -171,8 +180,7 @@ public class XBeanComponentBuilder implements ComponentBuilder {
     protected void startComponentLifecycle(Object component, ClassRealm realm) throws ComponentLifecycleException {
         try {
             componentManager.getLifecycleHandler().start(component, componentManager, realm);
-        }
-        catch (PhaseExecutionException e) {
+        } catch (PhaseExecutionException e) {
             throw new ComponentLifecycleException("Error starting component", e);
         }
     }
@@ -260,13 +268,14 @@ public class XBeanComponentBuilder implements ComponentBuilder {
     private boolean isMapOrientedClass(String typeName, ClassRealm realm) {
         try {
             // have to load the class to determine this, and that only works for components using the JavaComponentFactory
-            return !MapOrientedComponent.class.isAssignableFrom(realm.loadClass(typeName));
+            Class clazz = realm.loadClass(typeName);
+            return MapOrientedComponent.class.isAssignableFrom(clazz);
         } catch (ClassNotFoundException e) {
             return false;
         }
     }
 
-    private void addComponentRequirements(ComponentDescriptor descriptor, MapOrientedComponent mapOrientedComponent) throws ComponentConfigurationException, ComponentLookupException {
+    private void processMapOrientedComponent(ComponentDescriptor descriptor, MapOrientedComponent mapOrientedComponent, ClassRealm realm) throws ComponentConfigurationException, ComponentLookupException {
         MutablePlexusContainer container = componentManager.getContainer();
 
         for (ComponentRequirement requirement : cast(descriptor.getRequirements(), ComponentRequirement.class)) {
@@ -292,5 +301,19 @@ public class XBeanComponentBuilder implements ComponentBuilder {
 
             mapOrientedComponent.addComponentRequirement(requirement, value);
         }
+
+        MapConverter converter = new MapConverter();
+        ConverterLookup converterLookup = new DefaultConverterLookup();
+        DefaultExpressionEvaluator expressionEvaluator = new DefaultExpressionEvaluator();
+        PlexusConfiguration configuration = componentManager.getContainer().getConfigurationSource().getConfiguration( descriptor );
+        Map context = (Map) converter.fromConfiguration(converterLookup,
+                configuration,
+                null,
+                null,
+                realm,
+                expressionEvaluator,
+                null );
+
+        mapOrientedComponent.setComponentConfiguration( context );
     }
 }

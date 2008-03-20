@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * @deprecated ComponentComposerManager is no longer used
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @author Jason van Zyl
  * @version $Id$
