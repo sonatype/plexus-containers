@@ -5,10 +5,6 @@ import java.util.Map;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.composition.ComponentComposerManager;
-import org.codehaus.plexus.component.composition.ComponentComposer;
-import org.codehaus.plexus.component.composition.CompositionException;
-import org.codehaus.plexus.component.composition.UndefinedComponentComposerException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
@@ -25,11 +21,9 @@ import org.codehaus.plexus.component.manager.KeepAliveSingletonComponentManager;
 import org.codehaus.plexus.component.manager.PerLookupComponentManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
-import org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase;
@@ -183,7 +177,6 @@ public class DefaultContainerConfiguration
             new InitializeComponentManagerManagerPhase(),
             new InitializeComponentFactoryManagerPhase(),
             new InitializeComponentLookupManagerPhase(),
-            new InitializeComponentComposerPhase(),
             new InitializeContainerConfigurationSourcePhase(),
             new InitializeLoggerManagerPhase(),
             new InitializeContextPhase(),
@@ -305,34 +298,6 @@ public class DefaultContainerConfiguration
         return componentRepository;
     }
 
-    /**
-     * @deprecated ComponentComposerManager is no longer used
-     */
-    public ContainerConfiguration setComponentComposerManager( ComponentComposerManager componentComposerManager )
-    {
-        return this;
-    }
-
-    /**
-     * @deprecated ComponentComposerManager is no longer used
-     */
-    public ComponentComposerManager getComponentComposerManager()
-    {
-        return new ComponentComposerManager() {
-            public void addComponentComposer(ComponentComposer componentComposer) {
-                throw new UnsupportedOperationException("ComponentComposerManager is no longer used");
-            }
-
-            public void assembleComponent(Object component, ComponentDescriptor componentDescriptor, PlexusContainer container) throws CompositionException, UndefinedComponentComposerException {
-                throw new UnsupportedOperationException("ComponentComposerManager is no longer used");
-            }
-
-            public void assembleComponent(Object component, ComponentDescriptor componentDescriptor, PlexusContainer container, ClassRealm lookupRealm) throws CompositionException, UndefinedComponentComposerException {
-                throw new UnsupportedOperationException("ComponentComposerManager is no longer used");
-            }
-        };
-    }
-
     // Lifecycle handler manager
 
     private LifecycleHandlerManager lifecycleHandlerManager;
@@ -361,7 +326,6 @@ public class DefaultContainerConfiguration
             LifecycleHandler plexus = new BasicLifecycleHandler( "plexus" );
             // Begin
             plexus.addBeginSegment( new LogEnablePhase() );
-//            plexus.addBeginSegment( new CompositionPhase() );
             plexus.addBeginSegment( new ContextualizePhase() );
 //            plexus.addBeginSegment( new AutoConfigurePhase() );
             plexus.addBeginSegment( new ServiceablePhase() );
@@ -408,7 +372,6 @@ public class DefaultContainerConfiguration
 
             // Bootstrap
             LifecycleHandler bootstrap = new BasicLifecycleHandler( "bootstrap" );
-//            bootstrap.addBeginSegment( new CompositionPhase() );
             bootstrap.addBeginSegment( new ContextualizePhase() );
             lifecycleHandlerManager.addLifecycleHandler( bootstrap );
         }

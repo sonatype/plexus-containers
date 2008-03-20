@@ -20,7 +20,6 @@ import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
-import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
@@ -113,8 +112,6 @@ public class DefaultPlexusContainer
     protected ComponentFactoryManager componentFactoryManager;
 
     protected ComponentLookupManager componentLookupManager;
-
-    protected ComponentComposerManager componentComposerManager;
 
     protected LoggerManager loggerManager;
 
@@ -1223,22 +1220,6 @@ public class DefaultPlexusContainer
     public void setComponentLookupManager( ComponentLookupManager componentLookupManager )
     {
         this.componentLookupManager = componentLookupManager;
-    }
-
-    /**
-     * @deprecated ComponentComposerManager is no longer used
-     */
-    public ComponentComposerManager getComponentComposerManager()
-    {
-        return componentComposerManager;
-    }
-
-    /**
-     * @deprecated ComponentComposerManager is no longer used
-     */
-    public void setComponentComposerManager( ComponentComposerManager componentComposerManager )
-    {
-        this.componentComposerManager = componentComposerManager;
     }
 
     public LoggerManager getLoggerManager()
