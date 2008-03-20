@@ -24,16 +24,6 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import junit.framework.Assert;
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.classworlds.ClassWorld;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.io.PlexusTools;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
-
 import java.io.File;
 import java.io.StringReader;
 import java.net.URL;
@@ -44,6 +34,16 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
+import junit.framework.Assert;
+import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
+
 /**
  * @author <a href="mailto:michal@codehaus.org">Michal Maczka</a>
  * @version $Id$
@@ -51,24 +51,40 @@ import java.util.Vector;
 public abstract class AbstractComponentConfiguratorTest
     extends PlexusTestCase
 {
-    protected abstract ComponentConfigurator getComponentConfigurator()
-        throws Exception;
+    protected void configureComponent(Object component, ComponentDescriptor descriptor, ClassRealm realm) throws Exception {
+        ComponentConfigurator cc = getComponentConfigurator();
+        cc.configureComponent( component, descriptor.getConfiguration(), realm );
+    }
+
+
+    protected void configureComponent(Object component, ComponentDescriptor descriptor, ClassRealm realm, ExpressionEvaluator expressionEvaluator) throws Exception {
+        ComponentConfigurator cc = getComponentConfigurator();
+        cc.configureComponent( component, descriptor.getConfiguration(), expressionEvaluator, realm );
+    }
+
+    protected abstract ComponentConfigurator getComponentConfigurator() throws Exception;
 
     public void testComponentConfigurator()
         throws Exception
     {
-        String xml = "<configuration>" + "  <int-value>0</int-value>" + "  <float-value>1</float-value>"
-            + "  <long-value>2</long-value>" + "  <double-value>3</double-value>"
-            + "  <string-value>foo</string-value>" + "  <important-things>"
-            + "    <important-thing><name>jason</name></important-thing>"
-            + "    <important-thing><name>tess</name></important-thing>" + "  </important-things>"
-            + "  <configuration>" + "      <name>jason</name>" + "  </configuration>" + "</configuration>";
+        String xml = "<configuration>" +
+                "  <int-value>0</int-value>" +
+                "  <float-value>1</float-value>" +
+                "  <long-value>2</long-value>" +
+                "  <double-value>3</double-value>" +
+                "  <string-value>foo</string-value>" +
+                "  <important-things>" +
+                "    <important-thing><name>jason</name></important-thing>" +
+                "    <important-thing><name>tess</name></important-thing>" +
+                "  </important-things>" +
+                "  <configuration>" +
+                "      <name>jason</name>" +
+                "  </configuration>" +
+                "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
 
         ConfigurableComponent component = new ConfigurableComponent();
-
-        ComponentConfigurator cc = getComponentConfigurator();
 
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
@@ -76,11 +92,13 @@ public abstract class AbstractComponentConfiguratorTest
 
         descriptor.setImplementation( component.getClass().getName() );
 
+        descriptor.setConfiguration(configuration);
+
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration, realm );
+        configureComponent(component, descriptor, realm);
 
         assertEquals( "check integer value", 0, component.getIntValue() );
 
@@ -121,19 +139,19 @@ public abstract class AbstractComponentConfiguratorTest
 
         ComponentWithSetters component = new ComponentWithSetters();
 
-        ComponentConfigurator cc = getComponentConfigurator();
-
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
 
+        descriptor.setConfiguration(configuration);
+
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration, realm );
+        configureComponent(component, descriptor, realm);
 
         assertEquals( "check integer value", 0, component.getIntValue() );
 
@@ -183,19 +201,19 @@ public abstract class AbstractComponentConfiguratorTest
 
         DefaultComponent component = new DefaultComponent();
 
-        ComponentConfigurator cc = getComponentConfigurator();
-
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
 
+        descriptor.setConfiguration(configuration);
+
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration, realm );
+        configureComponent(component, descriptor, realm);
 
         assertEquals( "jason", component.getName() );
 
@@ -222,19 +240,19 @@ public abstract class AbstractComponentConfiguratorTest
 
         ComponentWithCollectionFields component = new ComponentWithCollectionFields();
 
-        ComponentConfigurator cc = getComponentConfigurator();
-
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
 
+        descriptor.setConfiguration(configuration);
+
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration, realm );
+        configureComponent(component, descriptor, realm);
 
         Vector vector = component.getVector();
 
@@ -286,19 +304,19 @@ public abstract class AbstractComponentConfiguratorTest
 
         ComponentWithArrayFields component = new ComponentWithArrayFields();
 
-        ComponentConfigurator cc = getComponentConfigurator();
-
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
 
+        descriptor.setConfiguration(configuration);
+
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration, realm );
+        configureComponent(component, descriptor, realm);
 
         String[] stringArray = component.getStringArray();
 
@@ -359,19 +377,19 @@ public abstract class AbstractComponentConfiguratorTest
 
         ComponentWithCompositeFields component = new ComponentWithCompositeFields();
 
-        ComponentConfigurator cc = getComponentConfigurator();
-
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
 
+        descriptor.setConfiguration(configuration);
+
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration, realm );
+        configureComponent(component, descriptor, realm);
 
         assertNotNull( component.getThing() );
 
@@ -415,19 +433,19 @@ public abstract class AbstractComponentConfiguratorTest
 
         ComponentWithPropertiesField component = new ComponentWithPropertiesField();
 
-        ComponentConfigurator cc = getComponentConfigurator();
-
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
 
+        descriptor.setConfiguration(configuration);
+
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration, realm );
+        configureComponent(component, descriptor, realm);
 
         Properties properties = component.getSomeProperties();
 
@@ -466,19 +484,19 @@ public abstract class AbstractComponentConfiguratorTest
 
         ComponentWithPropertiesField component = new ComponentWithPropertiesField();
 
-        ComponentConfigurator cc = getComponentConfigurator();
-
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
 
+        descriptor.setConfiguration(configuration);
+
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration, expressionEvaluator, realm );
+        configureComponent(component, descriptor, realm, expressionEvaluator);
 
         Properties properties = component.getSomeProperties();
 
@@ -500,19 +518,19 @@ public abstract class AbstractComponentConfiguratorTest
 
         ComponentWithMapField component = new ComponentWithMapField();
 
-        ComponentConfigurator cc = getComponentConfigurator();
-
         ComponentDescriptor descriptor = new ComponentDescriptor();
 
         descriptor.setRole( "role" );
 
         descriptor.setImplementation( component.getClass().getName() );
 
+        descriptor.setConfiguration(configuration);
+
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
-        cc.configureComponent( component, configuration, realm );
+        configureComponent(component, descriptor, realm);
 
         Map map = component.getMap();
 
