@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.beans.Introspector;
 
 import org.apache.xbean.recipe.AbstractRecipe;
 import org.apache.xbean.recipe.ConstructionException;
@@ -30,23 +29,23 @@ import org.apache.xbean.recipe.ObjectRecipe;
 import org.apache.xbean.recipe.Option;
 import org.apache.xbean.recipe.RecipeHelper;
 import static org.apache.xbean.recipe.RecipeHelper.toClass;
+import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import static org.codehaus.plexus.component.CastUtils.cast;
 import org.codehaus.plexus.component.MapOrientedComponent;
+import org.codehaus.plexus.component.collections.ComponentList;
+import org.codehaus.plexus.component.collections.ComponentMap;
+import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
-import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
-import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
+import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.MapConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
-import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.special.ClassRealmConverter;
-import org.codehaus.plexus.component.collections.ComponentList;
-import org.codehaus.plexus.component.collections.ComponentMap;
+import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.factory.java.JavaComponentFactory;
@@ -158,17 +157,13 @@ public class XBeanComponentBuilder implements ComponentBuilder {
         if (!isMapOrientedClass(typeName, realm)) {
             for (ComponentRequirement requirement : cast(descriptor.getRequirements(), ComponentRequirement.class)) {
                 String name = requirement.getFieldName();
-                if (name == null) {
-                    name = requirement.getRole();
-                    name = name.substring(name.lastIndexOf('.') + 1);
-                    name = Introspector.decapitalize(name);
+                RequirementRecipe requirementRecipe = new RequirementRecipe(descriptor, requirement, getContainer(), name == null);
+
+                if (name != null) {
+                    recipe.setProperty(name, requirementRecipe);
+                } else {
+                    recipe.setAutoMatchProperty(requirement.getRole(), requirementRecipe);
                 }
-
-                if (name == null) throw new NullPointerException("name is null");
-
-                RequirementRecipe requirementRecipe = new RequirementRecipe(descriptor, requirement, getContainer());
-
-                recipe.setProperty(name, requirementRecipe);
             }
 
             // add configuration data
@@ -231,15 +226,40 @@ public class XBeanComponentBuilder implements ComponentBuilder {
         private ComponentDescriptor componentDescriptor;
         private ComponentRequirement requirement;
         private PlexusContainer container;
+        private boolean autoMatch;
 
-        public RequirementRecipe(ComponentDescriptor componentDescriptor, ComponentRequirement requirement, PlexusContainer container) {
+        public RequirementRecipe(ComponentDescriptor componentDescriptor, ComponentRequirement requirement, PlexusContainer container, boolean autoMatch) {
             this.componentDescriptor = componentDescriptor;
             this.requirement = requirement;
             this.container = container;
+            this.autoMatch = autoMatch;
         }
 
-        public boolean canCreate(Type type) {
-            return true;
+        public boolean canCreate(Type expectedType) {
+            if (!autoMatch) return true;
+
+            ClassRealm realm = (ClassRealm) Thread.currentThread().getContextClassLoader();
+            Class propertyType = toClass(expectedType);
+
+            // Never auto match array, map or collection
+            if (propertyType.isArray() || Map.class.isAssignableFrom(propertyType) || Collection.class.isAssignableFrom(propertyType) || requirement instanceof ComponentRequirementList) {
+                return false;
+            }
+
+            // if the type to be created is an instance of the expceted type, return true
+            try {
+                ComponentDescriptor descriptor = ((MutablePlexusContainer) container).getComponentRepository().getComponentDescriptor(requirement.getRole(), requirement.getRoleHint(), realm);
+
+                String typeName = descriptor.getImplementation();
+                Class actualClass = realm.loadClass(typeName);
+
+                if (RecipeHelper.isAssignable(expectedType, actualClass)) {
+                    return true;
+                }
+            } catch (Exception e) {
+            }
+
+            return false;
         }
 
         protected Object internalCreate(Type expectedType, boolean lazyRefAllowed) throws ConstructionException {
@@ -304,6 +324,10 @@ public class XBeanComponentBuilder implements ComponentBuilder {
                         + "in object of type " + componentDescriptor.getImplementation() + " because the requirement "
                         + requirement + " was missing (lookup realm: " + realm.getId() + ")", e);
             }
+        }
+
+        public String toString() {
+            return "RequirementRecipe[fieldName=" + requirement.getFieldName() + ", role=" + componentDescriptor.getRole() + "]";
         }
     }
 
