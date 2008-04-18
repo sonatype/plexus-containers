@@ -47,8 +47,7 @@ public aspect ActiveCollectionsCleanupAspect
             }
         }
 
-        container.collectionsByComponent.clear();
-        container.collectionsByComponent = null;
+        container.collectionsByComponent = new HashMap();
     }
 
     private pointcut componentMapCreation( Object hostComponent, ComponentMap collection ):

@@ -60,6 +60,11 @@ public class MapConverter
 
         if ( expression == null )
         {
+            expression = configuration.getAttribute( "default-value", null );
+        }
+
+        if ( expression == null )
+        {
             Map map = new TreeMap();
 
             PlexusConfiguration[] children = configuration.getChildren();
