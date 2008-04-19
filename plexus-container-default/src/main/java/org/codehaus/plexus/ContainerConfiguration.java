@@ -2,7 +2,6 @@ package org.codehaus.plexus;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
@@ -93,10 +92,6 @@ public interface ContainerConfiguration
     ComponentRepository getComponentRepository();
 
     // Component composer
-
-    ContainerConfiguration setComponentComposerManager( ComponentComposerManager componentComposerManager );
-
-    ComponentComposerManager getComponentComposerManager();
 
     // Lifecycle handler manager
 

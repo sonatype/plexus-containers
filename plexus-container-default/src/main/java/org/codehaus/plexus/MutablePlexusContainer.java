@@ -18,7 +18,6 @@ package org.codehaus.plexus;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.composition.ComponentComposerManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
@@ -65,10 +64,6 @@ public interface MutablePlexusContainer
     ComponentLookupManager getComponentLookupManager();
 
     void setComponentLookupManager( ComponentLookupManager componentLookupManager );
-
-    ComponentComposerManager getComponentComposerManager();
-
-    void setComponentComposerManager( ComponentComposerManager componentComposerManager );
 
     LoggerManager getLoggerManager();
 

@@ -5,12 +5,6 @@ import java.util.Map;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.composition.ComponentComposerManager;
-import org.codehaus.plexus.component.composition.DefaultComponentComposerManager;
-import org.codehaus.plexus.component.composition.FieldComponentComposer;
-import org.codehaus.plexus.component.composition.MapOrientedComponentComposer;
-import org.codehaus.plexus.component.composition.NoOpComponentComposer;
-import org.codehaus.plexus.component.composition.setter.SetterComponentComposer;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
@@ -30,7 +24,6 @@ import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
-import org.codehaus.plexus.container.initialization.InitializeComponentComposerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase;
@@ -48,8 +41,6 @@ import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.AutoConfigurePhase;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.CompositionPhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.ConfigurablePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.ContextualizePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.DisposePhase;
@@ -186,7 +177,6 @@ public class DefaultContainerConfiguration
             new InitializeComponentManagerManagerPhase(),
             new InitializeComponentFactoryManagerPhase(),
             new InitializeComponentLookupManagerPhase(),
-            new InitializeComponentComposerPhase(),
             new InitializeContainerConfigurationSourcePhase(),
             new InitializeLoggerManagerPhase(),
             new InitializeContextPhase(),
@@ -308,34 +298,6 @@ public class DefaultContainerConfiguration
         return componentRepository;
     }
 
-
-    private ComponentComposerManager componentComposerManager;
-
-    public ContainerConfiguration setComponentComposerManager( ComponentComposerManager componentComposerManager )
-    {
-        this.componentComposerManager = componentComposerManager;
-
-        return this;
-    }
-
-    public ComponentComposerManager getComponentComposerManager()
-    {
-        if ( componentComposerManager == null )
-        {
-            componentComposerManager = new DefaultComponentComposerManager();
-
-            componentComposerManager.addComponentComposer( new FieldComponentComposer() );
-
-            componentComposerManager.addComponentComposer( new SetterComponentComposer() );
-
-            componentComposerManager.addComponentComposer( new MapOrientedComponentComposer() );
-
-            componentComposerManager.addComponentComposer( new NoOpComponentComposer() );            
-        }
-
-        return componentComposerManager;
-    }
-
     // Lifecycle handler manager
 
     private LifecycleHandlerManager lifecycleHandlerManager;
@@ -364,9 +326,8 @@ public class DefaultContainerConfiguration
             LifecycleHandler plexus = new BasicLifecycleHandler( "plexus" );
             // Begin
             plexus.addBeginSegment( new LogEnablePhase() );
-            plexus.addBeginSegment( new CompositionPhase() );
             plexus.addBeginSegment( new ContextualizePhase() );
-            plexus.addBeginSegment( new AutoConfigurePhase() );
+//            plexus.addBeginSegment( new AutoConfigurePhase() );
             plexus.addBeginSegment( new ServiceablePhase() );
             plexus.addBeginSegment( new InitializePhase() );
             plexus.addBeginSegment( new StartPhase() );
@@ -381,7 +342,7 @@ public class DefaultContainerConfiguration
             // Begin
             basic.addBeginSegment( new LogEnablePhase() );
             basic.addBeginSegment( new ContextualizePhase() );
-            basic.addBeginSegment( new AutoConfigurePhase() );
+//            basic.addBeginSegment( new AutoConfigurePhase() );
             basic.addBeginSegment( new InitializePhase() );
             basic.addBeginSegment( new StartPhase() );
             // End
@@ -411,7 +372,6 @@ public class DefaultContainerConfiguration
 
             // Bootstrap
             LifecycleHandler bootstrap = new BasicLifecycleHandler( "bootstrap" );
-            bootstrap.addBeginSegment( new CompositionPhase() );
             bootstrap.addBeginSegment( new ContextualizePhase() );
             lifecycleHandlerManager.addLifecycleHandler( bootstrap );
         }

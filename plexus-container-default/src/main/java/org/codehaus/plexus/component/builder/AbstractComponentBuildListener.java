@@ -1,5 +1,3 @@
-package org.codehaus.plexus.container.initialization;
-
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -15,18 +13,18 @@ package org.codehaus.plexus.container.initialization;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.component.builder;
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
-/**
- * @author Jason van Zyl
- */
-public class InitializeComponentComposerPhase
-    extends AbstractCoreComponentInitializationPhase
-{
-    public void initializeCoreComponent( ContainerInitializationContext context )
-        throws ContainerInitializationException
-    {
-        context.getContainer().setComponentComposerManager( context.getContainerConfiguration().getComponentComposerManager() );
+public abstract class AbstractComponentBuildListener implements ComponentBuildListener {
+    public void beforeComponentCreate(ComponentDescriptor componentDescriptor, ClassRealm realm) {
+    }
+
+    public void componentCreated(ComponentDescriptor componentDescriptor, Object component, ClassRealm realm) {
+    }
+
+    public void componentConfigured(ComponentDescriptor componentDescriptor, Object component, ClassRealm realm) {
     }
 }
