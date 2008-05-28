@@ -106,5 +106,10 @@ public interface ContainerConfiguration
     ContainerConfiguration setConfigurationSource( ConfigurationSource configurationSource );
 
     ConfigurationSource getConfigurationSource();
+    
+    // Dev mode, will allow for certain functionality that should not be available normally
+    ContainerConfiguration setDevMode( boolean devMode );
+    
+    boolean isDevMode();
 }
 
