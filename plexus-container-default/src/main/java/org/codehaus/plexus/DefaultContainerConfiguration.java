@@ -70,8 +70,6 @@ public class DefaultContainerConfiguration
     private URL containerConfigurationURL;
 
     private ConfigurationSource configurationSource;
-    
-    private boolean devMode = false;
 
     public ContainerConfiguration setName( String name )
     {
@@ -393,17 +391,5 @@ public class DefaultContainerConfiguration
     public ConfigurationSource getConfigurationSource()
     {
         return configurationSource;
-    }
-    
-    public ContainerConfiguration setDevMode( boolean devMode )
-    {
-        this.devMode = devMode;
-        
-        return this;
-    }
-    
-    public boolean isDevMode()
-    {
-        return this.devMode;
     }
 }

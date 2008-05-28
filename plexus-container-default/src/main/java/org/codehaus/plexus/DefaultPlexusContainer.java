@@ -132,8 +132,6 @@ public class DefaultPlexusContainer
 
     // TODO: Is there a more threadpool-friendly way to do this?
     private ThreadLocal lookupRealm = new ThreadLocal();
-    
-    private boolean devMode;
 
     public void addComponent( Object component, String role )
         throws ComponentRepositoryException
@@ -307,8 +305,6 @@ public class DefaultPlexusContainer
 
             containerRealm = (ClassRealm) c.getClassWorld().getRealms().iterator().next();
         }
-        
-        devMode = c.isDevMode();
 
         name = c.getName();
 
@@ -890,16 +886,14 @@ public class DefaultPlexusContainer
         {
             disposeAllComponents();
 
-            boolean needToDisposeRealm = false;
-            
-            // In dev mode i don't want to dispose of the realm in the world
-            if ( !isDevMode() && !( ( parentContainer != null )
-                && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) ) )
+            boolean needToDisposeRealm = true;
+
+            if ( ( parentContainer != null )
+                && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) )
             {
-                needToDisposeRealm = true;
+                needToDisposeRealm = false;
             }
 
-            
             if ( parentContainer != null )
             {
                 parentContainer.removeChildContainer( getName() );
@@ -1365,10 +1359,5 @@ public class DefaultPlexusContainer
     public ConfigurationSource getConfigurationSource()
     {
         return configurationSource;
-    }
-    
-    public boolean isDevMode()
-    {
-        return this.devMode;
     }
 }
