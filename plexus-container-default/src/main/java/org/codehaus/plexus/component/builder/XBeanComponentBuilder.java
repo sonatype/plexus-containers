@@ -15,25 +15,18 @@
  */
 package org.codehaus.plexus.component.builder;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import static org.apache.xbean.recipe.RecipeHelper.toClass;
+import static org.codehaus.plexus.component.CastUtils.cast;
 
 import org.apache.xbean.recipe.AbstractRecipe;
 import org.apache.xbean.recipe.ConstructionException;
 import org.apache.xbean.recipe.ObjectRecipe;
 import org.apache.xbean.recipe.Option;
 import org.apache.xbean.recipe.RecipeHelper;
-import static org.apache.xbean.recipe.RecipeHelper.toClass;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import static org.codehaus.plexus.component.CastUtils.cast;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.collections.ComponentList;
 import org.codehaus.plexus.component.collections.ComponentMap;
@@ -60,6 +53,14 @@ import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 import org.codehaus.plexus.util.StringUtils;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class XBeanComponentBuilder implements ComponentBuilder {
     private ComponentManager componentManager;
@@ -236,7 +237,10 @@ public class XBeanComponentBuilder implements ComponentBuilder {
         }
 
         public boolean canCreate(Type expectedType) {
-            if (!autoMatch) return true;
+            if (!autoMatch)
+            {
+                return true;
+            }
 
             ClassRealm realm = (ClassRealm) Thread.currentThread().getContextClassLoader();
             Class propertyType = toClass(expectedType);
@@ -262,6 +266,7 @@ public class XBeanComponentBuilder implements ComponentBuilder {
             return false;
         }
 
+        @Override
         protected Object internalCreate(Type expectedType, boolean lazyRefAllowed) throws ConstructionException {
             ClassRealm realm = (ClassRealm) Thread.currentThread().getContextClassLoader();
             Class propertyType = toClass(expectedType);
@@ -326,6 +331,7 @@ public class XBeanComponentBuilder implements ComponentBuilder {
             }
         }
 
+        @Override
         public String toString() {
             return "RequirementRecipe[fieldName=" + requirement.getFieldName() + ", role=" + componentDescriptor.getRole() + "]";
         }
@@ -348,6 +354,7 @@ public class XBeanComponentBuilder implements ComponentBuilder {
             }
         }
 
+        @Override
         protected Object internalCreate(Type expectedType, boolean lazyRefAllowed) throws ConstructionException {
             try {
                 ConverterLookup lookup = createConverterLookup();
@@ -414,14 +421,18 @@ public class XBeanComponentBuilder implements ComponentBuilder {
         ConverterLookup converterLookup = new DefaultConverterLookup();
         DefaultExpressionEvaluator expressionEvaluator = new DefaultExpressionEvaluator();
         PlexusConfiguration configuration = container.getConfigurationSource().getConfiguration( descriptor );
-        Map context = (Map) converter.fromConfiguration(converterLookup,
-                configuration,
-                null,
-                null,
-                realm,
-                expressionEvaluator,
-                null );
 
-        mapOrientedComponent.setComponentConfiguration( context );
+        if ( configuration != null )
+        {
+            Map context = (Map) converter.fromConfiguration(converterLookup,
+                                                            configuration,
+                                                            null,
+                                                            null,
+                                                            realm,
+                                                            expressionEvaluator,
+                                                            null );
+
+            mapOrientedComponent.setComponentConfiguration( context );
+        }
     }
 }
