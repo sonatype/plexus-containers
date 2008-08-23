@@ -1,0 +1,51 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.metadata.component.IComponent</role>
+      <implementation>org.codehaus.plexus.metadata.component.RecessiveComponent</implementation>
+      <description>Description for conflicting recessive component</description>
+      <configuration>
+        <prop1>Recessive Property1 value</prop1>
+        <prop3>Property3 value</prop3>        
+      </configuration>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.metadata.component.IComponentA</role>
+          <field-name>recessiveField</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    
+    <!-- non-conflicting component in recessive -->
+    <component>
+      <role>org.codehaus.plexus.metadata.component.INonConflictingComponent</role>
+      <implementation>org.codehaus.plexus.metadata.component.RecessiveComponent</implementation>
+      <description>Description for non-conflicting recessive component</description>
+      <configuration>
+        <prop1>Non conflicting Property1 value</prop1>
+        <prop2>Non conflicting Property2 value</prop2>
+      </configuration>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.metadata.component.IComponentA</role>
+        </requirement>
+      </requirements>
+    </component>
+  </components>
+
+  <lifecycle-handler-manager implementation="org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager">
+    <default-lifecycle-handler-id>webapp</default-lifecycle-handler-id>
+    <lifecycle-handlers>
+      <lifecycle-handler implementation="org.codehaus.plexus.personality.plexus.PlexusLifecycleHandler">
+        <id>webapp</id>
+        <name>Webapp</name>
+        <begin-segment>
+          <phase implementation="" />
+        </begin-segment>
+        <end-segment>
+          <phase implementation="" />
+        </end-segment>
+      </lifecycle-handler>
+    </lifecycle-handlers>
+  </lifecycle-handler-manager>
+</component-set>

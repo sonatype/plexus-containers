@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- $Id$ -->
+<component-set>
+  <components>
+    <component>
+      <role>org.codehaus.plexus.metadata.gleaner.SourceComponentGleaner</role>
+      <role-hint>qdox</role-hint>
+      <implementation>org.codehaus.plexus.metadata.gleaner.QDoxComponentGleaner</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.metadata.ComponentDescriptorCreator</role>
+      <implementation>org.codehaus.plexus.metadata.DefaultComponentDescriptorCreator</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.metadata.ComponentDescriptorWriter</role>
+      <implementation>org.codehaus.plexus.metadata.DefaultComponentDescriptorWriter</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.metadata.merge.Merger</role>
+      <role-hint>componentsXml</role-hint>
+      <implementation>org.codehaus.plexus.metadata.merge.ComponentsXmlMerger
+      </implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.metadata.merge.Merger</role>
+      <role-hint>plexusXml</role-hint>
+      <implementation>org.codehaus.plexus.metadata.merge.PlexusXmlMerger</implementation>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.metadata.gleaner.ClassComponentGleaner</role>
+      <role-hint>annotation</role-hint>
+      <implementation>org.codehaus.plexus.metadata.gleaner.AnnotationComponentGleaner</implementation>
+    </component>
+  </components>
+</component-set>

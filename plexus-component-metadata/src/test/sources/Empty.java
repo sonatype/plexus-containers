@@ -1,0 +1,2 @@
+/* No class in here */
+
