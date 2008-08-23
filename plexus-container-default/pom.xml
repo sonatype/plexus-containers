@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.codehaus.plexus</groupId>
@@ -6,14 +7,7 @@
     <version>1.0-alpha-50-SNAPSHOT</version>
   </parent>
   <artifactId>plexus-container-default</artifactId>
-  <name>Default Plexus Container</name>
-  <version>1.0-alpha-50-SNAPSHOT</version>
-  <repositories>                                                                                                                                     
-    <repository>                                                                                                                                     
-      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-      <id>apache.snapshots</id>                                                                                                                    
-    </repository>                                                                                                                                    
-  </repositories>     
+  <name>Plexus :: Default Container</name>
   <build>
     <plugins>
       <plugin>
@@ -24,8 +18,8 @@
             <exclude>**/Test*.java</exclude>
             <exclude>**/Abstract*.java</exclude>
             <!--
-             Waiting for createChildContainer( String name, Set urls ) returning not null value.
-             Waiting for PLX-349 fixed.
+              Waiting for createChildContainer( String name, Set urls ) returning not null value. Waiting for PLX-349
+              fixed.
             -->
             <exclude>**/DefaultPlexusContainerChildTest.java</exclude>
             <!-- In the middle of getting rid of the plexus.xml and making the whole setup programmatic -->
@@ -72,4 +66,4 @@
       <version>3.4</version>
     </dependency>
   </dependencies>
- </project>
+</project>
