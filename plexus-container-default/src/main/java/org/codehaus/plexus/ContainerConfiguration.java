@@ -1,5 +1,8 @@
 package org.codehaus.plexus;
 
+import java.net.URL;
+import java.util.Map;
+
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
@@ -12,9 +15,6 @@ import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
-
-import java.net.URL;
-import java.util.Map;
 
 /**
  * @author Jason van Zyl

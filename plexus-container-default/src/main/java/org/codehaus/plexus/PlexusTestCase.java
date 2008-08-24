@@ -16,15 +16,15 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.context.DefaultContext;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
+
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.DefaultContext;
 
 /**
  * @author Jason van Zyl

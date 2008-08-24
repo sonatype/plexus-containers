@@ -16,6 +16,8 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
+import java.util.List;
+
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
@@ -30,8 +32,6 @@ import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
-
-import java.util.List;
 
 /**
  * @author Jason van Zyl
