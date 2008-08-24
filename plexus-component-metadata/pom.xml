@@ -3,11 +3,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.codehaus.plexus</groupId>  
-  <artifactId>plexus-metadata-generator</artifactId>  
+  <parent>
+    <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus-containers</artifactId>
+    <version>1.0-alpha-50-SNAPSHOT</version>
+  </parent>
+  <artifactId>plexus-metadata-generator</artifactId>
   <name>Plexus :: Component Metadata</name>
   <packaging>maven-plugin</packaging>
-  <version>1.0-alpha-50-SNAPSHOT</version>
   <dependencies>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -17,7 +20,6 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-component-annotations</artifactId>
-      <version>1.0-alpha-50-SNAPSHOT</version>
     </dependency>
     <!--
       NOTE: When QDox 1.7 is fuly cooked should update this and consider using it to provide source-level annotation
@@ -51,11 +53,6 @@
       <version>2.0.9</version>
     </dependency>
   </dependencies>
-  <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-tools/trunk/plexus-cdc</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-tools/trunk/plexus-cdc</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-tools/tags/plexus-cdc</url>
-  </scm>
   <build>
     <plugins>
       <plugin>
@@ -66,7 +63,7 @@
         </configuration>
       </plugin>
     </plugins>
-  </build>  
+  </build>
   <profiles>
     <profile>
       <id>its</id>

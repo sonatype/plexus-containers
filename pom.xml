@@ -6,6 +6,9 @@
   <version>1.0-alpha-50-SNAPSHOT</version>
   <properties>
     <plexusVersion>1.0-alpha-50-SNAPSHOT</plexusVersion>
+    <classWorldsVersion>1.2-alpha-13</classWorldsVersion>
+    <plexusUtilsVersion>1.4.5</plexusUtilsVersion>
+    <xbeanReflectVersion>3.4</xbeanReflectVersion>
   </properties>
   <packaging>pom</packaging>
   <name>Parent :: Plexus Containers</name>
@@ -46,12 +49,17 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-classworlds</artifactId>
-        <version>1.2-alpha-13</version>
+        <version>${classWorldsVersion}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>1.4.5</version>
+        <version>${plexusUtilsVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>xbean-reflect</artifactId>
+        <version>${xbeanReflectVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
