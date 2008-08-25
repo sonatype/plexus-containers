@@ -120,7 +120,7 @@ public class DefaultComponentLookupManager
         // component manager manager to create a component manager for us. Also if we are reloading
         // components then we'll also get a new component manager.
 
-        if ( container.isReloadingEnabled() || ( componentManager == null ) )
+        if ( componentManager == null )
         {
             ComponentDescriptor descriptor = container.getComponentRepository().getComponentDescriptor( componentRole,
                                                                                                         roleHint,

@@ -128,8 +128,6 @@ public class DefaultPlexusContainer
 
     protected Date creationDate = new Date();
 
-    protected boolean reloadingEnabled;
-
     // TODO: Is there a more threadpool-friendly way to do this?
     private ThreadLocal lookupRealm = new ThreadLocal();
     
@@ -1148,20 +1146,6 @@ public class DefaultPlexusContainer
     public void removeComponentDiscoveryListener( ComponentDiscoveryListener listener )
     {
         componentDiscovererManager.removeComponentDiscoveryListener( listener );
-    }
-
-    // ----------------------------------------------------------------------
-    // Reloading
-    // ----------------------------------------------------------------------
-
-    public void setReloadingEnabled( boolean reloadingEnabled )
-    {
-        this.reloadingEnabled = reloadingEnabled;
-    }
-
-    public boolean isReloadingEnabled()
-    {
-        return reloadingEnabled;
     }
 
     // ----------------------------------------------------------------------------

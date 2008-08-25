@@ -469,22 +469,6 @@ public interface PlexusContainer
     void addJarResource( File resource )
         throws PlexusContainerException;
 
-    // ----------------------------------------------------------------------
-    // Reloading
-    // ----------------------------------------------------------------------
-
-    /**
-     * Sets the ability to reload a component's metadata multiple times.
-     * @param reloadingEnabled true is a component may be reloaded
-     */
-    void setReloadingEnabled( boolean reloadingEnabled );
-
-    /**
-     * Returns true if a component's metadata may be reloaded, otherwise, it may be loaded only once.
-     * @return true if a component's metadata may be reloaded
-     */
-    boolean isReloadingEnabled();
-
     // ------------------------------------------------------------------------
     // Required for compatibility
     // ------------------------------------------------------------------------
