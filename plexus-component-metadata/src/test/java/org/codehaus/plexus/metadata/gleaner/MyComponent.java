@@ -21,7 +21,7 @@ package org.codehaus.plexus.metadata.gleaner;
  *
  * @plexus.component role="org.codehaus.plexus.metadata.gleaner.MyComponent" role-hint="foo"
  *
- * @version $Rev$ $Date$
+ * @version $Rev: 7691 $ $Date$
  */
 public class MyComponent
 {
