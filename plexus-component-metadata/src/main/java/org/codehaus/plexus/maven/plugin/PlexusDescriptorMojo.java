@@ -41,7 +41,7 @@ public class PlexusDescriptorMojo
     /**
      * The directory where the descriptor is written.
      * 
-     * @parameter expression="${project.build.outputDirectory}"
+     * @parameter default-value="${project.build.outputDirectory}"
      * @required
      */
     private File outputDirectory;

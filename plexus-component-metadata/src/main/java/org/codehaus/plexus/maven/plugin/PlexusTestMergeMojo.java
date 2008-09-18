@@ -42,7 +42,7 @@ public class PlexusTestMergeMojo
     private List resources;
 
     /**
-     * @parameter expression="${project.build.testOutputDirectory}/META-INF/plexus/components.xml"
+     * @parameter default-value="${project.build.testOutputDirectory}/META-INF/plexus/components.xml"
      * @required
      */
     private File output;
