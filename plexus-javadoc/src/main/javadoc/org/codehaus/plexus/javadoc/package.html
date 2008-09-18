@@ -1,0 +1,35 @@
+<body>
+  <h2>Javadoc Tags used by Plexus tools</h2>
+  <p>
+    Here is a reference of the Javadoc annotations that can be used to 'decorate' the Java sources
+    to allow Plexus tools like Component Descriptor Creator (CDC) to generate Component Descriptors.
+  </p>
+  <table class="bodyTable">
+    <tbody>
+      <tr class="a">
+        <td align="left"><b>Tag/Annotation</b></td>
+        <td align="left"><b>Available on</b></td>
+        <td align="left"><b>Required</b></td>
+        <td align="left"><b>Descriptor Element</b></td>
+      </tr>
+      <tr class="b">
+        <td align="left"><a href="#@plexus.component">@plexus.component</a></td>
+        <td align="left">Class</td>
+        <td align="left">Yes</td>
+        <td align="left">Indicate to Plexus CDC that the class is a component</td>
+      </tr>
+      <tr class="a">
+        <td align="left"><a href="#@plexus.configuration">@plexus.configuration</a></td>
+        <td align="left">Field</td>
+        <td align="left">No</td>
+        <td align="left">Tell Plexus CDC that this item should be configured through
+        the <tt>components.xml</tt></td>
+      </tr>
+      <tr class="b">
+        <td align="left"><a href="#@plexus.requirement">@plexus.requirement</a></td>
+        <td align="left">Field</td><td align="left">No</td>
+        <td align="left">Indicate to Plexus CDC that the field is required by the component</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
