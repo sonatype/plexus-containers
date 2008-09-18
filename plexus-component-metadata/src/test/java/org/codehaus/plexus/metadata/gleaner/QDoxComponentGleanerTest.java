@@ -67,6 +67,7 @@ public class QDoxComponentGleanerTest
         assertTrue( url.exists() );
         return builder.addSource( url );
     }
+    
 
     private JavaClass loadJavaClass( final String name )
         throws IOException
