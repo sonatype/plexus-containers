@@ -51,7 +51,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>descriptor</goal>
+                            <goal>generate-metadata</goal>
                         </goals>
                     </execution>
                 </executions>
