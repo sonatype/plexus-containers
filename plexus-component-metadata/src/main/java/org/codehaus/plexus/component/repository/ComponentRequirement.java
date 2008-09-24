@@ -1,119 +1,153 @@
 package org.codehaus.plexus.component.repository;
 
+import org.codehaus.plexus.PlexusConstants;
+
+/*
+ * Copyright 2001-2006 Codehaus Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
- * @author <a href="mmaczka@interia.pl">Michal Maczka</a> 
+ * This represents a component this is required by another component.
  * 
- * @version $Id: ComponentRequirement.java 2573 2005-09-30 23:38:00Z jdcasey $ 
- * @todo Maybe hashCode and equals should use only 'role' 
+ * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
+ * @version $Id: ComponentRequirement.java 6965 2007-10-21 05:32:27Z jvanzyl $
  */
 public class ComponentRequirement
 {
     private String role;
 
-    private String roleHint;
+    private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
 
     private String fieldName;
     
     private String fieldMappingType;
     
+    /**
+     * Returns the field name that this component requirement will inject.
+     * @return the field name that this component requirement will inject
+     */
     public String getFieldName()
     {
         return fieldName;
     }
 
-    public void setFieldName( final String fieldName )
+    /**
+     * Sets the name of the field that will be populated by the required
+     * component.
+     * @param fieldName the name of the field to be populated
+     */
+    public void setFieldName( String fieldName )
     {
         this.fieldName = fieldName;
     }
 
+    /**
+     * Returns the role of the required component.
+     * @return the role of the required component
+     */
     public String getRole()
     {
         return role;
     }
 
-    public void setRole( final String role )
+    /**
+     * Sets the role of the require component.
+     * @param role the required component's role
+     */
+    public void setRole( String role )
     {
         this.role = role;
     }
 
+    /**
+     * Returns the role-hint of the required component.
+     * @return the role-hint of the required component
+     */
     public String getRoleHint()
     {
         return roleHint;
     }
 
-    public void setRoleHint( final String roleHint )
+    /**
+     * Sets the role-hint of the require component.
+     * Pasing null will set the hint to the default value.
+     * @param roleHint the required component's role-hint
+     */
+    public void setRoleHint( String roleHint )
     {
-        this.roleHint = roleHint;
-    }
-
-    public String getRequirementKey()
-    {
-        if ( getRoleHint() != null )
+        if ( roleHint == null || roleHint.trim().equals( "" ) )
         {
-            return getRole() + getRoleHint();
+            this.roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
         }
-
-        return getRole();
-    }
-
-
-
-    public String toString()
-    {
-        return "ComponentRequirement{" +
-               "role='" + role + "'" +
-               ", roleHint='" + roleHint + "'" +
-               ", fieldName='" + fieldName + "'" +
-               "}";
+        else
+        {
+            this.roleHint = roleHint;
+        }
     }
 
     /**
-     * 
+     * Returns the type of the field this component requirement will inject.
+     * @return the type of the field this component requirement will inject
      */
-    public String getHumanReadableKey()
-    {
-        StringBuffer key = new StringBuffer();
-
-        key.append( "role: '");
-        
-        key.append( getRole() );
-
-        key.append( "'" );
-
-        if ( getRoleHint() != null )
-        {
-            key.append( ", role-hint: '" );
-
-            key.append( getRoleHint() );
-
-            key.append( "'. " );
-        }
-
-        if ( getFieldName() != null )
-        {
-            key.append( ", field name: '" );
-
-            key.append( getFieldName() );
-
-            key.append( "' " );
-        }
-        
-        String retValue = key.toString();
-        
-        return retValue;
-       
-    }
-
     public String getFieldMappingType()
     {
         return fieldMappingType;
     }
 
+    /**
+     * Sets the type of the field that will be populated by the required
+     * component.
+     * @param fieldType the type of the field to be populated
+     */
     public void setFieldMappingType( String fieldType )
     {
         this.fieldMappingType = fieldType;
     }
-    
+
+    public String toString()
+    {
+        return "ComponentRequirement{" +
+            "role='" + getRole() + "'" + ", " +
+            "roleHint='" + getRoleHint() + "', " +
+            "fieldName='" + getFieldName() + "'" +
+            "}";
+    }
+
+    /**
+     * Returns a human-friendly key, suitable for display.
+     * @return a human-friendly key
+     */
+    public String getHumanReadableKey()
+    {
+        StringBuffer key = new StringBuffer();
+
+        key.append( "role: '").append( getRole() ).append( "'" );
+
+        if ( getRoleHint() != null )
+        {
+            key.append( ", role-hint: '" ).append( getRoleHint() ).append( "'. " );
+        }
+
+        if ( getFieldName() != null )
+        {
+            key.append( ", field name: '" ).append( getFieldName() ).append( "' " );
+        }
+
+        return key.toString();
+    }
+
     public boolean equals( Object other )
     {
         if ( other instanceof ComponentRequirement )
@@ -133,6 +167,4 @@ public class ComponentRequirement
     {
         return ( role + ":" + roleHint ).hashCode();
     }
-
-
 }

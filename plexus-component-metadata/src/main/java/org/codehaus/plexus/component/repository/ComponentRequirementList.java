@@ -1,17 +1,18 @@
 package org.codehaus.plexus.component.repository;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @author Andrew Williams
- * @version $Id: ComponentRequirementList.java 6923 2007-10-01 04:26:19Z user57 $
+ * @version $Id: ComponentRequirementList.java 6965 2007-10-21 05:32:27Z jvanzyl $
  * @since 1.0
  */
-public final class ComponentRequirementList
-        extends ComponentRequirement {
+public class ComponentRequirementList
+    extends ComponentRequirement 
+{
     private List roleHints;
 
     public List getRoleHints()
