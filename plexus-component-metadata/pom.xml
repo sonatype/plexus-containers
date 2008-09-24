@@ -8,7 +8,7 @@
     <artifactId>plexus-containers</artifactId>
     <version>1.0-alpha-50-SNAPSHOT</version>
   </parent>
-  <artifactId>plexus-metadata-generator</artifactId>
+  <artifactId>plexus-component-metadata</artifactId>
   <name>Plexus :: Component Metadata</name>
   <packaging>maven-plugin</packaging>
   <dependencies>
