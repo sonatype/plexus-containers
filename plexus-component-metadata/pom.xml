@@ -47,6 +47,11 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-cli</artifactId>
+      <version>1.2</version>
+    </dependency>
   </dependencies>
   <reporting>
     <plugins>

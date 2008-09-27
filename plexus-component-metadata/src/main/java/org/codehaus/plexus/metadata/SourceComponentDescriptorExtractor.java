@@ -12,7 +12,7 @@
  * the License.
  */
 
-package org.codehaus.plexus.maven.plugin;
+package org.codehaus.plexus.metadata;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,7 +24,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.metadata.gleaner.QDoxComponentGleaner;
 import org.codehaus.plexus.metadata.gleaner.SourceComponentGleaner;
-import org.codehaus.plexus.util.StringUtils;
 
 import com.thoughtworks.qdox.JavaDocBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -39,30 +38,13 @@ public class SourceComponentDescriptorExtractor
 {
     private SourceComponentGleaner gleaner;
 
-    /**
-     * The character encoding of the source files, can be <code>null</code> or empty to use the platform default
-     * encoding.
-     */
-    private String encoding;
-
-    public SourceComponentDescriptorExtractor()
-    {
-    }
-
-    public SourceComponentDescriptorExtractor( final String encoding )
-    {
-        this.encoding = encoding;
-    }
-
     public SourceComponentDescriptorExtractor( final SourceComponentGleaner gleaner )
     {
         this.gleaner = gleaner;
     }
 
-    public SourceComponentDescriptorExtractor( final SourceComponentGleaner gleaner, final String encoding )
+    public SourceComponentDescriptorExtractor()
     {
-        this.gleaner = gleaner;
-        this.encoding = encoding;
     }
 
     public List extract( final MavenProject project, final String scope, final ComponentDescriptor[] roleDefaults )
@@ -108,16 +90,6 @@ public class SourceComponentDescriptorExtractor
 
         // Scan the sources
         JavaDocBuilder builder = new JavaDocBuilder();
-
-        if ( StringUtils.isNotEmpty( encoding ) )
-        {
-            builder.setEncoding( encoding );
-        }
-        else
-        {
-            //getLogger().warn( "File encoding has not been set, using platform encoding "
-            //    + System.getProperty( "file.encoding" ) + ", i.e. build is platform dependent!" );
-        }
 
         for ( Iterator iter = sourceDirectories.iterator(); iter.hasNext(); )
         {

@@ -12,7 +12,7 @@
  * the License.
  */
 
-package org.codehaus.plexus.maven.plugin;
+package org.codehaus.plexus.metadata;
 
 import java.io.File;
 import java.net.MalformedURLException;
