@@ -4,8 +4,7 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus</artifactId>
-    <version>1.0.12-SNAPSHOT</version>
-    <relativePath>../../pom/trunk/pom.xml</relativePath>
+    <version>2.0.0</version>
   </parent>
   <artifactId>plexus-containers</artifactId>
   <version>1.0-beta-1-SNAPSHOT</version>
