@@ -38,7 +38,6 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
-
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.metadata.merge.MergeException;
 import org.codehaus.plexus.metadata.merge.Merger;

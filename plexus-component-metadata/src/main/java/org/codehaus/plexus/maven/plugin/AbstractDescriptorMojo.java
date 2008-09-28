@@ -27,7 +27,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.metadata.ExtractorConfiguration;
 import org.codehaus.plexus.metadata.MetadataGenerator;
 

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.metadata.gleaner.AnnotationComponentGleaner;
 import org.codehaus.plexus.metadata.gleaner.ClassComponentGleaner;

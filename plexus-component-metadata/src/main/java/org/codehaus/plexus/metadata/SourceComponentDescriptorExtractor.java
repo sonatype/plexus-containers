@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.metadata.gleaner.QDoxComponentGleaner;
 import org.codehaus.plexus.metadata.gleaner.SourceComponentGleaner;

@@ -19,14 +19,11 @@ package org.codehaus.plexus.metadata;
 import java.io.StringWriter;
 import java.util.List;
 
+import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
-
-import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.metadata.ComponentDescriptorWriter;
-import org.codehaus.plexus.metadata.DefaultComponentDescriptorWriter;
 
 /**
  * Test for the {@link DefaultComponentDescriptorWriter} class.

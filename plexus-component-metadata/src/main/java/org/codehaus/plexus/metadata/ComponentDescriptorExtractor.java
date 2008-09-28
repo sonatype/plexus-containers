@@ -14,10 +14,8 @@
 
 package org.codehaus.plexus.metadata;
 
-import java.io.File;
 import java.util.List;
 
-import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /**

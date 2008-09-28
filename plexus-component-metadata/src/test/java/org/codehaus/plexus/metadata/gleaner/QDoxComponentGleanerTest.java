@@ -16,7 +16,6 @@ package org.codehaus.plexus.metadata.gleaner;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import org.codehaus.plexus.PlexusTestCase;

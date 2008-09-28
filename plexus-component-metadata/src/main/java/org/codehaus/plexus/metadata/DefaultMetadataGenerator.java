@@ -28,17 +28,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.metadata.ClassComponentDescriptorExtractor;
-import org.codehaus.plexus.metadata.ComponentDescriptorExtractor;
-import org.codehaus.plexus.metadata.ComponentDescriptorWriter;
-import org.codehaus.plexus.metadata.SourceComponentDescriptorExtractor;
 import org.codehaus.plexus.metadata.gleaner.AnnotationComponentGleaner;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;

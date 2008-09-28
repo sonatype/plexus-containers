@@ -17,7 +17,6 @@
 package org.codehaus.plexus.metadata.gleaner;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.metadata.gleaner.ComponentGleanerException;
 
 /**
  * Interface for component gleaners which glean off of compiled classes..

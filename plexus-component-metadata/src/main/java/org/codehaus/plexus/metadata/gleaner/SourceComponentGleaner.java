@@ -16,11 +16,10 @@
 
 package org.codehaus.plexus.metadata.gleaner;
 
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaClassCache;
-
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.metadata.gleaner.ComponentGleanerException;
 
 /**
  * Interface for component gleaners which glean off of source code.

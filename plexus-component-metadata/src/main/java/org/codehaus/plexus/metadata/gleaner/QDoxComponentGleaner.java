@@ -33,11 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.thoughtworks.qdox.model.DocletTag;
-import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaClassCache;
-import com.thoughtworks.qdox.model.JavaField;
-
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentRequirementList;
@@ -51,6 +46,11 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Serviceable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Suspendable;
 import org.codehaus.plexus.util.StringUtils;
+
+import com.thoughtworks.qdox.model.DocletTag;
+import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaClassCache;
+import com.thoughtworks.qdox.model.JavaField;
 
 /**
  * A source component gleaner which uses QDox to discover Javadoc annotations.

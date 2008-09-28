@@ -16,11 +16,11 @@ package org.codehaus.plexus.component.repository;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.PlexusConstants;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
  * Component instantiation description.

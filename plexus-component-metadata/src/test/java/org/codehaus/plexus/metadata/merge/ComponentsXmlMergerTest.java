@@ -24,10 +24,10 @@ package org.codehaus.plexus.metadata.merge;
  * SOFTWARE.
  */
 
+import java.io.File;
+import java.util.List;
+
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.metadata.merge.ComponentsXmlMerger;
-import org.codehaus.plexus.metadata.merge.MergeException;
-import org.codehaus.plexus.metadata.merge.Merger;
 import org.codehaus.plexus.metadata.merge.support.AbstractMergeableElement;
 import org.codehaus.plexus.metadata.merge.support.AbstractMergeableElementList;
 import org.codehaus.plexus.metadata.merge.support.ComponentElement;
@@ -37,9 +37,6 @@ import org.codehaus.plexus.util.FileUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * Tests for {@link ComponentsXmlMerger}.
