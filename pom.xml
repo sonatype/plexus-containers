@@ -7,7 +7,7 @@
     <version>2.0.0</version>
   </parent>
   <artifactId>plexus-containers</artifactId>
-  <version>1.0-beta-1-SNAPSHOT</version>
+  <version>1.0-beta-1</version>
   <properties>
     <classWorldsVersion>1.2-alpha-13</classWorldsVersion>
     <plexusUtilsVersion>1.4.5</plexusUtilsVersion>
