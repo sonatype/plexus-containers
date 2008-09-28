@@ -23,8 +23,7 @@ package org.codehaus.plexus.maven.plugin;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,19 +54,10 @@ public abstract class AbstractDescriptorMojo
     protected static final String TEST_SCOPE = "test";
 
     /**
-     * The relative path to the output file for the generated metadata.
-     * 
-     * @parameter default-value="META-INF/plexus/components.xml"
+     * @parameter expression="META-INF/plexus/components.xml"
      * @required
      */
     protected String fileName;
-
-    /**
-     * The character encoding to use when reading the source files.
-     * 
-     * @parameter expression="${encoding}" default-value="${project.build.sourceEncoding}"
-     */
-    private String encoding;
 
     /**
      * Whether to generate a Plexus Container descriptor instead of a component descriptor.
@@ -80,7 +70,6 @@ public abstract class AbstractDescriptorMojo
     /**
      * @parameter expression="${project}"
      * @required
-     * @readonly
      */
     private MavenProject mavenProject;
 
@@ -127,7 +116,7 @@ public abstract class AbstractDescriptorMojo
         // If no extractors are configured then use a default (javadoc-style source extraction)
         if ( extractors == null || extractors.length == 0 )
         {
-            extractors = new ComponentDescriptorExtractor[] { new SourceComponentDescriptorExtractor( encoding ), new ClassComponentDescriptorExtractor( new AnnotationComponentGleaner() ) };
+            extractors = new ComponentDescriptorExtractor[] { new SourceComponentDescriptorExtractor(), new ClassComponentDescriptorExtractor( new AnnotationComponentGleaner() ) };
         }
 
         List descriptors = new ArrayList();
@@ -181,8 +170,7 @@ public abstract class AbstractDescriptorMojo
 
         FileUtils.forceMkdir( outputFile.getParentFile() );
 
-        BufferedWriter output =
-            new BufferedWriter( new OutputStreamWriter( new FileOutputStream( outputFile ), "UTF-8" ) );
+        BufferedWriter output = new BufferedWriter( new FileWriter( outputFile ) );
 
         try
         {
