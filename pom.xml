@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.codehaus.plexus</groupId>
+  <parent>
+    <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus</artifactId>
+    <version>1.0.12-SNAPSHOT</version>
+    <relativePath>../../pom/trunk/pom.xml</relativePath>
+  </parent>
   <artifactId>plexus-containers</artifactId>
-  <version>1.0-alpha-50-SNAPSHOT</version>
+  <version>1.0-beta-1-SNAPSHOT</version>
   <properties>
-    <plexusVersion>1.0-alpha-50-SNAPSHOT</plexusVersion>
     <classWorldsVersion>1.2-alpha-13</classWorldsVersion>
     <plexusUtilsVersion>1.4.5</plexusUtilsVersion>
     <xbeanReflectVersion>3.4</xbeanReflectVersion>
@@ -33,18 +37,18 @@
     <dependencies>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-default-container</artifactId>
-        <version>${plexusVersion}</version>
+        <artifactId>plexus-container-default</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-annotations</artifactId>
-        <version>${plexusVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-metadata</artifactId>
-        <version>${plexusVersion}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>

@@ -5,13 +5,11 @@
   <parent>                                                                                                                                            
     <groupId>org.codehaus.plexus</groupId>                                                                                                            
     <artifactId>plexus-containers</artifactId>                                                                                                        
-    <version>1.0-alpha-50-SNAPSHOT</version>                                                                                                          
+    <version>1.0-beta-1-SNAPSHOT</version>                                                                                                          
   </parent>   
   <artifactId>plexus-javadoc</artifactId>
   <name>Plexus javadoc</name>
-  <version>1.1-SNAPSHOT</version>
   <inceptionYear>2007</inceptionYear>
-
   <reporting>
     <plugins>
       <plugin>
@@ -22,7 +20,6 @@
       </plugin>
     </plugins>
   </reporting>
-
   <profiles>
     <profile>
       <id>default-tools.jar</id>
