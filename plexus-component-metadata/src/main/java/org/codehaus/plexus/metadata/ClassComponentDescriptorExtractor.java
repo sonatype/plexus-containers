@@ -27,6 +27,7 @@ import java.util.Map;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.metadata.gleaner.AnnotationComponentGleaner;
 import org.codehaus.plexus.metadata.gleaner.ClassComponentGleaner;
 import org.codehaus.plexus.util.DirectoryScanner;
 
@@ -47,13 +48,12 @@ public class ClassComponentDescriptorExtractor
 
     public ClassComponentDescriptorExtractor()
     {
+        this.gleaner = new AnnotationComponentGleaner();
     }
 
-    public List extract( final MavenProject project, final String scope, final ComponentDescriptor[] roleDefaults )
+    public List extract( ExtractorConfiguration configuration, final ComponentDescriptor[] roleDefaults )
         throws Exception
     {
-        assert project != null;
-        assert scope != null;
         assert roleDefaults != null;
 
         // We don't have a reasonable default to use, so just puke up
@@ -62,40 +62,20 @@ public class ClassComponentDescriptorExtractor
             throw new IllegalStateException( "Gleaner is not bound" );
         }
 
-        //getLogger().debug( "Gleaner: " + gleaner + ", scope: " + scope );
-
-        List classpath;
-        File classesDir;
-
-        if ( COMPILE_SCOPE.equals( scope ) )
-        {
-            classpath = project.getCompileClasspathElements();
-            classesDir = new File( project.getBuild().getOutputDirectory() );
-        }
-        else if ( TEST_SCOPE.equals( scope ) )
-        {
-            classpath = project.getTestClasspathElements();
-            classesDir = new File( project.getBuild().getTestOutputDirectory() );
-        }
-        else
-        {
-            throw new IllegalArgumentException( "Invalid scope: " + scope );
-        }
-
-        if ( !classesDir.exists() )
+        if ( !configuration.outputDirectory.exists() )
         {
             //getLogger().warn( "Missing classes directory: " + classesDir );
             return Collections.EMPTY_LIST;
         }
 
         final ClassLoader prev = Thread.currentThread().getContextClassLoader();
-        final ClassLoader cl = createClassLoader( classpath );
+        final ClassLoader cl = createClassLoader( configuration.classpath );
 
         Thread.currentThread().setContextClassLoader( cl );
 
         try
         {
-            return extract( classesDir, cl, getDefaultsByRole( roleDefaults ) );
+            return extract( configuration.outputDirectory, cl, getDefaultsByRole( roleDefaults ) );
         }
         finally
         {
@@ -158,13 +138,9 @@ public class ClassComponentDescriptorExtractor
         {
             String className = includes[i].substring( 0, includes[i].lastIndexOf( ".class" ) ).replace( '\\', '.' ).replace( '/', '.' );
 
-            //getLogger().debug( "Loading class: " + className );
-
             try
             {
                 Class type = cl.loadClass( className );
-
-                //getLogger().debug( "Gleaning from: " + type );
 
                 ComponentDescriptor descriptor = gleaner.glean( type );
 
@@ -180,8 +156,6 @@ public class ClassComponentDescriptorExtractor
                 //getLogger().error( "Failed to load class: " + className + "; cause: " + e );
             }
         }
-
-        //getLogger().debug( "Extracted " + descriptors.size() + " descriptor(s)" );
 
         return descriptors;
     }

@@ -65,11 +65,9 @@ public class SourceComponentDescriptorExtractor
         this.encoding = encoding;
     }
 
-    public List extract( final MavenProject project, final String scope, final ComponentDescriptor[] roleDefaults )
+    public List extract( ExtractorConfiguration configuration, final ComponentDescriptor[] roleDefaults )
         throws Exception
     {
-        assert project != null;
-        assert scope != null;
         // getDefaultsByRole() seems to check for null and maven-artifact project works fine when
         // assertions are disabled.        
         //        assert roleDefaults != null;
@@ -80,22 +78,7 @@ public class SourceComponentDescriptorExtractor
             gleaner = new QDoxComponentGleaner();
         }
 
-        List roots;
-
-        if ( COMPILE_SCOPE.equals( scope ) )
-        {
-            roots = project.getCompileSourceRoots();
-        }
-        else if ( TEST_SCOPE.equals( scope ) )
-        {
-            roots = project.getTestCompileSourceRoots();
-        }
-        else
-        {
-            throw new IllegalArgumentException( "Invalid scope: " + scope );
-        }
-
-        return extract( roots, getDefaultsByRole( roleDefaults ) );
+        return extract( configuration.sourceDirectories, getDefaultsByRole( roleDefaults ) );
     }
 
     private List extract( final List sourceDirectories, final Map defaultsByRole )
@@ -123,8 +106,6 @@ public class SourceComponentDescriptorExtractor
         {
             File dir = new File( (String) iter.next() );
 
-            //getLogger().debug( "Adding source directory: " + dir );
-
             builder.addSourceTree( dir );
         }
 
@@ -133,8 +114,6 @@ public class SourceComponentDescriptorExtractor
         // For each class we find, try to glean off a descriptor
         for ( int i = 0; i < classes.length; i++ )
         {
-            //getLogger().debug( "Gleaning from: " + classes[i].getFullyQualifiedName() );
-
             ComponentDescriptor descriptor = gleaner.glean( builder, classes[i] );
 
             if ( descriptor != null )

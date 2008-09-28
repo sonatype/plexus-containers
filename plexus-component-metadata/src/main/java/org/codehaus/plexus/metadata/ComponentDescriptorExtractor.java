@@ -14,6 +14,7 @@
 
 package org.codehaus.plexus.metadata;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.maven.project.MavenProject;
@@ -28,10 +29,6 @@ public interface ComponentDescriptorExtractor
 {
     String ROLE = ComponentDescriptorExtractor.class.getName();
 
-    String COMPILE_SCOPE = "compile";
-
-    String TEST_SCOPE = "test";
-
-    List/*<ComponentDescriptor>*/extract( MavenProject project, String scope, ComponentDescriptor[] roleDefaults )
+    List<ComponentDescriptor> extract( ExtractorConfiguration configuration, ComponentDescriptor[] roleDefaults )
         throws Exception;
 }

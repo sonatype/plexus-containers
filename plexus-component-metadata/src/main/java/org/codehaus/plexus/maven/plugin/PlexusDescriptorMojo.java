@@ -58,7 +58,9 @@ public class PlexusDescriptorMojo
         }
         else
         {
-            generateDescriptor( COMPILE_SCOPE, new File( outputDirectory, fileName ) );
+            File f = new File( outputDirectory, fileName );
+                     
+            generateDescriptor( COMPILE_SCOPE, f );
         }
     }
 }

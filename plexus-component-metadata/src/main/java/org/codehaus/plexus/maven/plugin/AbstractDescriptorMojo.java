@@ -21,26 +21,15 @@ package org.codehaus.plexus.maven.plugin;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
-import org.codehaus.plexus.metadata.ClassComponentDescriptorExtractor;
-import org.codehaus.plexus.metadata.ComponentDescriptorExtractor;
-import org.codehaus.plexus.metadata.ComponentDescriptorWriter;
-import org.codehaus.plexus.metadata.SourceComponentDescriptorExtractor;
-import org.codehaus.plexus.metadata.gleaner.AnnotationComponentGleaner;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.metadata.ExtractorConfiguration;
+import org.codehaus.plexus.metadata.MetadataGenerator;
 
 /**
  * @author <a href='mailto:rahul.thakur.xdev@gmail.com'>Rahul Thakur</a>
@@ -54,7 +43,7 @@ public abstract class AbstractDescriptorMojo
     protected static final String TEST_SCOPE = "test";
 
     /**
-     * @parameter expression="META-INF/plexus/components.xml"
+     * @parameter default-value="META-INF/plexus/components.xml"
      * @required
      */
     protected String fileName;
@@ -73,26 +62,12 @@ public abstract class AbstractDescriptorMojo
      */
     private MavenProject mavenProject;
 
-    /**
-     * @parameter
-     */
-    private ComponentDescriptor[] roleDefaults;
-
-    /**
-     * @parameter
-     */
-    private ComponentDescriptorExtractor[] extractors;
-
-    /**
-     * @component
-     */
-    private ComponentDescriptorWriter writer;
-
-    /**
-     * @component
-     */
+    /** @component */
     private MavenProjectHelper mavenProjectHelper;
 
+      /** @component */
+    private MetadataGenerator metadataGenerator;    
+    
     protected MavenProject getMavenProject()
     {
         return mavenProject;
@@ -102,86 +77,36 @@ public abstract class AbstractDescriptorMojo
     {
         return mavenProjectHelper;
     }
-
+        
     // -----------------------------------------------------------------------
     //
     // -----------------------------------------------------------------------
 
-    protected void generateDescriptor( final String scope, final File outputFile )
+    protected void generateDescriptor( String scope, File outputFile )
         throws MojoExecutionException
     {
-        assert scope != null;
-        assert outputFile != null;
-
-        // If no extractors are configured then use a default (javadoc-style source extraction)
-        if ( extractors == null || extractors.length == 0 )
-        {
-            extractors = new ComponentDescriptorExtractor[] { new SourceComponentDescriptorExtractor(), new ClassComponentDescriptorExtractor( new AnnotationComponentGleaner() ) };
-        }
-
-        List descriptors = new ArrayList();
-
-        for ( int i = 0; i < extractors.length; i++ )
-        {
-            getLog().debug( "Using extractor: " + extractors[i] );
-
-            try
-            {
-                List list = extractors[i].extract( getMavenProject(), scope, roleDefaults );
-                if ( list != null && !list.isEmpty() )
-                {
-                    descriptors.addAll( list );
-                }
-            }
-            catch ( Exception e )
-            {
-                throw new MojoExecutionException( "Failed to extract descriptors", e );
-            }
-        }
-
-        if ( descriptors.size() == 0 )
-        {
-            getLog().debug( "No components found" );
-        }
-        else
-        {
-            getLog().info( "Discovered " + descriptors.size() + " component descriptors(s)" );
-
-            ComponentSetDescriptor set = new ComponentSetDescriptor();
-            set.setComponents( descriptors );
-            set.setDependencies( Collections.EMPTY_LIST );
-
-            try
-            {
-                writeDescriptor( set, outputFile );
-            }
-            catch ( Exception e )
-            {
-                throw new MojoExecutionException( "Failed to write output file", e );
-            }
-        }
-    }
-
-    private void writeDescriptor( final ComponentSetDescriptor desc, final File outputFile )
-        throws Exception
-    {
-        assert desc != null;
-        assert outputFile != null;
-
-        FileUtils.forceMkdir( outputFile.getParentFile() );
-
-        BufferedWriter output = new BufferedWriter( new FileWriter( outputFile ) );
-
+        ExtractorConfiguration ec = new ExtractorConfiguration();
+                
         try
         {
-            writer.writeDescriptorSet( output, desc, containerDescriptor );
-            output.flush();
+            if ( scope.equals( COMPILE_SCOPE ) )
+            {
+                ec.classpath = mavenProject.getCompileClasspathElements();
+                ec.outputDirectory = new File( mavenProject.getBuild().getOutputDirectory() );
+                ec.sourceDirectories = mavenProject.getCompileSourceRoots();
+            }
+            else if ( scope.equals( TEST_SCOPE ) )
+            {
+                ec.classpath = mavenProject.getTestClasspathElements();
+                ec.outputDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
+                ec.sourceDirectories = mavenProject.getTestCompileSourceRoots();                
+            }
+            
+            metadataGenerator.generateDescriptor( ec, outputFile );
         }
-        finally
+        catch ( Exception e )
         {
-            IOUtil.close( output );
-        }
-
-        getLog().debug( "Wrote: " + outputFile );
+            throw new MojoExecutionException( "Error generating metadata: ", e );
+        }        
     }
 }

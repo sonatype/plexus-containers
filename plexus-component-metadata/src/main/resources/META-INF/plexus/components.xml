@@ -32,5 +32,9 @@
       <role-hint>annotation</role-hint>
       <implementation>org.codehaus.plexus.metadata.gleaner.AnnotationComponentGleaner</implementation>
     </component>
+    <component>
+      <role>org.codehaus.plexus.metadata.MetadataGenerator</role>
+      <implementation>org.codehaus.plexus.metadata.DefaultMetadataGenerator</implementation>
+    </component>
   </components>
 </component-set>
