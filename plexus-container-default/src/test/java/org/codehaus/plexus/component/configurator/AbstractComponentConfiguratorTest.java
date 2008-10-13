@@ -26,6 +26,7 @@ package org.codehaus.plexus.component.configurator;
 
 import java.io.File;
 import java.io.StringReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +35,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 
-import junit.framework.Assert;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -68,11 +68,18 @@ public abstract class AbstractComponentConfiguratorTest
         throws Exception
     {
         String xml = "<configuration>" +
-                "  <int-value>0</int-value>" +
+                "  <boolean-value>true</boolean-value>" +
+                "  <byte-value>64</byte-value>" +
+                "  <short-value>-128</short-value>" +
+                "  <int-value>-1</int-value>" +
                 "  <float-value>1</float-value>" +
                 "  <long-value>2</long-value>" +
                 "  <double-value>3</double-value>" +
+                "  <char-value>X</char-value>" +
                 "  <string-value>foo</string-value>" +
+                "  <file-value>test.txt</file-value>" +
+                "  <uri-value>http://www.apache.org/</uri-value>" +
+                "  <url-value>http://maven.apache.org/</url-value>" +
                 "  <important-things>" +
                 "    <important-thing><name>jason</name></important-thing>" +
                 "    <important-thing><name>tess</name></important-thing>" +
@@ -100,15 +107,29 @@ public abstract class AbstractComponentConfiguratorTest
 
         configureComponent(component, descriptor, realm);
 
-        assertEquals( "check integer value", 0, component.getIntValue() );
+        assertEquals( "check boolean value", true, component.getBooleanValue() );
+
+        assertEquals( "check byte value", 64, component.getByteValue() );
+
+        assertEquals( "check short value", -128, component.getShortValue() );
+
+        assertEquals( "check integer value", -1, component.getIntValue() );
 
         assertEquals( "check float value", 1.0f, component.getFloatValue(), 0.001f );
 
         assertEquals( "check long value", 2L, component.getLongValue() );
 
-        Assert.assertEquals( "check double value", 3.0, component.getDoubleValue(), 0.001 );
+        assertEquals( "check double value", 3.0, component.getDoubleValue(), 0.001 );
+
+        assertEquals( 'X', component.getCharValue() );
 
         assertEquals( "foo", component.getStringValue() );
+
+        assertEquals( new File( "test.txt" ), component.getFileValue() );
+
+        assertEquals( new URI( "http://www.apache.org/" ), component.getUriValue() );
+
+        assertEquals( new URL( "http://maven.apache.org/" ), component.getUrlValue() );
 
         List list = component.getImportantThings();
 
@@ -165,7 +186,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertTrue( component.longValueSet );
 
-        Assert.assertEquals( "check double value", 3.0, component.getDoubleValue(), 0.001 );
+        assertEquals( "check double value", 3.0, component.getDoubleValue(), 0.001 );
 
         assertTrue( component.doubleValueSet );
 

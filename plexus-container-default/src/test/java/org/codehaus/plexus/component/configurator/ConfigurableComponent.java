@@ -26,6 +26,9 @@ package org.codehaus.plexus.component.configurator;
 
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -37,13 +40,35 @@ import java.util.List;
  */
 public class ConfigurableComponent
 {
+    private boolean booleanValue;
+    private byte byteValue;
+    private short shortValue;
     private int intValue;
     private float floatValue;
     private long longValue;
     private double doubleValue;
+    private char charValue;
     private String stringValue;
+    private File fileValue;
+    private URI uriValue;
+    private URL urlValue;
     private List importantThings;
     private PlexusConfiguration configuration;
+
+    public boolean getBooleanValue()
+    {
+        return booleanValue;
+    }
+
+    public int getByteValue()
+    {
+        return byteValue;
+    }
+
+    public int getShortValue()
+    {
+        return shortValue;
+    }
 
     public int getIntValue()
     {
@@ -65,9 +90,29 @@ public class ConfigurableComponent
         return doubleValue;
     }
 
+    public char getCharValue()
+    {
+        return charValue;
+    }
+
     public String getStringValue()
     {
         return stringValue;
+    }
+
+    public File getFileValue()
+    {
+        return fileValue;
+    }
+
+    public URI getUriValue()
+    {
+        return uriValue;
+    }
+
+    public URL getUrlValue()
+    {
+        return urlValue;
     }
 
     public List getImportantThings()
