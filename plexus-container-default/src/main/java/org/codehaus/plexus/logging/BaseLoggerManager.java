@@ -20,6 +20,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -50,7 +51,7 @@ public abstract class BaseLoggerManager
 
     protected int parseThreshold( String text )
     {
-        text = text.trim().toLowerCase();
+        text = text.trim().toLowerCase( Locale.ENGLISH );
 
         if ( text.equals( "debug" ) )
         {
