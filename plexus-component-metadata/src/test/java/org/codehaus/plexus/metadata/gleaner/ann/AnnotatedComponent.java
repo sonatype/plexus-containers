@@ -1,4 +1,4 @@
-    /*
+/*
  * Copyright (C) 2007 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package org.codehaus.plexus.metadata.gleaner;
+package org.codehaus.plexus.metadata.gleaner.ann;
 
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Configuration;
+import org.codehaus.plexus.component.annotations.Requirement;
 
 /**
- * Interface for component gleaners which glean off of compiled classes..
- *
- * @version $Id$
+ * @author Eugene Kuleshov
  */
-public interface ClassComponentGleaner
-{
-    String ROLE = ClassComponentGleaner.class.getName();
+@Component(type="foo", role=AnnotatedComponentRole.class)
+public class AnnotatedComponent implements AnnotatedComponentRole {
 
-    ComponentDescriptor glean(String className, ClassLoader cl) throws ComponentGleanerException;
-    
+  @Requirement(hint="default")
+  @Configuration(name="param", value="value")
+  AnnotatedComponentDependency dependency;
+  
 }

@@ -82,6 +82,7 @@ public class ClassComponentDescriptorExtractor
         }
     }
 
+    // XXX replace ClassLoader with own abstraction for getting class files
     private ClassLoader createClassLoader( final List elements )
         throws Exception
     {
@@ -133,15 +134,15 @@ public class ClassComponentDescriptorExtractor
 
         String[] includes = scanner.getIncludedFiles();
 
-        for ( int i = 0; i < includes.length; i++ )
+        for (String include : includes) 
         {
-            String className = includes[i].substring( 0, includes[i].lastIndexOf( ".class" ) ).replace( '\\', '.' ).replace( '/', '.' );
+            String className = include.substring( 0, include.lastIndexOf( ".class" ) ).replace( '\\', '.' ).replace( '/', '.' );
 
             try
             {
-                Class type = cl.loadClass( className );
+                // Class type = cl.loadClass( className );
 
-                ComponentDescriptor descriptor = gleaner.glean( type );
+                ComponentDescriptor descriptor = gleaner.glean( className, cl );
 
                 if ( descriptor != null )
                 {
@@ -152,7 +153,7 @@ public class ClassComponentDescriptorExtractor
             }
             catch ( VerifyError e )
             {
-                //getLogger().error( "Failed to load class: " + className + "; cause: " + e );
+                // getLogger().error( "Failed to load class: " + className + "; cause: " + e );
             }
         }
 

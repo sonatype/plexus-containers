@@ -16,7 +16,8 @@
 
 package org.codehaus.plexus.metadata.gleaner;
 
-import java.lang.reflect.Field;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,10 @@ import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentRequirementList;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.metadata.ann.AnnClass;
+import org.codehaus.plexus.metadata.ann.AnnField;
+import org.codehaus.plexus.metadata.ann.AnnReader;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  * A class component gleaner which inspects each type for <tt>org.codehaus.plexus.component.annotations.*</tt> annotations
@@ -41,18 +46,19 @@ public class AnnotationComponentGleaner
     extends ComponentGleanerSupport
     implements ClassComponentGleaner
 {
-    public ComponentDescriptor glean(final Class clazz) throws ComponentGleanerException {
-        assert clazz != null;
+    public ComponentDescriptor glean(String className, ClassLoader cl) throws ComponentGleanerException 
+    {
+        assert className != null;
+        assert cl != null;
 
-        // Cast to <?> so that we don't have to cast below
-        Class<?> type = (Class<?>)clazz;
-
+        AnnClass annClass = readClass(className.replace('.', '/'), cl);
+        
         // Skip abstract classes
-        if (Modifier.isAbstract(type.getModifiers())) {
+        if (Modifier.isAbstract(annClass.getAccess())) {
             return null;
         }
         
-        Component anno = type.getAnnotation(Component.class);
+        Component anno = annClass.getAnnotation(Component.class);
 
         if (anno == null) {
             return null;
@@ -64,7 +70,7 @@ public class AnnotationComponentGleaner
 
         component.setRoleHint(filterEmptyAsNull(anno.hint()));
 
-        component.setImplementation(type.getName());
+        component.setImplementation(className);
 
         component.setVersion(filterEmptyAsNull(anno.version()));
 
@@ -88,15 +94,15 @@ public class AnnotationComponentGleaner
 
         component.setIsolatedRealm(anno.isolatedRealm());
 
-        for (Class t : getClasses(type)) {
-            for (Field field : t.getDeclaredFields()) {
-                ComponentRequirement requirement = findRequirement(field);
+        for (AnnClass c : getClasses(annClass, cl)) {
+            for (AnnField field : c.getFields().values()) {
+                ComponentRequirement requirement = findRequirement(field, c, cl);
 
                 if (requirement != null) {
                     component.addRequirement(requirement);
                 }
 
-                PlexusConfiguration config = findConfiguration(field);
+                PlexusConfiguration config = findConfiguration(field, c, cl);
 
                 if (config != null) {
                     addChildConfiguration(component, config);
@@ -111,17 +117,39 @@ public class AnnotationComponentGleaner
         return component;
     }
 
+    private AnnClass readClass(String className, ClassLoader cl) throws ComponentGleanerException 
+    {
+        InputStream is = null;
+        try 
+        {
+          is = cl.getResourceAsStream(className + ".class");
+          return AnnReader.read(is, cl);
+        } 
+        catch (IOException ex) 
+        {
+          throw new ComponentGleanerException("Can't read class " + className, ex);
+        }
+        finally
+        {
+          IOUtil.close(is);
+        }
+    }
+
     /**
      * Returns a list of all of the classes which the given type inherits from.
      */
-    private List<Class> getClasses(Class<?> type) {
-        assert type != null;
+    private List<AnnClass> getClasses(AnnClass annClass, ClassLoader cl) throws ComponentGleanerException {
+        assert annClass != null;
 
-        List<Class> classes = new ArrayList<Class>();
+        List<AnnClass> classes = new ArrayList<AnnClass>();
 
-        while (type != null) {
-            classes.add(type);
-            type = type.getSuperclass();
+        while(annClass!=null) {
+            classes.add(annClass);
+            if(annClass.getSuperName()!=null) {
+              annClass = readClass(annClass.getSuperName(), cl);
+            } else {
+              break;
+            }
 
             //
             // TODO: See if we need to include interfaces here too?
@@ -131,16 +159,27 @@ public class AnnotationComponentGleaner
         return classes;
     }
 
-    private ComponentRequirement findRequirement(final Field field) {
+    private ComponentRequirement findRequirement(final AnnField field, AnnClass annClass, ClassLoader cl) 
+        throws ComponentGleanerException 
+    {
         assert field != null;
 
         Requirement anno = field.getAnnotation(Requirement.class);
-
+        
         if (anno == null) {
             return null;
         }
 
-        Class<?> type = field.getType();
+        String fieldType = field.getType();
+        
+        // TODO implement type resolution without loading classes
+        Class<?> type;
+        try {
+          type = Class.forName(fieldType, false, cl);
+        } catch (ClassNotFoundException ex) {
+          // TODO Auto-generated catch block
+          throw new ComponentGleanerException("Can't load class " + fieldType);
+        }
 
         ComponentRequirement requirement;
 
@@ -163,6 +202,8 @@ public class AnnotationComponentGleaner
             requirement.setRoleHint(filterEmptyAsNull(anno.hint()));
         }
 
+        // TODO need to read default annotation values 
+        // if (anno.role()==null || anno.role().isAssignableFrom(Object.class)) {
         if (anno.role().isAssignableFrom(Object.class)) {
             requirement.setRole(type.getName());
         }
@@ -177,7 +218,7 @@ public class AnnotationComponentGleaner
         return requirement;
     }
 
-    private PlexusConfiguration findConfiguration(final Field field) {
+    private PlexusConfiguration findConfiguration(AnnField field, AnnClass c, ClassLoader cl) {
         assert field != null;
 
         Configuration anno = field.getAnnotation(Configuration.class);
