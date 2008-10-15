@@ -26,12 +26,14 @@ import org.objectweb.asm.Type;
  */
 public class AnnField {
 
+  private final AnnClass owner;
   private final int access;
   private final String name;
   private final String desc;
   private Map<String, Ann> anns = new LinkedHashMap<String,Ann>();
   
-  public AnnField(int access, String name, String desc) {
+  public AnnField(AnnClass owner, int access, String name, String desc) {
+    this.owner = owner;
     this.access = access;
     this.desc = desc;
     this.name = name;
@@ -63,7 +65,7 @@ public class AnnField {
   
   public <T> T getAnnotation(Class<T> c) {
     Ann ann = anns.get(Type.getDescriptor(c));
-    return ann == null ? null : ann.getAnnotation(c);
+    return ann == null ? null : ann.getAnnotation(c, owner.getClassLoader());
   }
 
 }

@@ -32,18 +32,15 @@ import org.objectweb.asm.MethodVisitor;
  */
 public class AnnReader implements ClassVisitor {
 
-  private final AnnClass clazz;
-  private final ClassLoader cl;
+  private final AnnClass annClass;
 
-  private AnnReader(AnnClass annClass, ClassLoader cl) {
-    this.clazz = annClass;
-    this.cl = cl;
+  private AnnReader(AnnClass annClass) {
+    this.annClass = annClass;
   }
 
   public static AnnClass read(InputStream is, ClassLoader cl) throws IOException {
-    AnnClass annClass = new AnnClass();
-    annClass.setClassLoader(cl);
-    AnnReader cv = new AnnReader(annClass, cl);
+    AnnClass annClass = new AnnClass(cl);
+    AnnReader cv = new AnnReader(annClass);
     ClassReader r = new ClassReader(is);
     r.accept(cv, ClassReader.SKIP_FRAMES | ClassReader.SKIP_CODE);
     return annClass;
@@ -51,21 +48,21 @@ public class AnnReader implements ClassVisitor {
 
   public void visit(int version, int access, String name, String signature,
       String superName, String[] interfaces) {
-    clazz.setName(name);
-    clazz.setAccess(access);
-    clazz.setSuperName(superName);
-    clazz.setInterfaces(interfaces);
+    annClass.setName(name);
+    annClass.setAccess(access);
+    annClass.setSuperName(superName);
+    annClass.setInterfaces(interfaces);
   }
   
   public AnnotationVisitor visitAnnotation(final String desc, boolean visible) {
     Ann ann = new Ann(desc);
-    clazz.addAnn(ann);
+    annClass.addAnn(ann);
     return new AnnAnnReader(ann);
   }
   
   public FieldVisitor visitField(int access, final String name, final String desc, String signature, Object value) {
-    final AnnField field = new AnnField(access, name, desc);
-    clazz.addField(field);
+    final AnnField field = new AnnField(annClass, access, name, desc);
+    annClass.addField(field);
     return new FieldVisitor() {
 
       public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
@@ -84,8 +81,8 @@ public class AnnReader implements ClassVisitor {
 
   public MethodVisitor visitMethod(int access, final String mname, final String mdesc,
       String signature, String[] exceptions) {
-    final AnnMethod method = new AnnMethod(access, mname, mdesc);
-    clazz.addMethod(method);
+    final AnnMethod method = new AnnMethod(annClass, access, mname, mdesc);
+    annClass.addMethod(method);
     
     return new MethodVisitor() {
 

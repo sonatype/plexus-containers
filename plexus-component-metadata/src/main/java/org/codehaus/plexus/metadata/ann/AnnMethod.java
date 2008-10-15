@@ -27,13 +27,15 @@ import org.objectweb.asm.Type;
  */
 public class AnnMethod {
 
+  private final AnnClass owner;
   private final int access;
   private final String name;
   private final String desc;
   private Map<String, Ann> anns = new LinkedHashMap<String, Ann>();
   private Map<Integer, Map<String, Ann>> paramAnns = new HashMap<Integer, Map<String,Ann>>();
 
-  public AnnMethod(int access, String name, String desc) {
+  public AnnMethod(AnnClass owner, int access, String name, String desc) {
+    this.owner = owner;
     this.access = access;
     this.name = name;
     this.desc = desc;
@@ -74,7 +76,7 @@ public class AnnMethod {
   
   public <T> T getAnnotation(Class<T> c) {
     Ann ann = anns.get(Type.getDescriptor(c));
-    return ann == null ? null : ann.getAnnotation(c);
+    return ann == null ? null : ann.getAnnotation(c, owner.getClassLoader());
   }
   
   public <T> T getParameterAnnotation(int parameter, Class<T> c) {
@@ -83,7 +85,7 @@ public class AnnMethod {
       return null;
     }
     Ann ann = anns.get(Type.getDescriptor(c));
-    return ann == null ? null : ann.getAnnotation(c);
+    return ann == null ? null : ann.getAnnotation(c, owner.getClassLoader());
   }
 
 }

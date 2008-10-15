@@ -16,7 +16,6 @@
 
 package org.codehaus.plexus.metadata.ann;
 
-import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -40,6 +39,10 @@ public class AnnClass {
 
   // setters
   
+  public AnnClass(ClassLoader cl) {
+    this.cl = cl;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
@@ -69,6 +72,10 @@ public class AnnClass {
   }
   
   // getters
+  
+  public ClassLoader getClassLoader() {
+    return cl;
+  }
   
   public int getAccess() {
     return access;
@@ -110,7 +117,7 @@ public class AnnClass {
   
   public <T> T getAnnotation(Class<T> c) {
     Ann ann = anns.get(Type.getDescriptor(c));
-    return ann == null ? null : ann.getAnnotation(c);
+    return ann == null ? null : ann.getAnnotation(c, cl);
   }
 
   public <T> T getFieldAnnotation(String fieldName, Class<T> c) {
@@ -123,13 +130,5 @@ public class AnnClass {
     return method==null ? null : method.getAnnotation(c);
   }
 
-  public void setClassLoader(ClassLoader cl) {
-    this.cl = cl;
-  }
-  
-  public ClassLoader getClassLoader() {
-    return cl;
-  }
-  
 }
 

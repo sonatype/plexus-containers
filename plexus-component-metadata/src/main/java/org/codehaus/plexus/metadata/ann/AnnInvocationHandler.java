@@ -18,6 +18,9 @@ package org.codehaus.plexus.metadata.ann;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.objectweb.asm.Type;
@@ -55,7 +58,16 @@ public class AnnInvocationHandler implements InvocationHandler {
     Object value = ann.getParams().get(name);
     if(value!=null) {
       if(value instanceof Type) {
-        return Class.forName(((Type) value).getClassName(), false, cl);
+        String className = ((Type) value).getClassName();
+        try {
+          return Class.forName(className, false, cl);
+        } catch(ClassNotFoundException ex) {
+          if(cl instanceof URLClassLoader) {
+            URL[] urls = ((URLClassLoader) cl).getURLs();
+            throw new RuntimeException("Unable to load class " + className + " from " + Arrays.toString(urls), ex);
+          }
+          throw new RuntimeException("Unable to load class " + className + " from " + cl, ex);
+        }
       }
       // TODO conversion for class, array, enum, and annotation types
       return value;
