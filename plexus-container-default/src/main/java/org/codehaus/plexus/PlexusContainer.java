@@ -53,26 +53,6 @@ public interface PlexusContainer
      */
     public Date getCreationDate();
 
-    /**
-     * Returns true if this container has a child with the given name.
-     * @param name a key unique amongst this container's children
-     * @return true if this container has a child with the given name
-     */
-    boolean hasChildContainer( String name );
-
-    /**
-     * Removes the keyed child from this container. Does not necessarily dispose the children.
-     * @param name a key unique amongst this container's children
-     */
-    void removeChildContainer( String name );
-
-    /**
-     * Returns a child container with the unique name.
-     * @param name a key unique amongst this container's children
-     * @return the keyed child container
-     */
-    PlexusContainer getChildContainer( String name );
-
     // ------------------------------------------------------------------------
     // Lookup
     // ------------------------------------------------------------------------
@@ -486,18 +466,6 @@ public interface PlexusContainer
     // Taken from alpha-9 to keep things working
 
     void setName( String name );
-
-    /**
-     * Sets the parent of this container.
-     * @param container the parent of this container, null if none
-     */
-    void setParentPlexusContainer( PlexusContainer container );
-
-    PlexusContainer createChildContainer( String name, Set urls )
-        throws PlexusContainerException;
-
-    public PlexusContainer createChildContainer( String name, ClassRealm realm )
-        throws PlexusContainerException;
 
     // ----------------------------------------------------------------------------
     // Component/Plugin ClassRealm creation

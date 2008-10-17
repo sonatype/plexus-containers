@@ -82,8 +82,6 @@ public class DefaultPlexusContainer
 
     protected String name;
 
-    protected PlexusContainer parentContainer;
-
     protected DefaultContext containerContext;
 
     protected PlexusConfiguration configuration;
@@ -120,11 +118,6 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------------
-
-    /**
-     * Map&lt;String, PlexusContainer> where the key is the container name.
-     */
-    protected Map childContainers = new WeakHashMap();
 
     protected Date creationDate = new Date();
 
@@ -265,47 +258,11 @@ public class DefaultPlexusContainer
         return componentRealm;
     }
 
-    //
-    // Make sure the lookups and classloaders are connected
-    //
-    public PlexusContainer createChildContainer( String name, Set urls )
-    // throws PlexusContainerException
-    {
-        // return createChildContainer( name, new ClassRealm( name, urls ) );
-        return null;
-    }
-
-    public PlexusContainer createChildContainer( String name, ClassRealm realm )
-        throws PlexusContainerException
-    {
-        if ( hasChildContainer( name ) )
-        {
-            throw new DuplicateChildContainerException( getName(), name );
-        }
-
-        ContainerConfiguration c = new DefaultContainerConfiguration()
-            .setName( name ).setParentContainer( this ).setClassWorld( new ClassWorld( name, realm ) );
-
-        PlexusContainer childContainer = new DefaultPlexusContainer( c );
-        childContainers.put( name, childContainer );
-
-        return childContainer;
-    }
-
     boolean initialized;
 
     private void construct( ContainerConfiguration c )
         throws PlexusContainerException
-    {
-        if ( c.getParentContainer() != null )
-        {
-            parentContainer = c.getParentContainer();
-
-            loggerManager = parentContainer.getLoggerManager();
-
-            containerRealm = (ClassRealm) c.getClassWorld().getRealms().iterator().next();
-        }
-        
+    {        
         devMode = c.isDevMode();
 
         name = c.getName();
@@ -572,35 +529,10 @@ public class DefaultPlexusContainer
         return creationDate;
     }
 
-    // ----------------------------------------------------------------------
-    // Child container access
-    // ----------------------------------------------------------------------
-
-    public boolean hasChildContainer( String name )
-    {
-        return childContainers.get( name ) != null;
-    }
-
-    public void removeChildContainer( String name )
-    {
-        childContainers.remove( name );
-    }
-
-    public PlexusContainer getChildContainer( String name )
-    {
-        return (PlexusContainer) childContainers.get( name );
-    }
-
     // XXX remove
     public void setName( String name )
     {
         this.name = name;
-    }
-
-    // XXX remove!
-    public void setParentPlexusContainer( PlexusContainer container )
-    {
-        parentContainer = container;
     }
 
     // ----------------------------------------------------------------------
@@ -634,11 +566,6 @@ public class DefaultPlexusContainer
             tmpRealm = tmpRealm.getParentRealm();
         }
 
-        if ( ( result == null ) && ( parentContainer != null ) )
-        {
-            result = parentContainer.getComponentDescriptor( role, hint, classRealm );
-        }
-
         return result;
     }
 
@@ -650,15 +577,6 @@ public class DefaultPlexusContainer
     public Map getComponentDescriptorMap( String role, ClassRealm realm )
     {
         Map result = new WeakHashMap();
-
-        if ( parentContainer != null )
-        {
-            Map m = parentContainer.getComponentDescriptorMap( role, realm );
-            if ( m != null )
-            {
-                result.putAll( m );
-            }
-        }
 
         Map componentDescriptors = componentRepository.getComponentDescriptorMap( role, realm );
 
@@ -730,16 +648,8 @@ public class DefaultPlexusContainer
 
         if ( componentManager == null )
         {
-            if ( parentContainer != null )
-            {
-                parentContainer.release( component );
-            }
-            else
-            {
-                // This needs to be tracked down but the user doesn't need to see this
-                getLogger().debug(
-                    "Component manager not found for returned component. Ignored. component=" + component );
-            }
+            // This needs to be tracked down but the user doesn't need to see this
+            getLogger().debug( "Component manager not found for returned component. Ignored. component=" + component );
         }
         else
         {
@@ -891,20 +801,11 @@ public class DefaultPlexusContainer
             boolean needToDisposeRealm = false;
             
             // In dev mode i don't want to dispose of the realm in the world
-            if ( !isDevMode() && !( ( parentContainer != null )
-                && containerRealm.getId().equals( parentContainer.getContainerRealm().getId() ) ) )
+            if ( !isDevMode() )
             {
                 needToDisposeRealm = true;
             }
-
-            
-            if ( parentContainer != null )
-            {
-                parentContainer.removeChildContainer( getName() );
-
-                parentContainer = null;
-            }
-
+           
             try
             {
                 containerRealm.setParentRealm( null );
@@ -1232,13 +1133,6 @@ public class DefaultPlexusContainer
     public void setConfiguration( PlexusConfiguration configuration )
     {
         this.configuration = configuration;
-    }
-
-    // Parent Container
-
-    public PlexusContainer getParentContainer()
-    {
-        return parentContainer;
     }
 
     // ----------------------------------------------------------------------------

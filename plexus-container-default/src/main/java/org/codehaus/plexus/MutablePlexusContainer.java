@@ -81,10 +81,6 @@ public interface MutablePlexusContainer
 
     PlexusConfiguration getConfiguration();
 
-    // Parent Container
-
-    PlexusContainer getParentContainer();
-
     ClassRealm getComponentRealm( String realmId );
 
     ClassWorld getClassWorld();

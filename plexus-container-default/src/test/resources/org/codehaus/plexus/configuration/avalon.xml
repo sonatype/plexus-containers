@@ -140,7 +140,7 @@
     <component>
       <role>org.codehaus.plexus.ServiceG</role>
       <implementation>org.codehaus.plexus.DefaultServiceG</implementation>
-      <instantiation-strategy>singleton-keep-alive</instantiation-strategy>
+      <instantiation-strategy>singleton</instantiation-strategy>
       <configuration/>
     </component>
 
@@ -178,7 +178,7 @@
     <component>
       <role>org.codehaus.plexus.ConfigureService</role>
       <implementation>org.codehaus.plexus.DefaultConfigureService</implementation>
-      <instantiation-strategy>singleton-keep-alive</instantiation-strategy>
+      <instantiation-strategy>singleton</instantiation-strategy>
       <configuration>
         <blah>
           <child>1</child>

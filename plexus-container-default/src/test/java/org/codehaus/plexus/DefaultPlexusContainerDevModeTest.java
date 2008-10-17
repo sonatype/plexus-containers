@@ -49,7 +49,7 @@ public class DefaultPlexusContainerDevModeTest extends TestCase
     protected ClassWorld createClassWorld() throws NoSuchRealmException
     {
         ClassWorld cw =
-            new ClassWorld( "TestRealm", DefaultPlexusContainerChildTest.class.getClassLoader() );
+            new ClassWorld( "TestRealm", getClass().getClassLoader() );
         return cw;
     }
 }

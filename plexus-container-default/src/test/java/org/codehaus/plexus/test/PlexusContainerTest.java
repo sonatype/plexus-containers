@@ -201,7 +201,7 @@ public class PlexusContainerTest
         // The component should still be alive.
         assertTrue( serviceC2.started );
 
-        assertFalse( serviceC2.stopped );
+        assertTrue( serviceC2.stopped );
 
         container.release( serviceC2 );
 
@@ -212,8 +212,7 @@ public class PlexusContainerTest
     }
 
     /*
-     * Check that distinct components with the same implementation are
-     * managed correctly.
+     * Check that distinct components with the same implementation are managed correctly.
      */
     public void testMultipleSingletonComponentInstances()
         throws Exception
@@ -224,7 +223,7 @@ public class PlexusContainerTest
         // Make sure the component is alive.
         assertNotNull( serviceC1 );
 
-        assertTrue( serviceC1.started );
+        assertTrue( serviceC1.started ); 
 
         assertFalse( serviceC1.stopped );
 
@@ -306,76 +305,6 @@ public class PlexusContainerTest
 
         container.releaseAll( components );
     }
-
-//    class SingletonComponentTestThread
-//        extends AbstractTestThread
-//    {
-//        private Object expectedComponent;
-//
-//        private Object returnedComponent;
-//
-//        private PlexusContainer container;
-//
-//        private String role;
-//
-//        public SingletonComponentTestThread( PlexusContainer container, String role, Object expectedComponent )
-//        {
-//            super();
-//
-//            this.expectedComponent = expectedComponent;
-//
-//            this.container = container;
-//
-//            this.role = role;
-//        }
-//
-//        /**
-//         * @param registry
-//         */
-//        public SingletonComponentTestThread( TestThreadManager registry, PlexusContainer container, String role,
-//                                             Object expectedComponent )
-//        {
-//            super( registry );
-//
-//            this.expectedComponent = expectedComponent;
-//
-//            this.container = container;
-//
-//            this.role = role;
-//        }
-//
-//        /* (non-Javadoc)
-//         * @see org.codehaus.plexus.util.AbstractRegisteredThread#doRun()
-//         */
-//        public void doRun()
-//            throws Throwable
-//        {
-//            try
-//            {
-//                returnedComponent = container.lookup( role );
-//
-//                if ( returnedComponent == null )
-//                {
-//                    setErrorMsg( "Null component returned" );
-//                }
-//                else if ( returnedComponent == expectedComponent )
-//                {
-//                    setPassed( true );
-//                }
-//                else
-//                {
-//                    setErrorMsg(
-//                        "Returned component was a different manager. Expected=" + expectedComponent + ", got=" +
-//                        returnedComponent );
-//                }
-//            }
-//            finally
-//            {
-//                container.release( returnedComponent );
-//            }
-//        }
-//    }
-
 
     public void testAutomatedComponentConfigurationUsingXStreamPoweredComponentConfigurator()
         throws Exception

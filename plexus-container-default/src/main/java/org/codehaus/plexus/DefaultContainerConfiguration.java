@@ -13,11 +13,10 @@ import org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.factory.DefaultComponentFactoryManager;
-import org.codehaus.plexus.component.manager.ClassicSingletonComponentManager;
 import org.codehaus.plexus.component.manager.ComponentLookupManagerComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
-import org.codehaus.plexus.component.manager.KeepAliveSingletonComponentManager;
+import org.codehaus.plexus.component.manager.SingletonComponentManager;
 import org.codehaus.plexus.component.manager.PerLookupComponentManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
@@ -264,9 +263,7 @@ public class DefaultContainerConfiguration
 
             componentManagerManager.addComponentManager( new PerLookupComponentManager() );
 
-            componentManagerManager.addComponentManager( new ClassicSingletonComponentManager() );
-
-            componentManagerManager.addComponentManager( new KeepAliveSingletonComponentManager() );
+            componentManagerManager.addComponentManager( new SingletonComponentManager() );
 
             componentManagerManager.addComponentManager( new ComponentLookupManagerComponentManager() );
         }
