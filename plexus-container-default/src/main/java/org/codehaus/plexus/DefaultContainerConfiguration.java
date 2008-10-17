@@ -46,7 +46,6 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.DisposePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.LogDisablePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.LogEnablePhase;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.ServiceablePhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.StartPhase;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.StopPhase;
 
@@ -327,7 +326,6 @@ public class DefaultContainerConfiguration
             plexus.addBeginSegment( new LogEnablePhase() );
             plexus.addBeginSegment( new ContextualizePhase() );
 //            plexus.addBeginSegment( new AutoConfigurePhase() );
-            plexus.addBeginSegment( new ServiceablePhase() );
             plexus.addBeginSegment( new InitializePhase() );
             plexus.addBeginSegment( new StartPhase() );
             // End
@@ -356,7 +354,6 @@ public class DefaultContainerConfiguration
             plexusConfigurable.addBeginSegment( new LogEnablePhase() );
             plexusConfigurable.addBeginSegment( new ContextualizePhase() );
             plexusConfigurable.addBeginSegment( new ConfigurablePhase() );
-            plexusConfigurable.addBeginSegment( new ServiceablePhase() );
             plexusConfigurable.addBeginSegment( new InitializePhase() );
             plexusConfigurable.addBeginSegment( new StartPhase() );
             // End

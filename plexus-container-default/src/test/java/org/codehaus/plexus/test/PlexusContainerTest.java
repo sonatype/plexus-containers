@@ -157,10 +157,6 @@ public class PlexusContainerTest
 
         assertEquals( false, serviceE.stop );
 
-        assertEquals( true, serviceE.serviced );
-
-        assertEquals( true, serviceE.configured );
-
         container.release( serviceE );
 
         assertEquals( true, serviceE.stop );

@@ -16,17 +16,12 @@ package org.codehaus.plexus.test;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Configurable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.ServiceLocator;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Serviceable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 
 /**
@@ -34,7 +29,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
  */
 public class DefaultServiceE
     extends AbstractLogEnabled
-    implements ServiceE, Contextualizable, Initializable, Startable, Configurable, Serviceable
+    implements ServiceE, Contextualizable, Initializable, Startable
 {
     public boolean enableLogging;
     public boolean configured;
@@ -69,14 +64,4 @@ public class DefaultServiceE
     {
         stop = true;
     }
-
-	public void configure(PlexusConfiguration configuration) throws PlexusConfigurationException
-	{
-		configured = true;
-	}
-
-	public void service(ServiceLocator locator)
-	{
-		serviced = true;
-	}
 }
