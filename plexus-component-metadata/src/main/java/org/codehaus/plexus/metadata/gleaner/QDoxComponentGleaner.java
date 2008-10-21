@@ -42,9 +42,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Configurable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Disposable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Serviceable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Suspendable;
 import org.codehaus.plexus.util.StringUtils;
 
 import com.thoughtworks.qdox.model.DocletTag;
@@ -237,8 +235,6 @@ public class QDoxComponentGleaner
         Contextualizable.class.getName(),
         Disposable.class.getName(),
         Startable.class.getName(),
-        Suspendable.class.getName(),
-        Serviceable.class.getName(),
     } ) );
 
     private String findRole( JavaClass javaClass )
