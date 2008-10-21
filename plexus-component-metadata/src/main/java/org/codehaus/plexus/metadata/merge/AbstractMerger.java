@@ -25,8 +25,10 @@ package org.codehaus.plexus.metadata.merge;
  */
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import org.codehaus.plexus.util.IOUtil;
 import org.jdom.Document;
@@ -52,10 +54,10 @@ public abstract class AbstractMerger
         }
 
         XMLOutputter out = new XMLOutputter();
-        FileWriter fw = null;
+        Writer fw = null;
         try
         {
-            fw = new FileWriter( file );
+            fw = new OutputStreamWriter( new FileOutputStream( file ), "UTF-8" );
             out.output( mergedDocument, fw );
         }
         finally

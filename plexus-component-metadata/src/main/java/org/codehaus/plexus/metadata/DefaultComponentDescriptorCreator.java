@@ -25,8 +25,10 @@ package org.codehaus.plexus.metadata;
  */
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,6 +43,7 @@ import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.metadata.merge.MergeException;
 import org.codehaus.plexus.metadata.merge.Merger;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.XMLWriter;
 import org.jdom.Document;
@@ -236,14 +239,20 @@ public class DefaultComponentDescriptorCreator
             }
         }
 
+        Writer fw = null;
         try
         {
-            writer.writeDescriptorSet( new FileWriter( outputFile ), componentSetDescriptor, containerDescriptor );
+            fw = new OutputStreamWriter( new FileOutputStream( outputFile ), "UTF-8" );
+            writer.writeDescriptorSet( fw, componentSetDescriptor, containerDescriptor );
         }
         catch ( Exception e )
         {
             throw new ComponentDescriptorCreatorException(
                 "Error while writing the component descriptor to: " + "'" + outputFile.getAbsolutePath() + "'.", e );
+        }
+        finally
+        {
+            IOUtil.close( fw );
         }
     }
 
