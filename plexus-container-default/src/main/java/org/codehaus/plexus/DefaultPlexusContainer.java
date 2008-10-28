@@ -30,7 +30,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
@@ -69,6 +68,7 @@ import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.plexus.util.ReaderFactory;
 
 /**
+ * Default implementation of PlexusContainer and MutablePlexusContainer.
  * @author Jason van Zyl
  * @author Kenney Westerhof
  */
@@ -80,9 +80,16 @@ public class DefaultPlexusContainer
 
     protected static final String DEFAULT_REALM_NAME = "plexus.core";
 
+    /**
+     * Container's name
+     */
     protected String name;
 
-    protected DefaultContext containerContext;
+    /**
+     * Arbitrary data associated with the container.  Data in the container has highest precedence when configuring
+     * a component to create.
+     */
+    protected Context containerContext;
 
     protected PlexusConfiguration configuration;
 
@@ -97,32 +104,55 @@ public class DefaultPlexusContainer
     // Core components
     // ----------------------------------------------------------------------------
 
-    protected List initializationPhases;
-
+    /**
+     * A repository of component descriptions which are used to create new components and for tooling.
+     */
     protected ComponentRepository componentRepository;
 
+    /**
+     * The main component registry.  Components are wrapped in a ComponentManager and the ComponentManagerManager
+     * is the index of all existing ComponentManagers in this container.
+     */
     protected ComponentManagerManager componentManagerManager;
 
+    /**
+     * Simple index (registry) of LifecycleHandler instances.
+     */
     protected LifecycleHandlerManager lifecycleHandlerManager;
 
+    /**
+     * Simple index (registry) of ComponentDiscovers and ComponentDiscoveryListener.
+     */
     protected ComponentDiscovererManager componentDiscovererManager;
 
+    /**
+     * Trivial class to look-up ComponentFactory instances in this container.
+     */
     protected ComponentFactoryManager componentFactoryManager;
 
+    /**
+     * Encapsulates the algorithm for finding components by role, roleHint, and classRealm.
+     */
     protected ComponentLookupManager componentLookupManager;
 
+    /**
+     * Generic logger interface.
+     */
     protected LoggerManager loggerManager;
 
+    /**
+     * Converts a ComponentDescriptor into PlexusConfiguration.   
+     */
     protected ConfigurationSource configurationSource;
 
     // ----------------------------------------------------------------------------
     //
     // ----------------------------------------------------------------------------
 
-    protected Date creationDate = new Date();
+    protected final Date creationDate = new Date();
 
     // TODO: Is there a more threadpool-friendly way to do this?
-    private ThreadLocal lookupRealm = new ThreadLocal();
+    private ThreadLocal<ClassRealm> lookupRealm = new ThreadLocal<ClassRealm>();
     
     private boolean devMode;
 
@@ -147,13 +177,16 @@ public class DefaultPlexusContainer
 
     public ClassRealm setLookupRealm( ClassRealm realm )
     {
+        // todo [dain] This code is non-symetrical, undocumented behavior and will cause memory leaks in thread pools
+        // since it is not possible to clean the thread local
         if ( realm == null )
         {
             return null;
         }
 
-        ClassRealm oldRealm = (ClassRealm) lookupRealm.get();
+        ClassRealm oldRealm = lookupRealm.get();
 
+        // todo [dain] Again non-symentrical, undocumented and could cause memory leaks
         if ( oldRealm == null )
         {
             oldRealm = staticLookupRealm;
@@ -168,7 +201,7 @@ public class DefaultPlexusContainer
 
     public ClassRealm getLookupRealm()
     {
-        ClassRealm cr = (ClassRealm) lookupRealm.get();
+        ClassRealm cr = lookupRealm.get();
 
         return cr == null ? staticLookupRealm : cr;
     }
@@ -226,9 +259,9 @@ public class DefaultPlexusContainer
 
         try
         {
-            for ( Iterator it = jars.iterator(); it.hasNext(); )
+            for ( Object jar : jars )
             {
-                componentRealm.addURL( ( (File) it.next() ).toURI().toURL() );
+                componentRealm.addURL( ( (File) jar ).toURI().toURL() );
             }
         }
         catch ( MalformedURLException e )
@@ -822,6 +855,7 @@ public class DefaultPlexusContainer
         }
         finally
         {
+            staticLookupRealm = null;
             lookupRealm.set( null );
         }
     }

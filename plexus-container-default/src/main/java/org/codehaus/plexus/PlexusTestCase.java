@@ -37,8 +37,6 @@ public abstract class PlexusTestCase
 {
     private PlexusContainer container;
 
-    private Map context;
-
     private static String basedir;
 
     protected void setUp()
@@ -53,7 +51,7 @@ public abstract class PlexusTestCase
         // Context Setup
         // ----------------------------------------------------------------------------
 
-        context = new HashMap();
+        Map<Object, Object> context = new HashMap<Object, Object>();
 
         context.put( "basedir", getBasedir() );
 

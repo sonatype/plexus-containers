@@ -17,15 +17,20 @@ package org.codehaus.plexus.component.discovery;
  */
 
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 
+/**
+ * ComponentDiscovererManager is a simple index (registry) of ComponentDiscovers and ComponentDiscoveryListener.
+ */
 public interface ComponentDiscovererManager
 {
     //void addComponentDiscoverer( ComponentDiscoverer componentDiscoverer );
 
-    List getComponentDiscoverers();
+    List<ComponentDiscoverer> getComponentDiscoverers();
 
-    Map getComponentDiscoveryListeners();
+    // todo dain change this to Set<ComponentDiscoveryListener> (requires change to maven)
+    Map<ComponentDiscoveryListener, Object> getComponentDiscoveryListeners();
 
     void registerComponentDiscoveryListener( ComponentDiscoveryListener listener);
 

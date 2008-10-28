@@ -16,10 +16,11 @@ package org.codehaus.plexus.context;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Default implementation of Context.
@@ -34,135 +35,65 @@ import java.util.Map;
 public class DefaultContext
     implements Context
 {
-    /** */
-    private static Hidden HIDDEN_MAKER = new Hidden();
-
-    /** Context data. */
-    private Map contextData;
-
-    /** Parent Context. */
-    private Context parent;
-
-    /** Is the containerContext read only. */
-    private boolean readOnly;
-
     /**
-     * Create a Context with specified data and parent.
-     *
-     * @param contextData the containerContext data
-     * @param parent the parent Context (may be null)
+     * Context data.
      */
-    public DefaultContext( Map contextData, Context parent )
-    {
-        this.parent = parent;
-
-        this.contextData = contextData;
-    }
+    private final ConcurrentMap<Object, Object> contextData = new ConcurrentHashMap<Object, Object>();
 
     /**
-     * Create a empty Context with specified data.
-     *
-     * @param contextData the containerContext data
+     * Is the containerContext read only.
      */
-    public DefaultContext( Map contextData )
-    {
-        this( contextData, null );
-    }
+    private final AtomicBoolean readOnly = new AtomicBoolean(false);
 
     /**
-     * Create a Context with specified parent.
-     *
-     * @param parent the parent Context (may be null)
-     */
-    public DefaultContext( Context parent )
-    {
-        this( new Hashtable(), parent );
-    }
-
-    /**
-     * Create a empty Context with no parent.
+     * Create an empty Context.
      */
     public DefaultContext()
     {
-        this( (Context) null );
     }
 
     /**
-     * Returns true if the map or the parent map contains the key.
+     * Create a Context with specified data.  The specified data is copied into the context so any subsequent updates
+     * to supplied map are not reflected in this context.  Additionally, changes to this context are not reflected in
+     * the specified map.
      *
-     * @param key The key to search for.
-     * @return Returns true if the key was found.
+     * @param contextData the containerContext data
      */
+    public DefaultContext( Map<Object, Object> contextData )
+    {
+        if ( contextData == null )
+        {
+            throw new NullPointerException( "contextData is null" );
+        }
+        this.contextData.putAll(contextData);
+    }
+
     public boolean contains( Object key )
     {
-
         Object data = contextData.get( key );
 
-        if ( null != data )
-        {
-            if ( data instanceof Hidden )
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        // If data was null, check the parent
-        if ( null == parent )
-        {
-            return false;
-        }
-
-        return parent.contains( key );
+        return data != null;
     }
 
-    /**
-     * Returns the value of the key. If the key can't be found it will throw a exception.
-     *
-     * @param key The key of the value to look up.
-     * @return Returns
-     * @throws ContextException If the key doesn't exist.
-     */
     public Object get( Object key )
         throws ContextException
     {
         Object data = contextData.get( key );
 
-        if ( data != null )
+        if ( data == null )
         {
-            if ( data instanceof Hidden )
-            {
-                // Always fail
-                throw new ContextException( "Unable to locate " + key );
-            }
-
-            return data;
+            // There is no data for the key
+            throw new ContextException( "Unable to resolve context key: " + key );
         }
-
-        // If data was null, check the parent
-        if ( parent == null )
-        {
-            // There was no parent, and no data
-            throw new ContextException( "Unable to resolve containerContext key: " + key );
-        }
-
-        return parent.get( key );
+        return data;
     }
 
-    /**
-     * Helper method for adding items to Context.
-     *
-     * @param key the items key
-     * @param value the item
-     * @throws java.lang.IllegalStateException if containerContext is read only
-     */
     public void put( Object key, Object value )
         throws IllegalStateException
     {
         checkWriteable();
 
-        if ( null == value )
+        if ( value == null )
         {
             contextData.remove( key );
         }
@@ -172,21 +103,12 @@ public class DefaultContext
         }
     }
 
-    /**
-     * Hides the item in the containerContext.
-     *
-     * After remove(key) has been called, a get(key)
-     * will always fail, even if the parent containerContext
-     * has such a mapping.
-     *
-     * @param key the items key
-     * @throws java.lang.IllegalStateException if containerContext is read only
-     */
     public void hide( Object key )
         throws IllegalStateException
     {
         checkWriteable();
-        contextData.put( key, HIDDEN_MAKER );
+        
+        contextData.remove( key );
     }
 
     /**
@@ -201,24 +123,13 @@ public class DefaultContext
     }
 
     /**
-     * Get parent containerContext if any.
-     *
-     * @return the parent Context (may be null)
-     */
-    protected Context getParent()
-    {
-        return parent;
-    }
-
-
-    /**
      * Make the containerContext read-only.
      * Any attempt to write to the containerContext via put()
      * will result in an IllegalStateException.
      */
     public void makeReadOnly()
     {
-        readOnly = true;
+        readOnly.set( true );
     }
 
     /**
@@ -229,17 +140,9 @@ public class DefaultContext
     protected void checkWriteable()
         throws IllegalStateException
     {
-        if ( readOnly )
+        if ( readOnly.get() )
         {
             throw new IllegalStateException( "Context is read only and can not be modified" );
         }
-    }
-
-    /**
-     * This class is only used as a marker in the map to indicate a hidden value.
-     */
-    private static class Hidden
-        implements Serializable
-    {
     }
 }

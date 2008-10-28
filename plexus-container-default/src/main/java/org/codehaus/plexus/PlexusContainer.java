@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
@@ -33,17 +32,16 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
 
 /**
- * The core component of Plexus. This is the entry-point for loading and accessing other components, as well as an
- * element in a hierarchy of containers. A Plexus Container can also itself be a component, however, the hierarchy must
- * be bootstrapped by a PlexusContainer implementation.
+ * PlexusContainer is the entry-point for loading and accessing other
+ * components.
  */
 public interface PlexusContainer
 {
     String ROLE = PlexusContainer.class.getName();
 
     /**
-     * Returns the unique name of this container in the container hierarchy.
-     * @return the unique name of this container in the container hierarchy
+     * Returns the unique name of this container.
+     * @return the unique name of this container
      */
     String getName();
 

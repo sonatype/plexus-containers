@@ -74,9 +74,8 @@ public class ComponentDiscoveryPhase
 
         List discoveredComponentDescriptors = new ArrayList();
 
-        for ( Iterator i = container.getComponentDiscovererManager().getComponentDiscoverers().iterator(); i.hasNext(); )
+        for ( ComponentDiscoverer componentDiscoverer : container.getComponentDiscovererManager().getComponentDiscoverers() )
         {
-            ComponentDiscoverer componentDiscoverer = (ComponentDiscoverer) i.next();
 
             List componentSetDescriptors = componentDiscoverer.findComponents( container.getContext(), realm );
 
@@ -100,7 +99,7 @@ public class ComponentDiscoveryPhase
 
                         // Use the parent realm to search for the original descriptor. It won't
                         // be in the current realm (yet).
-                        ComponentDescriptor orig = container.getComponentDescriptor( componentDescriptor.getRole(), 
+                        ComponentDescriptor orig = container.getComponentDescriptor( componentDescriptor.getRole(),
                             componentDescriptor.getRoleHint(), realm );
 
                         if ( orig == null )

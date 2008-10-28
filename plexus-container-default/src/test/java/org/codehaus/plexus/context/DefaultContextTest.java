@@ -92,25 +92,15 @@ public class DefaultContextTest
     public void testHiddenItems()
         throws ContextException
     {
-        DefaultContext parent = new DefaultContext();
+        // initalize
+        DefaultContext context = new DefaultContext();
+        context.put( "test", "test" );
 
-        parent.put( "test", "test" );
-
-        parent.makeReadOnly();
-
-        DefaultContext child = new DefaultContext( parent );
-
-        assertNotNull( child.getParent() );
-
-        child.put( "check", "check" );
-
-        Context context = child;
-
-        assertTrue( "check".equals( context.get( "check" ) ) );
-
+        // verify inital state
         assertTrue( "test".equals( context.get( "test" ) ) );
 
-        child.hide( "test" );
+        // hide value and verify
+        context.hide( "test" );
         try
         {
             context.get( "test" );
@@ -121,16 +111,23 @@ public class DefaultContextTest
             assertTrue( true );
         }
 
-        child.makeReadOnly();
+        // reset to inital state and verify
+        context.put( "test", "test" );
+        assertTrue( "test".equals( context.get( "test" ) ) );
 
+        // mark context read-only and verify that item can not be hidden
+        context.makeReadOnly();
         try
         {
-            child.hide( "test" );
+            context.hide( "test" );
             fail( "hide() did not throw an exception, even though the containerContext is supposed to be read-only." );
         }
         catch ( IllegalStateException ise )
         {
             assertTrue( true );
         }
+
+        // verify state did not change in failed hide() invocation
+        assertTrue( "test".equals( context.get( "test" ) ) );
     }
 }

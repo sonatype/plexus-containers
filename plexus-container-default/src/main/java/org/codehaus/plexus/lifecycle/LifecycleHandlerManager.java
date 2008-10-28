@@ -20,7 +20,7 @@ package org.codehaus.plexus.lifecycle;
  */
 
 /**
- *
+ * LifecycleHandlerManager is a simple index (registry) of LifecycleHandler instances.
  *
  * @author Jason van Zyl
  *

@@ -16,9 +16,8 @@ package org.codehaus.plexus.lifecycle;
  * limitations under the License.
  */
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Jason van Zyl
@@ -27,26 +26,19 @@ import java.util.Map;
 public class DefaultLifecycleHandlerManager
     implements LifecycleHandlerManager
 {
-    private Map lifecycleHandlers;
+    private final ConcurrentMap<String, LifecycleHandler> lifecycleHandlers = new ConcurrentHashMap<String, LifecycleHandler>();
 
     private String defaultLifecycleHandlerId = "plexus";
 
     public void addLifecycleHandler( LifecycleHandler lifecycleHandler )
     {
-        if ( lifecycleHandlers == null )
-        {
-            lifecycleHandlers = new HashMap();
-        }
-
         lifecycleHandlers.put( lifecycleHandler.getId(), lifecycleHandler );
     }
 
     public void initialize()
     {
-        for ( Iterator iterator = lifecycleHandlers.values().iterator(); iterator.hasNext(); )
+        for ( LifecycleHandler lifecycleHandler : lifecycleHandlers.values() )
         {
-            LifecycleHandler lifecycleHandler = (LifecycleHandler) iterator.next();
-
             lifecycleHandler.initialize();
         }
     }
@@ -59,7 +51,7 @@ public class DefaultLifecycleHandlerManager
             id = defaultLifecycleHandlerId;
         }
 
-        LifecycleHandler lifecycleHandler = ( LifecycleHandler) lifecycleHandlers.get( id );
+        LifecycleHandler lifecycleHandler = lifecycleHandlers.get( id );
 
         if ( lifecycleHandler == null )
         {

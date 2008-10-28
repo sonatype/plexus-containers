@@ -17,73 +17,62 @@ package org.codehaus.plexus.component.discovery;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class DefaultComponentDiscovererManager
     implements ComponentDiscovererManager
 {
-    private List componentDiscoverers;
+    private final List<ComponentDiscoverer> componentDiscoverers = new ArrayList<ComponentDiscoverer>();
 
-    private Map listeners;
+    // todo dain change this to LinkedHashSet<ComponentDiscoveryListener> (requires change to maven)
+    private final Map<ComponentDiscoveryListener, Object> listeners = new LinkedHashMap<ComponentDiscoveryListener, Object>();
 
-    public void addComponentDiscoverer( ComponentDiscoverer discoverer )
+    public synchronized void addComponentDiscoverer( ComponentDiscoverer discoverer )
     {
-        if ( componentDiscoverers == null )
-        {
-            componentDiscoverers = new ArrayList();
-        }
-
         componentDiscoverers.add( discoverer );
     }
 
-    public List getComponentDiscoverers()
+    // todo this is not thread safe... we are returning the raw collection
+    public synchronized List<ComponentDiscoverer> getComponentDiscoverers()
     {
         return componentDiscoverers;
     }
 
     // Listeners
 
-    public Map getComponentDiscoveryListeners()
+    // todo this is not thread safe... we are returning the raw collection
+    public synchronized Map<ComponentDiscoveryListener, Object> getComponentDiscoveryListeners()
     {
-        if ( listeners == null )
-        {
-            listeners = new LinkedHashMap();
-        }
-
         return listeners;
     }
 
-    public void registerComponentDiscoveryListener( ComponentDiscoveryListener listener )
+    public synchronized void registerComponentDiscoveryListener( ComponentDiscoveryListener listener )
     {
-        listeners = getComponentDiscoveryListeners();
-
         if ( !listeners.containsKey( listener ) )
         {
-            listeners.put( listener, listener );
+            listeners.put( listener, new Object() );
         }
     }
 
-    public void removeComponentDiscoveryListener( ComponentDiscoveryListener listener )
+    public synchronized void removeComponentDiscoveryListener( ComponentDiscoveryListener listener )
     {
-        if ( listeners != null )
-        {
-            listeners.remove( listener );
-        }
+        listeners.remove( listener );
     }
 
     public void fireComponentDiscoveryEvent( ComponentDiscoveryEvent event )
     {
-        if ( listeners != null )
+        Set<ComponentDiscoveryListener> listeners;
+        synchronized ( this )
         {
-            for ( Iterator i = listeners.values().iterator(); i.hasNext(); )
-            {
-                ComponentDiscoveryListener listener = (ComponentDiscoveryListener) i.next();
+            listeners = this.listeners.keySet();
+        }
 
-                listener.componentDiscovered( event );
-            }
+        for ( ComponentDiscoveryListener listener : listeners )
+        {
+            listener.componentDiscovered( event );
         }
     }
 
@@ -91,12 +80,10 @@ public class DefaultComponentDiscovererManager
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    public void initialize()
+    public synchronized void initialize()
     {
-        for ( Iterator i = componentDiscoverers.iterator(); i.hasNext(); )
+        for ( ComponentDiscoverer componentDiscoverer : componentDiscoverers )
         {
-            ComponentDiscoverer componentDiscoverer = (ComponentDiscoverer) i.next();
-
             componentDiscoverer.setManager( this );
         }
     }

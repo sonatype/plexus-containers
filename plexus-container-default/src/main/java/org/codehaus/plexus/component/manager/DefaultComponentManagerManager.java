@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
 /**
  *
@@ -41,9 +43,9 @@ import java.util.Map;
 public class DefaultComponentManagerManager
     implements ComponentManagerManager
 {
-    private Map activeComponentManagers = Collections.synchronizedMap( new HashMap() );
+    private final Map<String, ComponentManager> activeComponentManagers = Collections.synchronizedMap( new TreeMap<String, ComponentManager>() );
 
-    private Map componentManagers = null;
+    private final Map<String, ComponentManager> componentManagers = Collections.synchronizedMap( new TreeMap<String, ComponentManager>() );
 
     private String defaultComponentManagerId = "singleton";
 
@@ -53,11 +55,6 @@ public class DefaultComponentManagerManager
 
     public void addComponentManager( ComponentManager componentManager )
     {
-        if ( componentManagers == null )
-        {
-            componentManagers = Collections.synchronizedMap( new HashMap() );
-        }
-
         componentManagers.put( componentManager.getId(), componentManager );
     }
 
@@ -69,7 +66,7 @@ public class DefaultComponentManagerManager
     private ComponentManager copyComponentManager( String id )
         throws UndefinedComponentManagerException
     {
-        ComponentManager componentManager = (ComponentManager) componentManagers.get( id );
+        ComponentManager componentManager = componentManagers.get( id );
 
         if ( componentManager == null )
         {
@@ -127,7 +124,7 @@ public class DefaultComponentManagerManager
     {
         while ( lookupRealm != null )
         {
-            ComponentManager mgr = (ComponentManager) activeComponentManagers.get( lookupRealm.getId() + "/" + role + "/" + roleHint );
+            ComponentManager mgr = activeComponentManagers.get( lookupRealm.getId() + "/" + role + "/" + roleHint );
 
             if ( mgr != null )
             {
@@ -177,12 +174,12 @@ public class DefaultComponentManagerManager
     {
         synchronized (activeComponentManagers) // synchronized Map cannot be iterated without synchronized block.
         {
-            for ( Iterator it = activeComponentManagers.entrySet().iterator(); it.hasNext(); )
+            for ( Iterator<Entry<String,ComponentManager>> it = activeComponentManagers.entrySet().iterator(); it.hasNext(); )
             {
-                Map.Entry entry = (Map.Entry) it.next();
-                String key = (String) entry.getKey();
+                Entry<String,ComponentManager> entry = it.next();
+                String key = entry.getKey();
 
-                ComponentManager componentManager = (ComponentManager) entry.getValue();
+                ComponentManager componentManager = entry.getValue();
 
                 if ( key.startsWith( componentRealm.getId() ) )
                 {
