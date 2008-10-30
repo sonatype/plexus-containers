@@ -46,7 +46,7 @@ public interface ComponentRepository
 
     ComponentDescriptor getComponentDescriptor( String role, String roleHint, ClassRealm realm );
 
-    Map getComponentDescriptorMap( String role, ClassRealm realm );
+    Map<String, ComponentDescriptor> getComponentDescriptorMap( String role, ClassRealm realm );
 
     List getComponentDependencies( ComponentDescriptor componentDescriptor );
 

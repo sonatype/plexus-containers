@@ -24,13 +24,11 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -233,7 +231,7 @@ public class DefaultPlexusContainer
 
     // TODO This needs to be connected to the parent realm most likely
 
-    public ClassRealm createComponentRealm( String id, List jars )
+    public ClassRealm createComponentRealm( String id, List<File> jars )
         throws PlexusContainerException
     {
         ClassRealm componentRealm;
@@ -259,9 +257,9 @@ public class DefaultPlexusContainer
 
         try
         {
-            for ( Object jar : jars )
+            for ( File jar : jars )
             {
-                componentRealm.addURL( ( (File) jar ).toURI().toURL() );
+                componentRealm.addURL( jar.toURI().toURL() );
             }
         }
         catch ( MalformedURLException e )
@@ -408,70 +406,34 @@ public class DefaultPlexusContainer
     // Lookup
     // ----------------------------------------------------------------------------
 
-    public Object lookup( String componentKey )
+    public Object lookup( String role )
         throws ComponentLookupException
     {
-        return lookup( componentKey, getLookupRealm() );
-    }
-
-    public Object lookup( String componentKey, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookup( componentKey, realm );
-    }
-
-    public Map lookupMap( String role )
-        throws ComponentLookupException
-    {
-        return lookupMap( role, getLookupRealm() );
-    }
-
-    public Map lookupMap( String role, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookupMap( role, realm );
-    }
-
-    public List lookupList( String role )
-        throws ComponentLookupException
-    {
-        return lookupList( role, getLookupRealm() );
-    }
-
-    public List lookupList( String role, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookupList( role, realm );
-    }
-
-    public Map lookupMap( String role, List hints )
-        throws ComponentLookupException
-    {
-        return lookupMap( role, hints, getLookupRealm() );
-    }
-
-    public Map lookupMap( String role, List hints, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookupMap( role, hints, realm );
-    }
-
-    public List lookupList( String role, List hints )
-        throws ComponentLookupException
-    {
-        return lookupList( role, hints, getLookupRealm() );
-    }
-
-    public List lookupList( String role, List hints, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookupList( role, hints, realm );
+        return componentLookupManager.lookup( role );
     }
 
     public Object lookup( String role, String roleHint )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookup( role, roleHint, getLookupRealm() );
+        return componentLookupManager.lookup( role, roleHint );
+    }
+
+    public Object lookup( Class role )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookup( role );
+    }
+
+    public Object lookup( Class role, String roleHint )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookup( role, roleHint );
+    }
+
+    public Object lookup( String role, ClassRealm realm )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookup( role, realm );
     }
 
     public Object lookup( String role, String roleHint, ClassRealm realm )
@@ -480,47 +442,10 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookup( role, roleHint, realm );
     }
 
-    public Object lookup( Class componentClass )
+    public Object lookup( Class role, ClassRealm realm )
         throws ComponentLookupException
     {
-        return lookup( componentClass, getLookupRealm() );
-    }
-
-    public Object lookup( Class componentClass, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookup( componentClass, realm );
-    }
-
-    public Map lookupMap( Class role )
-        throws ComponentLookupException
-    {
-        return lookupMap( role, getLookupRealm() );
-
-    }
-
-    public Map lookupMap( Class role, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookupMap( role, realm );
-    }
-
-    public List lookupList( Class role )
-        throws ComponentLookupException
-    {
-        return lookupList( role, getLookupRealm() );
-    }
-
-    public List lookupList( Class role, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return componentLookupManager.lookupList( role, realm );
-    }
-
-    public Object lookup( Class role, String roleHint )
-        throws ComponentLookupException
-    {
-        return lookup( role, roleHint, getLookupRealm() );
+        return componentLookupManager.lookup( role, realm );
     }
 
     public Object lookup( Class role, String roleHint, ClassRealm realm )
@@ -529,28 +454,52 @@ public class DefaultPlexusContainer
         return componentLookupManager.lookup( role, roleHint, realm );
     }
 
-    public Map lookupMap( Class role, List hints )
+    public Map<String, Object> lookupMap( String role )
         throws ComponentLookupException
     {
-        return lookupMap( role, hints, getLookupRealm() );
+        return componentLookupManager.lookupMap( role );
     }
 
-    public Map lookupMap( Class role, List hints, ClassRealm realm )
+    public Map<String, Object> lookupMap( String role, List<String> hints )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookupMap( role, hints, realm );
+        return componentLookupManager.lookupMap( role, hints );
     }
 
-    public List lookupList( Class role, List hints )
+    public Map<String, Object> lookupMap( Class role )
         throws ComponentLookupException
     {
-        return lookupList( role, hints, getLookupRealm() );
+        return componentLookupManager.lookupMap( role );
     }
 
-    public List lookupList( Class role, List hints, ClassRealm realm )
+    public Map<String, Object> lookupMap( Class role, List<String> hints )
         throws ComponentLookupException
     {
-        return componentLookupManager.lookupList( role, hints, realm );
+        return componentLookupManager.lookupMap( role, hints );
+    }
+
+    public List<Object> lookupList( String role )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupList( role );
+    }
+
+    public List<Object> lookupList( String role, List<String> hints )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupList( role, hints );
+    }
+
+    public List<Object> lookupList( Class role )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupList( role );
+    }
+
+    public List<Object> lookupList( Class role, List<String> hints )
+        throws ComponentLookupException
+    {
+        return componentLookupManager.lookupList( role, hints );
     }
 
     // ----------------------------------------------------------------------
@@ -602,52 +551,42 @@ public class DefaultPlexusContainer
         return result;
     }
 
-    public Map getComponentDescriptorMap( String role )
+    public Map<String, ComponentDescriptor> getComponentDescriptorMap( String role )
     {
-        return getComponentDescriptorMap( role, getLookupRealm() );
+        return getComponentDescriptorMap( role, null );
     }
 
-    public Map getComponentDescriptorMap( String role, ClassRealm realm )
+    public Map<String, ComponentDescriptor> getComponentDescriptorMap( String role, ClassRealm realm )
     {
-        Map result = new WeakHashMap();
-
-        Map componentDescriptors = componentRepository.getComponentDescriptorMap( role, realm );
-
-        if ( componentDescriptors != null )
-        {
-            result.putAll( componentDescriptors );
-        }
-
-        return result;
+        Map<String, ComponentDescriptor> componentDescriptors = componentRepository.getComponentDescriptorMap( role, realm );
+        return componentDescriptors;
     }
 
-    public List getComponentDescriptorList( String role )
+    public List<ComponentDescriptor> getComponentDescriptorList( String role )
     {
-        return getComponentDescriptorList( role, getLookupRealm() );
+        return getComponentDescriptorList( role, null );
     }
 
-    public List getComponentDescriptorList( String role, ClassRealm realm )
+    public List<ComponentDescriptor> getComponentDescriptorList( String role, ClassRealm realm )
     {
-        Map componentDescriptors = getComponentDescriptorMap( role, realm );
+        Map<String, ComponentDescriptor> componentDescriptors = getComponentDescriptorMap( role, realm );
 
-        return new ArrayList( componentDescriptors.values() );
+        return new ArrayList<ComponentDescriptor>( componentDescriptors.values() );
     }
 
-    public List getComponentDescriptorList( String role, List roleHints, ClassRealm realm )
+    public List<ComponentDescriptor> getComponentDescriptorList( String role, List<String> roleHints, ClassRealm realm )
     {
         if ( roleHints != null )
         {
-            ArrayList descriptors = new ArrayList( roleHints.size() );
+            ArrayList<ComponentDescriptor> descriptors = new ArrayList<ComponentDescriptor>( roleHints.size() );
 
-            for ( Iterator i = roleHints.iterator(); i.hasNext(); )
+            for ( String roleHint : roleHints )
             {
-                String roleHint = (String) i.next();
+                ComponentDescriptor componentDescriptor = getComponentDescriptor( role, roleHint, realm );
 
-                ComponentDescriptor cd = getComponentDescriptor( role, roleHint, realm );
-
-                if ( cd != null )
+                if ( componentDescriptor != null )
                 {
-                    descriptors.add( cd );
+                    descriptors.add( componentDescriptor );
                 }
             }
             return descriptors;
@@ -695,24 +634,20 @@ public class DefaultPlexusContainer
         }
     }
 
-    public void releaseAll( Map components )
+    public void releaseAll( Map<String, Object> components )
         throws ComponentLifecycleException
     {
-        for ( Iterator i = components.values().iterator(); i.hasNext(); )
+        for ( Object component : components.values() )
         {
-            Object component = i.next();
-
             release( component );
         }
     }
 
-    public void releaseAll( List components )
+    public void releaseAll( List<Object> components )
         throws ComponentLifecycleException
     {
-        for ( Iterator i = components.iterator(); i.hasNext(); )
+        for ( Object component : components )
         {
-            Object component = i.next();
-
             release( component );
         }
     }
@@ -783,10 +718,8 @@ public class DefaultPlexusContainer
             configuration,
             containerConfiguration );
 
-        for ( int i = 0; i < initPhases.length; i++ )
+        for ( ContainerInitializationPhase phase : initPhases )
         {
-            ContainerInitializationPhase phase = initPhases[i];
-
             try
             {
                 phase.execute( initializationContext );
@@ -862,21 +795,7 @@ public class DefaultPlexusContainer
 
     protected void disposeAllComponents()
     {
-        // copy the list so we don't get concurrent modification exceptions during disposal
-        Collection collection = new ArrayList( componentManagerManager.getComponentManagers().values() );
-        for ( Iterator iter = collection.iterator(); iter.hasNext(); )
-        {
-            try
-            {
-                ( (ComponentManager) iter.next() ).dispose();
-            }
-            catch ( Exception e )
-            {
-                getLogger().error( "Error while disposing component manager. Continuing with the rest", e );
-            }
-        }
-
-        componentManagerManager.getComponentManagers().clear();
+        componentManagerManager.disposeAllComponents( getLogger() );
     }
 
     public void addContextValue( Object key, Object value )
@@ -1033,17 +952,17 @@ public class DefaultPlexusContainer
         {
             File[] jars = repository.listFiles();
 
-            for ( int j = 0; j < jars.length; j++ )
+            for ( File jar : jars )
             {
-                if ( jars[j].getAbsolutePath().endsWith( ".jar" ) )
+                if ( jar.getAbsolutePath().endsWith( ".jar" ) )
                 {
                     try
                     {
-                        addJarResource( jars[j] );
+                        addJarResource( jar );
                     }
                     catch ( PlexusContainerException e )
                     {
-                        getLogger().warn( "Unable to add JAR: " + jars[j], e );
+                        getLogger().warn( "Unable to add JAR: " + jar, e );
                     }
                 }
             }

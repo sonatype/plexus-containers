@@ -95,13 +95,4 @@ public interface MutablePlexusContainer
      */
     List discoverComponents( ClassRealm childRealm, boolean override )
         throws PlexusConfigurationException, ComponentRepositoryException;
-
-    // Lookup methods using realms
-
-    Object lookup( String role, ClassRealm realm )
-        throws ComponentLookupException;
-
-    Object lookup( String role, String roleHint, ClassRealm realm )
-        throws ComponentLookupException;
-
 }

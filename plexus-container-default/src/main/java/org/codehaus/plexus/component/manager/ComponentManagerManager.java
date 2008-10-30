@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.manager;
  */
 
 import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -24,6 +25,7 @@ import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 
 import java.util.Map;
+import java.util.List;
 
 /**
  *
@@ -42,6 +44,10 @@ public interface ComponentManagerManager
 
     ComponentManager findComponentManagerByComponentKey( String role, String roleHint, ClassRealm realm );
 
+    Map<String, ComponentManager> findAllComponentManagers( String role );
+
+    Map<String, ComponentManager> findAllComponentManagers( String role, List<String> roleHints );
+
     ComponentManager findComponentManagerByComponentInstance( Object component );
 
     ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
@@ -52,7 +58,7 @@ public interface ComponentManagerManager
                                              String role, String roleHint )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException;
 
-    Map getComponentManagers();
+    void disposeAllComponents( Logger logger );
 
     void associateComponentWithComponentManager( Object component, ComponentManager componentManager );
 

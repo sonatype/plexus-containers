@@ -31,6 +31,11 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Map.Entry;
 
 /**
  * @author Jason van Zyl
@@ -39,100 +44,120 @@ public class DefaultComponentRepository
     extends AbstractLogEnabled
     implements ComponentRepository
 {
-    private static String COMPONENTS = "components";
+    private static final String COMPONENTS = "components";
 
-    private static String COMPONENT = "component";
+    private static final String COMPONENT = "component";
 
     private PlexusConfiguration configuration;
 
     private class ComponentRealmDescriptorMaps
     {
-        /**
-         * Map&lt;RealmId, RealmMaps>.
-         */
-        private Map realmMaps = new HashMap();
+        /** Map<realmId, Map<role, Map<roleHint, ComponentDescriptor>>> */
+        private final Map<String, Map<String, Map<String, ComponentDescriptor>>> realmIndex = new LinkedHashMap<String, Map<String, Map<String, ComponentDescriptor>>>();
 
         public boolean containsKey( String role, String roleHint, ClassRealm realm )
         {
-            if ( realm == null )
-            {
-                return false;
-            }
-
-            Map maps = (Map) realmMaps.get( realm.getId() );
-
-            if ( ( maps != null ) &&  maps.containsKey( role ) )
-            {
-                Map hints = (Map) maps.get( role );
-
-                return hints.containsKey( roleHint );
-            }
-
-            return containsKey( role, roleHint, realm.getParentRealm() );
+            return getComponentDescriptor( role, roleHint, realm ) != null;
         }
 
-        public Map getComponentDescriptorMap( String role, ClassRealm realm )
+        public Map<String, ComponentDescriptor> getComponentDescriptorMap( String role, ClassRealm realm )
         {
+            // verify arguments
+            if ( role == null )
+            {
+                throw new NullPointerException( "role is null" );
+            }
+
+            // determine the roleIndexes to search
+            Collection<Map<String, Map<String, ComponentDescriptor>>> roleIndexes = new ArrayList<Map<String, Map<String, ComponentDescriptor>>>();
             if ( realm == null )
             {
-                return null;
+                // search all realms
+                roleIndexes.addAll( realmIndex.values() );
             }
-
-            Map maps = (Map) realmMaps.get( realm.getId() );
-
-            if ( ( maps != null ) && maps.containsKey( role ) )
+            else
             {
-                return (Map) maps.get( role );
+                // serach from specified realm up throught the parent chain
+                for ( ; realm != null; realm = realm.getParentRealm() )
+                {
+                    Map<String, Map<String, ComponentDescriptor>> roleIndex = realmIndex.get( realm.getId() );
+                    if ( roleIndex != null )
+                    {
+                        roleIndexes.add( roleIndex );
+                    }
+                }
             }
 
-            return getComponentDescriptorMap( role, realm.getParentRealm() );
+            // Get all valid component descriptors
+            Map<String, ComponentDescriptor> componentDescriptors = new LinkedHashMap<String, ComponentDescriptor>();
+            for ( Map<String, Map<String, ComponentDescriptor>> roleIndex : roleIndexes )
+            {
+                Map<String, ComponentDescriptor> roleHintIndex = roleIndex.get( role );
+                if ( roleHintIndex != null )
+                {
+                    for ( Entry<String, ComponentDescriptor> entry : roleHintIndex.entrySet() )
+                    {
+                        // when there are multiple component descriptors with the same hint favor the one in the realm
+                        // closest to the specifed realm or when searching all realms, the realm that was registered first
+                        if ( !componentDescriptors.containsKey( entry.getKey() ) )
+                        {
+                            componentDescriptors.put( entry.getKey(), entry.getValue() );
+                        }
+                    }
+                }
+            }
+
+            return componentDescriptors;
         }
 
         public ComponentDescriptor getComponentDescriptor( String role, String roleHint, ClassRealm realm )
         {
-            if ( realm == null )
+            // verify arguments
+            if ( role == null )
             {
-                return null;
+                throw new NullPointerException( "role is null" );
             }
-
             if ( roleHint == null )
             {
                 roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
             }
 
-            // System.out.println("GetComponentDescriptor( " + role + ", " + roleHint + ", " + realm.getId() + ")" );
+            // get the component descriptors by roleHint
+            Map<String, ComponentDescriptor> roleHintIndex = getComponentDescriptorMap( role, realm );
 
-            Map roleMap = getComponentDescriptorMap( role, realm );
-
-            if ( roleMap != null )
-            {
-                ComponentDescriptor desc = (ComponentDescriptor) roleMap.get( roleHint );
-                if ( desc != null )
-                {
-                    // System.out.println("  Found" );
-                    return desc;
-                }
-            }
-            // System.out.println("  Not found" +(realm.getParentRealm()==null?"":", trying parent " + realm.getParentRealm().getId()));
-
-            return getComponentDescriptor( role, roleHint, realm.getParentRealm() );
+            // get the component descriptor if one exists
+            ComponentDescriptor componentDescriptor = roleHintIndex.get( roleHint );
+            return componentDescriptor;
         }
 
-        public Map getRealmMap( String realmId )
-        {
-            Map rm = (Map) realmMaps.get( realmId );
 
-            if ( rm == null )
+        public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
+        {
+            // Get the index of roles
+            Map<String, Map<String, ComponentDescriptor>> roleIndex = realmIndex.get(
+                componentDescriptor.getRealmId() );
+            if ( roleIndex == null )
             {
-                realmMaps.put( realmId, rm = new HashMap() );
+                roleIndex = new HashMap<String, Map<String, ComponentDescriptor>>();
+                realmIndex.put( componentDescriptor.getRealmId(), roleIndex );
             }
 
-            return rm;
+            // get the index of role hints
+            Map<String, ComponentDescriptor> roleHintIndex = roleIndex.get( componentDescriptor.getRole() );
+            if ( roleHintIndex == null )
+            {
+                roleHintIndex = new HashMap<String, ComponentDescriptor>();
+
+                roleIndex.put( componentDescriptor.getRole(), roleHintIndex );
+            }
+
+            // add the component descriptor
+            roleHintIndex.put( componentDescriptor.getRoleHint(), componentDescriptor );
         }
 
         public void removeRealmMap( String realmId )
         {
-            realmMaps.remove( realmId );
+            realmIndex.remove( realmId );
         }
     }
 
@@ -165,9 +190,10 @@ public class DefaultComponentRepository
         return componentRealmDescriptorMaps.containsKey( role, roleHint, realm );
     }
 
-    public Map getComponentDescriptorMap( String role, ClassRealm realm )
+    public Map<String, ComponentDescriptor> getComponentDescriptorMap( String role, ClassRealm realm )
     {
-        return componentRealmDescriptorMaps.getComponentDescriptorMap( role, realm );
+        Map<String, ComponentDescriptor> descriptors = componentRealmDescriptorMaps.getComponentDescriptorMap( role, realm );
+        return Collections.unmodifiableMap( new LinkedHashMap<String, ComponentDescriptor>(descriptors) );
     }
 
     public ComponentDescriptor getComponentDescriptor( String role, ClassRealm realm )
@@ -216,9 +242,9 @@ public class DefaultComponentRepository
     {
         PlexusConfiguration[] componentConfigurations = configuration.getChild( COMPONENTS ).getChildren( COMPONENT );
 
-        for ( int i = 0; i < componentConfigurations.length; i++ )
+        for ( PlexusConfiguration componentConfiguration : componentConfigurations )
         {
-            addComponentDescriptor( componentConfigurations[i] );
+            addComponentDescriptor( componentConfiguration );
         }
     }
 
@@ -229,7 +255,7 @@ public class DefaultComponentRepository
     public void addComponentDescriptor( PlexusConfiguration configuration )
         throws ComponentRepositoryException
     {
-        ComponentDescriptor componentDescriptor = null;
+        ComponentDescriptor componentDescriptor;
 
         try
         {
@@ -257,22 +283,7 @@ public class DefaultComponentRepository
             throw new ComponentRepositoryException( "Component descriptor validation failed: ", e );
         }
 
-        Map maps = componentRealmDescriptorMaps.getRealmMap( componentDescriptor.getRealmId() );
-
-        String role = componentDescriptor.getRole();
-
-        String roleHint = componentDescriptor.getRoleHint();
-
-        Map map = (Map) maps.get( role );
-
-        if ( map == null )
-        {
-            map = new HashMap();
-
-            maps.put( role, map );
-        }
-
-        map.put( roleHint, componentDescriptor );
+        componentRealmDescriptorMaps.addComponentDescriptor( componentDescriptor );
 
         try
         {

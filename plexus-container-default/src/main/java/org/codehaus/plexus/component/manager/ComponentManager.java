@@ -42,7 +42,7 @@ public interface ComponentManager
 
     String getId();
 
-    void setup( MutablePlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor );
+    void setup( MutablePlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor, String role, String roleHint );
 
     void initialize();
 
@@ -63,6 +63,10 @@ public interface ComponentManager
         throws ComponentInstantiationException, ComponentLifecycleException;
 
     ComponentDescriptor getComponentDescriptor();
+
+    String getRole();
+
+    String getRoleHint();
 
     MutablePlexusContainer getContainer();
 

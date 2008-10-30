@@ -280,7 +280,7 @@ public class XBeanComponentBuilder implements ComponentBuilder {
 
                 Object assignment;
                 if (propertyType.isArray()) {
-                    assignment = new ArrayList<Object>(cast(container.lookupList(role, roleHints, realm)));
+                    assignment = new ArrayList<Object>(cast(container.lookupList(role, roleHints)));
                 }
 
                 // Map.class.isAssignableFrom( clazz ) doesn't make sense, since Map.class doesn't really
@@ -310,7 +310,7 @@ public class XBeanComponentBuilder implements ComponentBuilder {
                     // check in for Collection.class.
                     else if (Set.class.equals(propertyType) || Collection.class.isAssignableFrom(propertyType)) {
                         // todo why isn't this lazy as above?
-                        assignment = container.lookupMap(role, roleHints, realm);
+                        assignment = container.lookupMap(role, roleHints);
                     } else if (Logger.class.equals(propertyType)) {
                         // todo magic reference
                         assignment = container.getLoggerManager().getLoggerForComponent(componentDescriptor.getRole());

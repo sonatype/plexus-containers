@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -41,6 +41,10 @@ public abstract class AbstractComponentManager
 
     protected ComponentDescriptor componentDescriptor;
 
+    private String role;
+    
+    private String roleHint;
+
     protected ComponentBuilder builder;
 
     private LifecycleHandler lifecycleHandler;
@@ -51,7 +55,7 @@ public abstract class AbstractComponentManager
      * call all lifecycle methods.
      * @return a synchronized map, make sure to synchronize the map when iterating.
      */
-    protected Map componentContextRealms = Collections.synchronizedMap(new HashMap());
+    protected final Map<Object, ClassRealm> componentContextRealms = Collections.synchronizedMap(new HashMap<Object, ClassRealm>());
 
     private int connections;
 
@@ -85,6 +89,16 @@ public abstract class AbstractComponentManager
         return componentDescriptor;
     }
 
+    public String getRole()
+    {
+        return role;
+    }
+
+    public String getRoleHint()
+    {
+        return roleHint;
+    }
+
     public LifecycleHandler getLifecycleHandler()
     {
         return lifecycleHandler;
@@ -116,13 +130,19 @@ public abstract class AbstractComponentManager
 
     public void setup( MutablePlexusContainer container,
                        LifecycleHandler lifecycleHandler,
-                       ComponentDescriptor componentDescriptor )
+                       ComponentDescriptor componentDescriptor,
+                       String role,
+                       String roleHint)
     {
         this.container = container;
 
         this.lifecycleHandler = lifecycleHandler;
 
         this.componentDescriptor = componentDescriptor;
+
+        this.role = role;
+
+        this.roleHint = roleHint;
     }
 
     public void initialize()
@@ -142,7 +162,7 @@ public abstract class AbstractComponentManager
     protected void endComponentLifecycle( Object component )
         throws ComponentLifecycleException
     {
-        ClassRealm contextRealm = (ClassRealm) componentContextRealms.remove( component );
+        ClassRealm contextRealm = componentContextRealms.remove( component );
         if ( contextRealm == null )
         {
             contextRealm = container.getLookupRealm( component );
@@ -177,18 +197,16 @@ public abstract class AbstractComponentManager
     public void dissociateComponentRealm( ClassRealm realm )
         throws ComponentLifecycleException
     {
-        Set entries = componentContextRealms.entrySet();
-        
-        synchronized ( componentContextRealms ) 
+        synchronized ( componentContextRealms )
         {
-            for ( Iterator it = entries.iterator(); it.hasNext(); )
+            for ( Iterator<Entry<Object, ClassRealm>> iterator = componentContextRealms.entrySet().iterator(); iterator.hasNext(); )
             {
-                Map.Entry entry = (Map.Entry) it.next();
-                ClassRealm componentRealm = (ClassRealm) entry.getValue();
+                Entry<Object, ClassRealm> entry = iterator.next();
+                ClassRealm componentRealm = entry.getValue();
 
                 if ( componentRealm.getId().equals( realm.getId() ) )
                 {
-                    it.remove();
+                    iterator.remove();
                 }
             }
         }

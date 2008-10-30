@@ -2,17 +2,15 @@ package org.codehaus.plexus.component.collections;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 /*
  * Copyright 2001-2006 Codehaus Foundation.
@@ -49,7 +47,7 @@ public abstract class AbstractComponentCollection
     protected String role;
 
     /** The role hint of the components we are holding in this Collection. */
-    protected List roleHints;
+    protected List<String> roleHints;
 
     /** The realm we need to lookup in */
     protected ClassRealm realm;
@@ -60,13 +58,11 @@ public abstract class AbstractComponentCollection
     /** Used to log errors in the component lookup process. */
     protected Logger logger;
 
-    private ClassRealm[] realms;
+    private List<ClassRealm> realms;
 
     private int lastRealmCount = -1;
 
-    private int lastComponentCount = -1;
-
-    private Map componentDescriptorMap;
+    private Map<String, ComponentDescriptor> componentDescriptorMap;
 
     public AbstractComponentCollection( PlexusContainer container,
                                         ClassRealm realm,
@@ -93,13 +89,13 @@ public abstract class AbstractComponentCollection
      * will be used to collect all of the component instances from all realms
      * which are likely to work from this collection.
      */
-    protected ClassRealm[] getLookupRealms()
+    protected List<ClassRealm> getLookupRealms()
     {
-        Collection allRealms = new ArrayList( realm.getWorld().getRealms() );
+        Collection<ClassRealm> allRealms = new ArrayList<ClassRealm>( realm.getWorld().getRealms() );
 
         if ( realmsHaveChanged() )
         {
-            List lookupRealms = new ArrayList();
+            List<ClassRealm> lookupRealms = new ArrayList<ClassRealm>();
 
             lookupRealms.add( realm );
 
@@ -108,33 +104,31 @@ public abstract class AbstractComponentCollection
             {
                 lastSize = lookupRealms.size();
 
-                for ( Iterator it = allRealms.iterator(); it.hasNext(); )
+                for ( ClassRealm realm : allRealms )
                 {
-                    ClassRealm r = (ClassRealm) it.next();
-
-                    if ( ( r.getParentRealm() != null )
-                         && lookupRealms.contains( r.getParentRealm() )
-                         && !lookupRealms.contains( r ) )
+                    if ( ( realm.getParentRealm() != null )
+                        && lookupRealms.contains( realm.getParentRealm() )
+                        && !lookupRealms.contains( realm ) )
                     {
-                        lookupRealms.add( r );
+                        lookupRealms.add( realm );
                     }
                 }
             }
 
-            realms = (ClassRealm[]) lookupRealms.toArray( new ClassRealm[0] );
+            realms = lookupRealms;
         }
 
         return realms;
     }
 
-    protected Map getLookupRealmMap()
+    protected Map<String, ClassRealm> getLookupRealmMap()
     {
-        ClassRealm[] realms = getLookupRealms();
-        Map realmMap = new HashMap();
+        List<ClassRealm> realms = getLookupRealms();
 
-        for ( int i = 0; i < realms.length; i++ )
+        Map<String, ClassRealm> realmMap = new HashMap<String, ClassRealm>();
+        for ( ClassRealm realm : realms )
         {
-            realmMap.put( realms[i].getId(), realms[i] );
+            realmMap.put( realm.getId(), realm );
         }
 
         return realmMap;
@@ -145,7 +139,7 @@ public abstract class AbstractComponentCollection
         return ( realms == null ) || ( realm.getWorld().getRealms().size() != lastRealmCount );
     }
 
-    protected Map getComponentDescriptorMap()
+    protected Map<String, ComponentDescriptor> getComponentDescriptorMap()
     {
         checkUpdate();
 
@@ -154,45 +148,36 @@ public abstract class AbstractComponentCollection
 
     protected boolean checkUpdate()
     {
-        if ( ( componentDescriptorMap != null ) && !realmsHaveChanged() )
+        if ( componentDescriptorMap != null && !realmsHaveChanged() )
         {
             return false;
         }
 
-        ClassRealm[] lookupRealms = getLookupRealms();
-        Map[] componentMaps = new Map[lookupRealms.length];
-
-        int count = 0;
-        for ( int i = 0; i < lookupRealms.length; i++ )
+        Map<String, ComponentDescriptor> newComponentDescriptors = new HashMap<String, ComponentDescriptor>();
+        for ( ClassRealm realm : getLookupRealms() )
         {
-            ClassRealm r = lookupRealms[i];
-            componentMaps[i] = container.getComponentDescriptorMap( role, r );
+            Map<String, ComponentDescriptor> componentMap = container.getComponentDescriptorMap( role, realm );
 
-            if ( ( roleHints != null ) && !roleHints.isEmpty() )
+            if ( roleHints != null && !roleHints.isEmpty() )
             {
-                for ( Iterator it = componentMaps[i].keySet().iterator(); it.hasNext(); )
+                for ( String roleHint : roleHints )
                 {
-                    String key = (String) it.next();
-                    if ( !roleHints.contains( key ) )
+                    ComponentDescriptor componentDescriptor = componentMap.get( roleHint );
+                    if ( componentDescriptor != null )
                     {
-                        it.remove();
+                        newComponentDescriptors.put( roleHint, componentDescriptor );
                     }
                 }
             }
-
-            count += componentMaps[i].size();
+            else
+            {
+                newComponentDescriptors.putAll( componentMap );
+            }
         }
 
-        if ( count != lastComponentCount )
+        if ( componentDescriptorMap == null || newComponentDescriptors.size() != componentDescriptorMap.size() )
         {
-            Map newComponentDescriptors = new WeakHashMap();
-            for ( int i = 0; i < componentMaps.length; i++ )
-            {
-                newComponentDescriptors.putAll( componentMaps[i] );
-            }
-
             componentDescriptorMap = newComponentDescriptors;
-            lastComponentCount = count;
 
             return true;
         }
@@ -223,7 +208,6 @@ public abstract class AbstractComponentCollection
 
         componentDescriptorMap.clear();
         componentDescriptorMap = null;
-        lastComponentCount = -1;
 
         realms = null;
         lastRealmCount = -1;
