@@ -84,15 +84,4 @@ public interface MutablePlexusContainer
     ClassRealm getComponentRealm( String realmId );
 
     ClassWorld getClassWorld();
-
-    /**
-     * Discovers components in the given realm.
-     * @param childRealm
-     * @param override wheter to override/merge any conflicting components, where the new component takes precedence.
-     * @return
-     * @throws PlexusConfigurationException
-     * @throws ComponentRepositoryException
-     */
-    List discoverComponents( ClassRealm childRealm, boolean override )
-        throws PlexusConfigurationException, ComponentRepositoryException;
 }

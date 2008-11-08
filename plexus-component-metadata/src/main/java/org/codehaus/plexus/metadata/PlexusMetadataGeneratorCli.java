@@ -35,19 +35,18 @@ public class PlexusMetadataGeneratorCli
         options.addOption( OptionBuilder.withLongOpt( "directory" ).hasArg().withDescription( "Project directory." ).create( DIRECTORY ) );
         options.addOption( OptionBuilder.withLongOpt( "output" ).hasArg().withDescription( "Output directory." ).create( OUTPUT ) );
         return options;
-    }
+    }    
 
-    @Override
-    public void invokePlexusComponent( final CommandLine cli, PlexusContainer plexus )
+    public void invokePlexusComponent( CommandLine cli, PlexusContainer plexus )
         throws Exception
     {
         MetadataGenerator mg = (MetadataGenerator) plexus.lookup( MetadataGenerator.class );
-        File directory = new File( cli.getOptionValue( DIRECTORY ) );
-        ExtractorConfiguration ec = new ExtractorConfiguration();
-        ec.outputDirectory = new File( directory, "target/classes" );
-        ec.classpath = Collections.EMPTY_LIST;
-        ec.sourceDirectories = Arrays.asList( new String[]{ new File( directory, "src/main/java" ).getAbsolutePath() } );
+        File directory = new File( cli.getOptionValue( DIRECTORY ) );        
+        ExtractorConfiguration extractorConfiguration = new ExtractorConfiguration();        
+        extractorConfiguration.outputDirectory = new File( directory, "target/classes" );
+        extractorConfiguration.classpath = Collections.EMPTY_LIST;
+        extractorConfiguration.sourceDirectories = Arrays.asList( new String[]{ new File( directory, "src/main/java" ).getAbsolutePath() } );
         File output = new File( cli.getOptionValue( OUTPUT ) );
-        mg.generateDescriptor( ec, output );
+        mg.generateDescriptor( extractorConfiguration, output );
     }
 }

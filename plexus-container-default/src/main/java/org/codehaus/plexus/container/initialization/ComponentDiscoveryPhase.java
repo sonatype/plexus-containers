@@ -64,7 +64,8 @@ public class ComponentDiscoveryPhase
         return discoverComponents( container, realm, false );
     }
 
-    public static List discoverComponents( DefaultPlexusContainer container, ClassRealm realm, boolean override )
+    // This can be radically simplified
+    public static List<ComponentDescriptor> discoverComponents( DefaultPlexusContainer container, ClassRealm realm, boolean override )
         throws PlexusConfigurationException,
             ComponentRepositoryException
     {
@@ -72,7 +73,7 @@ public class ComponentDiscoveryPhase
         // listener is listed in the plexus.xml file that will be discovered and processed
         // before the components.xml are discovered in JARs and processed.
 
-        List discoveredComponentDescriptors = new ArrayList();
+        List<ComponentDescriptor> discoveredComponentDescriptors = new ArrayList<ComponentDescriptor>();
 
         for ( ComponentDiscoverer componentDiscoverer : container.getComponentDiscovererManager().getComponentDiscoverers() )
         {

@@ -27,6 +27,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -367,6 +368,17 @@ public interface PlexusContainer
      */
     void removeComponentDiscoveryListener( ComponentDiscoveryListener listener );
 
+    /**
+     * Discovers components in the given realm.
+     * @param childRealm
+     * @param override wheter to override/merge any conflicting components, where the new component takes precedence.
+     * @return
+     * @throws PlexusConfigurationException
+     * @throws ComponentRepositoryException
+     */
+    List<ComponentDescriptor> discoverComponents( ClassRealm childRealm, boolean override )
+        throws PlexusConfigurationException, ComponentRepositoryException;    
+    
     /**
      * Adds a directory of jar resources.
      * @see PlexusContainer#addJarResource(File)
