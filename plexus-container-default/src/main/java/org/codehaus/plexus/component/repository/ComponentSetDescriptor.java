@@ -29,22 +29,26 @@ import java.util.List;
  */
 public class ComponentSetDescriptor
 {
-    // ComponentDescriptor list
-    private List components;
-
-    private List dependencies;
-
-    private boolean isolatedRealm;
-
+    // This field is not currently used in Maven, or Plexus
     private String id;
 
+    /** The source location of this component source descriptor */
     private String source;
 
+    /** Flag to indicate whether this component should be loaded in a realm/classloader of its own. */
+    private boolean isolatedRealm;
+    
+    /** The component descriptors that can be found within this component set descriptor. */
+    private List<ComponentDescriptor> components;
+
+    /** The dependencies that are required by the set of components found in this component set descriptor. */
+    private List<ComponentDependency> dependencies;
+    
     /**
      * Returns a list of components in this set.
      * @return a list of components
      */
-    public List getComponents()
+    public List<ComponentDescriptor> getComponents()
     {
         return components;
     }
@@ -57,7 +61,7 @@ public class ComponentSetDescriptor
     {
         if ( components == null )
         {
-            components = new ArrayList();
+            components = new ArrayList<ComponentDescriptor>();
         }
 
         components.add( cd );
@@ -67,7 +71,7 @@ public class ComponentSetDescriptor
      * Sets a List of components as this set's contents.
      * @param components the List of components to set
      */
-    public void setComponents( List components )
+    public void setComponents( List<ComponentDescriptor> components )
     {
         this.components = components;
     }
@@ -76,7 +80,7 @@ public class ComponentSetDescriptor
      * Returns a List of dependencies of this set of components.
      * @return a List of dependencies of this set of components
      */
-    public List getDependencies()
+    public List<ComponentDependency> getDependencies()
     {
         return dependencies;
     }
@@ -89,7 +93,7 @@ public class ComponentSetDescriptor
     {
         if ( dependencies == null )
         {
-            dependencies = new ArrayList();
+            dependencies = new ArrayList<ComponentDependency>();
         }
 
         dependencies.add( cd );
@@ -99,7 +103,7 @@ public class ComponentSetDescriptor
      * Sets a List of dependencies as this set's component dependencies.
      * @param dependencies the List of components to set
      */
-    public void setDependencies( List dependencies )
+    public void setDependencies( List<ComponentDependency> dependencies )
     {
         this.dependencies = dependencies;
     }
@@ -147,9 +151,9 @@ public class ComponentSetDescriptor
 
         sb.append( "Component Descriptor: " );
 
-        for ( Iterator i = components.iterator(); i.hasNext(); )
+        for ( Iterator<ComponentDescriptor> i = components.iterator(); i.hasNext(); )
         {
-            ComponentDescriptor cd = (ComponentDescriptor) i.next();
+            ComponentDescriptor cd = i.next();
 
             sb.append( cd.getHumanReadableKey() ).append( "\n" );
         }
