@@ -417,17 +417,8 @@ public interface PlexusContainer
     // Component/Plugin ClassRealm creation
     // ----------------------------------------------------------------------------
 
-    /**
-     * Creates and returns a new class realm under this container's realm for the given list of jars. If the realm
-     * already exists, return the realm with the given ID?
-     * @see PlexusContainer#addJarResource(File)
-     * @param id unique key for the ClassRealm
-     * @param jars list of JARs to place in the realm.
-     * @throws PlexusContainerException
-     */
-    public ClassRealm createComponentRealm( String id, List<File> jars )
-        throws PlexusContainerException;
-
+    ClassRealm createChildRealm( String id );    
+    
     ClassRealm getComponentRealm( String realmId );
 
     /**

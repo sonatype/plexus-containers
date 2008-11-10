@@ -231,63 +231,24 @@ public class DefaultPlexusContainer
 
     // TODO This needs to be connected to the parent realm most likely
 
-    public ClassRealm createComponentRealm( String id, List<File> jars )
-        throws PlexusContainerException
+    public ClassRealm createChildRealm( String id )
     {
-        ClassRealm componentRealm;
-
         try
         {
-            ClassRealm realm = classWorld.getRealm( id );
-
-            return realm;
-        }
-        catch ( NoSuchRealmException e )
-        {
-        }
-
-        try
-        {
-            componentRealm = containerRealm.createChildRealm( id );
+            return containerRealm.createChildRealm( id );
         }
         catch ( DuplicateRealmException e )
         {
-            throw new PlexusContainerException( "Error creating child realm.", e );
-        }
-
-        try
-        {
-            for ( File jar : jars )
+            try
             {
-                componentRealm.addURL( jar.toURI().toURL() );
+                return classWorld.getRealm( id );
+            }
+            catch ( NoSuchRealmException e1 )
+            {
+                return null;
             }
         }
-        catch ( MalformedURLException e )
-        {
-            throw new PlexusContainerException( "Error adding JARs to realm.", e );
-        }
-
-        getLogger().debug( "Created component realm: " + id );
-
-        // ----------------------------------------------------------------------------
-        // Discover the components that are present in the new componentRealm.
-        // ----------------------------------------------------------------------------
-
-        try
-        {
-            discoverComponents( componentRealm );
-        }
-        catch ( PlexusConfigurationException e )
-        {
-            throw new PlexusContainerException( "Error configuring discovered component.", e );
-        }
-        catch ( ComponentRepositoryException e )
-        {
-            throw new PlexusContainerException( "Error resolving discovered component.", e );
-        }
-
-        return componentRealm;
-    }
+    }    
 
     boolean initialized;
 
