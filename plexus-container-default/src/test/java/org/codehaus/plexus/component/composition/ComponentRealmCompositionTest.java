@@ -59,15 +59,20 @@ public class ComponentRealmCompositionTest
 
         // Create ClassRealm plugin0 with plugin0 -> A, plugin0 -> B
 
-        List plugin0Jars = Arrays.asList( new Object[]{p0, a, b, archiver} );
-
         ClassRealm plugin0Realm = getContainer().createChildRealm( "plugin0Realm" );
+        for ( File jar : Arrays.asList( p0, a, b, archiver ) )
+        {
+            plugin0Realm.addURL( jar.toURL() );
+        }
 
         // Create ClassRealm plugin1 with plugin1 -> A, plugin1 -> C
 
-        List plugin1Jars = Arrays.asList( new Object[]{p1, a, c, archiver } );
 
         ClassRealm plugin1Realm = getContainer().createChildRealm( "plugin1Realm" );
+        for ( File jar : Arrays.asList( p1, a, c, archiver ) )
+        {
+            plugin1Realm.addURL( jar.toURL() );
+        }
 
         // Lookups
 
