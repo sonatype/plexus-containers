@@ -7,7 +7,7 @@
     <version>2.0.0</version>
   </parent>
   <artifactId>plexus-containers</artifactId>
-  <version>1.0-beta-1.2</version>
+  <version>1.0-beta-3-SNAPSHOT</version>
   <properties>
     <classWorldsVersion>1.2-alpha-13</classWorldsVersion>
     <plexusUtilsVersion>1.4.5</plexusUtilsVersion>
@@ -21,9 +21,9 @@
     <module>plexus-container-default</module>
   </modules>
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0-beta-1.2</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0-beta-1.2</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/tags/plexus-containers-1.0-beta-1.2</url>
+    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0-beta-1</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0-beta-1</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/tags/plexus-containers-1.0-beta-1</url>
   </scm>
   <dependencies>
     <dependency>
