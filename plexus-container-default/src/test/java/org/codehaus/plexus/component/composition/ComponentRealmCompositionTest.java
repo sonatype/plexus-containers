@@ -64,7 +64,8 @@ public class ComponentRealmCompositionTest
         {
             plugin0Realm.addURL( jar.toURL() );
         }
-
+        getContainer().discoverComponents( plugin0Realm, false );
+        
         // Create ClassRealm plugin1 with plugin1 -> A, plugin1 -> C
 
 
@@ -73,6 +74,7 @@ public class ComponentRealmCompositionTest
         {
             plugin1Realm.addURL( jar.toURL() );
         }
+        getContainer().discoverComponents( plugin1Realm, false );
 
         // Lookups
 
