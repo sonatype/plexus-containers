@@ -62,7 +62,7 @@ public class ComponentRealmCompositionTest
         ClassRealm plugin0Realm = getContainer().createChildRealm( "plugin0Realm" );
         for ( File jar : Arrays.asList( p0, a, b, archiver ) )
         {
-            plugin0Realm.addURL( jar.toURL() );
+            plugin0Realm.addURL( jar.toURI().toURL() );
         }
         getContainer().discoverComponents( plugin0Realm, false );
         
@@ -72,7 +72,7 @@ public class ComponentRealmCompositionTest
         ClassRealm plugin1Realm = getContainer().createChildRealm( "plugin1Realm" );
         for ( File jar : Arrays.asList( p1, a, c, archiver ) )
         {
-            plugin1Realm.addURL( jar.toURL() );
+            plugin1Realm.addURL( jar.toURI().toURL() );
         }
         getContainer().discoverComponents( plugin1Realm, false );
 
