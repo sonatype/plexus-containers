@@ -16,7 +16,6 @@ package org.codehaus.plexus.component.manager;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 
@@ -39,10 +38,10 @@ public class PerLookupComponentManager
     {
     }
 
-    public Object getComponent( ClassRealm realm )
+    public Object getComponent( )
         throws ComponentInstantiationException, ComponentLifecycleException
     {
-        Object component = createComponentInstance( realm );
+        Object component = createComponentInstance();
 
         return component;
     }

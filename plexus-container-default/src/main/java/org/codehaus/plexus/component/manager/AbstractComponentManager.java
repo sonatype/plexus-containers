@@ -39,6 +39,8 @@ public abstract class AbstractComponentManager
 {
     protected MutablePlexusContainer container;
 
+    private ClassRealm realm;
+
     protected ComponentDescriptor componentDescriptor;
 
     private String role;
@@ -87,6 +89,11 @@ public abstract class AbstractComponentManager
     public ComponentDescriptor getComponentDescriptor()
     {
         return componentDescriptor;
+    }
+
+    public ClassRealm getRealm()
+    {
+        return realm;
     }
 
     public String getRole()
@@ -143,13 +150,15 @@ public abstract class AbstractComponentManager
         this.role = role;
 
         this.roleHint = roleHint;
+
+        this.realm = container.getComponentRealm( componentDescriptor.getRealmId() );
     }
 
     public void initialize()
     {
     }
 
-    protected Object createComponentInstance( ClassRealm realm )
+    protected Object createComponentInstance()
         throws ComponentInstantiationException, ComponentLifecycleException
     {
         return builder.build(componentDescriptor, realm, new AbstractComponentBuildListener() {
@@ -186,12 +195,6 @@ public abstract class AbstractComponentManager
     public Logger getLogger()
     {
         return container.getLogger();
-    }
-
-    public Object getComponent()
-        throws ComponentInstantiationException, ComponentLifecycleException
-    {
-        return getComponent( container.getLookupRealm() );
     }
 
     public void dissociateComponentRealm( ClassRealm realm )

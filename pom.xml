@@ -19,6 +19,7 @@
     <module>plexus-component-annotations</module>
     <module>plexus-component-metadata</module>
     <module>plexus-container-default</module>
+    <module>maven</module>
   </modules>
   <scm>
     <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0-beta-1</connection>

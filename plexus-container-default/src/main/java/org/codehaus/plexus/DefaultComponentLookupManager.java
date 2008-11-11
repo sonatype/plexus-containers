@@ -145,33 +145,33 @@ public class DefaultComponentLookupManager
                 throw new ComponentLookupException( message, role, roleHint, realm );
             }
 
-            componentManager = createComponentManager( descriptor, role, roleHint, realm );
+            componentManager = createComponentManager( descriptor, role, roleHint );
         }
 
-        Object component = getComponent( componentManager, realm );
+        Object component = getComponent( componentManager );
 
         return component;
     }
 
-    private Object getComponent( ComponentManager componentManager, ClassRealm realm )
+    private Object getComponent( ComponentManager componentManager )
         throws ComponentLookupException
     {
         Object component;
         try
         {
-            component = componentManager.getComponent( realm );
+            component = componentManager.getComponent( );
         }
         catch ( ComponentInstantiationException e )
         {
             throw new ComponentLookupException(
                 "Unable to lookup component '" + componentManager.getRole() + "', it could not be created.",
-                componentManager.getRole(), componentManager.getRoleHint(), realm, e );
+                componentManager.getRole(), componentManager.getRoleHint(), componentManager.getRealm(), e );
         }
         catch ( ComponentLifecycleException e )
         {
             throw new ComponentLookupException(
                 "Unable to lookup component '" + componentManager.getRole() + "', it could not be started.",
-                componentManager.getRole(), componentManager.getRoleHint(), realm, e );
+                componentManager.getRole(), componentManager.getRoleHint(), componentManager.getRealm(), e );
         }
 
         container.getComponentManagerManager().associateComponentWithComponentManager( component, componentManager );
@@ -295,7 +295,7 @@ public class DefaultComponentLookupManager
     //
     // ----------------------------------------------------------------------------
 
-    public ComponentManager createComponentManager( ComponentDescriptor descriptor, String role, String roleHint, ClassRealm realm )
+    public ComponentManager createComponentManager( ComponentDescriptor descriptor, String role, String roleHint )
         throws ComponentLookupException
     {
         ComponentManager componentManager;
@@ -308,13 +308,13 @@ public class DefaultComponentLookupManager
         {
             String message = "Cannot create component manager for " + descriptor.getRole() + " [" + descriptor.getRoleHint() + "], so we cannot provide a component instance.";
 
-            throw new ComponentLookupException( message, role, roleHint, realm, e );
+            throw new ComponentLookupException( message, role, roleHint, null, e );
         }
         catch ( UndefinedLifecycleHandlerException e )
         {
             String message = "Cannot create component manager for " + descriptor.getRole() + " [" + descriptor.getRoleHint() + "], so we cannot provide a component instance.";
 
-            throw new ComponentLookupException( message, role, roleHint, realm, e );
+            throw new ComponentLookupException( message, role, roleHint, null, e );
         }
 
         return componentManager;

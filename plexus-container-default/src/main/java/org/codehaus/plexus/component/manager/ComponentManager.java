@@ -59,9 +59,6 @@ public interface ComponentManager
     Object getComponent()
         throws ComponentInstantiationException, ComponentLifecycleException;
 
-    Object getComponent( ClassRealm realm )
-        throws ComponentInstantiationException, ComponentLifecycleException;
-
     ComponentDescriptor getComponentDescriptor();
 
     String getRole();
@@ -72,4 +69,6 @@ public interface ComponentManager
 
     void dissociateComponentRealm( ClassRealm realm )
         throws ComponentLifecycleException;
+
+    ClassRealm getRealm();
 }
