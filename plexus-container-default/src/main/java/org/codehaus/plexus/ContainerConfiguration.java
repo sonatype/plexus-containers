@@ -33,10 +33,13 @@ public interface ContainerConfiguration
 
     ClassWorld getClassWorld();
 
-    ContainerConfiguration setParentContainer( PlexusContainer container );
+    ContainerConfiguration setRealm( ClassRealm realm );
 
-    PlexusContainer getParentContainer();
-
+    ClassRealm getRealm();
+    
+    //
+    // Configuration
+    //
     ContainerConfiguration setContainerConfiguration( String configuration );
 
     String getContainerConfiguration();
@@ -44,10 +47,6 @@ public interface ContainerConfiguration
     ContainerConfiguration setContainerConfigurationURL( URL configuration );
 
     URL getContainerConfigurationURL();
-
-    ContainerConfiguration setRealm( ClassRealm realm );
-
-    ClassRealm getRealm();
 
     // Programmatic Container Initialization and Setup
 
@@ -106,10 +105,5 @@ public interface ContainerConfiguration
     ContainerConfiguration setConfigurationSource( ConfigurationSource configurationSource );
 
     ConfigurationSource getConfigurationSource();
-    
-    // Dev mode, will allow for certain functionality that should not be available normally
-    ContainerConfiguration setDevMode( boolean devMode );
-    
-    boolean isDevMode();
 }
 

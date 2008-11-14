@@ -226,10 +226,10 @@ public class XBeanComponentBuilder implements ComponentBuilder {
     public static class RequirementRecipe extends AbstractRecipe {
         private ComponentDescriptor componentDescriptor;
         private ComponentRequirement requirement;
-        private PlexusContainer container;
+        private MutablePlexusContainer container;
         private boolean autoMatch;
 
-        public RequirementRecipe(ComponentDescriptor componentDescriptor, ComponentRequirement requirement, PlexusContainer container, boolean autoMatch) {
+        public RequirementRecipe(ComponentDescriptor componentDescriptor, ComponentRequirement requirement, MutablePlexusContainer container, boolean autoMatch) {
             this.componentDescriptor = componentDescriptor;
             this.requirement = requirement;
             this.container = container;

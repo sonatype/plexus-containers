@@ -30,7 +30,7 @@ public class BasicComponentConfiguratorTest
     protected ComponentConfigurator getComponentConfigurator()
         throws Exception
     {
-         return (ComponentConfigurator) lookup( BasicComponentConfigurator.ROLE );
+         return new BasicComponentConfigurator();
     }
 
 }

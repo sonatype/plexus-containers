@@ -23,6 +23,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.DefaultContext;
 
@@ -118,7 +119,12 @@ public abstract class PlexusTestCase
     protected void customizeContext( Context context )
     {
     }
-
+    
+    protected PlexusConfiguration customizeComponentConfiguration()
+    {
+        return null;        
+    }
+    
     protected void tearDown()
         throws Exception
     {
@@ -157,6 +163,15 @@ public abstract class PlexusTestCase
         return null;
     }
 
+    /**
+     * Allow the retrieval of a container configuration that is based on the name
+     * of the test class being run. So if you have a test class called org.foo.FunTest, then
+     * this will produce a resource name of org/foo/FunTest.xml which would be used to 
+     * configure the Plexus container before running your test.
+     * 
+     * @param subname
+     * @return
+     */
     protected String getConfigurationName( String subname )
     {
         return getClass().getName().replace( '.', '/' ) + ".xml";

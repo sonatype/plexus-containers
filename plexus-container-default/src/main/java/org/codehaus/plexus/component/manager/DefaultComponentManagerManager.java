@@ -45,7 +45,7 @@ import java.util.Map.Entry;
  */
 public class DefaultComponentManagerManager
     implements ComponentManagerManager
-{
+{    
     private static final String DEFAULT_COMPONENT_MANAGER_ID = "singleton";
 
     private final Map<Key, ComponentManager> activeComponentManagers = new TreeMap<Key, ComponentManager>();
@@ -88,8 +88,7 @@ public class DefaultComponentManagerManager
         ComponentManager componentManager = createComponentManager( descriptor.getInstantiationStrategy() );
 
         // Setup component manager
-        LifecycleHandler lifecycleHandler = getLifecycleHandlerManager().getLifecycleHandler(
-            descriptor.getLifecycleHandler() );
+        LifecycleHandler lifecycleHandler = getLifecycleHandlerManager().getLifecycleHandler( descriptor.getLifecycleHandler() );
         componentManager.setup( container, lifecycleHandler, descriptor, role, roleHint );
 
         // Initialize component manager

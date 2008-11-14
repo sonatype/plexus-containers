@@ -70,12 +70,6 @@ public class ComponentRealmCompositionTest
     * maven-jar-plugin and not a different realm.
     */
 
-    public void testComposition()
-        throws Exception
-    {
-        // do nothing for now
-    }
-
     public void testCompositionWhereTheSameImplementationExistsInDifferentRealms()
         throws Exception
     {

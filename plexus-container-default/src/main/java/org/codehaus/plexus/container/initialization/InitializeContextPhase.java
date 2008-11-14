@@ -28,7 +28,5 @@ public class InitializeContextPhase
         throws ContainerInitializationException
     {
         context.getContainer().getContext().put( PlexusConstants.PLEXUS_KEY, context.getContainer() );
-
-        context.getContainer().getContext().put( PlexusConstants.PLEXUS_CORE_REALM, context.getContainer().getContainerRealm() );
     }
 }

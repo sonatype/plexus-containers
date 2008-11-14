@@ -16,6 +16,7 @@ package org.codehaus.plexus.component.collections;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -37,7 +38,7 @@ public class ComponentList
 {
     private List components;
 
-    public ComponentList( PlexusContainer container, ClassRealm realm, String role, List roleHints, String hostComponent )
+    public ComponentList( MutablePlexusContainer container, ClassRealm realm, String role, List roleHints, String hostComponent )
     {
         super( container, realm, role, roleHints, hostComponent );
     }

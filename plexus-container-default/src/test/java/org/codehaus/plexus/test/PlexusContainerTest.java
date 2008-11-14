@@ -440,12 +440,6 @@ public class PlexusContainerTest
         assertTrue( "Expecting valve four.", valves.get(3) instanceof ValveFour );        
     }
 
-    public void testLookupOfInternallyDefinedComponentConfigurator()
-        throws Exception
-    {
-        container.lookup( ComponentConfigurator.ROLE, "default" );
-    }
-
     public void testLookupOfComponentThatShouldBeDiscovered()
         throws Exception
     {

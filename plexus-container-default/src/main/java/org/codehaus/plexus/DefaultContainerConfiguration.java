@@ -32,7 +32,6 @@ import org.codehaus.plexus.container.initialization.InitializeContainerConfigura
 import org.codehaus.plexus.container.initialization.InitializeContextPhase;
 import org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase;
-import org.codehaus.plexus.container.initialization.InitializeResourcesPhase;
 import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase;
 import org.codehaus.plexus.container.initialization.InitializeUserConfigurationSourcePhase;
 import org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase;
@@ -61,16 +60,12 @@ public class DefaultContainerConfiguration
 
     private ClassRealm realm;
 
-    private PlexusContainer parentContainer;
-
     private String containerConfiguration;
 
     private URL containerConfigurationURL;
 
     private ConfigurationSource configurationSource;
     
-    private boolean devMode = false;
-
     public ContainerConfiguration setName( String name )
     {
         this.name = name;
@@ -95,13 +90,6 @@ public class DefaultContainerConfiguration
     public ContainerConfiguration setRealm( ClassRealm realm )
     {
         this.realm = realm;
-
-        return this;
-    }
-
-    public ContainerConfiguration setParentContainer( PlexusContainer parentContainer )
-    {
-        this.parentContainer = parentContainer;
 
         return this;
     }
@@ -145,11 +133,6 @@ public class DefaultContainerConfiguration
         return classWorld;
     }
 
-    public PlexusContainer getParentContainer()
-    {
-        return parentContainer;
-    }
-
     public ClassRealm getRealm()
     {
         return realm;
@@ -171,8 +154,8 @@ public class DefaultContainerConfiguration
 
     private ContainerInitializationPhase[] initializationPhases =
         {
-            new InitializeResourcesPhase(),
-            new InitializeComponentRepositoryPhase(),
+
+        new InitializeComponentRepositoryPhase(),
             new InitializeLifecycleHandlerManagerPhase(),
             new InitializeComponentManagerManagerPhase(),
             new InitializeComponentFactoryManagerPhase(),
@@ -387,17 +370,5 @@ public class DefaultContainerConfiguration
     public ConfigurationSource getConfigurationSource()
     {
         return configurationSource;
-    }
-    
-    public ContainerConfiguration setDevMode( boolean devMode )
-    {
-        this.devMode = devMode;
-        
-        return this;
-    }
-    
-    public boolean isDevMode()
-    {
-        return this.devMode;
-    }
+    }    
 }

@@ -50,6 +50,7 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationContext;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
@@ -77,11 +78,6 @@ public class DefaultPlexusContainer
     protected static final String DEFAULT_CONTAINER_NAME = "default";
 
     protected static final String DEFAULT_REALM_NAME = "plexus.core";
-
-    /**
-     * Container's name
-     */
-    protected String name;
 
     /**
      * Arbitrary data associated with the container.  Data in the container has highest precedence when configuring
@@ -147,13 +143,9 @@ public class DefaultPlexusContainer
     //
     // ----------------------------------------------------------------------------
 
-    protected final Date creationDate = new Date();
-
     // TODO: Is there a more threadpool-friendly way to do this?
     private ThreadLocal<ClassRealm> lookupRealm = new ThreadLocal<ClassRealm>();
     
-    private boolean devMode;
-
     public void addComponent( Object component, String role )
         throws ComponentRepositoryException
     {
@@ -255,10 +247,6 @@ public class DefaultPlexusContainer
     private void construct( ContainerConfiguration c )
         throws PlexusContainerException
     {        
-        devMode = c.isDevMode();
-
-        name = c.getName();
-
         configurationSource = c.getConfigurationSource();
 
         // ----------------------------------------------------------------------------
@@ -318,8 +306,6 @@ public class DefaultPlexusContainer
         // Configuration
         // ----------------------------------------------------------------------------
 
-        // TODO: just store reference to the configuration in a String and use that in the configuration initialization
-
         InputStream in = null;
 
         if ( c.getContainerConfiguration() != null )
@@ -350,11 +336,8 @@ public class DefaultPlexusContainer
 
         try
         {
-            // XXX this will set up the configuration and process it
             initialize( c );
 
-            // XXX this will wipe out the configuration field - is this needed? If so,
-            // why? can we remove the need to have a configuration field then?
             start();
         }
         finally
@@ -461,21 +444,6 @@ public class DefaultPlexusContainer
         throws ComponentLookupException
     {
         return componentLookupManager.lookupList( role, hints );
-    }
-
-    // ----------------------------------------------------------------------
-    // Timestamping Methods
-    // ----------------------------------------------------------------------
-
-    public Date getCreationDate()
-    {
-        return creationDate;
-    }
-
-    // XXX remove
-    public void setName( String name )
-    {
-        this.name = name;
     }
 
     // ----------------------------------------------------------------------
@@ -695,7 +663,7 @@ public class DefaultPlexusContainer
 
     // We need to be aware of dependencies between discovered components when the listed component
     // as the discovery listener itself depends on components that need to be discovered.
-    public List discoverComponents( ClassRealm classRealm )
+    public List<ComponentDescriptor> discoverComponents( ClassRealm classRealm )
         throws PlexusConfigurationException,
             ComponentRepositoryException
     {
@@ -726,13 +694,7 @@ public class DefaultPlexusContainer
             disposeAllComponents();
 
             boolean needToDisposeRealm = false;
-            
-            // In dev mode i don't want to dispose of the realm in the world
-            if ( !isDevMode() )
-            {
-                needToDisposeRealm = true;
-            }
-           
+                       
             try
             {
                 containerRealm.setParentRealm( null );
@@ -744,7 +706,7 @@ public class DefaultPlexusContainer
             }
             catch ( NoSuchRealmException e )
             {
-                getLogger().debug( "Failed to dispose realm for exiting container: " + getName(), e );
+                getLogger().debug( "Failed to dispose realm." );
             }
         }
         finally
@@ -767,11 +729,6 @@ public class DefaultPlexusContainer
     // ----------------------------------------------------------------------
     // Misc Configuration
     // ----------------------------------------------------------------------
-
-    public String getName()
-    {
-        return name;
-    }
 
     public ClassWorld getClassWorld()
     {
@@ -813,43 +770,10 @@ public class DefaultPlexusContainer
             ContextException,
             IOException
     {
-        // System userConfiguration
+        // We need an empty plexus configuration for merging. This is a function of removing the
+        // plexus-boostrap.xml file.
+        configuration = new XmlPlexusConfiguration( "plexus" );
 
-        InputStream is = containerRealm.getResourceAsStream( PlexusConstants.BOOTSTRAP_CONFIGURATION );
-
-        if ( is == null )
-        {
-            ClassRealm cr = containerRealm;
-            String realmStack = "";
-            while ( cr != null )
-            {
-                realmStack += "\n  " + cr.getId() + " parent=" + cr.getParent() + " ("
-                    + cr.getResource( PlexusConstants.BOOTSTRAP_CONFIGURATION ) + ")";
-                cr = cr.getParentRealm();
-            }
-
-            containerRealm.display();
-
-            throw new IllegalStateException( "The internal default plexus-bootstrap.xml is missing. "
-                + "This is highly irregular, your plexus JAR is most likely corrupt. Realms:" + realmStack );
-        }
-
-        PlexusConfiguration bootstrapConfiguration = PlexusTools.buildConfiguration(
-            PlexusConstants.BOOTSTRAP_CONFIGURATION,
-            ReaderFactory.newXmlReader( is ) );
-
-        // Some of this could probably be collapsed as having a plexus.xml in your
-        // META-INF/plexus directory is probably a better solution then specifying
-        // a configuration with an URL but I'm leaving the configuration by URL
-        // as folks might be using it ... I made this change to accomodate Maven
-        // but I think it's better to discover a configuration in a standard
-        // place.
-
-        configuration = bootstrapConfiguration;
-
-        if ( !containerContext.contains( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION )
-            || ( containerContext.get( PlexusConstants.IGNORE_CONTAINER_CONFIGURATION ) != Boolean.TRUE ) )
-        {
             PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
 
             PlexusConfiguration plexusConfiguration = discoverer.discoverConfiguration( getContext(), containerRealm );
@@ -858,7 +782,6 @@ public class DefaultPlexusContainer
             {
                 configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
             }
-        }
 
         if ( configurationReader != null )
         {
@@ -877,71 +800,6 @@ public class DefaultPlexusContainer
     protected Reader getInterpolationConfigurationReader( Reader reader )
     {
         return new InterpolationFilterReader( reader, new ContextMapAdapter( containerContext ) );
-    }
-
-    public void addJarResource( File jar )
-        throws PlexusContainerException
-    {
-        try
-        {
-            containerRealm.addURL( jar.toURI().toURL() );
-
-            if ( initialized )
-            {
-                discoverComponents( containerRealm );
-            }
-        }
-        catch ( MalformedURLException e )
-        {
-            throw new PlexusContainerException( "Cannot add jar resource: " + jar + " (bad URL)", e );
-        }
-        catch ( PlexusConfigurationException e )
-        {
-            throw new PlexusContainerException( "Cannot add jar resource: " + jar
-                + " (error discovering new components)", e );
-        }
-        catch ( ComponentRepositoryException e )
-        {
-            throw new PlexusContainerException( "Cannot add jar resource: " + jar
-                + " (error discovering new components)", e );
-        }
-    }
-
-    public void addJarRepository( File repository )
-    {
-        if ( repository.exists() && repository.isDirectory() )
-        {
-            File[] jars = repository.listFiles();
-
-            for ( File jar : jars )
-            {
-                if ( jar.getAbsolutePath().endsWith( ".jar" ) )
-                {
-                    try
-                    {
-                        addJarResource( jar );
-                    }
-                    catch ( PlexusContainerException e )
-                    {
-                        getLogger().warn( "Unable to add JAR: " + jar, e );
-                    }
-                }
-            }
-        }
-        else
-        {
-            String message = "The specified JAR repository doesn't exist or is not a directory: '"
-                + repository.getAbsolutePath() + "'.";
-
-            if ( getLogger() != null )
-            {
-                getLogger().warn( message );
-            }
-            else
-            {
-                System.out.println( message );
-            }
-        }
     }
 
     public Logger getLogger()
@@ -1025,16 +883,6 @@ public class DefaultPlexusContainer
     public void setComponentLookupManager( ComponentLookupManager componentLookupManager )
     {
         this.componentLookupManager = componentLookupManager;
-    }
-
-    public LoggerManager getLoggerManager()
-    {
-        return loggerManager;
-    }
-
-    public void setLoggerManager( LoggerManager loggerManager )
-    {
-        this.loggerManager = loggerManager;
     }
 
     // Configuration
@@ -1159,8 +1007,15 @@ public class DefaultPlexusContainer
         return configurationSource;
     }
     
-    public boolean isDevMode()
+    public LoggerManager getLoggerManager()
     {
-        return this.devMode;
+        // TODO Auto-generated method stub
+        return loggerManager;
+    }
+
+    public void setLoggerManager( LoggerManager loggerManager )
+    {
+        this.loggerManager = loggerManager;
+        
     }
 }

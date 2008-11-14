@@ -1,5 +1,6 @@
 package org.codehaus.plexus.component.collections;
 
+import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -41,7 +42,7 @@ import java.util.Map;
 public abstract class AbstractComponentCollection
 {
     /** The reference to the PlexusContainer */
-    protected PlexusContainer container;
+    protected MutablePlexusContainer container;
 
     /** The role of the components we are holding in this Collection. */
     protected String role;
@@ -64,7 +65,7 @@ public abstract class AbstractComponentCollection
 
     private Map<String, ComponentDescriptor> componentDescriptorMap;
 
-    public AbstractComponentCollection( PlexusContainer container,
+    public AbstractComponentCollection( MutablePlexusContainer container,
                                         ClassRealm realm,
                                         String role,
                                         List roleHints,

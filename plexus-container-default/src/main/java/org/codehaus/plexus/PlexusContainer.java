@@ -40,18 +40,6 @@ public interface PlexusContainer
 {
     String ROLE = PlexusContainer.class.getName();
 
-    /**
-     * Returns the unique name of this container.
-     * @return the unique name of this container
-     */
-    String getName();
-
-    /**
-     * Returns the date this container was created.
-     * @return the date this container was created
-     */
-    public Date getCreationDate();
-
     // ------------------------------------------------------------------------
     // Lookup
     // ------------------------------------------------------------------------
@@ -379,40 +367,6 @@ public interface PlexusContainer
     List<ComponentDescriptor> discoverComponents( ClassRealm childRealm, boolean override )
         throws PlexusConfigurationException, ComponentRepositoryException;    
     
-    /**
-     * Adds a directory of jar resources.
-     * @see PlexusContainer#addJarResource(File)
-     * @param repository a directory containing JAR files
-     */
-    void addJarRepository( File repository );
-
-    /**
-     * Adds a jar to this container's ClassRealm - whose components are then discovered (via the various registered
-     * ComponentDiscoverer's).
-     * @param resource a JAR file
-     * @throws PlexusContainerException
-     */
-    void addJarResource( File resource )
-        throws PlexusContainerException;
-
-    // ------------------------------------------------------------------------
-    // Required for compatibility
-    // ------------------------------------------------------------------------
-
-    void setLoggerManager( LoggerManager loggerManager );
-
-    // Required by maven
-    LoggerManager getLoggerManager();
-
-    /**
-     * @deprecated
-     */
-    Logger getLogger();
-
-    // Taken from alpha-9 to keep things working
-
-    void setName( String name );
-
     // ----------------------------------------------------------------------------
     // Component/Plugin ClassRealm creation
     // ----------------------------------------------------------------------------

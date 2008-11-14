@@ -55,16 +55,16 @@ public class DefaultComponentLookupManager
     // -> return a component from the component manager.
     // ----------------------------------------------------------------------
 
-    public Object lookup( String componentRole )
+    public Object lookup( String role )
         throws ComponentLookupException
     {
-        return lookup( componentRole, null, null );
+        return lookup( role, null, null );
     }
 
-    public Object lookup( String componentRole, ClassRealm realm )
+    public Object lookup( String role, ClassRealm realm )
         throws ComponentLookupException
     {
-        return lookup( componentRole, null, realm );
+        return lookup( role, null, realm );
     }
 
     public Object lookup( Class componentClass )
@@ -127,8 +127,7 @@ public class DefaultComponentLookupManager
         }
 
         // lookup an existing component
-        ComponentManager componentManager = container.getComponentManagerManager().findComponentManagerByComponentKey(
-            role, roleHint, realm );
+        ComponentManager componentManager = container.getComponentManagerManager().findComponentManagerByComponentKey( role, roleHint, realm );
 
         // The first time we lookup a component a component manager will not exist so we ask the
         // component manager manager to create a component manager for us. Also if we are reloading

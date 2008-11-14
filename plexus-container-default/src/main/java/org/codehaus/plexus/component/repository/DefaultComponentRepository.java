@@ -134,8 +134,7 @@ public class DefaultComponentRepository
         public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
         {
             // Get the index of roles
-            Map<String, Map<String, ComponentDescriptor>> roleIndex = realmIndex.get(
-                componentDescriptor.getRealmId() );
+            Map<String, Map<String, ComponentDescriptor>> roleIndex = realmIndex.get( componentDescriptor.getRealmId() );
             if ( roleIndex == null )
             {
                 roleIndex = new HashMap<String, Map<String, ComponentDescriptor>>();
