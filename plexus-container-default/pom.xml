@@ -34,5 +34,9 @@
       <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-reflect</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.code.google-collections</groupId>
+      <artifactId>google-collect</artifactId>
+    </dependency>
   </dependencies>
 </project>

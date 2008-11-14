@@ -16,6 +16,9 @@ package org.codehaus.plexus.component.manager;
 
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
 
 /**
  * This ensures a component is only used as a singleton, and is only shutdown when the container
@@ -23,14 +26,19 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
  * 
  * @author Jason van Zyl
  */
-public class SingletonComponentManager
-    extends AbstractComponentManager
+public class SingletonComponentManager<T>
+    extends AbstractComponentManager<T>
 {
-    private Object singleton;
+    private T singleton;
 
-    public String getId()
+    public SingletonComponentManager( MutablePlexusContainer container,
+                                      LifecycleHandler lifecycleHandler,
+                                      ComponentDescriptor<T> componentDescriptor,
+                                      String role,
+                                      String roleHint )
+        throws UndefinedComponentManagerException
     {
-        return "singleton";
+        super( container, lifecycleHandler, componentDescriptor, role, roleHint );
     }
 
     public synchronized void release( Object component )
@@ -52,7 +60,7 @@ public class SingletonComponentManager
         }
     }
 
-    public synchronized Object getComponent( )
+    public synchronized T getComponent( )
         throws ComponentInstantiationException, ComponentLifecycleException
     {
         if ( singleton == null )

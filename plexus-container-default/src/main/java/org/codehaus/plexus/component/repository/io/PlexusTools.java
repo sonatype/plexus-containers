@@ -136,10 +136,10 @@ public class PlexusTools
             {
                 cr = new ComponentRequirementList();
 
-                List hintList = new LinkedList();
-                for ( int j = 0; j < hints.length; j++ )
+                List<String> hintList = new LinkedList<String>();
+                for ( PlexusConfiguration hint : hints )
                 {
-                    hintList.add( hints[j].getValue() );
+                    hintList.add( hint.getValue() );
                 }
 
                 ( (ComponentRequirementList) cr ).setRoleHints( hintList );

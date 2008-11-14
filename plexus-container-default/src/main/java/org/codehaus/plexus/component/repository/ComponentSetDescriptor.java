@@ -17,7 +17,6 @@ package org.codehaus.plexus.component.repository;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -39,16 +38,16 @@ public class ComponentSetDescriptor
     private boolean isolatedRealm;
     
     /** The component descriptors that can be found within this component set descriptor. */
-    private List<ComponentDescriptor> components;
+    private final List<ComponentDescriptor<?>> components = new ArrayList<ComponentDescriptor<?>>();
 
     /** The dependencies that are required by the set of components found in this component set descriptor. */
-    private List<ComponentDependency> dependencies;
+    private final List<ComponentDependency> dependencies = new ArrayList<ComponentDependency>();
     
     /**
      * Returns a list of components in this set.
      * @return a list of components
      */
-    public List<ComponentDescriptor> getComponents()
+    public List<ComponentDescriptor<?>> getComponents()
     {
         return components;
     }
@@ -57,13 +56,8 @@ public class ComponentSetDescriptor
      * Add a new ComponentDescriptor to this set.
      * @param cd the ComponentDescriptor to add
      */
-    public void addComponentDescriptor( ComponentDescriptor cd )
+    public void addComponentDescriptor( ComponentDescriptor<?> cd )
     {
-        if ( components == null )
-        {
-            components = new ArrayList<ComponentDescriptor>();
-        }
-
         components.add( cd );
     }
 
@@ -71,9 +65,10 @@ public class ComponentSetDescriptor
      * Sets a List of components as this set's contents.
      * @param components the List of components to set
      */
-    public void setComponents( List<ComponentDescriptor> components )
+    public void setComponents( List<ComponentDescriptor<?>> components )
     {
-        this.components = components;
+        this.components.clear();
+        this.components.addAll(components);
     }
 
     /**
@@ -91,11 +86,6 @@ public class ComponentSetDescriptor
      */
     public void addDependency( ComponentDependency cd )
     {
-        if ( dependencies == null )
-        {
-            dependencies = new ArrayList<ComponentDependency>();
-        }
-
         dependencies.add( cd );
     }
 
@@ -105,7 +95,8 @@ public class ComponentSetDescriptor
      */
     public void setDependencies( List<ComponentDependency> dependencies )
     {
-        this.dependencies = dependencies;
+        this.dependencies.clear();
+        this.dependencies.addAll(dependencies);
     }
 
     /**
@@ -151,10 +142,8 @@ public class ComponentSetDescriptor
 
         sb.append( "Component Descriptor: " );
 
-        for ( Iterator<ComponentDescriptor> i = components.iterator(); i.hasNext(); )
+        for ( ComponentDescriptor<?> cd : components )
         {
-            ComponentDescriptor cd = i.next();
-
             sb.append( cd.getHumanReadableKey() ).append( "\n" );
         }
 

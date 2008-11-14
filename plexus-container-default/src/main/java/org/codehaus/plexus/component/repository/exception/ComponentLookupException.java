@@ -36,6 +36,24 @@ public class ComponentLookupException
 
     private ClassRealm realm;
 
+    public ComponentLookupException( String message, String role, String roleHint )
+    {
+        super( message );
+
+        this.role = role;
+
+        this.roleHint = roleHint;
+    }
+
+    public ComponentLookupException( String message, String role, String roleHint, Throwable cause )
+    {
+        super( message, cause );
+
+        this.role = role;
+
+        this.roleHint = roleHint;
+    }
+
     public ComponentLookupException( String message, String role, String roleHint, ClassRealm realm )
     {
         super( message );

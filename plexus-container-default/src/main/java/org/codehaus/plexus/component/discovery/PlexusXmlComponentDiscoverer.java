@@ -32,10 +32,10 @@ import org.codehaus.plexus.util.ReaderFactory;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Collections;
 
 public class PlexusXmlComponentDiscoverer
     implements ComponentDiscoverer
@@ -50,44 +50,38 @@ public class PlexusXmlComponentDiscoverer
         this.manager = manager;
     }
 
-    public List findComponents( Context context, ClassRealm classRealm )
+    public List<ComponentSetDescriptor> findComponents( Context context, ClassRealm realm )
         throws PlexusConfigurationException
     {
-        PlexusConfiguration configuration = discoverConfiguration( context, classRealm );
+        // Load the PlexusConfiguration
+        PlexusConfiguration configuration = discoverConfiguration( context, realm );
 
-        List componentSetDescriptors = new ArrayList();
-
-        ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( configuration, classRealm );
-
-        componentSetDescriptors.add( componentSetDescriptor );
+        // Create ComponentDescriptors defined in PlexusConfiguration
+        ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( configuration, realm );
 
         // Fire the event
         ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
-
         manager.fireComponentDiscoveryEvent( event );
 
-        return componentSetDescriptors;
+        return Collections.singletonList( componentSetDescriptor );
     }
 
-    public PlexusConfiguration discoverConfiguration( Context context, ClassRealm classRealm )
+    public PlexusConfiguration discoverConfiguration( Context context, ClassRealm realm )
         throws PlexusConfigurationException
     {
-        PlexusConfiguration configuration = null;
-
-        Enumeration resources = null;
+        Enumeration<URL> resources;
         try
         {
-            resources = classRealm.findResources( PLEXUS_XML_RESOURCE );
+            resources = realm.findResources( PLEXUS_XML_RESOURCE );
         }
         catch ( IOException e )
         {
-            throw new PlexusConfigurationException( "Error retrieving configuration resources: " + PLEXUS_XML_RESOURCE + " from class realm: " + classRealm.getId(), e );
+            throw new PlexusConfigurationException( "Error retrieving configuration resources: " + PLEXUS_XML_RESOURCE + " from class realm: " + realm.getId(), e );
         }
 
-        for ( Enumeration e = resources; e.hasMoreElements(); )
+        PlexusConfiguration configuration = null;
+        for ( URL url : Collections.list( resources ) )
         {
-            URL url = (URL) e.nextElement();
-
             Reader reader = null;
             try
             {
@@ -122,43 +116,38 @@ public class PlexusXmlComponentDiscoverer
         return configuration;
     }
 
-    private ComponentSetDescriptor createComponentDescriptors( PlexusConfiguration configuration,
-                                                               ClassRealm classRealm )
+    private ComponentSetDescriptor createComponentDescriptors( PlexusConfiguration configuration, ClassRealm realm )
         throws PlexusConfigurationException
     {
         ComponentSetDescriptor componentSetDescriptor = new ComponentSetDescriptor();
 
         if ( configuration != null )
         {
-            List componentDescriptors = new ArrayList();
-
             PlexusConfiguration[] componentConfigurations = configuration.getChild( "components" ).getChildren(
                 "component" );
 
-            for ( int i = 0; i < componentConfigurations.length; i++ )
+            for ( PlexusConfiguration componentConfiguration : componentConfigurations )
             {
-                PlexusConfiguration componentConfiguration = componentConfigurations[i];
-
-                ComponentDescriptor componentDescriptor = null;
-
+                ComponentDescriptor<?> componentDescriptor;
                 try
                 {
                     componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );
                 }
                 catch ( PlexusConfigurationException e )
                 {
-                    throw new PlexusConfigurationException( "Cannot build component descriptor from resource found in:\n" +
-                                         Arrays.asList( classRealm.getURLs() ), e );
+                    throw new PlexusConfigurationException(
+                        "Cannot build component descriptor from resource found in:\n" +
+                            Arrays.asList( realm.getURLs() ), e );
                 }
 
                 componentDescriptor.setComponentType( "plexus" );
 
-                componentDescriptor.setRealmId( classRealm.getId() );
+                componentDescriptor.setRealm( realm );
 
-                componentDescriptors.add( componentDescriptor );
+                componentDescriptor.setComponentSetDescriptor( componentSetDescriptor );
+
+                componentSetDescriptor.addComponentDescriptor( componentDescriptor );
             }
-
-            componentSetDescriptor.setComponents( componentDescriptors );
 
             // TODO: read and store the dependencies
         }

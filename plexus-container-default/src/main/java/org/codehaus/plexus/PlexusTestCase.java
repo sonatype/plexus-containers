@@ -198,23 +198,22 @@ public abstract class PlexusTestCase
     }
 
     protected Object lookup( String role,
-                             String id )
+                             String roleHint )
         throws Exception
     {
-        return getContainer().lookup( role, id );
+        return getContainer().lookup( role, roleHint );
     }
 
-    protected Object lookup( Class componentClass )
+    protected <T> T lookup( Class<T> componentClass )
         throws Exception
     {
         return getContainer().lookup( componentClass );
     }
 
-    protected Object lookup( Class role,
-                             String id )
+    protected <T> T lookup( Class<T> componentClass, String roleHint )
         throws Exception
     {
-        return getContainer().lookup( role, id );
+        return getContainer().lookup( componentClass, roleHint );
     }
 
     protected void release( Object component )
@@ -278,7 +277,7 @@ public abstract class PlexusTestCase
         return getTestConfiguration( getClass() );
     }
 
-    public static String getTestConfiguration( Class clazz )
+    public static String getTestConfiguration( Class<?> clazz )
     {
         String s = clazz.getName().replace( '.', '/' );
 

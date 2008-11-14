@@ -34,17 +34,9 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
  *
  * @version $Id$
  */
-public interface ComponentManager
+public interface ComponentManager<T>
 {
     String ROLE = ComponentManager.class.getName();
-
-    ComponentManager copy();
-
-    String getId();
-
-    void setup( MutablePlexusContainer container, LifecycleHandler lifecycleHandler, ComponentDescriptor componentDescriptor, String role, String roleHint );
-
-    void initialize();
 
     int getConnections();
 
@@ -56,10 +48,11 @@ public interface ComponentManager
     void release( Object component )
         throws ComponentLifecycleException;
 
-    Object getComponent()
-        throws ComponentInstantiationException, ComponentLifecycleException;
+    T getComponent() throws ComponentInstantiationException, ComponentLifecycleException;
 
-    ComponentDescriptor getComponentDescriptor();
+    ComponentDescriptor<T> getComponentDescriptor();
+
+    Class<? extends T> getType();
 
     String getRole();
 

@@ -44,8 +44,7 @@ public class InitializeComponentDiscovererManagerPhase
 
                 context.getContainer().getComponentDiscovererManager().removeComponentDiscoveryListener( listener );
 
-                ComponentDiscoveryListener cdl = (ComponentDiscoveryListener) context.getContainer().lookup(
-                    listener.getClass().getName() );
+                ComponentDiscoveryListener cdl = context.getContainer().lookup( listener.getClass() );
 
                 context.getContainer().getComponentDiscovererManager().registerComponentDiscoveryListener( cdl );
             }

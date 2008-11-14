@@ -45,17 +45,14 @@ public class DefaultComponentDiscoverer
 
         ComponentSetDescriptor componentSetDescriptor = new ComponentSetDescriptor();
 
-        List componentDescriptors = new ArrayList();
+        List<ComponentDescriptor<?>> componentDescriptors = new ArrayList<ComponentDescriptor<?>>();
 
         PlexusConfiguration[] componentConfigurations =
             componentDescriptorConfiguration.getChild( "components" ).getChildren( "component" );
 
-        for ( int i = 0; i < componentConfigurations.length; i++ )
+        for ( PlexusConfiguration componentConfiguration : componentConfigurations )
         {
-            PlexusConfiguration componentConfiguration = componentConfigurations[i];
-
-            ComponentDescriptor componentDescriptor;
-
+            ComponentDescriptor<?> componentDescriptor;
             try
             {
                 componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );

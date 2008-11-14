@@ -32,8 +32,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
 
 /**
  * @author Jason van Zyl
@@ -64,36 +64,34 @@ public abstract class AbstractComponentDiscoverer
         this.manager = manager;
     }
 
-    public List findComponents( Context context,
-                                ClassRealm classRealm )
+    public List<ComponentSetDescriptor> findComponents( Context context, ClassRealm realm )
         throws PlexusConfigurationException
     {
-        List componentSetDescriptors = new ArrayList();
+        List<ComponentSetDescriptor> componentSetDescriptors = new ArrayList<ComponentSetDescriptor>();
 
-        Enumeration resources;
+        Enumeration<URL> resources;
         try
         {
             // We don't always want to scan parent realms. For plexus
             // testcase, most components are in the root classloader so that needs to be scanned,
             // but for child realms, we don't.
-            if ( classRealm.getParentRealm() != null )
+            if ( realm.getParentRealm() != null )
             {
-                resources = classRealm.findRealmResources( getComponentDescriptorLocation() );
+                resources = realm.findRealmResources( getComponentDescriptorLocation() );
             }
             else
             {
-                resources = classRealm.findResources( getComponentDescriptorLocation() );
+                resources = realm.findResources( getComponentDescriptorLocation() );
             }
         }
         catch ( IOException e )
         {
             throw new PlexusConfigurationException( "Unable to retrieve resources for: " +
-                getComponentDescriptorLocation() + " in class realm: " + classRealm.getId() );
+                getComponentDescriptorLocation() + " in class realm: " + realm.getId() );
         }
-        for ( Enumeration e = resources; e.hasMoreElements(); )
-        {
-            URL url = (URL) e.nextElement();
 
+        for ( URL url : Collections.list( resources ))
+        {
             Reader reader = null;
             try
             {
@@ -113,11 +111,10 @@ public abstract class AbstractComponentDiscoverer
 
                 if ( componentSetDescriptor.getComponents() != null )
                 {
-                    for ( Iterator i = componentSetDescriptor.getComponents().iterator(); i.hasNext(); )
+                    for ( ComponentDescriptor<?> cd : componentSetDescriptor.getComponents() )
                     {
-                        ComponentDescriptor cd = (ComponentDescriptor) i.next();
-
-                        cd.setRealmId( classRealm.getId() );
+                        cd.setComponentSetDescriptor( componentSetDescriptor );
+                        cd.setRealm( realm );
                     }
                 }
 

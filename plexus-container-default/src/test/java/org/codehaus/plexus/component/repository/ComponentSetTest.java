@@ -19,7 +19,6 @@ package org.codehaus.plexus.component.repository;
 import junit.framework.TestCase;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -63,7 +62,7 @@ public class ComponentSetTest
 
         ComponentSetDescriptor cs = PlexusTools.buildComponentSet( PlexusTools.buildConfiguration( xml ) );
 
-        ComponentDescriptor c1 = (ComponentDescriptor) cs.getComponents().get( 0 );
+        ComponentDescriptor<?> c1 = cs.getComponents().get( 0 );
 
         assertEquals( "c1", c1.getRole() );
 
@@ -71,7 +70,7 @@ public class ComponentSetTest
 
         assertEquals( "component-profile", c1.getComponentProfile() );
 
-        List requirements = c1.getRequirements();
+        List<ComponentRequirement> requirements = c1.getRequirements();
 
         assertEquals( 2, requirements.size() );
 
@@ -79,10 +78,8 @@ public class ComponentSetTest
 
         boolean containsC3 = false;
 
-        for ( Iterator iterator = requirements.iterator(); iterator.hasNext(); )
+        for ( ComponentRequirement requirement : requirements )
         {
-            ComponentRequirement requirement = (ComponentRequirement) iterator.next();
-
             if ( requirement.getRole().equals( "c2" ) )
             {
                 containsC2 = true;
@@ -98,7 +95,7 @@ public class ComponentSetTest
 
         assertTrue( containsC3 );
 
-        ComponentDependency d1 = (ComponentDependency) cs.getDependencies().get( 0 );
+        ComponentDependency d1 = cs.getDependencies().get( 0 );
 
         assertEquals( "plexus", d1.getGroupId() );
 

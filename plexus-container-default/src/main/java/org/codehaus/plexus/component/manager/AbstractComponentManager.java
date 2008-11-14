@@ -34,22 +34,24 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
-public abstract class AbstractComponentManager
-    implements ComponentManager, Cloneable
+public abstract class AbstractComponentManager<T>
+    implements ComponentManager<T>
 {
-    protected MutablePlexusContainer container;
+    protected final MutablePlexusContainer container;
 
-    private ClassRealm realm;
+    private final ClassRealm realm;
 
-    protected ComponentDescriptor componentDescriptor;
+    protected final ComponentDescriptor<T> componentDescriptor;
 
-    private String role;
+    private final Class<? extends T> type;
+
+    private final String role;
     
-    private String roleHint;
+    private final String roleHint;
 
-    protected ComponentBuilder builder;
+    protected final ComponentBuilder<T> builder;
 
-    private LifecycleHandler lifecycleHandler;
+    private final LifecycleHandler lifecycleHandler;
 
     /**
      * Contains a mapping from singleton instances to the realms
@@ -61,34 +63,62 @@ public abstract class AbstractComponentManager
 
     private int connections;
 
-    protected AbstractComponentManager() {
+    public AbstractComponentManager( MutablePlexusContainer container,
+                       LifecycleHandler lifecycleHandler,
+                       ComponentDescriptor<T> componentDescriptor,
+                       String role,
+                       String roleHint) throws UndefinedComponentManagerException
+    {
+        if ( container == null )
+        {
+            throw new NullPointerException( "container is null" );
+        }
+        this.container = container;
+
+        if ( lifecycleHandler == null )
+        {
+            throw new NullPointerException( "lifecycleHandler is null" );
+        }
+        this.lifecycleHandler = lifecycleHandler;
+
+        if ( componentDescriptor == null )
+        {
+            throw new NullPointerException( "componentDescriptor is null" );
+        }
+        this.componentDescriptor = componentDescriptor;
+
+        if ( role == null )
+        {
+            throw new NullPointerException( "role is null" );
+        }
+        this.role = role;
+
+        if ( roleHint == null )
+        {
+            throw new NullPointerException( "roleHint is null" );
+        }
+        this.roleHint = roleHint;
+
+        this.realm = componentDescriptor.getRealm();
+
+        this.type = componentDescriptor.getImplementationClass();
+
         builder = createComponentBuilder();
     }
 
-    protected ComponentBuilder createComponentBuilder() {
-        return new XBeanComponentBuilder(this);
+    protected ComponentBuilder<T> createComponentBuilder() {
+        return new XBeanComponentBuilder<T>(this);
         // return new DefaultComponentBuilder(this);
     }
 
-    public ComponentManager copy()
-    {
-        try
-        {
-            // todo replace with a copy constructor... clone sucks
-            AbstractComponentManager componentManager = (AbstractComponentManager) clone();
-            componentManager.builder = componentManager.createComponentBuilder();
-            return componentManager;
-        }
-        catch ( CloneNotSupportedException e )
-        {
-        }
-
-        return null;
-    }
-
-    public ComponentDescriptor getComponentDescriptor()
+    public ComponentDescriptor<T> getComponentDescriptor()
     {
         return componentDescriptor;
+    }
+
+    public Class<? extends T> getType()
+    {
+        return type;
     }
 
     public ClassRealm getRealm()
@@ -135,34 +165,11 @@ public abstract class AbstractComponentManager
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    public void setup( MutablePlexusContainer container,
-                       LifecycleHandler lifecycleHandler,
-                       ComponentDescriptor componentDescriptor,
-                       String role,
-                       String roleHint)
-    {
-        this.container = container;
-
-        this.lifecycleHandler = lifecycleHandler;
-
-        this.componentDescriptor = componentDescriptor;
-
-        this.role = role;
-
-        this.roleHint = roleHint;
-
-        this.realm = container.getComponentRealm( componentDescriptor.getRealmId() );
-    }
-
-    public void initialize()
-    {
-    }
-
-    protected Object createComponentInstance()
+    protected T createComponentInstance()
         throws ComponentInstantiationException, ComponentLifecycleException
     {
         return builder.build(componentDescriptor, realm, new AbstractComponentBuildListener() {
-            public void componentCreated(ComponentDescriptor componentDescriptor, Object component, ClassRealm realm) {
+            public void componentCreated( ComponentDescriptor<?> componentDescriptor, Object component, ClassRealm realm) {
                 componentContextRealms.put( component, realm );
             }
         });

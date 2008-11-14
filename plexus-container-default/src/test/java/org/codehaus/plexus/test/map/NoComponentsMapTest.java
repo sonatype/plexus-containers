@@ -30,7 +30,7 @@ public class NoComponentsMapTest
     {
         ActivityManager manager;
         
-        manager = (ActivityManager) lookup( ActivityManager.ROLE );
+        manager = lookup( ActivityManager.class );
 
         assertEquals( 0, manager.getActivityCount() );
     }

@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
-import org.codehaus.plexus.component.configurator.ComponentConfigurator;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
@@ -73,7 +72,7 @@ public class PlexusContainerTest
         // Context
         // ----------------------------------------------------------------------------
 
-        Map context = new HashMap();
+        Map<Object, Object> context = new HashMap<Object, Object>();
 
         context.put( "basedir", basedir );
 
@@ -117,7 +116,7 @@ public class PlexusContainerTest
     public void testNativeLifecyclePassage()
         throws Exception
     {
-        DefaultServiceB serviceB = (DefaultServiceB) container.lookup( ServiceB.ROLE );
+        DefaultServiceB serviceB = (DefaultServiceB) container.lookup( ServiceB.class );
 
         // Make sure the component is alive.
         assertNotNull( serviceB );
@@ -141,7 +140,7 @@ public class PlexusContainerTest
     public void testConfigurableLifecyclePassage()
         throws Exception
     {
-        DefaultServiceE serviceE = (DefaultServiceE) container.lookup( ServiceE.ROLE );
+        DefaultServiceE serviceE = (DefaultServiceE) container.lookup( ServiceE.class );
 
         // Make sure the component is alive.
         assertNotNull( serviceE );
@@ -170,7 +169,7 @@ public class PlexusContainerTest
         throws Exception
     {
         // Retrieve an instance of component c.
-        DefaultServiceC serviceC1 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "first-instance" );
+        DefaultServiceC serviceC1 = (DefaultServiceC) container.lookup( ServiceC.class, "first-instance" );
 
         // Make sure the component is alive.
         assertNotNull( serviceC1 );
@@ -180,7 +179,7 @@ public class PlexusContainerTest
         assertFalse( serviceC1.stopped );
 
         // Retrieve a second reference to the same component.
-        DefaultServiceC serviceC2 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "first-instance" );
+        DefaultServiceC serviceC2 = (DefaultServiceC) container.lookup( ServiceC.class, "first-instance" );
 
         // Make sure component is alive.
         assertNotNull( serviceC2 );
@@ -214,7 +213,7 @@ public class PlexusContainerTest
         throws Exception
     {
         // Retrieve an instance of component c.
-        DefaultServiceC serviceC1 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "first-instance" );
+        DefaultServiceC serviceC1 = (DefaultServiceC) container.lookup( ServiceC.class, "first-instance" );
 
         // Make sure the component is alive.
         assertNotNull( serviceC1 );
@@ -225,7 +224,7 @@ public class PlexusContainerTest
 
         // Retrieve an instance of component c, with a different role hint.
         // This should give us a different component instance.
-        DefaultServiceC serviceC2 = (DefaultServiceC) container.lookup( ServiceC.ROLE, "second-instance" );
+        DefaultServiceC serviceC2 = (DefaultServiceC) container.lookup( ServiceC.class, "second-instance" );
 
         // Make sure component is alive.
         assertNotNull( serviceC2 );
@@ -265,7 +264,7 @@ public class PlexusContainerTest
         throws Exception
     {
         // Retrieve an manager of component H.
-        DefaultServiceH serviceH = (DefaultServiceH) container.lookup( ServiceH.ROLE );
+        DefaultServiceH serviceH = (DefaultServiceH) container.lookup( ServiceH.class );
 
         // Make sure the component is alive.
         assertNotNull( serviceH );
@@ -285,17 +284,17 @@ public class PlexusContainerTest
     public void testLookupAll()
         throws Exception
     {
-        Map components = container.lookupMap( ServiceC.ROLE );
+        Map<String, ServiceC> components = container.lookupMap( ServiceC.class );
 
         assertNotNull( components );
 
         assertEquals( 2, components.size() );
 
-        ServiceC component = (ServiceC) components.get( "first-instance" );
+        ServiceC component = components.get( "first-instance" );
 
         assertNotNull( component );
 
-        component = (ServiceC) components.get( "second-instance" );
+        component = components.get( "second-instance" );
 
         assertNotNull( component );
 
@@ -305,7 +304,7 @@ public class PlexusContainerTest
     public void testAutomatedComponentConfigurationUsingXStreamPoweredComponentConfigurator()
         throws Exception
     {
-        Component component = (Component) container.lookup( Component.ROLE );
+        Component component = container.lookup( Component.class );
 
         assertNotNull( component );
 
@@ -319,7 +318,7 @@ public class PlexusContainerTest
     public void testAutomatedComponentComposition()
         throws Exception
     {
-        ComponentA componentA = (ComponentA) container.lookup( ComponentA.ROLE );
+        ComponentA componentA = container.lookup( ComponentA.class );
 
         assertNotNull( componentA );
 
@@ -345,7 +344,7 @@ public class PlexusContainerTest
     public void testComponentCompositionWhereTargetFieldIsAMap()
         throws Exception
     {
-        ActivityManager am = (ActivityManager) container.lookup( ActivityManager.ROLE );
+        ActivityManager am = container.lookup( ActivityManager.class );
 
         Activity one = am.getActivity( "one" );
 
@@ -371,7 +370,7 @@ public class PlexusContainerTest
     public void testComponentCompositionWhereTargetFieldIsAPartialMap()
         throws Exception
     {
-        ActivityManager am = (ActivityManager) container.lookup( ActivityManager.ROLE, "slim" );
+        ActivityManager am = container.lookup( ActivityManager.class, "slim" );
 
         assertEquals( 1, am.getActivityCount() );
 
@@ -389,7 +388,7 @@ public class PlexusContainerTest
     public void testComponentCompositionWhereTargetFieldIsAList()
         throws Exception
     {
-        Pipeline pipeline = (Pipeline) container.lookup( Pipeline.ROLE );
+        Pipeline pipeline = container.lookup( Pipeline.class );
 
         List valves = pipeline.getValves();
 
@@ -407,7 +406,7 @@ public class PlexusContainerTest
     public void testComponentCompositionWhereTargetFieldIsAPartialList()
         throws Exception
     {
-        Pipeline pipeline = (Pipeline) container.lookup( Pipeline.ROLE, "slim" );
+        Pipeline pipeline = container.lookup( Pipeline.class, "slim" );
 
         List valves = pipeline.getValves();
 
@@ -423,7 +422,7 @@ public class PlexusContainerTest
     public void testComponentCompositionWhereTargetFieldAMapThatMustRetainTheOrderOfComponentsGivenASetOfRoleHints()
         throws Exception
     {
-        Pipeline pipeline = (Pipeline) container.lookup( Pipeline.ROLE, "chubby" );
+        Pipeline pipeline = container.lookup( Pipeline.class, "chubby" );
 
         Map valveMap = pipeline.getValveMap();
 
@@ -443,7 +442,7 @@ public class PlexusContainerTest
     public void testLookupOfComponentThatShouldBeDiscovered()
         throws Exception
     {
-        DiscoveredComponent discoveredComponent = (DiscoveredComponent) container.lookup( DiscoveredComponent.ROLE );
+        DiscoveredComponent discoveredComponent = container.lookup( DiscoveredComponent.class );
 
         assertNotNull( discoveredComponent );
     }

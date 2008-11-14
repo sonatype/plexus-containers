@@ -40,11 +40,11 @@ public class StartLoadOnStartComponentsPhase
 
         try
         {
-            for ( int i = 0; i < loadOnStartComponents.length; i++ )
+            for ( PlexusConfiguration loadOnStartComponent : loadOnStartComponents )
             {
-                String role = loadOnStartComponents[i].getChild( "role" ).getValue( null );
+                String role = loadOnStartComponent.getChild( "role" ).getValue( null );
 
-                String roleHint = loadOnStartComponents[i].getChild( "role-hint" ).getValue( null );
+                String roleHint = loadOnStartComponent.getChild( "role-hint" ).getValue( null );
 
                 if ( role == null )
                 {
@@ -58,13 +58,15 @@ public class StartLoadOnStartComponentsPhase
 
                 if ( roleHint.equals( "*" ) )
                 {
-                    context.getContainer().getLogger().info( "Loading on start all components with [role]: " + "[" + role + "]" );
+                    context.getContainer().getLogger().info(
+                        "Loading on start all components with [role]: " + "[" + role + "]" );
 
                     context.getContainer().lookupList( role );
                 }
                 else
                 {
-                    context.getContainer().getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
+                    context.getContainer().getLogger().info(
+                        "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
 
                     context.getContainer().lookup( role, roleHint );
                 }

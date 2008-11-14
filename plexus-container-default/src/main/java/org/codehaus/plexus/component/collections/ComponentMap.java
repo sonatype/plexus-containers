@@ -17,13 +17,10 @@ package org.codehaus.plexus.component.collections;
  */
 
 import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,17 +29,17 @@ import java.util.Set;
 /**
  * @author Jason van Zyl FIXME: [jdcasey] We need to review the efficiency (in speed and memory) of this collection...
  */
-public class ComponentMap
-    extends AbstractComponentCollection
-    implements Map
+public class ComponentMap<T>
+    extends AbstractComponentCollection<T>
+    implements Map<String, T>
 {
-    private Map components;
+    private Map<String, T> components;
 
-    private Map customAdditions = new LinkedHashMap();
+    private Map<String, T> customAdditions = new LinkedHashMap<String, T>();
 
-    public ComponentMap( MutablePlexusContainer container, ClassRealm realm, String role, List roleHints, String hostComponent )
+    public ComponentMap( MutablePlexusContainer container, Class<T> type, String role, List<String> roleHints, String hostComponent )
     {
-        super( container, realm, role, roleHints, hostComponent );
+        super( container, type, role, roleHints, hostComponent );
     }
 
     public int size()
@@ -57,7 +54,7 @@ public class ComponentMap
 
     public boolean containsKey( Object key )
     {
-        Map descriptorMap = getComponentDescriptorMap();
+        Map<String, ComponentDescriptor<T>> descriptorMap = getComponentDescriptorMap();
         return descriptorMap.containsKey( key );
     }
 
@@ -66,29 +63,28 @@ public class ComponentMap
         return getMap().containsValue( value );
     }
 
-    public Object get( Object key )
+    public T get( Object k )
     {
-        Map descriptorMap = getComponentDescriptorMap();
-        if ( descriptorMap.containsKey( key ) )
+        Map<String, ComponentDescriptor<T>> descriptorMap = getComponentDescriptorMap();
+        if ( k instanceof String )
         {
-            Map lookupRealms = getLookupRealmMap();
-
-            ComponentDescriptor desc = (ComponentDescriptor) descriptorMap.get( key );
-            ClassRealm realm = (ClassRealm) lookupRealms.get( desc.getRealmId() );
-
-            return lookup( role, (String) key, realm );
+            String key = (String) k;
+            if ( descriptorMap.containsKey( key ) )
+            {
+                return lookup( role, key );
+            }
         }
 
         return null;
     }
 
-    public Object put( Object key, Object value )
+    public T put( String key, T value )
     {
         logger.warn( "Custom "
                      + role
                      + " implementations should NOT be added directly to this Map. Instead, add them as Plexus components." );
 
-        Object prev = customAdditions.put( key, value );
+        T prev = customAdditions.put( key, value );
         if ( prev == null )
         {
             prev = getComponentMap().get( key );
@@ -97,7 +93,7 @@ public class ComponentMap
         return prev;
     }
 
-    public void putAll( Map map )
+    public void putAll( Map<? extends String, ? extends T> map )
     {
         logger.warn( "Custom "
                      + role
@@ -106,23 +102,33 @@ public class ComponentMap
         customAdditions.putAll( map );
     }
 
-    public Set keySet()
+    public Set<String> keySet()
     {
         return getMap().keySet();
     }
 
-    public Collection values()
+    public Collection<T> values()
     {
         return getMap().values();
     }
 
-    public Set entrySet()
+    public Set<Map.Entry<String, T>> entrySet()
     {
         return getMap().entrySet();
     }
 
-    public boolean equals( Object object )
+    public boolean equals( Object o )
     {
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( !( o instanceof Map ) )
+        {
+            return false;
+        }
+
+        Map<?,?> object = (Map<?,?>) o;
         return getMap().equals( object );
     }
 
@@ -131,21 +137,25 @@ public class ComponentMap
         return getMap().hashCode();
     }
 
-    public Object remove( Object key )
+    public T remove( Object k )
     {
         logger.warn( "Items in this Map should NOT be removed directly. If the matching entry is a component, it will NOT be removed." );
 
-        if ( customAdditions.containsKey( key ) )
+        if ( k instanceof String )
         {
-            return customAdditions.remove( key );
+            String key = (String) k;
+            if ( customAdditions.containsKey( key ) )
+            {
+                return customAdditions.remove( key );
+            }
         }
 
         return null;
     }
 
-    private Map getMap()
+    private Map<String, T> getMap()
     {
-        Map result = getComponentMap();
+        Map<String, T> result = getComponentMap();
 
         if ( !customAdditions.isEmpty() )
         {
@@ -155,26 +165,20 @@ public class ComponentMap
         return result;
     }
 
-    private Map getComponentMap()
+    private Map<String, T> getComponentMap()
     {
         if ( ( components == null ) || checkUpdate() )
         {
-            components = new LinkedHashMap();
+            components = new LinkedHashMap<String, T>();
 
-            Map descriptorMap = getComponentDescriptorMap();
-            Map lookupRealms = getLookupRealmMap();
+            Map<String, ComponentDescriptor<T>> descriptorMap = getComponentDescriptorMap();
 
             if ( roleHints != null )
             {
                 // we must follow the order given in roleHints
-                for ( Iterator hints = roleHints.iterator(); hints.hasNext(); )
+                for ( String roleHint : roleHints )
                 {
-                    String roleHint = (String) hints.next();
-
-                    ComponentDescriptor cd = (ComponentDescriptor) descriptorMap.get( roleHint );
-                    ClassRealm realm = (ClassRealm) lookupRealms.get( cd.getRealmId() );
-
-                    Object component = lookup( role, roleHint, realm );
+                    T component = lookup( role, roleHint );
                     if ( component != null )
                     {
                         components.put( roleHint, component );
@@ -183,15 +187,11 @@ public class ComponentMap
             }
             else
             {
-                for ( Iterator it = descriptorMap.entrySet().iterator(); it.hasNext(); )
+                for ( Entry<String, ComponentDescriptor<T>> entry : descriptorMap.entrySet() )
                 {
-                    Map.Entry entry = (Map.Entry) it.next();
-                    String roleHint = (String) entry.getKey();
-                    String realmId = ( (ComponentDescriptor) entry.getValue() ).getRealmId();
+                    String roleHint = entry.getKey();
 
-                    ClassRealm realm = (ClassRealm) lookupRealms.get( realmId );
-
-                    Object component = lookup( role, roleHint, realm );
+                    T component = lookup( role, roleHint );
                     if ( component != null )
                     {
                         components.put( roleHint, component );

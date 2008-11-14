@@ -30,51 +30,12 @@ public interface ComponentLookupManager
 {
     String ROLE = ComponentLookupManager.class.getName();
 
-    Object lookup( String role )
+    <T> T lookup( Class<T> type, String role, String roleHint )
         throws ComponentLookupException;
 
-    Object lookup( String role, ClassRealm realm )
+    <T> List<T> lookupList( Class<T> type, String role, List<String> hints )
         throws ComponentLookupException;
 
-    Object lookup( String role, String roleHint )
-        throws ComponentLookupException;
-
-    Object lookup( String role, String roleHint, ClassRealm realm )
-        throws ComponentLookupException;
-
-    Object lookup( Class role )
-        throws ComponentLookupException;
-
-    Object lookup( Class role, ClassRealm realm )
-        throws ComponentLookupException;
-
-    Object lookup( Class role, String roleHint )
-        throws ComponentLookupException;
-
-    Object lookup( Class role, String roleHint, ClassRealm realm )
-        throws ComponentLookupException;
-
-    List<Object> lookupList( String role )
-        throws ComponentLookupException;
-
-    List<Object> lookupList( Class role )
-        throws ComponentLookupException;
-
-    List<Object> lookupList( String role, List<String> hints )
-        throws ComponentLookupException;
-
-    List<Object> lookupList( Class role, List<String> hints )
-        throws ComponentLookupException;
-
-    Map<String, Object> lookupMap( String role )
-        throws ComponentLookupException;
-
-    Map<String, Object> lookupMap( Class role )
-        throws ComponentLookupException;
-
-    Map<String, Object> lookupMap( String role, List<String> hints )
-        throws ComponentLookupException;
-
-    Map<String, Object> lookupMap( Class role, List<String> hints )
+    <T> Map<String, T> lookupMap( Class<T> type, String role, List<String> hints )
         throws ComponentLookupException;
 }

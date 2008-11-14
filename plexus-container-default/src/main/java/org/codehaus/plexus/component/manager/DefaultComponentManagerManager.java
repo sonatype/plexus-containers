@@ -22,6 +22,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
@@ -46,21 +47,21 @@ import java.util.Map.Entry;
 public class DefaultComponentManagerManager
     implements ComponentManagerManager
 {    
-    private static final String DEFAULT_COMPONENT_MANAGER_ID = "singleton";
+    private static final String DEFAULT_INSTANTIATION_STRATEGY = "singleton";
 
-    private final Map<Key, ComponentManager> activeComponentManagers = new TreeMap<Key, ComponentManager>();
+    private final Map<Key, ComponentManager<?>> activeComponentManagers = new TreeMap<Key, ComponentManager<?>>();
 
-    private final Map<String, Map<String, List<ComponentManager>>> roleIndex = new TreeMap<String, Map<String, List<ComponentManager>>>();
+    private final Map<String, Map<String, List<ComponentManager<?>>>> roleIndex = new TreeMap<String, Map<String, List<ComponentManager<?>>>>();
 
-    private final Map<String, ComponentManager> componentManagers = new TreeMap<String, ComponentManager>();
+    private final Map<String, ComponentManagerFactory> componentManagerFactories = new TreeMap<String, ComponentManagerFactory>();
 
     private LifecycleHandlerManager lifecycleHandlerManager;
 
-    private final Map<Object, ComponentManager> componentManagersByComponent = new HashMap<Object, ComponentManager>();
+    private final Map<Object, ComponentManager<?>> componentManagersByComponent = new HashMap<Object, ComponentManager<?>>();
 
-    public synchronized void addComponentManager( ComponentManager componentManager )
+    public synchronized void addComponentManagerFactory( ComponentManagerFactory componentManagerFactory )
     {
-        componentManagers.put( componentManager.getId(), componentManager );
+        componentManagerFactories.put( componentManagerFactory.getId(), componentManagerFactory );
     }
 
     public synchronized LifecycleHandlerManager getLifecycleHandlerManager()
@@ -73,44 +74,40 @@ public class DefaultComponentManagerManager
         this.lifecycleHandlerManager = lifecycleHandlerManager;
     }
 
-    public ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
+    public <T> ComponentManager<T> createComponentManager( ComponentDescriptor<T> descriptor, MutablePlexusContainer container,
                                                     String role )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException
     {
         return createComponentManager( descriptor, container, role, PlexusConstants.PLEXUS_DEFAULT_HINT );
     }
 
-    public ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
-                                                    String role, String roleHint )
+    public <T> ComponentManager<T> createComponentManager( ComponentDescriptor<T> descriptor,
+                                                           MutablePlexusContainer container,
+                                                           String role,
+                                                           String roleHint )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException
     {
-        // Create component manager for the new component
-        ComponentManager componentManager = createComponentManager( descriptor.getInstantiationStrategy() );
-
         // Setup component manager
         LifecycleHandler lifecycleHandler = getLifecycleHandlerManager().getLifecycleHandler( descriptor.getLifecycleHandler() );
-        componentManager.setup( container, lifecycleHandler, descriptor, role, roleHint );
-
-        // Initialize component manager
-        componentManager.initialize();
+        ComponentManager<T> componentManager = createComponentManager( container, lifecycleHandler, descriptor, role, roleHint );
 
         // Add componentManager to indexes
         synchronized ( this )
         {
-            Key key = new Key( descriptor.getRealmId(), role, roleHint );
+            Key key = new Key( descriptor.getRealm(), role, roleHint );
             activeComponentManagers.put( key, componentManager );
 
-            Map<String, List<ComponentManager>> hintIndex = roleIndex.get( key.role );
+            Map<String, List<ComponentManager<?>>> hintIndex = roleIndex.get( key.role );
             if ( hintIndex == null )
             {
-                hintIndex = new TreeMap<String, List<ComponentManager>>();
+                hintIndex = new TreeMap<String, List<ComponentManager<?>>>();
                 roleIndex.put( key.role, hintIndex );
             }
 
-            List<ComponentManager> components = hintIndex.get( key.roleHint );
+            List<ComponentManager<?>> components = hintIndex.get( key.roleHint );
             if ( components == null )
             {
-                components = new ArrayList<ComponentManager>( 1 );
+                components = new ArrayList<ComponentManager<?>>( 1 );
                 hintIndex.put( key.roleHint, components );
             }
 
@@ -120,34 +117,52 @@ public class DefaultComponentManagerManager
         return componentManager;
     }
 
-    private ComponentManager createComponentManager( String id )
+    private <T> ComponentManager<T> createComponentManager( MutablePlexusContainer container,
+                                                     LifecycleHandler lifecycleHandler,
+                                                     ComponentDescriptor<T> descriptor,
+                                                     String role,
+                                                     String roleHint
+    )
         throws UndefinedComponentManagerException
     {
-        if ( id == null )
+
+
+        String instantiationStrategy = descriptor.getInstantiationStrategy();
+        if (instantiationStrategy == null)
         {
-            id = DEFAULT_COMPONENT_MANAGER_ID;
+            instantiationStrategy = DEFAULT_INSTANTIATION_STRATEGY;
         }
 
-        ComponentManager componentManager = componentManagers.get( id );
+        ComponentManagerFactory componentManagerFactory = componentManagerFactories.get( instantiationStrategy );
 
-        if ( componentManager == null )
+        if (componentManagerFactories == null)
         {
-            throw new UndefinedComponentManagerException( "Specified component manager cannot be found: " + id );
+            throw new UndefinedComponentManagerException( "Unsupported instantiation strategy: " + instantiationStrategy );
         }
 
-        return componentManager.copy();
+        // Create component manager for the new component
+        ComponentManager<T> componentManager =  componentManagerFactory.createComponentManager( container,
+            lifecycleHandler,
+            descriptor,
+            role,
+            roleHint );
+
+        return componentManager;
     }
 
-    public synchronized ComponentManager findComponentManagerByComponentInstance( Object component )
+    public synchronized <T> ComponentManager<T> findComponentManagerByComponentInstance( T component )
     {
-        return componentManagersByComponent.get( component );
+        ComponentManager<?> componentManager = componentManagersByComponent.get( component );
+        return (ComponentManager<T>) componentManager;
     }
 
-    public synchronized ComponentManager findComponentManagerByComponentKey( String role,
-                                                                             String roleHint,
-                                                                             ClassRealm realm )
+    public synchronized <T> ComponentManager<T> findComponentManager( Class<T> type, String role, String roleHint )
     {
         // verify arguments
+        if ( type == null )
+        {
+            throw new NullPointerException( "type is null" );
+        }
         if ( role == null )
         {
             throw new NullPointerException( "role is null" );
@@ -158,30 +173,19 @@ public class DefaultComponentManagerManager
         }
 
         // find the component
-        if ( realm == null )
+        // find first registered component with role + roleHint in any realm
+        Map<String, List<ComponentManager<?>>> roleHintIndex = roleIndex.get( role );
+        if ( roleHintIndex != null )
         {
-            // find first registered component with role + roleHint in any realm
-            Map<String, List<ComponentManager>> roleHintIndex = roleIndex.get( role );
-            if ( roleHintIndex != null )
+            List<ComponentManager<?>> componentManagers = roleHintIndex.get( roleHint );
+            if ( componentManagers != null && !componentManagers.isEmpty() )
             {
-                List<ComponentManager> componentManagers = roleHintIndex.get( roleHint );
-                if ( componentManagers != null && !componentManagers.isEmpty() )
+                // select a component that can be cast to the specified type
+                for ( ComponentManager<?> componentManager : componentManagers )
                 {
-                    ComponentManager componentManager = componentManagers.get( 0 );
-                    return componentManager;
-                }
-            }
-        }
-        else
-        {
-            // find unique component registration using role, roleHint, realm
-            for ( ; realm != null; realm = realm.getParentRealm() )
-            {
-                ComponentManager componentManager = activeComponentManagers.get(
-                    new Key( realm.getId(), role, roleHint ) );
-                if ( componentManager != null )
-                {
-                    return componentManager;
+                    if ( isAssignableFrom( type, componentManager.getType() )) {
+                        return (ComponentManager<T>) componentManager;
+                    }
                 }
             }
         }
@@ -190,23 +194,23 @@ public class DefaultComponentManagerManager
         return null;
     }
 
-    public Map<String, ComponentManager> findAllComponentManagers( String role )
+    public Map<String, ComponentManager<?>> findAllComponentManagers( String role )
     {
         return findAllComponentManagers( role, null );
     }
 
-    public synchronized Map<String, ComponentManager> findAllComponentManagers( String role, List<String> roleHints )
+    public synchronized Map<String, ComponentManager<?>> findAllComponentManagers( String role, List<String> roleHints )
     {
-        Map<String, ComponentManager> found = new LinkedHashMap<String, ComponentManager>();
+        Map<String, ComponentManager<?>> found = new LinkedHashMap<String, ComponentManager<?>>();
 
-        Map<String, List<ComponentManager>> roleHintIndex = roleIndex.get( role );
+        Map<String, List<ComponentManager<?>>> roleHintIndex = roleIndex.get( role );
         if ( roleHintIndex != null )
         {
             if ( roleHints != null )
             {
                 for ( String roleHint : roleHints )
                 {
-                    List<ComponentManager> components = roleHintIndex.get( roleHint );
+                    List<ComponentManager<?>> components = roleHintIndex.get( roleHint );
                     if ( components != null && !components.isEmpty() )
                     {
                         found.put( roleHint, components.get( 0 ) );
@@ -215,10 +219,10 @@ public class DefaultComponentManagerManager
             }
             else
             {
-                for ( Entry<String, List<ComponentManager>> entry : roleHintIndex.entrySet() )
+                for ( Entry<String, List<ComponentManager<?>>> entry : roleHintIndex.entrySet() )
                 {
                     String roleHint = entry.getKey();
-                    List<ComponentManager> components = entry.getValue();
+                    List<ComponentManager<?>> components = entry.getValue();
                     if ( !components.isEmpty() )
                     {
                         found.put( roleHint, components.get( 0 ) );
@@ -236,16 +240,16 @@ public class DefaultComponentManagerManager
 
     public void disposeAllComponents( Logger logger )
     {
-        Collection<ComponentManager> componentManagers;
+        Collection<ComponentManager<?>> componentManagers;
         synchronized ( this )
         {
-            componentManagers = new ArrayList<ComponentManager>( activeComponentManagers.values() );
+            componentManagers = new ArrayList<ComponentManager<?>>( activeComponentManagers.values() );
             activeComponentManagers.clear();
             roleIndex.clear();
         }
 
         // Call dispose callback outside of synchronized lock to avoid deadlocks
-        for ( ComponentManager componentManager : componentManagers )
+        for ( ComponentManager<?> componentManager : componentManagers )
         {
             try
             {
@@ -259,8 +263,8 @@ public class DefaultComponentManagerManager
         }
     }
 
-    public synchronized void associateComponentWithComponentManager( Object component,
-                                                                     ComponentManager componentManager )
+    public synchronized <T> void associateComponentWithComponentManager( T component,
+                                                                     ComponentManager<T> componentManager )
     {
         componentManagersByComponent.put( component, componentManager );
     }
@@ -273,27 +277,27 @@ public class DefaultComponentManagerManager
     public void dissociateComponentRealm( ClassRealm componentRealm )
         throws ComponentLifecycleException
     {
-        List<ComponentManager> dispose = new ArrayList<ComponentManager>();
+        List<ComponentManager<?>> dispose = new ArrayList<ComponentManager<?>>();
 
         synchronized ( this )
         {
-            for ( Iterator<Entry<Key, ComponentManager>> it = activeComponentManagers.entrySet().iterator(); it.hasNext(); )
+            for ( Iterator<Entry<Key, ComponentManager<?>>> it = activeComponentManagers.entrySet().iterator(); it.hasNext(); )
             {
-                Entry<Key, ComponentManager> entry = it.next();
+                Entry<Key, ComponentManager<?>> entry = it.next();
                 Key key = entry.getKey();
 
-                ComponentManager componentManager = entry.getValue();
+                ComponentManager<?> componentManager = entry.getValue();
 
-                if ( key.realmId.equals( componentRealm.getId() ) )
+                if ( key.realm.equals( componentRealm ) )
                 {
                     dispose.add( componentManager );
                     it.remove();
 
                     // remove component from role index
-                    Map<String, List<ComponentManager>> roleHintIndex = roleIndex.get( key.role );
+                    Map<String, List<ComponentManager<?>>> roleHintIndex = roleIndex.get( key.role );
                     if ( roleHintIndex != null )
                     {
-                        List<ComponentManager> components = roleHintIndex.get( key.roleHint );
+                        List<ComponentManager<?>> components = roleHintIndex.get( key.roleHint );
                         if ( components != null )
                         {
                             components.remove( componentManager );
@@ -308,7 +312,7 @@ public class DefaultComponentManagerManager
         }
 
         // Call dispose callback outside of synchronized lock to avoid deadlocks
-        for ( ComponentManager componentManager : dispose )
+        for ( ComponentManager<?> componentManager : dispose )
         {
             componentManager.dispose();
         }
@@ -316,18 +320,14 @@ public class DefaultComponentManagerManager
 
     private static class Key implements Comparable<Key>
     {
-        private final String realmId;
+        private final ClassRealm realm;
         private final String role;
         private final String roleHint;
         private final int hashCode;
 
-        private Key( String realmId, String role, String roleHint )
+        private Key( ClassRealm realm, String role, String roleHint )
         {
-            if ( realmId == null )
-            {
-                realmId = "null";
-            }
-            this.realmId = realmId;
+            this.realm = realm;
 
             if ( role == null )
             {
@@ -342,7 +342,7 @@ public class DefaultComponentManagerManager
             this.roleHint = roleHint;
 
             int hashCode;
-            hashCode = realmId.hashCode();
+            hashCode = ( realm != null ? realm.hashCode() : 0 );
             hashCode = 31 * hashCode + role.hashCode();
             hashCode = 31 * hashCode + roleHint.hashCode();
             this.hashCode = hashCode;
@@ -361,7 +361,7 @@ public class DefaultComponentManagerManager
 
             Key key = (Key) o;
 
-            return realmId.equals( key.realmId ) &&
+            return !( realm != null ? !realm.equals( key.realm ) : key.realm != null ) &&
                 role.equals( key.role ) &&
                 roleHint.equals( key.roleHint );
 
@@ -374,12 +374,18 @@ public class DefaultComponentManagerManager
 
         public String toString()
         {
-            return realmId + "/" + role + "/" + roleHint;
+            return realm + "/" + role + "/" + roleHint;
         }
 
         public int compareTo( Key o )
         {
-            int value = realmId.compareTo( o.realmId );
+            int value;
+            if (realm != null) {
+                value = realm.getId().compareTo( o.realm.getId() );
+            } else {
+                value = o.realm == null ? 0 : 1;
+            }
+
             if ( value == 0 )
             {
                 value = role.compareTo( o.role );

@@ -25,9 +25,9 @@ public interface ContainerConfiguration
 
     String getName();
 
-    ContainerConfiguration setContext( Map context );
+    ContainerConfiguration setContext( Map<Object, Object> context );
 
-    Map getContext();
+    Map<Object, Object> getContext();
 
     ContainerConfiguration setClassWorld( ClassWorld classWorld );
 

@@ -34,7 +34,7 @@ public class AnnotationComponentGleanerTest extends TestCase {
   public void testGlean() throws Exception {
     AnnotationComponentGleaner gleaner = new AnnotationComponentGleaner();
     Class<AnnotatedComponent> c = AnnotatedComponent.class;
-    ComponentDescriptor descriptor = gleaner.glean(c.getName(), c.getClassLoader());
+    ComponentDescriptor<?> descriptor = gleaner.glean(c.getName(), c.getClassLoader());
     
     assertEquals("foo", descriptor.getComponentType());
     assertEquals(AnnotatedComponentRole.class.getName(), descriptor.getRole());

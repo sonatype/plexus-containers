@@ -1,14 +1,12 @@
 package org.codehaus.plexus.component.collections;
 
 import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,19 +37,19 @@ import java.util.Map;
 // NOTE: This includes component additions, but also component purges from the
 // container, as when a component realm is disposed
 // (and PlexusContainer.removeComponentRealm(..) is called).
-public abstract class AbstractComponentCollection
+public abstract class AbstractComponentCollection<T>
 {
     /** The reference to the PlexusContainer */
     protected MutablePlexusContainer container;
+
+    /** The type of the components held by this collection*/
+    protected final Class<T> componentType;
 
     /** The role of the components we are holding in this Collection. */
     protected String role;
 
     /** The role hint of the components we are holding in this Collection. */
     protected List<String> roleHints;
-
-    /** The realm we need to lookup in */
-    protected ClassRealm realm;
 
     /** The component that requires this collection of components */
     protected String hostComponent;
@@ -63,17 +61,18 @@ public abstract class AbstractComponentCollection
 
     private int lastRealmCount = -1;
 
-    private Map<String, ComponentDescriptor> componentDescriptorMap;
+    private Map<String, ComponentDescriptor<T>> componentDescriptorMap;
+    private ClassWorld world;
 
     public AbstractComponentCollection( MutablePlexusContainer container,
-                                        ClassRealm realm,
+                                        Class<T> componentType,
                                         String role,
-                                        List roleHints,
+                                        List<String> roleHints,
                                         String hostComponent )
     {
         this.container = container;
 
-        this.realm = realm;
+        this.componentType = componentType;
 
         this.role = role;
 
@@ -82,65 +81,16 @@ public abstract class AbstractComponentCollection
         this.hostComponent = hostComponent;
 
         logger = container.getLoggerManager().getLoggerForComponent( role );
-    }
 
-    /**
-     * Retrieve the set of all ClassRealms with a descendant-or-self relationship
-     * to the ClassRealm used to construct this component collection. This set
-     * will be used to collect all of the component instances from all realms
-     * which are likely to work from this collection.
-     */
-    protected List<ClassRealm> getLookupRealms()
-    {
-        Collection<ClassRealm> allRealms = new ArrayList<ClassRealm>( realm.getWorld().getRealms() );
-
-        if ( realmsHaveChanged() )
-        {
-            List<ClassRealm> lookupRealms = new ArrayList<ClassRealm>();
-
-            lookupRealms.add( realm );
-
-            int lastSize = 0;
-            while ( lookupRealms.size() > lastSize )
-            {
-                lastSize = lookupRealms.size();
-
-                for ( ClassRealm realm : allRealms )
-                {
-                    if ( ( realm.getParentRealm() != null )
-                        && lookupRealms.contains( realm.getParentRealm() )
-                        && !lookupRealms.contains( realm ) )
-                    {
-                        lookupRealms.add( realm );
-                    }
-                }
-            }
-
-            realms = lookupRealms;
-        }
-
-        return realms;
-    }
-
-    protected Map<String, ClassRealm> getLookupRealmMap()
-    {
-        List<ClassRealm> realms = getLookupRealms();
-
-        Map<String, ClassRealm> realmMap = new HashMap<String, ClassRealm>();
-        for ( ClassRealm realm : realms )
-        {
-            realmMap.put( realm.getId(), realm );
-        }
-
-        return realmMap;
+        world = container.getContainerRealm().getWorld();
     }
 
     private boolean realmsHaveChanged()
     {
-        return ( realms == null ) || ( realm.getWorld().getRealms().size() != lastRealmCount );
+        return ( realms == null ) || ( world.getRealms().size() != lastRealmCount );
     }
 
-    protected Map<String, ComponentDescriptor> getComponentDescriptorMap()
+    protected Map<String, ComponentDescriptor<T>> getComponentDescriptorMap()
     {
         checkUpdate();
 
@@ -154,26 +104,23 @@ public abstract class AbstractComponentCollection
             return false;
         }
 
-        Map<String, ComponentDescriptor> newComponentDescriptors = new HashMap<String, ComponentDescriptor>();
-        for ( ClassRealm realm : getLookupRealms() )
-        {
-            Map<String, ComponentDescriptor> componentMap = container.getComponentDescriptorMap( role, realm );
+        Map<String, ComponentDescriptor<T>> newComponentDescriptors = new HashMap<String, ComponentDescriptor<T>>();
+        Map<String, ComponentDescriptor<T>> componentMap = container.getComponentDescriptorMap( componentType, role );
 
-            if ( roleHints != null && !roleHints.isEmpty() )
+        if ( roleHints != null && !roleHints.isEmpty() )
+        {
+            for ( String roleHint : roleHints )
             {
-                for ( String roleHint : roleHints )
+                ComponentDescriptor<T> componentDescriptor = componentMap.get( roleHint );
+                if ( componentDescriptor != null )
                 {
-                    ComponentDescriptor componentDescriptor = componentMap.get( roleHint );
-                    if ( componentDescriptor != null )
-                    {
-                        newComponentDescriptors.put( roleHint, componentDescriptor );
-                    }
+                    newComponentDescriptors.put( roleHint, componentDescriptor );
                 }
             }
-            else
-            {
-                newComponentDescriptors.putAll( componentMap );
-            }
+        }
+        else
+        {
+            newComponentDescriptors.putAll( componentMap );
         }
 
         if ( componentDescriptorMap == null || newComponentDescriptors.size() != componentDescriptorMap.size() )
@@ -186,18 +133,16 @@ public abstract class AbstractComponentCollection
         return false;
     }
 
-    protected Object lookup( String role,
-                             String roleHint,
-                             ClassRealm realm )
+    protected T lookup( String role, String roleHint )
     {
         try
         {
-            return container.lookup( role, roleHint, realm );
+            return container.lookup( componentType, role, roleHint );
         }
         catch ( ComponentLookupException e )
         {
             logger.debug( "Failed to lookup a member of active collection with role: " + role
-                          + " and role-hint: " + roleHint + "\nin realm: " + realm, e );
+                          + " and role-hint: " + roleHint, e );
 
             return null;
         }

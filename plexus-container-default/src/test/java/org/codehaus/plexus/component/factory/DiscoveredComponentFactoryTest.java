@@ -26,10 +26,10 @@ public class DiscoveredComponentFactoryTest
         throws Exception
     {
         assertNotNull( "Cannot find test component factory from plexus.xml test resource.",
-                       lookup( ComponentFactory.ROLE, "testFactory1" ) );
+                       lookup( ComponentFactory.class, "testFactory1" ) );
 
         assertNotNull( "Cannot find test component factory from components.xml test resource.",
-                       lookup( ComponentFactory.ROLE, "testFactory2" ) );
+                       lookup( ComponentFactory.class, "testFactory2" ) );
     }
 
     public void testShouldInstantiateComponentUsingFactoryDiscoveredInPlexusXml()

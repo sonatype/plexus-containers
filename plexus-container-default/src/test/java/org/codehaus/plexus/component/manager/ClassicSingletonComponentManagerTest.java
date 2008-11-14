@@ -12,15 +12,13 @@ public class ClassicSingletonComponentManagerTest
     public void testSequentialLookupsReturnTheSameInstance()
         throws Exception
     {
-        Component a,b,c,d;
+        Component a = lookup( Component.class );
 
-        a = (Component) lookup( Component.ROLE );
+        Component b = lookup( Component.class );
 
-        b = (Component) lookup( Component.ROLE );
+        Component c = lookup( Component.class );
 
-        c = (Component) lookup( Component.ROLE );
-
-        d = (Component) lookup( Component.ROLE );
+        Component d = lookup( Component.class );
 
         assertTrue( a == b );
 

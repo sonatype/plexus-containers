@@ -32,7 +32,7 @@ public final class ConsoleLoggerManagerTest
 {
     protected LoggerManager createLoggerManager() throws Exception
     {
-        return (LoggerManager)lookup(LoggerManager.ROLE);
+        return lookup(LoggerManager.class);
     }
 
     public void testSetAllThresholds() throws Exception

@@ -49,17 +49,17 @@ public class ComponentDiscovererTest
 
         core.addURL( testClasses.toURL() );
 
-        List componentSetDescriptors = componentDiscoverer.findComponents( new DefaultContext(), core );
+        List<ComponentSetDescriptor> componentSetDescriptors = componentDiscoverer.findComponents( new DefaultContext(), core );
 
         assertEquals( 1, componentSetDescriptors.size() );
 
         assertEquals( ComponentSetDescriptor.class.getName(), componentSetDescriptors.get( 0 ).getClass().getName() );
 
-        ComponentSetDescriptor componentSet = (ComponentSetDescriptor) componentSetDescriptors.get( 0 );
+        ComponentSetDescriptor componentSet = componentSetDescriptors.get( 0 );
 
-        List components = componentSet.getComponents();
+        List<ComponentDescriptor<?>> components = componentSet.getComponents();
 
-        ComponentDescriptor cd = (ComponentDescriptor) components.get( 0 );
+        ComponentDescriptor<?> cd = components.get( 0 );
 
         assertEquals( "org.codehaus.plexus.component.discovery.DiscoveredComponent", cd.getRole() );
 

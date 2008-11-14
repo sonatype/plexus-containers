@@ -20,9 +20,9 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 public interface ComponentBuildListener {
 
-    void beforeComponentCreate(ComponentDescriptor componentDescriptor, ClassRealm realm );
+    void beforeComponentCreate(ComponentDescriptor<?> componentDescriptor, ClassRealm realm );
 
-    void componentCreated(ComponentDescriptor componentDescriptor, Object component, ClassRealm realm );
+    void componentCreated(ComponentDescriptor<?> componentDescriptor, Object component, ClassRealm realm );
 
-    void componentConfigured(ComponentDescriptor componentDescriptor, Object component, ClassRealm realm );
+    void componentConfigured(ComponentDescriptor<?> componentDescriptor, Object component, ClassRealm realm );
 }

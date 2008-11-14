@@ -53,7 +53,7 @@ public class PlexusTestCaseTest
 
         try
         {
-            tc.lookup( "foo", "bar" );
+            tc.lookup( DiscoveredComponent.class, "unknown" );
 
             fail( "Expected ComponentLookupException." );
         }
@@ -63,11 +63,9 @@ public class PlexusTestCaseTest
         }
 
         // This component is discovered from src/test/META-INF/plexus/components.xml
-        Object component = tc.lookup( "org.codehaus.plexus.component.discovery.DiscoveredComponent" );
+        DiscoveredComponent component = tc.lookup( DiscoveredComponent.class );
 
         assertNotNull( component );
-
-        assertTrue( component instanceof DiscoveredComponent );
 
         assertNotNull( tc.getClassLoader() );
 

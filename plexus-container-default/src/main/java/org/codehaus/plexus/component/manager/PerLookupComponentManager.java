@@ -18,6 +18,9 @@ package org.codehaus.plexus.component.manager;
 
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
 
 /**
  * Creates a new component manager for every lookup
@@ -26,22 +29,27 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
  *
  * @version $Id$
  */
-public class PerLookupComponentManager
-    extends AbstractComponentManager
+public class PerLookupComponentManager<T>
+    extends AbstractComponentManager<T>
 {
-    public String getId()
+    public PerLookupComponentManager( MutablePlexusContainer container,
+                                      LifecycleHandler lifecycleHandler,
+                                      ComponentDescriptor<T> componentDescriptor,
+                                      String role,
+                                      String roleHint )
+        throws UndefinedComponentManagerException
     {
-        return "per-lookup";
+        super( container, lifecycleHandler, componentDescriptor, role, roleHint );
     }
 
     public void dispose()
     {
     }
 
-    public Object getComponent( )
+    public T getComponent( )
         throws ComponentInstantiationException, ComponentLifecycleException
     {
-        Object component = createComponentInstance();
+        T component = createComponentInstance();
 
         return component;
     }

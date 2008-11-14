@@ -16,19 +16,27 @@ package org.codehaus.plexus.component.manager;
  * limitations under the License.
  */
 
+import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.ComponentLookupManager;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.lifecycle.LifecycleHandler;
 
-/**
- * @author <a href="mailto:kenney@neonics.com">Kenney Westerhof</a>
- */
+/** @author <a href="mailto:kenney@neonics.com">Kenney Westerhof</a> */
 public class ComponentLookupManagerComponentManager
-    extends AbstractComponentManager
+    extends AbstractComponentManager<ComponentLookupManager>
 {
-    public String getId()
+
+    public ComponentLookupManagerComponentManager( MutablePlexusContainer container,
+                                                   LifecycleHandler lifecycleHandler,
+                                                   ComponentDescriptor<ComponentLookupManager> componentDescriptor,
+                                                   String role,
+                                                   String roleHint )
+        throws UndefinedComponentManagerException
     {
-        return "component-lookup-manager";
+        super( container, lifecycleHandler, componentDescriptor, role, roleHint );
     }
-    
+
     public void dispose()
         throws ComponentLifecycleException
     {
@@ -38,7 +46,7 @@ public class ComponentLookupManagerComponentManager
     {
     }
 
-    public Object getComponent( )
+    public ComponentLookupManager getComponent()
         throws ComponentLifecycleException
     {
         return getContainer().getComponentLookupManager();

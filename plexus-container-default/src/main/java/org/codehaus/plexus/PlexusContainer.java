@@ -16,11 +16,6 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -29,8 +24,9 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.LoggerManager;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * PlexusContainer is the entry-point for loading and accessing other
@@ -53,14 +49,6 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
-     * Looks up and returns a component object with the given unique key or role.
-     * @param role a unique key for the desired component
-     * @return a Plexus component object
-     */
-    Object lookup( String role, ClassRealm realm )
-        throws ComponentLookupException;
-
-    /**
      * Looks up and returns a component object with the given unique role/role-hint combination.
      * @param role a non-unique key for the desired component
      * @param roleHint a hint for the desired component implementation
@@ -70,46 +58,30 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
+     * Looks up and returns a component object with the given unique key or role.
+     * @param type the unique type of the component within the container
+     * @return a Plexus component object
+     */
+    <T> T lookup( Class<T> type )
+        throws ComponentLookupException;
+
+    /**
      * Looks up and returns a component object with the given unique role/role-hint combination.
+     * @param type the non-unique type of the component
+     * @param roleHint a hint for the desired component implementation
+     * @return a Plexus component object
+     */
+    <T> T lookup( Class<T> type, String roleHint )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a component object with the given unique role/role-hint combination.
+     * @param type the non-unique type of the component
      * @param role a non-unique key for the desired component
      * @param roleHint a hint for the desired component implementation
      * @return a Plexus component object
      */
-    Object lookup( String role, String roleHint, ClassRealm realm )
-        throws ComponentLookupException;
-
-    /**
-     * Looks up and returns a component object with the given unique key or role.
-     * @param role a unique key for the desired component
-     * @return a Plexus component object
-     */
-    Object lookup( Class role )
-        throws ComponentLookupException;
-
-    /**
-     * Looks up and returns a component object with the given unique key or role.
-     * @param role a unique key for the desired component
-     * @return a Plexus component object
-     */
-    Object lookup( Class role, ClassRealm realm )
-        throws ComponentLookupException;
-
-    /**
-     * Looks up and returns a component object with the given unique role/role-hint combination.
-     * @param role a non-unique class key for the desired component
-     * @param roleHint a hint for the desired component implementation
-     * @return a Plexus component object
-     */
-    Object lookup( Class role, String roleHint )
-        throws ComponentLookupException;
-
-    /**
-     * Looks up and returns a component object with the given unique role/role-hint combination.
-     * @param role a non-unique class key for the desired component
-     * @param roleHint a hint for the desired component implementation
-     * @return a Plexus component object
-     */
-    Object lookup( Class role, String roleHint, ClassRealm realm )
+    <T> T lookup( Class<T> type, String role, String roleHint )
         throws ComponentLookupException;
 
     /**
@@ -130,18 +102,18 @@ public interface PlexusContainer
 
     /**
      * Looks up and returns a List of component objects with the given role.
-     * @param role a non-unique class key for the desired components
+     * @param type the non-unique type of the components
      * @return a List of component objects
      */
-    List<Object> lookupList( Class role )
+    <T> List<T> lookupList( Class<T> type )
         throws ComponentLookupException;
 
     /**
      * Looks up and returns a List of component objects with the given role.
-     * @param role a non-unique class key for the desired components
+     * @param type the non-unique type of the components
      * @return a List of component objects
      */
-    List<Object> lookupList( Class role, List<String> roleHints )
+    <T> List<T> lookupList( Class<T> type, List<String> roleHints )
         throws ComponentLookupException;
 
     /**
@@ -162,18 +134,18 @@ public interface PlexusContainer
 
     /**
      * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
-     * @param role a non-unique class key for the desired components
+     * @param type the non-unique type of the components
      * @return a Map of component objects
      */
-    Map<String, Object> lookupMap( Class role )
+    <T> Map<String, T> lookupMap( Class<T> type )
         throws ComponentLookupException;
 
     /**
      * Looks up and returns a Map of component objects with the given role, keyed by all available role-hints.
-     * @param role a non-unique class key for the desired components
+     * @param type the non-unique type of the components
      * @return a Map of component objects
      */
-    Map<String, Object> lookupMap( Class role, List<String> roleHints )
+    <T> Map<String, T> lookupMap( Class<T> type, List<String> roleHints )
         throws ComponentLookupException;
 
     // ----------------------------------------------------------------------
@@ -186,7 +158,7 @@ public interface PlexusContainer
      * @param role a unique role for the desired component's descriptor
      * @return the ComponentDescriptor with the given component role
      */
-    ComponentDescriptor getComponentDescriptor( String role );
+    ComponentDescriptor<?> getComponentDescriptor( String role );
 
     /**
      * Returns the ComponentDescriptor with the given component role and hint.
@@ -195,26 +167,17 @@ public interface PlexusContainer
      * @param roleHint a hint showing which implementation should be used
      * @return the ComponentDescriptor with the given component role
      */
-    ComponentDescriptor getComponentDescriptor( String role, String roleHint );
-
-    /**
-     * Returns the ComponentDescriptor with the given component role and the default role hint.
-     * Searches up the hierarchy until one is found, null if none is found.
-     * @param role a unique role for the desired component's descriptor
-     * @param realm The class realm to search
-     * @return the ComponentDescriptor with the given component role
-     */
-    ComponentDescriptor getComponentDescriptor( String role, ClassRealm realm );
+    ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint );
 
     /**
      * Returns the ComponentDescriptor with the given component role and hint.
      * Searches up the hierarchy until one is found, null if none is found.
+     * @param type the Java type of the desired component
      * @param role a unique role for the desired component's descriptor
      * @param roleHint a hint showing which implementation should be used
-     * @param realm The class realm to search
      * @return the ComponentDescriptor with the given component role
      */
-    ComponentDescriptor getComponentDescriptor( String role, String roleHint, ClassRealm realm );
+    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint );
 
     /**
      * Returns a Map of ComponentDescriptors with the given role, keyed by role-hint. Searches up the hierarchy until
@@ -222,15 +185,16 @@ public interface PlexusContainer
      * @param role a non-unique key for the desired components
      * @return a Map of component descriptors keyed by role-hint
      */
-    Map<String, ComponentDescriptor> getComponentDescriptorMap( String role );
+    Map<String, ComponentDescriptor<?>> getComponentDescriptorMap( String role );
 
     /**
      * Returns a Map of ComponentDescriptors with the given role, keyed by role-hint. Searches up the hierarchy until
      * all are found, an empty Map if none are found.
+     * @param type the Java type of the desired components
      * @param role a non-unique key for the desired components
      * @return a Map of component descriptors keyed by role-hint
      */
-    Map<String, ComponentDescriptor> getComponentDescriptorMap( String role, ClassRealm componentRealm );
+    <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type, String role );
 
     /**
      * Returns a List of ComponentDescriptors with the given role. Searches up the hierarchy until all are found, an
@@ -238,31 +202,23 @@ public interface PlexusContainer
      * @param role a non-unique key for the desired components
      * @return a List of component descriptors
      */
-    List<ComponentDescriptor> getComponentDescriptorList( String role );
+    List<ComponentDescriptor<?>> getComponentDescriptorList( String role );
 
     /**
      * Returns a List of ComponentDescriptors with the given role. Searches up the hierarchy until all are found, an
      * empty List if none are found.
+     * @param type the Java type of the desired components
      * @param role a non-unique key for the desired components
      * @return a List of component descriptors
      */
-    List<ComponentDescriptor> getComponentDescriptorList( String role, ClassRealm componentRealm );
-
-    /**
-     * Returns a List of ComponentDescriptors with the given role in a requested order driven by
-     * roleHints list. Searches up the hierarchy until all are found, an
-     * empty List if none are found.
-     * @param role a non-unique key for the desired components
-     * @return a List of component descriptors
-     */
-    List<ComponentDescriptor> getComponentDescriptorList( String role, List<String> roleHints, ClassRealm componentRealm );
+    <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type,  String role );
 
     /**
      * Adds a component descriptor to this container. componentDescriptor should have realmId set.
      * @param componentDescriptor
      * @throws ComponentRepositoryException
      */
-    void addComponentDescriptor( ComponentDescriptor componentDescriptor )
+    void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
         throws ComponentRepositoryException;
 
     /**
@@ -281,7 +237,7 @@ public interface PlexusContainer
      * @param components Map of plexus component objects to release
      * @throws ComponentLifecycleException
      */
-    void releaseAll( Map<String, Object> components )
+    void releaseAll( Map<String, ?> components )
         throws ComponentLifecycleException;
 
     /**
@@ -290,23 +246,47 @@ public interface PlexusContainer
      * @param components List of plexus component objects to release
      * @throws ComponentLifecycleException
      */
-    void releaseAll( List<Object> components )
+    void releaseAll( List<?> components )
         throws ComponentLifecycleException;
 
     /**
      * Returns true if this container has the keyed component.
-     * @param role
+     * @param role a non-unique key for the desired component
      * @return true if this container has the keyed component
      */
     boolean hasComponent( String role );
 
     /**
      * Returns true if this container has a component with the given role/role-hint.
-     * @param role
-     * @param roleHint
+     * @param role a non-unique key for the desired component
+     * @param roleHint a hint for the desired component implementation
      * @return true if this container has a component with the given role/role-hint
      */
     boolean hasComponent( String role, String roleHint );
+
+    /**
+     * Returns true if this container has a component with the given role/role-hint.
+     * @param type the non-unique type of the component
+     * @return true if this container has a component with the given role/role-hint
+     */
+    boolean hasComponent( Class<?> type );
+
+    /**
+     * Returns true if this container has a component with the given role/role-hint.
+     * @param type the non-unique type of the component
+     * @param roleHint a hint for the desired component implementation
+     * @return true if this container has a component with the given role/role-hint
+     */
+    boolean hasComponent( Class<?> type, String roleHint );
+
+    /**
+     * Returns true if this container has a component with the given role/role-hint.
+     * @param type the non-unique type of the component
+     * @param role a non-unique key for the desired component
+     * @param roleHint a hint for the desired component implementation
+     * @return true if this container has a component with the given role/role-hint
+     */
+    boolean hasComponent( Class<?> type, String role, String roleHint );
 
     /**
      * Disposes of this container, which in turn disposes all of it's components. This container should also remove
@@ -364,7 +344,7 @@ public interface PlexusContainer
      * @throws PlexusConfigurationException
      * @throws ComponentRepositoryException
      */
-    List<ComponentDescriptor> discoverComponents( ClassRealm childRealm, boolean override )
+    List<ComponentDescriptor<?>> discoverComponents( ClassRealm childRealm, boolean override )
         throws PlexusConfigurationException, ComponentRepositoryException;    
     
     // ----------------------------------------------------------------------------

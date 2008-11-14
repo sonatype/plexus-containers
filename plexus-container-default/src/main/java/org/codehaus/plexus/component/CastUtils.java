@@ -1,5 +1,7 @@
 package org.codehaus.plexus.component;
 
+import org.apache.xbean.recipe.RecipeHelper;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -58,5 +60,10 @@ public final class CastUtils {
 
     public static <T, U> Map.Entry<T, U> cast(Map.Entry<?, ?> p, Class<T> pc, Class<U> uc) {
         return (Map.Entry<T, U>) p;
+    }
+
+    // todo remove when recipe helper accecpts nulls
+    public static boolean isAssignableFrom(Class<?> expected, Class<?> actual) {
+        return actual != null && RecipeHelper.isAssignableFrom( expected, actual );
     }
 }

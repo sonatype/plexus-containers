@@ -33,15 +33,15 @@ public class DefaultComponentComposerManagerTest
     public void testComposition()
         throws Exception
     {
-        final ComponentA componentA = (ComponentA) lookup( ComponentA.ROLE );
+        ComponentA componentA = lookup( ComponentA.class );
 
         assertNotNull( componentA );
 
-        final ComponentB componentB = componentA.getComponentB();
+        ComponentB componentB = componentA.getComponentB();
 
         assertNotNull( componentB );
 
-        final ComponentC componentC = componentB.getComponentC();
+        ComponentC componentC = componentB.getComponentC();
 
         assertNotNull( componentC );
     }

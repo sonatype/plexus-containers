@@ -10,7 +10,7 @@ public class NonJavaComponentFactoryTest
     public void testNonJavaComponentFactory()
         throws Exception
     {
-        ComponentFactory factory = (ComponentFactory) lookup( ComponentFactory.ROLE, "nonjava" );
+        ComponentFactory factory = lookup( ComponentFactory.class, "nonjava" );
 
         assertNotNull( factory );        
     }

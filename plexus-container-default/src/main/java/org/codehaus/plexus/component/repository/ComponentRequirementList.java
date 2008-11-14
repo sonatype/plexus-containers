@@ -1,7 +1,6 @@
 package org.codehaus.plexus.component.repository;
 
 import java.util.List;
-import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,33 +12,32 @@ import java.util.Iterator;
 public class ComponentRequirementList
     extends ComponentRequirement 
 {
-    private List roleHints;
+    private List<String> roleHints;
 
-    public List getRoleHints()
+    public List<String> getRoleHints()
     {
         return roleHints;
     }
 
-    public void setRoleHints(List roleHints)
+    public void setRoleHints(List<String> roleHints)
     {
         this.roleHints = roleHints;
     }
 
     public String getRoleHint()
     {
-        StringBuffer ret = new StringBuffer();
-        Iterator iter = getRoleHints().iterator();
-
-        while (iter.hasNext()) {
-            String hint = (String) iter.next();
-            ret.append(hint);
-
-            if (iter.hasNext())
+        StringBuffer buffer = new StringBuffer();
+        for ( String hint : roleHints )
+        {
+            if (buffer.length() > 0)
             {
-                ret.append(",");
+                buffer.append(",");
             }
+
+            buffer.append(hint);
+
         }
 
-        return ret.toString();
+        return buffer.toString();
     }
 }

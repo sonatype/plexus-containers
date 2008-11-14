@@ -31,28 +31,24 @@ public interface ComponentRepository
     void initialize()
         throws ComponentRepositoryException;
 
-    boolean hasComponent( String role, ClassRealm realm );
-
-    boolean hasComponent( String role,
-                          String id, ClassRealm realm );
-
-    void addComponentDescriptor( ComponentDescriptor componentDescriptor )
+    void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
         throws ComponentRepositoryException;
 
     void addComponentDescriptor( PlexusConfiguration configuration )
         throws ComponentRepositoryException;
 
-    ComponentDescriptor getComponentDescriptor( String role, ClassRealm realm );
+    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint );
 
-    ComponentDescriptor getComponentDescriptor( String role, String roleHint, ClassRealm realm );
+    @Deprecated
+    ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint, ClassRealm realm );
 
-    Map<String, ComponentDescriptor> getComponentDescriptorMap( String role, ClassRealm realm );
+    <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type, String role );
 
-    List getComponentDependencies( ComponentDescriptor componentDescriptor );
+    <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type, String role );
 
     // need to change this exception as not being able to find the class is but
     // only one validation problem. will do for now as i build up the tests.
-    void validateComponentDescriptor( ComponentDescriptor componentDescriptor )
+    void validateComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
         throws ComponentImplementationNotFoundException;
 
     void setClassRealm( ClassRealm classRealm );

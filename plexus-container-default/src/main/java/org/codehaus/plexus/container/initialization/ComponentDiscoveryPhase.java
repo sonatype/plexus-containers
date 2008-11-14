@@ -26,7 +26,6 @@ import org.codehaus.plexus.configuration.PlexusComponentDescriptorMerger;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -57,7 +56,7 @@ public class ComponentDiscoveryPhase
     /**
      * @deprecated use {@link ComponentDiscoveryPhase#discoverComponents(DefaultPlexusContainer, ClassRealm, boolean)}
      */
-    public static List discoverComponents( DefaultPlexusContainer container, ClassRealm realm )
+    public static List<ComponentDescriptor<?>> discoverComponents( DefaultPlexusContainer container, ClassRealm realm )
         throws PlexusConfigurationException,
             ComponentRepositoryException
     {
@@ -65,7 +64,7 @@ public class ComponentDiscoveryPhase
     }
 
     // This can be radically simplified
-    public static List<ComponentDescriptor> discoverComponents( DefaultPlexusContainer container, ClassRealm realm, boolean override )
+    public static List<ComponentDescriptor<?>> discoverComponents( DefaultPlexusContainer container, ClassRealm realm, boolean override )
         throws PlexusConfigurationException,
             ComponentRepositoryException
     {
@@ -73,92 +72,78 @@ public class ComponentDiscoveryPhase
         // listener is listed in the plexus.xml file that will be discovered and processed
         // before the components.xml are discovered in JARs and processed.
 
-        List<ComponentDescriptor> discoveredComponentDescriptors = new ArrayList<ComponentDescriptor>();
+        List<ComponentDescriptor<?>> discoveredComponentDescriptors = new ArrayList<ComponentDescriptor<?>>();
 
         for ( ComponentDiscoverer componentDiscoverer : container.getComponentDiscovererManager().getComponentDiscoverers() )
         {
 
-            List componentSetDescriptors = componentDiscoverer.findComponents( container.getContext(), realm );
-
-            for ( Iterator j = componentSetDescriptors.iterator(); j.hasNext(); )
+            for ( ComponentSetDescriptor componentSet : componentDiscoverer.findComponents( container.getContext(), realm ) )
             {
-                ComponentSetDescriptor componentSet = (ComponentSetDescriptor) j.next();
-
-                List componentDescriptors = componentSet.getComponents();
-
-                if ( componentDescriptors != null )
+                for ( ComponentDescriptor<?> componentDescriptor : componentSet.getComponents() )
                 {
-                    for ( Iterator k = componentDescriptors.iterator(); k.hasNext(); )
+                    // If the user has already defined a component descriptor for this particular
+                    // component then do not let the discovered component descriptor override
+                    // the user defined one.
+
+                    // Use the parent realm to search for the original descriptor. It won't
+                    // be in the current realm (yet).
+                    ComponentDescriptor<?> orig = container.getComponentRepository().getComponentDescriptor(
+                        componentDescriptor.getRole(),
+                        componentDescriptor.getRoleHint(),
+                        realm);
+
+                    if ( orig == null )
                     {
-                        ComponentDescriptor componentDescriptor = (ComponentDescriptor) k.next();
+                        container.addComponentDescriptor( componentDescriptor );
 
-                        componentDescriptor.setComponentSetDescriptor( componentSet );
+                        // We only want to add components that have not yet been
+                        // discovered in a parent realm. We don't quite have fine
+                        // grained control over this right now but this is for
+                        // dynamic additions which are only happening from maven
+                        // at the moment. And plugins have a parent realm and
+                        // a grand parent realm so if the component has been
+                        // discovered it's most likely in those realms.
 
-                        // If the user has already defined a component descriptor for this particular
-                        // component then do not let the discovered component descriptor override
-                        // the user defined one.
+                        // I actually need to keep track of what realm a component
+                        // was discovered in so that i can accurately search the
+                        // parents.
 
-                        // Use the parent realm to search for the original descriptor. It won't
-                        // be in the current realm (yet).
-                        ComponentDescriptor orig = container.getComponentDescriptor( componentDescriptor.getRole(),
-                            componentDescriptor.getRoleHint(), realm );
-
-                        if ( orig == null )
+                        discoveredComponentDescriptors.add( componentDescriptor );
+                    }
+                    else if ( override )
+                    {
+                        if ( orig.getRealm() != null && !orig.getRealm().equals( componentDescriptor.getRealm() ) )
                         {
-                            componentDescriptor.setRealmId( realm.getId() );
-
-                            container.addComponentDescriptor( componentDescriptor );
-
-                            // We only want to add components that have not yet been
-                            // discovered in a parent realm. We don't quite have fine
-                            // grained control over this right now but this is for
-                            // dynamic additions which are only happening from maven
-                            // at the moment. And plugins have a parent realm and
-                            // a grand parent realm so if the component has been
-                            // discovered it's most likely in those realms.
-
-                            // I actually need to keep track of what realm a component
-                            // was discovered in so that i can accurately search the
-                            // parents.
-
-                            discoveredComponentDescriptors.add( componentDescriptor );
-                        }
-                        else if ( override )
-                        {
-                            if ( orig.getRealmId() != null
-                                && !orig.getRealmId().equals( componentDescriptor.getRealmId() ) )
+                            // Different realms
+                            if ( container.getLogger().isDebugEnabled() )
                             {
-                                if ( container.getLogger().isDebugEnabled() )
-                                {
-                                    container.getLogger().debug(
-                                        "Duplicate component found, merging:" + "\n  Original: " + orig.getRealmId()
-                                            + ": " + orig.getRole() + " [" + orig.getRoleHint() + "] impl="
-                                            + orig.getImplementation() + "\n  Config: " + orig.getConfiguration()
-                                            + "\n  New:      " + componentDescriptor.getRealmId() + ": "
-                                            + componentDescriptor.getRole() + " [" + orig.getRoleHint() + "] impl="
-                                            + componentDescriptor.getImplementation() + "\n  Config: "
-                                            + orig.getConfiguration() );
-                                }
-                                PlexusComponentDescriptorMerger.merge( componentDescriptor, orig );
+                                container.getLogger().debug(
+                                    "Duplicate component found, merging:" + "\n  Original: " + orig.getRealm()
+                                        + ": " + orig.getRole() + " [" + orig.getRoleHint() + "] impl="
+                                        + orig.getImplementation() + "\n  Config: " + orig.getConfiguration()
+                                        + "\n  New:      " + componentDescriptor.getRealm() + ": "
+                                        + componentDescriptor.getRole() + " [" + orig.getRoleHint() + "] impl="
+                                        + componentDescriptor.getImplementation() + "\n  Config: "
+                                        + orig.getConfiguration() );
                             }
-                            else if ( orig.getRealmId() != null
-                                && orig.getRealmId().equals( componentDescriptor.getRealmId() ) )
-                            {
-                                // two decls for the same component in the same realm.
-                                // Use classpath order - first one wins.
+                            PlexusComponentDescriptorMerger.merge( componentDescriptor, orig );
+                        }
+                        else if ( orig.getRealm() != null && orig.getRealm().equals( componentDescriptor.getRealm() ) )
+                        {
+                            // two decls for the same component in the same realm.
+                            // Use classpath order - first one wins.
 
-                                if ( container.getLogger().isDebugEnabled() )
-                                {
-                                    container.getLogger().debug(
-                                        "Duplicate component found, not replacing:" + "\n  Original: "
-                                            + orig.getRealmId() + ": " + orig.getRole() + " [" + orig.getRoleHint()
-                                            + "] impl=" + orig.getImplementation() + "\n  Config: "
-                                            + orig.getConfiguration() + "\n  New:      "
-                                            + componentDescriptor.getRealmId() + ": " + componentDescriptor.getRole()
-                                            + " [" + orig.getRoleHint() + "] impl="
-                                            + componentDescriptor.getImplementation() + "\n  Config: "
-                                            + orig.getConfiguration() );
-                                }
+                            if ( container.getLogger().isDebugEnabled() )
+                            {
+                                container.getLogger().debug(
+                                    "Duplicate component found, not replacing:" + "\n  Original: "
+                                        + orig.getRealm() + ": " + orig.getRole() + " [" + orig.getRoleHint()
+                                        + "] impl=" + orig.getImplementation() + "\n  Config: "
+                                        + orig.getConfiguration() + "\n  New:      "
+                                        + componentDescriptor.getRealm() + ": " + componentDescriptor.getRole()
+                                        + " [" + orig.getRoleHint() + "] impl="
+                                        + componentDescriptor.getImplementation() + "\n  Config: "
+                                        + orig.getConfiguration() );
                             }
                         }
                     }

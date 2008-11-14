@@ -3,7 +3,6 @@ package org.codehaus.plexus.configuration;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -23,21 +22,21 @@ public class PlexusComponentDescriptorMerger
     /**
      * Merges override and target, where target is updated with override.
      */
-    public static void merge( ComponentDescriptor override, ComponentDescriptor target )
+    public static void merge( ComponentDescriptor<?> override, ComponentDescriptor<?> target )
     {
         if ( override.getImplementation() != null )
         {
             target.setImplementation( override.getImplementation() );
         }
 
-        mergeRequirements( override.getRequirements(), target.getRequirements() );
+        mergeRequirements( override, target );
 
         mergeConfiguration( override, target );
 
         // TODO: other getters/setters.
     }
 
-    private static void mergeConfiguration( ComponentDescriptor override, ComponentDescriptor target )
+    private static void mergeConfiguration( ComponentDescriptor<?> override, ComponentDescriptor<?> target )
     {
         // try to parse the override dom. If this fails, do not update anything and keep
         // the original target configuration.
@@ -88,25 +87,22 @@ public class PlexusComponentDescriptorMerger
         target.setConfiguration( new XmlPlexusConfiguration( targetDom ) );
     }
 
-    private static void mergeRequirements( List overrides, List target )
+    private static void mergeRequirements( ComponentDescriptor<?> override, ComponentDescriptor<?> target )
     {
-        List toAdd = new ArrayList();
+        List<ComponentRequirement> toAdd = new ArrayList<ComponentRequirement>();
+        List<ComponentRequirement> toRemove = new ArrayList<ComponentRequirement>();
 
-        for ( Iterator it = overrides.iterator(); it.hasNext(); )
+        for ( ComponentRequirement sourceReq : override.getRequirements() )
         {
-            ComponentRequirement sourceReq = (ComponentRequirement) it.next();
-
-            for ( Iterator it2 = target.iterator(); it2.hasNext(); )
+            for ( ComponentRequirement targetReq : target.getRequirements() )
             {
-                ComponentRequirement targetReq = (ComponentRequirement) it2.next();
-
                 // if a fieldName is specified, only override target requirements
                 // that also have a fieldname.
                 if ( sourceReq.getFieldName() != null )
                 {
-                    if ( targetReq.getFieldName() != null && sourceReq.getFieldName().equals( targetReq.getFieldName() ) )
+                    if ( sourceReq.getFieldName().equals( targetReq.getFieldName() ) )
                     {
-                        it2.remove();
+                        toRemove.add( targetReq );
                         toAdd.add( sourceReq );
                         break;
                     }
@@ -118,14 +114,15 @@ public class PlexusComponentDescriptorMerger
 
                     if ( sourceReq.getRole().equals( targetReq.getRole() ) )
                     {
-                        it2.remove();
+                        toRemove.add( targetReq );
                         toAdd.add( sourceReq );
                     }
                 }
             }
         }
 
-        target.addAll( toAdd );
+        target.removeRequirements( toRemove );
+        target.addRequirements( toAdd );
     }
 
 }

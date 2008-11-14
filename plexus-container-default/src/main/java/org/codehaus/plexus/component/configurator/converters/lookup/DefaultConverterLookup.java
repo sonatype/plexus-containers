@@ -24,7 +24,6 @@ package org.codehaus.plexus.component.configurator.converters.lookup;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.component.collections.ComponentList;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.converters.ConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.BooleanConverter;
@@ -49,19 +48,19 @@ import org.codehaus.plexus.component.configurator.converters.composite.PlexusCon
 import org.codehaus.plexus.component.configurator.converters.composite.PropertiesConverter;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DefaultConverterLookup
     implements ConverterLookup
 {
-    private List converters;
+    private final List<ConfigurationConverter> converters = new ArrayList<ConfigurationConverter>();
 
-    private List customConverters;
+    private final List<ConfigurationConverter> customConverters = new CopyOnWriteArrayList<ConfigurationConverter>();
 
-    private Map converterMap = new HashMap();
+    private final Map<Class<?>, ConfigurationConverter> converterMap = new HashMap<Class<?>, ConfigurationConverter>();
 
     public DefaultConverterLookup()
     {
@@ -72,46 +71,22 @@ public class DefaultConverterLookup
 
     public synchronized void registerConverter( ConfigurationConverter converter )
     {
-        if ( customConverters == null )
-        {
-            customConverters = new LinkedList();
-        }
-        // FIXME: Why is this using active collections at all??
-        // This is being used by the AntRun plugin which pokes in a custom converter. Ideally a component
-        // should be able to contribute converters to plexus which having to resort to this. jvz.
-        else if ( ( customConverters instanceof ComponentList ) )
-        {
-            List oldConverters = customConverters;
-
-            customConverters = new LinkedList();
-
-            if ( oldConverters != null )
-            {
-                customConverters.addAll( oldConverters );
-            }
-        }
-
         customConverters.add( converter );
     }
 
     protected void registerDefaultConverter( ConfigurationConverter converter )
     {
-        if ( converters == null )
-        {
-            converters = new LinkedList();
-        }
-
         converters.add( converter );
     }
 
-    public ConfigurationConverter lookupConverterForType( Class type )
+    public ConfigurationConverter lookupConverterForType( Class<?> type )
         throws ComponentConfigurationException
     {
         ConfigurationConverter retValue = null;
 
         if ( converterMap.containsKey( type ) )
         {
-            retValue = (ConfigurationConverter) converterMap.get( type );
+            retValue = converterMap.get( type );
         }
         else
         {
@@ -135,12 +110,10 @@ public class DefaultConverterLookup
         return retValue;
     }
 
-    private ConfigurationConverter findConverterForType( List converters, Class type )
+    private ConfigurationConverter findConverterForType( List<ConfigurationConverter> converters, Class<?> type )
     {
-        for ( Iterator iterator = converters.iterator(); iterator.hasNext(); )
+        for ( ConfigurationConverter converter : converters )
         {
-            ConfigurationConverter converter = (ConfigurationConverter) iterator.next();
-
             if ( converter.canConvert( type ) )
             {
                 converterMap.put( type, converter );

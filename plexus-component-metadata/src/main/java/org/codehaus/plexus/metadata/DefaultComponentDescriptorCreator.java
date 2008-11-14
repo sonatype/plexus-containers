@@ -32,7 +32,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +77,7 @@ public class DefaultComponentDescriptorCreator
     extends AbstractLogEnabled
     implements ComponentDescriptorCreator
 {
-    private List gleaners;
+    private List<ComponentGleaner> gleaners;
 
     private Merger merger;
 
@@ -94,7 +93,7 @@ public class DefaultComponentDescriptorCreator
         processSources( sourceDirectories, outputFile, false, new ComponentDescriptor[0] );
     }
 
-    public void processSources( File[] sourceDirectories, File outputFile, boolean containerDescriptor, ComponentDescriptor[] roleDefaults )
+    public void processSources( File[] sourceDirectories, File outputFile, boolean containerDescriptor, ComponentDescriptor<?>[] roleDefaults )
         throws ComponentDescriptorCreatorException
     {
         // ----------------------------------------------------------------------
@@ -107,13 +106,12 @@ public class DefaultComponentDescriptorCreator
 
         getLogger().debug( "Source directories: " );
 
-        for ( int it = 0; it < sourceDirectories.length; it++ )
+        for ( File sourceDirectory : sourceDirectories )
         {
-            File sourceDirectory = sourceDirectories[it];
-
             if ( !sourceDirectory.isDirectory() )
             {
-                getLogger().debug( "Specified source directory isn't a directory: " + "'" + sourceDirectory.getAbsolutePath() + "'." );
+                getLogger().debug(
+                    "Specified source directory isn't a directory: " + "'" + sourceDirectory.getAbsolutePath() + "'." );
             }
 
             getLogger().debug( " - " + sourceDirectory.getAbsolutePath() );
@@ -127,41 +125,40 @@ public class DefaultComponentDescriptorCreator
 
         javaSources = builder.getSources();
 
-        Map defaultsByRole = new HashMap();
+        Map<String, ComponentDescriptor<?>> defaultsByRole = new HashMap<String, ComponentDescriptor<?>>();
 
         if ( roleDefaults != null )
         {
-            for ( int i = 0; i < roleDefaults.length; i++ )
+            for ( ComponentDescriptor<?> roleDefault : roleDefaults )
             {
                 // TODO: fail if role is null
-                defaultsByRole.put( roleDefaults[i].getRole(), roleDefaults[i] );
+                defaultsByRole.put( roleDefault.getRole(), roleDefault );
             }
         }
 
-        List componentDescriptors = new ArrayList();
+        List<ComponentDescriptor<?>> componentDescriptors = new ArrayList<ComponentDescriptor<?>>();
 
-        Map abstractComponentMap = new HashMap();
+        Map<JavaClass, ComponentDescriptor<?>> abstractComponentMap = new HashMap<JavaClass, ComponentDescriptor<?>>();
 
-        for ( int i = 0; i < javaSources.length; i++ )
+        for ( JavaSource javaSource : javaSources )
         {
-            if ("package-info.java".equalsIgnoreCase(javaSources[i].getFile().getName())) {
+            if ( "package-info.java".equalsIgnoreCase( javaSource.getFile().getName() ) )
+            {
                 // Skip Java5-style package documentation files
                 continue;
             }
 
-            JavaClass javaClass = getJavaClass( javaSources[i] );
-            if (javaClass == null)
+            JavaClass javaClass = getJavaClass( javaSource );
+            if ( javaClass == null )
             {
                 continue;
             }
 
-            for (Iterator j = gleaners.iterator(); j.hasNext();)
+            for ( ComponentGleaner gleaner : gleaners )
             {
-                ComponentGleaner gleaner = (ComponentGleaner) j.next();
-                
-                getLogger().debug("Trying gleaner: " + gleaner);
-                
-                ComponentDescriptor componentDescriptor = gleaner.glean( builder, javaClass );
+                getLogger().debug( "Trying gleaner: " + gleaner );
+
+                ComponentDescriptor<?> componentDescriptor = gleaner.glean( builder, javaClass );
 
                 if ( javaClass.isAbstract() )
                 {
@@ -172,7 +169,8 @@ public class DefaultComponentDescriptorCreator
                     // TODO: better merge, perhaps pass it into glean as the starting point instead
                     if ( defaultsByRole.containsKey( componentDescriptor.getRole() ) )
                     {
-                        ComponentDescriptor desc = (ComponentDescriptor) defaultsByRole.get( componentDescriptor.getRole() );
+                        ComponentDescriptor<?> desc = defaultsByRole.get(
+                            componentDescriptor.getRole() );
 
                         if ( componentDescriptor.getInstantiationStrategy() == null )
                         {
@@ -182,13 +180,14 @@ public class DefaultComponentDescriptorCreator
 
                     // Look at the abstract component of this component and grab all its requirements
 
-                    ComponentDescriptor abstractComponent = (ComponentDescriptor) abstractComponentMap.get( javaClass.getSuperJavaClass() );
+                    ComponentDescriptor<?> abstractComponent = abstractComponentMap.get(
+                        javaClass.getSuperJavaClass() );
 
                     if ( abstractComponent != null )
                     {
-                        for ( Iterator k = abstractComponent.getRequirements().iterator(); k.hasNext(); )
+                        for ( ComponentRequirement componentRequirement : abstractComponent.getRequirements() )
                         {
-                            componentDescriptor.addRequirement( ( ComponentRequirement) k.next() );
+                            componentDescriptor.addRequirement( componentRequirement );
                         }
                     }
 
@@ -256,16 +255,15 @@ public class DefaultComponentDescriptorCreator
         }
     }
 
-    public void mergeDescriptors( File outputDescriptor, List descriptors )
+    public void mergeDescriptors( File outputDescriptor, List<File> descriptors )
         throws ComponentDescriptorCreatorException
     {
         SAXBuilder builder = new SAXBuilder();
 
         Document finalDoc = null;
 
-        for ( Iterator i = descriptors.iterator(); i.hasNext(); )
+        for ( File f : descriptors )
         {
-            File f = (File) i.next();
             try
             {
                 Document doc = builder.build( f );
@@ -314,17 +312,15 @@ public class DefaultComponentDescriptorCreator
     private void validateConfiguration( ComponentSetDescriptor componentSetDescriptor )
         throws ComponentDescriptorCreatorException
     {
-        List dependencies = componentSetDescriptor.getDependencies();
+        List<ComponentDependency> dependencies = componentSetDescriptor.getDependencies();
 
         if ( dependencies == null )
         {
             return;
         }
 
-        for ( Iterator it = dependencies.iterator(); it.hasNext(); )
+        for ( ComponentDependency dependency : dependencies )
         {
-            ComponentDependency dependency = (ComponentDependency) it.next();
-
             if ( StringUtils.isEmpty( dependency.getGroupId() ) )
             {
                 throw new ComponentDescriptorCreatorException( "Missing dependency element: 'groupId'." );

@@ -33,7 +33,7 @@ public interface CompositionResolver
      * @param componentDescriptor
      * @throws CompositionException when cycle is detected
      */
-    void addComponentDescriptor( ComponentDescriptor componentDescriptor ) throws CompositionException;
+    void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) throws CompositionException;
 
     /**
      * Returns the list of names of components which are required

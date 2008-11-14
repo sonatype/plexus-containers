@@ -27,7 +27,7 @@ public class DefaultComponentLookupManagerTest
 
         try
         {
-            container.lookup( ComponentA.ROLE );
+            container.lookup( ComponentA.class );
 
             fail( "Expected exception" );
         }

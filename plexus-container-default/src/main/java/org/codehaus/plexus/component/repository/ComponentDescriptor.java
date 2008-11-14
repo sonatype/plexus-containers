@@ -17,10 +17,13 @@ package org.codehaus.plexus.component.repository;
  */
 
 import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Component instantiation description.
@@ -30,7 +33,7 @@ import java.util.List;
  * @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
-public class ComponentDescriptor
+public class ComponentDescriptor<T>
 {
     private String alias = null;
 
@@ -38,21 +41,23 @@ public class ComponentDescriptor
 
     private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
 
-    private String implementation = null;
+    private String implementation;
 
-    private String version = null;
+    private Class<? extends T> implementationClass;
 
-    private String componentType = null;
+    private String version;
 
-    private PlexusConfiguration configuration = null;
+    private String componentType;
 
-    private String instantiationStrategy = null;
+    private PlexusConfiguration configuration;
 
-    private String lifecycleHandler = null;
+    private String instantiationStrategy;
 
-    private String componentProfile = null;
+    private String lifecycleHandler;
 
-    private List requirements;
+    private String componentProfile;
+
+    private final List<ComponentRequirement> requirements = new ArrayList<ComponentRequirement>();
 
     private String componentFactory;
 
@@ -62,7 +67,7 @@ public class ComponentDescriptor
 
     private String description;
 
-    private String realmId;
+    private ClassRealm realm;
 
     // ----------------------------------------------------------------------
     // These two fields allow for the specification of an isolated class realm
@@ -73,8 +78,6 @@ public class ComponentDescriptor
 
     private boolean isolatedRealm;
 
-    private List dependencies;
-
     // ----------------------------------------------------------------------
 
     private ComponentSetDescriptor componentSetDescriptor;
@@ -84,6 +87,15 @@ public class ComponentDescriptor
     // ----------------------------------------------------------------------
     // Instance methods
     // ----------------------------------------------------------------------
+
+    public ComponentDescriptor()
+    {
+    }
+
+    public ComponentDescriptor( Class<T> implementationClass )
+    {
+        this.implementationClass = implementationClass;
+    }
 
     /**
      * The location this information came from (descriptor file URI).
@@ -110,18 +122,18 @@ public class ComponentDescriptor
     {
         StringBuffer key = new StringBuffer();
 
-        key.append( "role: '" + role + "'" );
+        key.append( "role: '" ).append( role ).append( "'" );
 
-        key.append( ", implementation: '" + implementation + "'" );
+        key.append( ", implementation: '" ).append( implementation ).append( "'" );
 
         if ( roleHint != null )
         {
-            key.append( ", role hint: '" + roleHint + "'" );
+            key.append( ", role hint: '" ).append( roleHint ).append( "'" );
         }
 
         if ( alias != null )
         {
-            key.append( ", alias: '" + alias + "'" );
+            key.append( ", alias: '" ).append( alias ).append( "'" );
         }
 
         return key.toString();
@@ -214,6 +226,49 @@ public class ComponentDescriptor
     public void setImplementation( String implementation )
     {
         this.implementation = implementation;
+
+        // reload implementation class
+        implementationClass = null;
+        attemptImplementationLoad();
+    }
+
+    /**
+     * Returns the implementation class of this componet, or null if the implementation class can not be loaded.
+     *
+     * @return the implementation of this componet's role.
+     */
+    public Class<? extends T> getImplementationClass()
+    {
+        attemptImplementationLoad();
+
+        if (implementationClass == null) {
+            return (Class<T>) Object.class;
+        }
+        return implementationClass;
+    }
+
+    private void attemptImplementationLoad()
+    {
+        if ( implementationClass == null && implementation != null && realm != null )
+        {
+            try
+            {
+                implementationClass = realm.loadClass( implementation );
+            }
+            catch ( Throwable ignored )
+            {
+            }
+        }
+    }
+
+    public void setImplementationClass( Class<? extends T> implementationClass )
+    {
+        this.implementationClass = implementationClass;
+        if (implementationClass == null) {
+            implementation = null;
+        } else {
+            implementation = implementationClass.getName();
+        }
     }
 
     /**
@@ -331,9 +386,9 @@ public class ComponentDescriptor
      *
      * @param requirement the requirement to add
      */
-    public void addRequirement( final ComponentRequirement requirement )
+    public void addRequirement( ComponentRequirement... requirement )
     {
-        getRequirements().add( requirement );
+        this.requirements.addAll( Arrays.asList( requirement ));
     }
 
     /**
@@ -341,9 +396,29 @@ public class ComponentDescriptor
      *
      * @param requirements the requirements to add
      */
-    public void addRequirements( List requirements )
+    public void addRequirements( List<ComponentRequirement> requirements )
     {
-        getRequirements().addAll( requirements );
+        this.requirements.addAll( requirements );
+    }
+
+    /**
+     * Remove a project requirement from this component.
+     *
+     * @param requirement the requirement to remove
+     */
+    public void removeRequirement( ComponentRequirement... requirement )
+    {
+        this.requirements.removeAll( Arrays.asList( requirement ));
+    }
+
+    /**
+     * Removes a list of requirements from this component.
+     *
+     * @param requirements the requirements to remove
+     */
+    public void removeRequirements( List<ComponentRequirement> requirements )
+    {
+        this.requirements.removeAll( requirements );
     }
 
     /**
@@ -351,13 +426,9 @@ public class ComponentDescriptor
      *
      * @return all project requirements of this component
      */
-    public List getRequirements()
+    public List<ComponentRequirement> getRequirements()
     {
-        if ( requirements == null )
-        {
-            requirements = new ArrayList();
-        }
-        return requirements;
+        return Collections.unmodifiableList( requirements );
     }
 
     /**
@@ -476,16 +547,6 @@ public class ComponentDescriptor
     }
 
     /**
-     * Returns a List of dependencies of this component.
-     *
-     * @return a List of dependencies of this component
-     */
-    public List getDependencies()
-    {
-        return dependencies;
-    }
-
-    /**
      * Returns the type of component configurator for this project. For example "basic" for normal, or "map-oriented"
      * for map oriented components.
      *
@@ -511,19 +572,23 @@ public class ComponentDescriptor
      *
      * @return ClassRealm that this component lives under
      */
-    public String getRealmId()
+    public ClassRealm getRealm()
     {
-        return realmId;
+        return realm;
     }
 
     /**
-     * Set the id of the ClassRealm that this component lives under.
+     * Set the ClassRealm that this component lives under.
      *
-     * @param realmId ClassRealm id
+     * @param realm the ClassRealm that this component lives under
      */
-    public void setRealmId( String realmId )
+    public void setRealm( ClassRealm realm )
     {
-        this.realmId = realmId;
+        this.realm = realm;
+
+        // reload implementation class
+        implementationClass = null;
+        attemptImplementationLoad();
     }
 
     // Component identity established here!
@@ -535,19 +600,19 @@ public class ComponentDescriptor
         }
         else
         {
-            ComponentDescriptor otherDescriptor = (ComponentDescriptor) other;
+            ComponentDescriptor<?> otherDescriptor = (ComponentDescriptor<?>) other;
 
             boolean isEqual = true;
 
             String role = getRole();
             String otherRole = otherDescriptor.getRole();
 
-            isEqual = isEqual && ( ( role == otherRole ) || role.equals( otherRole ) );
+            isEqual = isEqual && ( ( role.equals( otherRole ) ) || role.equals( otherRole ) );
 
             String roleHint = getRoleHint();
             String otherRoleHint = otherDescriptor.getRoleHint();
 
-            isEqual = isEqual && ( ( roleHint == otherRoleHint ) || roleHint.equals( otherRoleHint ) );
+            isEqual = isEqual && ( ( roleHint.equals( otherRoleHint ) ) || roleHint.equals( otherRoleHint ) );
 
             return isEqual;
         }
@@ -556,7 +621,7 @@ public class ComponentDescriptor
     public String toString()
     {
         return getClass().getName() + " [role: '" + getRole() + "', hint: '" + getRoleHint() + "', realm: "
-            + ( realmId == null ? "NULL" : "'" + realmId + "'" ) + "]";
+            + ( realm == null ? "NULL" : "'" + realm + "'" ) + "]";
     }
 
     public int hashCode()

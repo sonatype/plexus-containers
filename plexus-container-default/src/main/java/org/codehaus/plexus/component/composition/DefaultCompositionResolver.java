@@ -36,25 +36,21 @@ public class DefaultCompositionResolver
 {
     private DAG dag = new DAG();
 
-    public void addComponentDescriptor( ComponentDescriptor componentDescriptor )
+    public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
         throws CompositionException
     {
         String key = getDAGKey( componentDescriptor.getRole(), componentDescriptor.getRoleHint() );
 
-        List requirements = componentDescriptor.getRequirements();
+        List<ComponentRequirement> requirements = componentDescriptor.getRequirements();
 
-        for ( Iterator iterator = requirements.iterator(); iterator.hasNext(); )
+        for ( ComponentRequirement requirement : requirements )
         {
-            ComponentRequirement requirement = (ComponentRequirement) iterator.next();
-
             try
             {
                 if ( requirement instanceof ComponentRequirementList )
                 {
-                    Iterator iter = ( (ComponentRequirementList) requirement ).getRoleHints().iterator();
-
-                    while (iter.hasNext()) {
-                        String hint = (String) iter.next();
+                    for ( String hint : ( (ComponentRequirementList) requirement ).getRoleHints() )
+                    {
                         dag.addEdge( key, getDAGKey( requirement.getRole(), hint ) );
                     }
                 }

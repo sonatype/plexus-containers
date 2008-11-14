@@ -26,7 +26,6 @@ package org.codehaus.plexus.metadata;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.plexus.component.repository.ComponentDependency;
@@ -78,7 +77,7 @@ public class DefaultComponentDescriptorWriter
 
     }
 
-    private void writeComponents( XMLWriter w, List componentDescriptors )
+    private void writeComponents( XMLWriter w, List<ComponentDescriptor<?>> componentDescriptors )
         throws ComponentDescriptorWriteException, PlexusConfigurationException
     {
         if ( componentDescriptors == null )
@@ -88,11 +87,9 @@ public class DefaultComponentDescriptorWriter
 
         w.startElement( "components" );
 
-        for ( Iterator i = componentDescriptors.iterator(); i.hasNext(); )
+        for ( ComponentDescriptor<?> cd : componentDescriptors )
         {
             w.startElement( "component" );
-
-            ComponentDescriptor cd = (ComponentDescriptor) i.next();
 
             element( w, "role", cd.getRole() );
 
@@ -120,7 +117,7 @@ public class DefaultComponentDescriptorWriter
 
             element( w, "alias", cd.getAlias() );
 
-            element( w, "isolated-realm", Boolean.toString(cd.isIsolatedRealm()) );
+            element( w, "isolated-realm", Boolean.toString( cd.isIsolatedRealm() ) );
 
             writeRequirements( w, cd.getRequirements() );
 
@@ -132,7 +129,7 @@ public class DefaultComponentDescriptorWriter
         w.endElement();
     }
 
-    public void writeDependencies( XMLWriter w, List deps )
+    public void writeDependencies( XMLWriter w, List<ComponentDependency> deps )
     {
         if ( deps == null || deps.size() == 0 )
         {
@@ -141,9 +138,9 @@ public class DefaultComponentDescriptorWriter
 
         w.startElement( "dependencies" );
 
-        for ( int i = 0; i < deps.size(); i++ )
+        for ( ComponentDependency dep : deps )
         {
-            writeDependencyElement( (ComponentDependency) deps.get( i ), w );
+            writeDependencyElement( dep, w );
         }
 
         w.endElement();
@@ -175,7 +172,7 @@ public class DefaultComponentDescriptorWriter
         w.endElement();
     }
 
-    private void writeRequirements( XMLWriter w, List requirements )
+    private void writeRequirements( XMLWriter w, List<ComponentRequirement> requirements )
     {
         if ( requirements == null || requirements.size() == 0 )
         {
@@ -184,26 +181,22 @@ public class DefaultComponentDescriptorWriter
 
         w.startElement( "requirements" );
 
-        for ( Iterator j = requirements.iterator(); j.hasNext(); )
+        for ( ComponentRequirement cr : requirements )
         {
-            ComponentRequirement cr = (ComponentRequirement) j.next();
-
             w.startElement( "requirement" );
 
             element( w, "role", cr.getRole() );
 
             if ( cr instanceof ComponentRequirementList )
             {
-                List hints = ( (ComponentRequirementList) cr ).getRoleHints();
+                List<String> hints = ( (ComponentRequirementList) cr ).getRoleHints();
 
                 if ( hints != null )
                 {
                     w.startElement( "role-hints" );
 
-                    for ( Iterator k = hints.iterator(); k.hasNext(); )
+                    for ( String roleHint : hints )
                     {
-                        String roleHint = (String) k.next();
-
                         w.startElement( "role-hint" );
 
                         w.writeText( roleHint );
@@ -259,10 +252,8 @@ public class DefaultComponentDescriptorWriter
 
         String[] attributeNames = c.getAttributeNames();
 
-        for ( int i = 0; i < attributeNames.length; i++ )
+        for ( String attributeName : attributeNames )
         {
-            String attributeName = attributeNames[i];
-
             xmlWriter.addAttribute( attributeName, c.getAttribute( attributeName ) );
         }
 
@@ -274,9 +265,9 @@ public class DefaultComponentDescriptorWriter
 
         if ( children.length > 0 )
         {
-            for ( int i = 0; i < children.length; i++ )
+            for ( PlexusConfiguration aChildren : children )
             {
-                writePlexusConfiguration( xmlWriter, children[i] );
+                writePlexusConfiguration( xmlWriter, aChildren );
             }
         }
         else

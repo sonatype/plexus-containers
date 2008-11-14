@@ -19,7 +19,6 @@ package org.codehaus.plexus.component.repository;
 import junit.framework.TestCase;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,7 +49,7 @@ public class ComponentDescriptorTest
             "  </requirements>" +
             "</component>";
 
-        ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
+        ComponentDescriptor<?> c1 = PlexusTools.buildComponentDescriptor( cc1 );
 
         assertEquals( "c1", c1.getRole() );
 
@@ -58,7 +57,7 @@ public class ComponentDescriptorTest
 
         assertEquals( "component-profile", c1.getComponentProfile() );
 
-        List requirements = c1.getRequirements();
+        List<ComponentRequirement> requirements = c1.getRequirements();
 
         assertEquals( 2, requirements.size() );
 
@@ -66,15 +65,13 @@ public class ComponentDescriptorTest
 
         boolean containsC3 = false;
 
-        for ( Iterator iterator = requirements.iterator(); iterator.hasNext(); )
+        for ( ComponentRequirement requirement : requirements )
         {
-            ComponentRequirement requirement = ( ComponentRequirement ) iterator.next();
-
-            if ( requirement.getRole().equals( "c2" ))
+            if ( requirement.getRole().equals( "c2" ) )
             {
                 containsC2 = true;
             }
-            else if ( requirement.getRole().equals( "c3" ))
+            else if ( requirement.getRole().equals( "c3" ) )
             {
                 containsC3 = true;
             }
@@ -88,11 +85,11 @@ public class ComponentDescriptorTest
     
     public void testShouldNotBeEqualWhenRolesAreSameButHintsAreDifferent()
     {
-        ComponentDescriptor desc = new ComponentDescriptor();
+        ComponentDescriptor<Object> desc = new ComponentDescriptor<Object>();
         desc.setRole("one");
         desc.setRoleHint("one");
         
-        ComponentDescriptor desc2 = new ComponentDescriptor();
+        ComponentDescriptor<Object> desc2 = new ComponentDescriptor<Object>();
         desc2.setRole("one");
         desc2.setRoleHint("two");
         

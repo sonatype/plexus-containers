@@ -60,7 +60,7 @@ public class SlowComponentClassicSingletonComponentManagerTest
         }
 
         //Get master component
-        SlowComponent masterComponent = (SlowComponent) lookup( SlowComponent.ROLE );
+        SlowComponent masterComponent = lookup( SlowComponent.class );
 
         //Verify them
         for ( int i = 0; i < count; i++ )
@@ -88,7 +88,7 @@ public class SlowComponentClassicSingletonComponentManagerTest
             try
             {
 //            DefaultPlexusContainer.setLookupRealm( lookupRealm );
-                SlowComponent tmpComponent = (SlowComponent) container.lookup( SlowComponent.ROLE, container.getLookupRealm() );
+                SlowComponent tmpComponent = container.lookup( SlowComponent.class );
 
                 synchronized ( this )
                 {

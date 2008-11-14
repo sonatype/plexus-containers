@@ -38,29 +38,31 @@ public interface ComponentManagerManager
 {
     String ROLE = ComponentManagerManager.class.getName();
 
-    void addComponentManager( ComponentManager componentManager );
+    void addComponentManagerFactory( ComponentManagerFactory componentManagerFactory );
 
     void setLifecycleHandlerManager( LifecycleHandlerManager lifecycleHandlerManager );
 
-    ComponentManager findComponentManagerByComponentKey( String role, String roleHint, ClassRealm realm );
+    <T> ComponentManager<T> findComponentManager( Class<T> type, String role, String roleHint );
 
-    Map<String, ComponentManager> findAllComponentManagers( String role );
+    Map<String, ComponentManager<?>> findAllComponentManagers( String role );
 
-    Map<String, ComponentManager> findAllComponentManagers( String role, List<String> roleHints );
+    Map<String, ComponentManager<?>> findAllComponentManagers( String role, List<String> roleHints );
 
-    ComponentManager findComponentManagerByComponentInstance( Object component );
+    <T> ComponentManager<T> findComponentManagerByComponentInstance( T component );
 
-    ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
-                                             String role )
+    <T> ComponentManager<T> createComponentManager( ComponentDescriptor<T> descriptor,
+                                                    MutablePlexusContainer container,
+                                                    String role )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException;
 
-    ComponentManager createComponentManager( ComponentDescriptor descriptor, MutablePlexusContainer container,
-                                             String role, String roleHint )
+    <T> ComponentManager<T> createComponentManager( ComponentDescriptor<T> descriptor,
+                                                    MutablePlexusContainer container,
+                                                    String role, String roleHint )
         throws UndefinedComponentManagerException, UndefinedLifecycleHandlerException;
 
     void disposeAllComponents( Logger logger );
 
-    void associateComponentWithComponentManager( Object component, ComponentManager componentManager );
+    <T> void associateComponentWithComponentManager( T component, ComponentManager<T> componentManager );
 
     void unassociateComponentWithComponentManager( Object component );
 

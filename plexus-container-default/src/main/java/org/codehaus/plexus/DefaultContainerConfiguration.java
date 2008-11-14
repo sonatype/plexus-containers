@@ -13,11 +13,11 @@ import org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.factory.DefaultComponentFactoryManager;
-import org.codehaus.plexus.component.manager.ComponentLookupManagerComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
-import org.codehaus.plexus.component.manager.SingletonComponentManager;
-import org.codehaus.plexus.component.manager.PerLookupComponentManager;
+import org.codehaus.plexus.component.manager.PerLookupComponentManagerFactory;
+import org.codehaus.plexus.component.manager.SingletonComponentManagerFactory;
+import org.codehaus.plexus.component.manager.ComponentLookupManagerComponentManagerFactory;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
@@ -54,7 +54,7 @@ public class DefaultContainerConfiguration
 {
     private String name;
 
-    private Map context;
+    private Map<Object, Object> context;
 
     private ClassWorld classWorld;
 
@@ -73,7 +73,7 @@ public class DefaultContainerConfiguration
         return this;
     }
 
-    public ContainerConfiguration setContext( Map context )
+    public ContainerConfiguration setContext( Map<Object, Object> context )
     {
         this.context = context;
 
@@ -123,7 +123,7 @@ public class DefaultContainerConfiguration
         return name;
     }
 
-    public Map getContext()
+    public Map<Object, Object> getContext()
     {
         return context;
     }
@@ -243,11 +243,11 @@ public class DefaultContainerConfiguration
         {
             componentManagerManager = new DefaultComponentManagerManager();
 
-            componentManagerManager.addComponentManager( new PerLookupComponentManager() );
+            componentManagerManager.addComponentManagerFactory( new PerLookupComponentManagerFactory() );
 
-            componentManagerManager.addComponentManager( new SingletonComponentManager() );
+            componentManagerManager.addComponentManagerFactory( new SingletonComponentManagerFactory() );
 
-            componentManagerManager.addComponentManager( new ComponentLookupManagerComponentManager() );
+            componentManagerManager.addComponentManagerFactory( new ComponentLookupManagerComponentManagerFactory() );
         }
 
         return componentManagerManager;

@@ -41,13 +41,11 @@ public class InitializeUserConfigurationSourcePhase
         try
         {
             // is the user overriding the ConfigurationSource (role-hint: default) or only extending it?
-            if ( context.getContainer().hasComponent( ConfigurationSource.ROLE, PlexusConstants.PLEXUS_DEFAULT_HINT ) )
+            if ( context.getContainer().hasComponent( ConfigurationSource.class  ) )
             {
                 // overriding
 
-                ConfigurationSource cs = (ConfigurationSource) context.getContainer().lookup(
-                    ConfigurationSource.ROLE,
-                    PlexusConstants.PLEXUS_DEFAULT_HINT );
+                ConfigurationSource cs = context.getContainer().lookup( ConfigurationSource.class );
 
                 // swap the user provided configuration source with current one
                 context.getContainer().setConfigurationSource( cs );
@@ -55,11 +53,12 @@ public class InitializeUserConfigurationSourcePhase
             else
             {
                 // extending
-                List userConfigurationSources = context.getContainer().lookupList( ConfigurationSource.ROLE );
+                List<ConfigurationSource> userConfigurationSources = context.getContainer().lookupList( ConfigurationSource.class );
 
                 if ( userConfigurationSources.size() > 0 )
                 {
-                    List configurationSources = new ArrayList( userConfigurationSources.size() + 1 );
+                    List<ConfigurationSource> configurationSources =
+                        new ArrayList<ConfigurationSource>( userConfigurationSources.size() + 1 );
 
                     // adding user provied ones to be able to interfere
                     configurationSources.addAll( userConfigurationSources );
@@ -75,13 +74,13 @@ public class InitializeUserConfigurationSourcePhase
                 }
 
                 // register the default source, either the chained or the existing one as default
-                ComponentDescriptor cd = new ComponentDescriptor();
+                ComponentDescriptor<ConfigurationSource> cd = new ComponentDescriptor<ConfigurationSource>();
 
                 cd.setRole( ConfigurationSource.ROLE );
 
                 cd.setRoleHint( PlexusConstants.PLEXUS_DEFAULT_HINT );
 
-                cd.setImplementation( context.getContainer().getConfigurationSource().getClass().getName() );
+                cd.setImplementationClass( context.getContainer().getConfigurationSource().getClass() );
 
                 try
                 {

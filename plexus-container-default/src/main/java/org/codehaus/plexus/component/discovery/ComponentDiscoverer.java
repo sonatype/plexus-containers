@@ -19,6 +19,7 @@ package org.codehaus.plexus.component.discovery;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 
 import java.util.List;
 
@@ -32,6 +33,6 @@ public interface ComponentDiscoverer
 
     void setManager( ComponentDiscovererManager manager );
 
-    List findComponents( Context context, ClassRealm classRealm )
+    List<ComponentSetDescriptor> findComponents( Context context, ClassRealm classRealm )
         throws PlexusConfigurationException;
 }

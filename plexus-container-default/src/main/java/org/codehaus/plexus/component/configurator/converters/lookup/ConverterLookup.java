@@ -32,6 +32,6 @@ public interface ConverterLookup
 {
     void registerConverter( ConfigurationConverter converter );
 
-    ConfigurationConverter lookupConverterForType( Class type )
+    ConfigurationConverter lookupConverterForType( Class<?> type )
         throws ComponentConfigurationException;
 }

@@ -19,10 +19,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.UndefinedComponentManagerException;
+import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -55,68 +55,17 @@ public class DefaultComponentLookupManager
     // -> return a component from the component manager.
     // ----------------------------------------------------------------------
 
-    public Object lookup( String role )
-        throws ComponentLookupException
-    {
-        return lookup( role, null, null );
-    }
-
-    public Object lookup( String role, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return lookup( role, null, realm );
-    }
-
-    public Object lookup( Class componentClass )
-        throws ComponentLookupException
-    {
-        return lookup( componentClass.getName(), null, null );
-    }
-
-    public Object lookup( Class componentClass, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return lookup( componentClass.getName(), null, realm );
-    }
-
     // ----------------------------------------------------------------------------
     // Role + Hint
     // ----------------------------------------------------------------------------
 
-    public Object lookup( Class role, String roleHint, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        return lookup( role.getName(), roleHint, realm );
-    }
-
-    public Object lookup( String role, String roleHint )
-        throws ComponentLookupException
-    {
-        return lookup( role, roleHint, null );
-    }
-
-    public Object lookup( Class role, String roleHint )
-        throws ComponentLookupException
-    {
-        return lookup( role.getName(), roleHint, null );
-    }
-
-    public Object lookup( String role, String roleHint, ClassRealm realm )
-        throws ComponentLookupException
-    {
-        if ( realm == null )
-        {
-            realm = container.getLookupRealm();
-        }
-
-        Object component = lookupInternal( role, roleHint, realm );
-        return component;
-    }
-
-    private Object lookupInternal( String role, String roleHint, ClassRealm realm )
-        throws ComponentLookupException
+    public <T> T lookup( Class<T> type, String role, String roleHint ) throws ComponentLookupException
     {
         // verify arguments
+        if ( type == null )
+        {
+            throw new NullPointerException( "type is null" );
+        }
         if ( role == null )
         {
             throw new NullPointerException( "role is null" );
@@ -127,35 +76,36 @@ public class DefaultComponentLookupManager
         }
 
         // lookup an existing component
-        ComponentManager componentManager = container.getComponentManagerManager().findComponentManagerByComponentKey( role, roleHint, realm );
+        ComponentManagerManager componentManagerManager = container.getComponentManagerManager();
+        ComponentManager<T> componentManager = componentManagerManager.findComponentManager( type, role, roleHint );
 
         // The first time we lookup a component a component manager will not exist so we ask the
         // component manager manager to create a component manager for us. Also if we are reloading
         // components then we'll also get a new component manager.
         if ( componentManager == null )
         {
-            ComponentDescriptor descriptor = container.getComponentRepository().getComponentDescriptor( role, roleHint,
-                realm );
+            ComponentRepository componentRepository = container.getComponentRepository();
+            ComponentDescriptor<T> descriptor = componentRepository.getComponentDescriptor( type, role, roleHint );
 
             if ( descriptor == null )
             {
-                String message = "Component descriptor cannot be found in the component repository: " + role + " [" + roleHint + "]" + " (lookup realm: " + realm + ").";
+                String message = "Component descriptor cannot be found in the component repository: " + role + " [" + roleHint + "].";
 
-                throw new ComponentLookupException( message, role, roleHint, realm );
+                throw new ComponentLookupException( message, role, roleHint );
             }
 
             componentManager = createComponentManager( descriptor, role, roleHint );
         }
 
-        Object component = getComponent( componentManager );
+        T component = getComponent( componentManager );
 
         return component;
     }
 
-    private Object getComponent( ComponentManager componentManager )
+    private <T> T getComponent( ComponentManager<T> componentManager )
         throws ComponentLookupException
     {
-        Object component;
+        T component;
         try
         {
             component = componentManager.getComponent( );
@@ -182,37 +132,14 @@ public class DefaultComponentLookupManager
     // Maps
     // ----------------------------------------------------------------------------
 
-    public Map<String, Object> lookupMap( String role )
-        throws ComponentLookupException
-    {
-        return lookupMapInternal( role, null );
-    }
-
-    public Map<String, Object> lookupMap( String role, List<String> hints )
-        throws ComponentLookupException
-    {
-        return lookupMapInternal( role, hints );
-    }
-
-    public Map<String, Object> lookupMap( Class role )
-        throws ComponentLookupException
-    {
-        return lookupMapInternal( role.getName(), null );
-    }
-
-    public Map<String, Object> lookupMap( Class role, List<String> hints )
-        throws ComponentLookupException
-    {
-        return lookupMapInternal( role.getName(), hints );
-    }
-
-    /**
-     * Return a Map of components for a given role keyed by the component role hint.
-     */
-    private Map<String, Object> lookupMapInternal( String role, List<String> hints )
+    public <T> Map<String, T> lookupMap( Class<T> type, String role, List<String> hints )
         throws ComponentLookupException
     {
         // verify arguments
+        if ( type == null )
+        {
+            throw new NullPointerException( "type is null" );
+        }
         if ( role == null )
         {
             throw new NullPointerException( "role is null" );
@@ -222,7 +149,7 @@ public class DefaultComponentLookupManager
         if ( hints == null )
         {
             ComponentRepository repository = container.getComponentRepository();
-            Map<String, ComponentDescriptor> componentDescriptors = repository.getComponentDescriptorMap( role, null );
+            Map<String, ComponentDescriptor<T>> componentDescriptors = repository.getComponentDescriptorMap( type, role );
 
             hints = new ArrayList<String>();
             if ( componentDescriptors != null )
@@ -232,11 +159,11 @@ public class DefaultComponentLookupManager
         }
 
         // lookup each component using role + hint
-        Map<String, Object> components = new LinkedHashMap<String, Object>();
+        Map<String, T> components = new LinkedHashMap<String, T>();
         for ( String hint : hints )
         {
             // todo dain catch the exception... it isn't the callers problem when one component in a collection fails
-            Object component = lookupInternal( role, hint, null );
+            T component = lookup( type, role, hint );
             components.put( hint, component );
         }
 
@@ -247,38 +174,10 @@ public class DefaultComponentLookupManager
     // Lists
     // ----------------------------------------------------------------------------
 
-    public List<Object> lookupList( String role )
-        throws ComponentLookupException
+    public <T> List<T> lookupList( Class<T> type, String role, List<String> hints ) throws ComponentLookupException
     {
-        return lookupListInternal( role, null );
-    }
-
-    public List<Object> lookupList( Class role )
-        throws ComponentLookupException
-    {
-        return lookupListInternal( role.getName(), null );
-    }
-
-    public List<Object> lookupList( String role, List<String> hints )
-        throws ComponentLookupException
-    {
-        return lookupListInternal( role, hints );
-    }
-
-    public List<Object> lookupList( Class role, List<String> hints )
-        throws ComponentLookupException
-    {
-        return lookupListInternal( role.getName(), hints );
-    }
-
-    /**
-     * Return a List of components for a given role and list of hints.
-     */
-    public List<Object> lookupListInternal( String role, List<String> hints )
-        throws ComponentLookupException
-    {
-        Map<String, Object> componentIndex = lookupMapInternal( role, hints );
-        return new ArrayList<Object>( componentIndex.values() );
+        Map<String, T> componentIndex = lookupMap( type, role, hints );
+        return new ArrayList<T>( componentIndex.values() );
     }
 
     // ----------------------------------------------------------------------------
@@ -294,10 +193,10 @@ public class DefaultComponentLookupManager
     //
     // ----------------------------------------------------------------------------
 
-    public ComponentManager createComponentManager( ComponentDescriptor descriptor, String role, String roleHint )
+    public <T> ComponentManager<T> createComponentManager( ComponentDescriptor<T> descriptor, String role, String roleHint )
         throws ComponentLookupException
     {
-        ComponentManager componentManager;
+        ComponentManager<T> componentManager;
 
         try
         {

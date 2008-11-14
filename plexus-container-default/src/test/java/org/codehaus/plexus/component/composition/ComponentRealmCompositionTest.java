@@ -3,7 +3,6 @@ package org.codehaus.plexus.component.composition;
 import org.codehaus.plexus.PlexusTestCase;
 import static org.codehaus.plexus.PlexusConstants.PLEXUS_DEFAULT_HINT;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 import java.io.File;
 import java.net.URL;
@@ -36,22 +35,20 @@ public class ComponentRealmCompositionTest
     //
     private static final String PLUGIN_0_REALM = "plugin0Realm";
     private static final String PLUGIN_1_REALM = "plugin1Realm";
-    private ClassRealm plugin0Realm;
-    private ClassRealm plugin1Realm;
 
     protected void setUp() throws Exception
     {
         super.setUp();
 
         // Create ClassRealm plugin0 with plugin0 -> A, plugin0 -> B
-        plugin0Realm = createClassRealm( PLUGIN_0_REALM,
+        createClassRealm( PLUGIN_0_REALM,
             PLUGIN_0_JAR,
             COMPONENT_A_JAR,
             COMPONENT_B_JAR,
             ARCHIVER_JAR );
 
         // Create ClassRealm plugin1 with plugin1 -> A, plugin1 -> C
-        plugin1Realm = createClassRealm( PLUGIN_1_REALM,
+        createClassRealm( PLUGIN_1_REALM,
             PLUGIN_1_JAR,
             COMPONENT_A_JAR,
             COMPONENT_C_JAR,
@@ -73,31 +70,19 @@ public class ComponentRealmCompositionTest
     public void testCompositionWhereTheSameImplementationExistsInDifferentRealms()
         throws Exception
     {
-        // Plugin0 should only be found in the plugin0Realm
-        getContainer().lookup( PLUGIN_0_ROLE, plugin0Realm );
-        assertLookupFailed( PLUGIN_0_ROLE, null, null );
-        assertLookupFailed( PLUGIN_0_ROLE, null, getContainer().getContainerRealm() );
-        assertLookupFailed( PLUGIN_0_ROLE, null, plugin1Realm );
+        // Plugin0
+        getContainer().lookup( PLUGIN_0_ROLE );
 
 
-        // Plugin1 should only be found in the plugin1Realm
-        getContainer().lookup( PLUGIN_1_ROLE, plugin1Realm );
-        assertLookupFailed( PLUGIN_1_ROLE, null, null );
-        assertLookupFailed( PLUGIN_1_ROLE, null, getContainer().getContainerRealm() );
-        assertLookupFailed( PLUGIN_1_ROLE, null, plugin0Realm );
+        // Plugin1
+        getContainer().lookup( PLUGIN_1_ROLE );
 
-        // Plugin0(alt) should only be found in the plugin0Realm
-        getContainer().lookup( PLUGIN_0_ROLE, "alt", plugin0Realm );
-        assertLookupFailed( PLUGIN_0_ROLE, "alt", null );
-        assertLookupFailed( PLUGIN_0_ROLE, "alt", getContainer().getContainerRealm() );
-        assertLookupFailed( PLUGIN_0_ROLE, "alt", plugin1Realm );
+        // Plugin0(alt)
+        getContainer().lookup( PLUGIN_0_ROLE, "alt" );
 
 
-        // Plugin1(alt) should only be found in the plugin1Realm
-        getContainer().lookup( PLUGIN_1_ROLE, "alt", plugin1Realm );
-        assertLookupFailed( PLUGIN_1_ROLE, "alt", null );
-        assertLookupFailed( PLUGIN_1_ROLE, "alt", getContainer().getContainerRealm() );
-        assertLookupFailed( PLUGIN_1_ROLE, "alt", plugin0Realm );
+        // Plugin1(alt)
+        getContainer().lookup( PLUGIN_1_ROLE, "alt" );
     }
 
     public void testThatASingletonComponentIntheCoreRealmWhenLookedUpInComponentRealmsYieldsTheSameInstance()
@@ -138,43 +123,6 @@ public class ComponentRealmCompositionTest
         assertNotNull("plugin1List does not contain a DefaultPlugin1", plugin1Map.get( "DefaultPlugin1"));
         assertNotNull("plugin1List does not contain a AltPlugin1", plugin1Map.get( "AltPlugin1"));
         assertEquals("Expected only 2 components in plugin0Map", 2, plugin1Map.size());
-    }
-
-    private void assertLookupFailed( String role, String hint, ClassRealm classRealm )
-    {
-        try
-        {
-            if ( classRealm != null )
-            {
-                if ( hint != null )
-                {
-                    getContainer().lookup( role, hint, classRealm  );
-                }
-                else
-                {
-                    getContainer().lookup( role, classRealm  );
-                }
-            }
-            else
-            {
-                if ( hint != null )
-                {
-                    getContainer().lookup( role, hint);
-                }
-                else
-                {
-                    getContainer().lookup( role );
-                }
-            }
-            fail("Expected component lookup failure: " +
-                "role=" + role +
-                classRealm != null ? "realm=" + classRealm : ""
-            );
-        }
-        catch ( ComponentLookupException e )
-        {
-            // expected
-        }
     }
 
     private ClassRealm createClassRealm(String id, String... jars)

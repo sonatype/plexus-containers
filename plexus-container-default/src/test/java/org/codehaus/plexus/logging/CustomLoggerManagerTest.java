@@ -17,7 +17,6 @@ package org.codehaus.plexus.logging;
  */
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
 //TODO: this test will get nuked, this needs to be done programmatically
 
@@ -31,7 +30,7 @@ public class CustomLoggerManagerTest
     public void testBasic()
         throws Exception
     {
-        LoggerManager manager = (LoggerManager)lookup( LoggerManager.class.getName() );
+        LoggerManager manager = lookup( LoggerManager.class );
 
         assertNotNull( manager );
 

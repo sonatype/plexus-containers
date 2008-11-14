@@ -17,8 +17,6 @@ package org.codehaus.plexus.component.collections;
  */
 
 import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 
@@ -28,19 +26,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Jason van Zyl FIXME: [jdcasey] We need to review the efficiency (in speed and memory) of this collection...
  */
-public class ComponentList
-    extends AbstractComponentCollection
-    implements List
+public class ComponentList<T>
+    extends AbstractComponentCollection<T>
+    implements List<T>
 {
-    private List components;
+    private List<T> components;
 
-    public ComponentList( MutablePlexusContainer container, ClassRealm realm, String role, List roleHints, String hostComponent )
+    public ComponentList( MutablePlexusContainer container, Class<T> type, String role, List<String> roleHints, String hostComponent )
     {
-        super( container, realm, role, roleHints, hostComponent );
+        super( container, type, role, roleHints, hostComponent );
     }
 
     public int size()
@@ -58,7 +57,7 @@ public class ComponentList
         return getList().contains( object );
     }
 
-    public Iterator iterator()
+    public Iterator<T> iterator()
     {
         return getList().iterator();
     }
@@ -73,11 +72,11 @@ public class ComponentList
         return getList().toArray( ts );
     }
 
-    public boolean add( Object object )
+    public boolean add( T object )
     {
         if ( components == null )
         {
-            components = new ArrayList();
+            components = new ArrayList<T>();
         }
 
         components.add( object );
@@ -98,36 +97,46 @@ public class ComponentList
             + hostComponent + " and managed by the container." );
     }
 
-    public boolean containsAll( Collection collection )
+    public boolean containsAll( Collection<?> collection )
     {
         return getList().containsAll( collection );
     }
 
-    public boolean addAll( Collection collection )
+    public boolean addAll( Collection<? extends T> collection )
     {
         throw new UnsupportedOperationException( "You cannot modify this list. This list is a requirement of "
             + hostComponent + " and managed by the container." );
     }
 
-    public boolean addAll( int i, Collection collection )
+    public boolean addAll( int i, Collection<? extends T> collection )
     {
         throw new UnsupportedOperationException( "You cannot modify this list. This list is a requirement of "
             + hostComponent + " and managed by the container." );
     }
 
-    public boolean removeAll( Collection collection )
+    public boolean removeAll( Collection<?> collection )
     {
         return getList().removeAll( collection );
     }
 
-    public boolean retainAll( Collection collection )
+    public boolean retainAll( Collection<?> collection )
     {
         return getList().retainAll( collection );
     }
 
-    public boolean equals( Object object )
+    public boolean equals( Object o )
     {
-        return getList().equals( object );
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( !( o instanceof List ) )
+        {
+            return false;
+        }
+
+        List<?> other = (List<?>) o;
+        return getList().equals( other );
     }
 
     public int hashCode()
@@ -135,24 +144,24 @@ public class ComponentList
         return getList().hashCode();
     }
 
-    public Object get( int i )
+    public T get( int i )
     {
         return getList().get( i );
     }
 
-    public Object set( int i, Object object )
+    public T set( int i, T object )
     {
         throw new UnsupportedOperationException( "You cannot modify this list. This list is a requirement of "
             + hostComponent + " and managed by the container." );
     }
 
-    public void add( int i, Object object )
+    public void add( int i, T object )
     {
         throw new UnsupportedOperationException( "You cannot modify this list. This list is a requirement of "
             + hostComponent + " and managed by the container." );
     }
 
-    public Object remove( int i )
+    public T remove( int i )
     {
         throw new UnsupportedOperationException( "You cannot modify this list. This list is a requirement of "
             + hostComponent + " and managed by the container." );
@@ -168,43 +177,37 @@ public class ComponentList
         return getList().lastIndexOf( object );
     }
 
-    public ListIterator listIterator()
+    public ListIterator<T> listIterator()
     {
         return getList().listIterator();
     }
 
-    public ListIterator listIterator( int i )
+    public ListIterator<T> listIterator( int index )
     {
-        return getList().listIterator( i );
+        return getList().listIterator( index );
     }
 
-    public List subList( int i, int i1 )
+    public List<T> subList( int fromIndex, int toIndex )
     {
-        return getList().subList( i, i1 );
+        return getList().subList( fromIndex, toIndex );
     }
 
-    private List getList()
+    private List<T> getList()
     {
         // NOTE: If we cache the component map, we have a problem with releasing any of the
         // components in this map...we need to be able to release them all.
         if ( ( components == null ) || checkUpdate() )
         {
-            List componentList = new ArrayList();
+            List<T> componentList = new ArrayList<T>();
 
-            Map descriptorMap = getComponentDescriptorMap();
-            Map lookupRealms = getLookupRealmMap();
+            Map<String, ComponentDescriptor<T>> descriptorMap = getComponentDescriptorMap();
 
             if ( roleHints != null )
             {
                 // we must follow the order in roleHints
-                for ( Iterator hints = roleHints.iterator(); hints.hasNext(); )
+                for ( String roleHint : roleHints )
                 {
-                    String roleHint = (String) hints.next();
-
-                    ComponentDescriptor cd = (ComponentDescriptor) descriptorMap.get( roleHint );
-                    ClassRealm realm = (ClassRealm) lookupRealms.get( cd.getRealmId() );
-
-                    Object component = lookup( role, roleHint, realm );
+                    T component = lookup( role, roleHint );
                     if ( component != null )
                     {
                         componentList.add( component );
@@ -213,15 +216,11 @@ public class ComponentList
             }
             else
             {
-                for ( Iterator it = descriptorMap.entrySet().iterator(); it.hasNext(); )
+                for ( Entry<String, ComponentDescriptor<T>> entry : descriptorMap.entrySet() )
                 {
-                    Map.Entry entry = (Map.Entry) it.next();
-                    String roleHint = (String) entry.getKey();
-                    String realmId = ( (ComponentDescriptor) entry.getValue() ).getRealmId();
+                    String roleHint = entry.getKey();
 
-                    ClassRealm realm = (ClassRealm) lookupRealms.get( realmId );
-
-                    Object component = lookup( role, roleHint, realm );
+                    T component = lookup( role, roleHint );
                     if ( component != null )
                     {
                         componentList.add( component );

@@ -83,21 +83,21 @@ public class QDoxComponentGleanerTest
         return classes[0];
     }
 
-    private ComponentDescriptor glean( final String name, final String[] supporting )
+    private ComponentDescriptor<?> glean( final String name, final String[] supporting )
         throws Exception
     {
         if ( supporting != null )
         {
-            for ( int i = 0; i < supporting.length; i++ )
+            for ( String aSupporting : supporting )
             {
-                addSource( supporting[i] );
+                addSource( aSupporting );
             }
         }
 
         return gleaner.glean( builder, loadJavaClass( name ) );
     }
 
-    private ComponentDescriptor glean( final String name )
+    private ComponentDescriptor<?> glean( final String name )
         throws Exception
     {
         return glean( name, null );
@@ -106,14 +106,14 @@ public class QDoxComponentGleanerTest
     public void testNoAnnotationsClass()
         throws Exception
     {
-        ComponentDescriptor component = glean( "NoAnnotationsClass.java" );
+        ComponentDescriptor<?> component = glean( "NoAnnotationsClass.java" );
         assertNull( component );
     }
 
     public void testAbstractClass()
         throws Exception
     {
-        ComponentDescriptor component = glean( "AbstractClass.java" );
+        ComponentDescriptor<?> component = glean( "AbstractClass.java" );
         assertNull( component );
     }
 
@@ -127,7 +127,7 @@ public class QDoxComponentGleanerTest
     public void testNoAnnotationsIntf()
         throws Exception
     {
-        ComponentDescriptor component = glean( "NoAnnotationsIntf.java" );
+        ComponentDescriptor<?> component = glean( "NoAnnotationsIntf.java" );
         assertNull( component );
     }
 
@@ -135,17 +135,17 @@ public class QDoxComponentGleanerTest
         throws Exception
     {
         addSource( "ChildComponent.java" );
-        ComponentDescriptor component = glean( "MyComponent.java" );
+        ComponentDescriptor<?> component = glean( "MyComponent.java" );
         assertNotNull( component );
 
         assertEquals( MyComponent.class.getName(), component.getRole() );
         assertEquals( "foo", component.getRoleHint() );
 
-        List requirements = component.getRequirements();
+        List<ComponentRequirement> requirements = component.getRequirements();
         assertNotNull( requirements );
         assertEquals( 1, requirements.size() );
 
-        ComponentRequirement requirement = (ComponentRequirement) requirements.get( 0 );
+        ComponentRequirement requirement = requirements.get( 0 );
         assertNotNull( requirement );
         assertEquals( ChildComponent.class.getName(), requirement.getRole() );
 

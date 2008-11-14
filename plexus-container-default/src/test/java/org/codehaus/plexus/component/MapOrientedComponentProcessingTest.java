@@ -35,7 +35,7 @@ public class MapOrientedComponentProcessingTest
     public void testShouldFindAndInitializeMapOrientedComponent()
         throws Exception
     {
-        ComponentDescriptor descriptor = new ComponentDescriptor();
+        ComponentDescriptor<TestMapOrientedComponent> descriptor = new ComponentDescriptor(TestMapOrientedComponent.class);
 
         descriptor.setRole( TestMapOrientedComponent.ROLE );
 
@@ -67,7 +67,7 @@ public class MapOrientedComponentProcessingTest
 
         embedder.addComponentDescriptor( descriptor );
 
-        TestMapOrientedComponent component = (TestMapOrientedComponent) embedder.lookup( TestMapOrientedComponent.ROLE );
+        TestMapOrientedComponent component = embedder.lookup( TestMapOrientedComponent.class );
 
         Map context = component.getContext();
 

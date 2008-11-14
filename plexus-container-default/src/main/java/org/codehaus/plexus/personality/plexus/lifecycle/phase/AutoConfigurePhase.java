@@ -38,7 +38,7 @@ public class AutoConfigurePhase
     {
         try
         {
-            ComponentDescriptor descriptor = manager.getComponentDescriptor();
+            ComponentDescriptor<?> descriptor = manager.getComponentDescriptor();
 
             String configuratorId = descriptor.getComponentConfigurator();
 
@@ -47,13 +47,13 @@ public class AutoConfigurePhase
                 configuratorId = DEFAULT_CONFIGURATOR_ID;
             }
 
-            ComponentConfigurator componentConfigurator = (ComponentConfigurator) manager.getContainer().lookup( ComponentConfigurator.ROLE, configuratorId, lookupRealm );
+            ComponentConfigurator componentConfigurator = manager.getContainer().lookup( ComponentConfigurator.class, configuratorId );
 
             PlexusConfiguration configuration = manager.getContainer().getConfigurationSource().getConfiguration( descriptor );
 
             if ( configuration != null )
             {
-                ClassRealm realm = manager.getContainer().getComponentRealm( manager.getComponentDescriptor().getRealmId() );
+                ClassRealm realm = manager.getRealm();
 
                 componentConfigurator.configureComponent( object, configuration, realm );
             }
