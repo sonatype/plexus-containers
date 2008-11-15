@@ -17,7 +17,6 @@ package org.codehaus.plexus.component.repository;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -25,26 +24,30 @@ import java.util.List;
  *
  * @author Jason van Zyl
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id: ComponentSetDescriptor.java 7090 2007-11-25 20:53:08Z jvanzyl $
+ * @version $Id: ComponentSetDescriptor.java 7828 2008-11-14 22:07:56Z dain $
  */
 public class ComponentSetDescriptor
 {
-    // ComponentDescriptor list
-    private List components;
-
-    private List dependencies;
-
-    private boolean isolatedRealm;
-
+    // This field is not currently used in Maven, or Plexus
     private String id;
 
+    /** The source location of this component source descriptor */
     private String source;
 
+    /** Flag to indicate whether this component should be loaded in a realm/classloader of its own. */
+    private boolean isolatedRealm;
+    
+    /** The component descriptors that can be found within this component set descriptor. */
+    private final List<ComponentDescriptor<?>> components = new ArrayList<ComponentDescriptor<?>>();
+
+    /** The dependencies that are required by the set of components found in this component set descriptor. */
+    private final List<ComponentDependency> dependencies = new ArrayList<ComponentDependency>();
+    
     /**
      * Returns a list of components in this set.
      * @return a list of components
      */
-    public List getComponents()
+    public List<ComponentDescriptor<?>> getComponents()
     {
         return components;
     }
@@ -53,13 +56,8 @@ public class ComponentSetDescriptor
      * Add a new ComponentDescriptor to this set.
      * @param cd the ComponentDescriptor to add
      */
-    public void addComponentDescriptor( ComponentDescriptor cd )
+    public void addComponentDescriptor( ComponentDescriptor<?> cd )
     {
-        if ( components == null )
-        {
-            components = new ArrayList();
-        }
-
         components.add( cd );
     }
 
@@ -67,16 +65,17 @@ public class ComponentSetDescriptor
      * Sets a List of components as this set's contents.
      * @param components the List of components to set
      */
-    public void setComponents( List components )
+    public void setComponents( List<ComponentDescriptor<?>> components )
     {
-        this.components = components;
+        this.components.clear();
+        this.components.addAll(components);
     }
 
     /**
      * Returns a List of dependencies of this set of components.
      * @return a List of dependencies of this set of components
      */
-    public List getDependencies()
+    public List<ComponentDependency> getDependencies()
     {
         return dependencies;
     }
@@ -87,11 +86,6 @@ public class ComponentSetDescriptor
      */
     public void addDependency( ComponentDependency cd )
     {
-        if ( dependencies == null )
-        {
-            dependencies = new ArrayList();
-        }
-
         dependencies.add( cd );
     }
 
@@ -99,9 +93,10 @@ public class ComponentSetDescriptor
      * Sets a List of dependencies as this set's component dependencies.
      * @param dependencies the List of components to set
      */
-    public void setDependencies( List dependencies )
+    public void setDependencies( List<ComponentDependency> dependencies )
     {
-        this.dependencies = dependencies;
+        this.dependencies.clear();
+        this.dependencies.addAll(dependencies);
     }
 
     /**
@@ -147,10 +142,8 @@ public class ComponentSetDescriptor
 
         sb.append( "Component Descriptor: " );
 
-        for ( Iterator i = components.iterator(); i.hasNext(); )
+        for ( ComponentDescriptor<?> cd : components )
         {
-            ComponentDescriptor cd = (ComponentDescriptor) i.next();
-
             sb.append( cd.getHumanReadableKey() ).append( "\n" );
         }
 
