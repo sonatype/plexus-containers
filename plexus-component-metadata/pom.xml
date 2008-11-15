@@ -5,10 +5,9 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus-containers</artifactId>
-    <version>1.0-beta-3-SNAPSHOT</version>
+    <version>1.0-beta-2-SNAPSHOT</version>
   </parent>
   <artifactId>plexus-component-metadata</artifactId>
-  <version>1.0-beta-3-SNAPSHOT</version>
   <name>Plexus :: Component Metadata</name>
   <packaging>maven-plugin</packaging>
   <dependencies>
