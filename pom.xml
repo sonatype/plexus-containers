@@ -9,7 +9,7 @@
   <artifactId>plexus-containers</artifactId>
   <version>1.0-beta-3-SNAPSHOT</version>
   <properties>
-    <classWorldsVersion>1.2-alpha-13</classWorldsVersion>
+    <classWorldsVersion>1.2</classWorldsVersion>
     <plexusUtilsVersion>1.4.5</plexusUtilsVersion>
     <xbeanReflectVersion>3.4</xbeanReflectVersion>
   </properties>
