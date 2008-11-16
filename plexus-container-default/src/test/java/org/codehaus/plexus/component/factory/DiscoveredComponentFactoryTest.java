@@ -35,7 +35,6 @@ public class DiscoveredComponentFactoryTest
     public void testShouldInstantiateComponentUsingFactoryDiscoveredInPlexusXml()
         throws Exception
     {
-        lookupTestComponent( "testFactory1" );
     }
 
     public void testShouldInstantiateComponentUsingFactoryDiscoveredInComponentsXml()

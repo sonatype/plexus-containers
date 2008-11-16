@@ -346,14 +346,52 @@ public class DefaultPlexusContainer
     // Lookup
     // ----------------------------------------------------------------------------
 
+    private Class<?> getInterfaceClass( String role, String hint )
+    {
+        ComponentDescriptor<?> cd;
+
+        if ( hint == null )
+        {
+            cd = getComponentDescriptor( role );
+        }
+        else
+        {
+            cd = getComponentDescriptor( role, hint );
+        }
+
+        if ( cd != null )
+        {                        
+            try
+            {
+                return cd.getRealm().loadClass( role );
+            }
+            catch ( ClassNotFoundException e )
+            {
+                return Object.class;
+            }                        
+        }
+
+        return Object.class;
+    }
+    
+    private Class getRoleClass( String role )
+    {
+        return getInterfaceClass( role, null );        
+    }
+
+    private Class getRoleClass( String role, String hint )
+    {
+        return getInterfaceClass( role, hint );
+    }
+
     public Object lookup( String role ) throws ComponentLookupException
     {
-        return componentLookupManager.lookup( Object.class, role, PLEXUS_DEFAULT_HINT );
+        return componentLookupManager.lookup( getRoleClass( role ), role, PLEXUS_DEFAULT_HINT );
     }
 
     public Object lookup( String role, String roleHint ) throws ComponentLookupException
     {
-        return componentLookupManager.lookup( Object.class, role, roleHint );
+        return componentLookupManager.lookup( getRoleClass( role, roleHint ), role, roleHint );
     }
 
     public <T> T lookup( Class<T> type ) throws ComponentLookupException
@@ -373,12 +411,12 @@ public class DefaultPlexusContainer
 
     public List<Object> lookupList( String role ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupList( Object.class, role, null);
+        return componentLookupManager.lookupList( getRoleClass( role ), role, null);
     }
 
     public List<Object> lookupList( String role, List<String> roleHints ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupList( Object.class, role, roleHints );
+        return componentLookupManager.lookupList( getRoleClass( role ), role, roleHints );
     }
 
     public <T> List<T> lookupList( Class<T> type ) throws ComponentLookupException
@@ -393,12 +431,12 @@ public class DefaultPlexusContainer
 
     public Map<String, Object> lookupMap( String role ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupMap( Object.class, role, null );
+        return componentLookupManager.lookupMap(  getRoleClass( role ), role, null );
     }
 
     public Map<String, Object> lookupMap( String role, List<String> roleHints ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupMap( Object.class, role, roleHints );
+        return componentLookupManager.lookupMap( getRoleClass( role ), role, roleHints );
     }
 
     public <T> Map<String, T> lookupMap( Class<T> type ) throws ComponentLookupException

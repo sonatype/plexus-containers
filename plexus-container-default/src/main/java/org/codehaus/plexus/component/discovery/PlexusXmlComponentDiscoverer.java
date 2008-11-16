@@ -72,7 +72,17 @@ public class PlexusXmlComponentDiscoverer
         Enumeration<URL> resources;
         try
         {
-            resources = realm.findResources( PLEXUS_XML_RESOURCE );
+            // We don't always want to scan parent realms. For plexus
+            // testcase, most components are in the root classloader so that needs to be scanned,
+            // but for child realms, we don't.
+            if ( realm.getParentRealm() != null )
+            {
+                resources = realm.findRealmResources( PLEXUS_XML_RESOURCE );
+            }
+            else
+            {
+                resources = realm.findResources( PLEXUS_XML_RESOURCE );
+            }            
         }
         catch ( IOException e )
         {
