@@ -158,29 +158,9 @@ public class DefaultPlexusContainer
         addComponentDescriptor( cd );
     }
 
-    /**
-     * Used for getLookupRealm for threads when the threadlocal doesn't contain a value.
-     */
-    private ClassRealm staticLookupRealm;
-
     public ClassRealm setLookupRealm( ClassRealm realm )
     {
-        // todo [dain] This code is non-symetrical, undocumented behavior and will cause memory leaks in thread pools
-        // since it is not possible to clean the thread local
-        if ( realm == null )
-        {
-            return null;
-        }
-
         ClassRealm oldRealm = lookupRealm.get();
-
-        // todo [dain] Again non-symentrical, undocumented and could cause memory leaks
-        if ( oldRealm == null )
-        {
-            oldRealm = staticLookupRealm;
-        }
-
-        staticLookupRealm = realm;
 
         lookupRealm.set( realm );
 
@@ -189,9 +169,7 @@ public class DefaultPlexusContainer
 
     public ClassRealm getLookupRealm()
     {
-        ClassRealm cr = lookupRealm.get();
-
-        return cr == null ? staticLookupRealm : cr;
+        return lookupRealm.get();
     }
 
     // ----------------------------------------------------------------------
@@ -348,22 +326,39 @@ public class DefaultPlexusContainer
 
     private Class<?> getInterfaceClass( String role, String hint )
     {
+        //return Object.class;
+        
         ComponentDescriptor<?> cd;
 
         if ( hint == null )
         {
-            cd = getComponentDescriptor( role );
+            cd = getComponentDescriptor( role, PLEXUS_DEFAULT_HINT );
         }
         else
         {
             cd = getComponentDescriptor( role, hint );
         }
-
+        
         if ( cd != null )
         {                        
             try
             {
-                return cd.getRealm().loadClass( role );
+                ClassRealm realm = getLookupRealm();
+
+                if ( realm != null )
+                {
+                    return realm.loadClass( role );
+                }
+                else
+                {
+                    //return cd.getRealm().loadClass( role );                
+                    ClassLoader loader = cd.getImplementationClass().getClassLoader();
+
+                    if ( loader != null )
+                    {
+                        return loader.loadClass( role );
+                    }
+                }
             }
             catch ( ClassNotFoundException e )
             {
@@ -406,6 +401,7 @@ public class DefaultPlexusContainer
 
     public <T> T lookup( Class<T> type, String role, String roleHint ) throws ComponentLookupException
     {
+        
         return componentLookupManager.lookup( type, role, roleHint );
     }
 
@@ -674,7 +670,6 @@ public class DefaultPlexusContainer
         }
         finally
         {
-            staticLookupRealm = null;
             lookupRealm.set( null );
         }
     }
