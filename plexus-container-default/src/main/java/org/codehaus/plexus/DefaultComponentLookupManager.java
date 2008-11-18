@@ -86,7 +86,7 @@ public class DefaultComponentLookupManager
         {
             ComponentRepository componentRepository = container.getComponentRepository();
             ComponentDescriptor<T> descriptor = componentRepository.getComponentDescriptor( type, role, roleHint );
-
+                        
             if ( descriptor == null )
             {
                 String message = "Component descriptor cannot be found in the component repository: " + role + " [" + roleHint + "].";

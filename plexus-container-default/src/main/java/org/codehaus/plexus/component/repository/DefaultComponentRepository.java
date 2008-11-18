@@ -98,6 +98,7 @@ public class DefaultComponentRepository
                 return (ComponentDescriptor<T>) descriptor;
             }
         }
+                
         return null;
     }
 
