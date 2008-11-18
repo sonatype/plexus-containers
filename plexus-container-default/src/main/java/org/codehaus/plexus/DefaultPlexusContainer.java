@@ -326,13 +326,11 @@ public class DefaultPlexusContainer
 
     private Class<?> getInterfaceClass( String role, String hint )
     {
-        //return Object.class;
-        
         ComponentDescriptor<?> cd;
 
         if ( hint == null )
         {
-            cd = getComponentDescriptor( role, PLEXUS_DEFAULT_HINT );
+            cd = getComponentDescriptor( role );
         }
         else
         {
@@ -350,8 +348,7 @@ public class DefaultPlexusContainer
                     return realm.loadClass( role );
                 }
                 else
-                {
-                    //return cd.getRealm().loadClass( role );                
+                {                    
                     ClassLoader loader = cd.getImplementationClass().getClassLoader();
 
                     if ( loader != null )
