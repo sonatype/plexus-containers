@@ -78,7 +78,6 @@ public class JavaComponentFactory
         }
         catch ( ClassNotFoundException e )
         {
-            classRealm.display();
             throw makeException( classRealm, componentDescriptor, implementationClass, e );
         }
         catch ( IllegalAccessException e )
