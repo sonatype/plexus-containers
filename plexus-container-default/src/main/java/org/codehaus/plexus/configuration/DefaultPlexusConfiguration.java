@@ -17,9 +17,9 @@ package org.codehaus.plexus.configuration;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @version $Id$
@@ -32,11 +32,11 @@ public class DefaultPlexusConfiguration
 
     private String value;
 
-    /** private TreeMap<String, String> attributes; */
-    private LinkedHashMap attributes;
+    private Map<String, String> attributes;
 
-    /** private TreeMap<String, List<PlexusConfiguration>> children; */
-    private LinkedHashMap children;
+    private Map<String, List<PlexusConfiguration>> childMap;
+
+    private List<PlexusConfiguration> childList;
 
     protected DefaultPlexusConfiguration()
     {
@@ -56,11 +56,11 @@ public class DefaultPlexusConfiguration
 
         this.value = value;
 
-        // J5: this.attributes = new TreeMap<String, String>();
-        this.attributes = new LinkedHashMap();
+        this.attributes = new LinkedHashMap<String, String>();
 
-        // J5: this.children = new TreeMap<String, List<PlexusConfiguration>>();
-        this.children = new LinkedHashMap();
+        this.childMap = new LinkedHashMap<String, List<PlexusConfiguration>>();
+
+        this.childList = new ArrayList<PlexusConfiguration>();
     }
 
     // ----------------------------------------------------------------------
@@ -120,7 +120,7 @@ public class DefaultPlexusConfiguration
 
     public String getAttribute( String name )
     {
-        return (String) attributes.get( name );
+        return attributes.get( name );
     }
 
     public String getAttribute( String name, String defaultValue )
@@ -137,7 +137,7 @@ public class DefaultPlexusConfiguration
 
     public String[] getAttributeNames()
     {
-        return (String[]) attributes.keySet().toArray( new String[attributes.size()] );
+        return attributes.keySet().toArray( new String[attributes.size()] );
     }
 
     // ----------------------------------------------------------------------
@@ -156,7 +156,7 @@ public class DefaultPlexusConfiguration
 
     public PlexusConfiguration getChild( String name, boolean createChild )
     {
-        List childs = (List) children.get( name );
+        List<PlexusConfiguration> childs = childMap.get( name );
 
         boolean noneFound = ( childs == null || childs.size() == 0 );
 
@@ -172,49 +172,40 @@ public class DefaultPlexusConfiguration
         }
         else
         {
-            return (PlexusConfiguration) childs.get( 0 );
+            return childs.get( 0 );
         }
     }
 
     public PlexusConfiguration[] getChildren()
     {
-        ArrayList childs = new ArrayList();
-
-        for ( Iterator i = children.keySet().iterator(); i.hasNext(); )
-        {
-            List childList = (List) children.get( i.next() );
-
-            if ( childList != null )
-            {
-                childs.addAll( childList );
-            }
-        }
-
-        return (PlexusConfiguration[]) childs.toArray( new PlexusConfiguration[childs.size()] );
+        return childList.toArray( new PlexusConfiguration[childList.size()] );
     }
 
     public PlexusConfiguration[] getChildren( String name )
     {
-        ArrayList childs = new ArrayList();
+        List<PlexusConfiguration> childs = new ArrayList<PlexusConfiguration>();
 
-        List childList = (List) children.get( name );
+        List<PlexusConfiguration> childList = childMap.get( name );
 
         if ( childList != null )
         {
             childs.addAll( childList );
         }
 
-        return (PlexusConfiguration[]) childs.toArray( new PlexusConfiguration[childs.size()] );
+        return childs.toArray( new PlexusConfiguration[childs.size()] );
     }
 
     public void addChild( PlexusConfiguration child )
     {
-        if ( !children.containsKey( child.getName() ) )
+        childList.add( child );
+
+        List<PlexusConfiguration> children = childMap.get( child.getName() );
+        if ( children == null )
         {
-            children.put( child.getName(), new ArrayList() );
+            childMap.put( child.getName(), children = new ArrayList<PlexusConfiguration>() );
         }
 
-        ( (List) children.get( child.getName() ) ).add( child );
+        children.add( child );
     }
 
     public PlexusConfiguration addChild( String name )
@@ -226,7 +217,7 @@ public class DefaultPlexusConfiguration
 
         try
         {
-            child = (PlexusConfiguration) this.getClass().newInstance();
+            child = getClass().newInstance();
 
             child.setName( name );
         }
@@ -252,13 +243,7 @@ public class DefaultPlexusConfiguration
 
     public int getChildCount()
     {
-        int result = 0;
-
-        for ( Iterator i = children.keySet().iterator(); i.hasNext(); )
-        {
-            result += ( (List) children.get( i.next() ) ).size();
-        }
-
-        return result;
+        return this.childList.size();
     }
+
 }

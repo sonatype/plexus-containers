@@ -101,4 +101,28 @@ public final class DefaultPlexusConfigurationTest
 
         assertEquals( viewRoot, c.getChild( "viewRoot" ).getValue() );
     }
+
+    public void testChildOrdering()
+        throws Exception
+    {
+        PlexusConfiguration child0 = new DefaultPlexusConfiguration( "child" );
+        PlexusConfiguration child1 = new DefaultPlexusConfiguration( "child" );
+        PlexusConfiguration child2 = new DefaultPlexusConfiguration( "special-child" );
+        PlexusConfiguration child3 = new DefaultPlexusConfiguration( "child" );
+        PlexusConfiguration child4 = new DefaultPlexusConfiguration( "child" );
+
+        configuration.addChild( child0 );
+        configuration.addChild( child1 );
+        configuration.addChild( child2 );
+        configuration.addChild( child3 );
+        configuration.addChild( child4 );
+
+        assertEquals( 5, configuration.getChildCount() );
+        assertSame( child0, configuration.getChild( 0 ) );
+        assertSame( child1, configuration.getChild( 1 ) );
+        assertSame( child2, configuration.getChild( 2 ) );
+        assertSame( child3, configuration.getChild( 3 ) );
+        assertSame( child4, configuration.getChild( 4 ) );
+    }
+
 }
