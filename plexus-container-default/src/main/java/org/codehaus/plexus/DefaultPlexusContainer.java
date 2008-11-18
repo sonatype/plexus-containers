@@ -636,7 +636,7 @@ public class DefaultPlexusContainer
     public List<ComponentDescriptor<?>> discoverComponents( ClassRealm classRealm, boolean override )
         throws PlexusConfigurationException, ComponentRepositoryException
     {
-        return ComponentDiscoveryPhase.discoverComponents( this, classRealm, override );
+        return ComponentDiscoveryPhase.discoverComponents( this, classRealm );
     }
 
     protected void start()
