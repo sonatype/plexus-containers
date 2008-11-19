@@ -20,21 +20,19 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
-import org.codehaus.plexus.component.repository.exception.ComponentImplementationNotFoundException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.component.repository.io.PlexusTools;
 import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
-import org.codehaus.plexus.configuration.PlexusConfiguration;
-import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import java.util.Map;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.SortedMap;
+import java.util.LinkedHashSet;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -47,17 +45,9 @@ public class DefaultComponentRepository
     extends AbstractLogEnabled
     implements ComponentRepository
 {
-    private static final String COMPONENTS = "components";
+    private final Map<ClassRealm, SortedMap<String, Multimap<String, ComponentDescriptor<?>>>> index = new LinkedHashMap<ClassRealm, SortedMap<String, Multimap<String, ComponentDescriptor<?>>>>();
 
-    private static final String COMPONENT = "component";
-
-    private PlexusConfiguration configuration;
-
-    private final Map<String, Multimap<String, ComponentDescriptor<?>>> roleIndex = new TreeMap<String, Multimap<String, ComponentDescriptor<?>>>();
-
-    private CompositionResolver compositionResolver = new DefaultCompositionResolver();
-
-    private ClassRealm classRealm;
+    private final CompositionResolver compositionResolver = new DefaultCompositionResolver();
 
     public DefaultComponentRepository()
     {
@@ -67,11 +57,6 @@ public class DefaultComponentRepository
     // Accessors
     // ----------------------------------------------------------------------
 
-    protected PlexusConfiguration getConfiguration()
-    {
-        return configuration;
-    }
-
     private Multimap<String, ComponentDescriptor<?>> getComponentDescriptors( String role )
     {
         // verify arguments
@@ -80,11 +65,34 @@ public class DefaultComponentRepository
             throw new NullPointerException( "role is null" );
         }
 
+        // determine realms to search
+        LinkedHashSet<ClassRealm> realms = new LinkedHashSet<ClassRealm>();
+        for (ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); classLoader != null; classLoader = classLoader.getParent()) {
+            if ( classLoader instanceof ClassRealm )
+            {
+                ClassRealm realm = (ClassRealm) classLoader;
+                while (realm != null) {
+                    realms.add(realm);
+                    realm = realm.getParentRealm();
+                }
+            }
+        }
+        if (realms.isEmpty()) {
+            realms.addAll( index.keySet() );
+        }
+
         // Get all valid component descriptors
-        Multimap<String, ComponentDescriptor<?>> roleHintIndex = roleIndex.get( role );
-        if ( roleHintIndex == null )
+        Multimap<String, ComponentDescriptor<?>> roleHintIndex = Multimaps.newHashMultimap();
+        for ( ClassRealm realm : realms )
         {
-            roleHintIndex = Multimaps.newHashMultimap();
+            SortedMap<String, Multimap<String, ComponentDescriptor<?>>> roleIndex = index.get( realm );
+            if (roleIndex != null) {
+                Multimap<String, ComponentDescriptor<?>> descriptors = roleIndex.get( role );
+                if ( descriptors != null )
+                {
+                    roleHintIndex.putAll( descriptors );
+                }
+            }
         }
         return Multimaps.unmodifiableMultimap( roleHintIndex );
     }
@@ -154,91 +162,27 @@ public class DefaultComponentRepository
         return null;
     }
 
-    public void setClassRealm( ClassRealm classRealm )
-    {
-        this.classRealm = classRealm;
-    }
-
     public void removeComponentRealm( ClassRealm classRealm )
     {
-        for ( Multimap<String, ComponentDescriptor<?>> roleHintIndex : roleIndex.values() )
-        {
-            for ( Iterator<ComponentDescriptor<?>> iterator = roleHintIndex.values().iterator(); iterator.hasNext(); )
-            {
-                ComponentDescriptor<?> componentDescriptor = iterator.next();
-                if ( classRealm.equals( componentDescriptor.getRealm() ) )
-                {
-                    iterator.remove();
-                }
-
-            }
-        }
+        index.remove( classRealm );
     }
 
     // ----------------------------------------------------------------------
     // Lifecylce Management
     // ----------------------------------------------------------------------
 
-    public void configure( PlexusConfiguration configuration )
-    {
-        this.configuration = configuration;
-    }
-
-    public void initialize()
-        throws ComponentRepositoryException
-    {
-        initializeComponentDescriptors();
-    }
-
-    public void initializeComponentDescriptors()
-        throws ComponentRepositoryException
-    {
-        initializeComponentDescriptorsFromUserConfiguration();
-    }
-
-    private void initializeComponentDescriptorsFromUserConfiguration()
-        throws ComponentRepositoryException
-    {
-        PlexusConfiguration[] componentConfigurations = configuration.getChild( COMPONENTS ).getChildren( COMPONENT );
-
-        for ( PlexusConfiguration componentConfiguration : componentConfigurations )
-        {
-            addComponentDescriptor( componentConfiguration );
-        }
-    }
-
     // ----------------------------------------------------------------------
     // Component Descriptor processing.
     // ----------------------------------------------------------------------
 
-    public void addComponentDescriptor( PlexusConfiguration configuration )
-        throws ComponentRepositoryException
-    {
-        ComponentDescriptor<?> componentDescriptor;
-        try
-        {
-            componentDescriptor = PlexusTools.buildComponentDescriptor( configuration );
-        }
-        catch ( PlexusConfigurationException e )
-        {
-            throw new ComponentRepositoryException( "Cannot unmarshall component descriptor:", e );
-        }
-
-        componentDescriptor.setRealm( classRealm );
-
-        addComponentDescriptor( componentDescriptor );
-    }
-
     public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
         throws ComponentRepositoryException
     {
-        try
-        {
-            validateComponentDescriptor( componentDescriptor );
-        }
-        catch ( ComponentImplementationNotFoundException e )
-        {
-            throw new ComponentRepositoryException( "Component descriptor validation failed: ", e );
+        ClassRealm classRealm = componentDescriptor.getRealm();
+        SortedMap<String, Multimap<String, ComponentDescriptor<?>>> roleIndex = index.get( classRealm );
+        if (roleIndex == null) {
+            roleIndex = new TreeMap<String, Multimap<String, ComponentDescriptor<?>>>();
+            index.put(classRealm,  roleIndex);
         }
 
         String role = componentDescriptor.getRole();
@@ -259,23 +203,4 @@ public class DefaultComponentRepository
             throw new ComponentRepositoryException( e.getMessage(), e );
         }
     }
-
-    public void validateComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
-        throws ComponentImplementationNotFoundException
-    {
-        if ( componentDescriptor.getRealm() == null )
-        {
-            // component descriptors are required to have a realmId set.
-            componentDescriptor.setRealm( classRealm );
-            // log.warn( "Componentdescriptor " + componentDescriptor + " is missing realmId - using " +
-            // componentDescriptor.getRealmId() );
-            // throw new ComponentImplementationNotFoundException( "ComponentDescriptor is missing realmId" );
-        }
-        // Make sure the component implementation classes can be found.
-        // Make sure ComponentManager implementation can be found.
-        // Validate lifecycle.
-        // Validate the component configuration.
-        // Validate the component profile if one is used.
-    }
-
 }

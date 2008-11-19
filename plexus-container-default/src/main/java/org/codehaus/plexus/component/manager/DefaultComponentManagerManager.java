@@ -35,7 +35,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Collection;
+import java.util.SortedMap;
+import java.util.LinkedHashSet;
 import java.util.Map.Entry;
+
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.ListMultimap;
 
 /**
  *
@@ -51,7 +57,7 @@ public class DefaultComponentManagerManager
 
     private final Map<Key, ComponentManager<?>> activeComponentManagers = new TreeMap<Key, ComponentManager<?>>();
 
-    private final Map<String, Map<String, List<ComponentManager<?>>>> roleIndex = new TreeMap<String, Map<String, List<ComponentManager<?>>>>();
+    private final Map<ClassRealm, SortedMap<String, ListMultimap<String, ComponentManager<?>>>> index = new LinkedHashMap<ClassRealm, SortedMap<String, ListMultimap<String, ComponentManager<?>>>>();
 
     private final Map<String, ComponentManagerFactory> componentManagerFactories = new TreeMap<String, ComponentManagerFactory>();
 
@@ -72,6 +78,46 @@ public class DefaultComponentManagerManager
     public synchronized void setLifecycleHandlerManager( LifecycleHandlerManager lifecycleHandlerManager )
     {
         this.lifecycleHandlerManager = lifecycleHandlerManager;
+    }
+
+    public ListMultimap<String, ComponentManager<?>> getComponentManagers( String role )
+    {
+        // verify arguments
+        if ( role == null )
+        {
+            throw new NullPointerException( "role is null" );
+        }
+
+        // determine realms to search
+        LinkedHashSet<ClassRealm> realms = new LinkedHashSet<ClassRealm>();
+        for (ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); classLoader != null; classLoader = classLoader.getParent()) {
+            if ( classLoader instanceof ClassRealm )
+            {
+                ClassRealm realm = (ClassRealm) classLoader;
+                while (realm != null) {
+                    realms.add(realm);
+                    realm = realm.getParentRealm();
+                }
+            }
+        }
+        if (realms.isEmpty()) {
+            realms.addAll( index.keySet() );
+        }
+
+        // Get all valid component managers
+        ListMultimap<String, ComponentManager<?>> roleHintIndex = Multimaps.newArrayListMultimap();
+        for ( ClassRealm realm : realms )
+        {
+            SortedMap<String, ListMultimap<String, ComponentManager<?>>> roleIndex = index.get( realm );
+            if (roleIndex != null) {
+                Multimap<String, ComponentManager<?>> managers = roleIndex.get( role );
+                if ( managers != null )
+                {
+                    roleHintIndex.putAll( managers );
+                }
+            }
+        }
+        return Multimaps.unmodifiableListMultimap( roleHintIndex );
     }
 
     public <T> ComponentManager<T> createComponentManager( ComponentDescriptor<T> descriptor, MutablePlexusContainer container,
@@ -97,21 +143,20 @@ public class DefaultComponentManagerManager
             Key key = new Key( descriptor.getRealm(), role, roleHint );
             activeComponentManagers.put( key, componentManager );
 
-            Map<String, List<ComponentManager<?>>> hintIndex = roleIndex.get( key.role );
+            SortedMap<String, ListMultimap<String, ComponentManager<?>>> roleIndex = index.get( descriptor.getRealm() );
+            if (roleIndex == null) {
+                roleIndex = new TreeMap<String, ListMultimap<String, ComponentManager<?>>>();
+                index.put(descriptor.getRealm(), roleIndex);
+            }
+
+            ListMultimap<String, ComponentManager<?>> hintIndex = roleIndex.get( key.role );
             if ( hintIndex == null )
             {
-                hintIndex = new TreeMap<String, List<ComponentManager<?>>>();
+                hintIndex = Multimaps.newArrayListMultimap(  );
                 roleIndex.put( key.role, hintIndex );
             }
 
-            List<ComponentManager<?>> components = hintIndex.get( key.roleHint );
-            if ( components == null )
-            {
-                components = new ArrayList<ComponentManager<?>>( 1 );
-                hintIndex.put( key.roleHint, components );
-            }
-
-            components.add( componentManager );
+            hintIndex.put(key.roleHint, componentManager);
         }
 
         return componentManager;
@@ -173,20 +218,15 @@ public class DefaultComponentManagerManager
         }
 
         // find the component
+
         // find first registered component with role + roleHint in any realm
-        Map<String, List<ComponentManager<?>>> roleHintIndex = roleIndex.get( role );
-        if ( roleHintIndex != null )
+        Multimap<String, ComponentManager<?>> roleHintIndex = getComponentManagers( role );
+
+        // select a component that can be cast to the specified type
+        for ( ComponentManager<?> componentManager : roleHintIndex.get( roleHint ) )
         {
-            List<ComponentManager<?>> componentManagers = roleHintIndex.get( roleHint );
-            if ( componentManagers != null && !componentManagers.isEmpty() )
-            {
-                // select a component that can be cast to the specified type
-                for ( ComponentManager<?> componentManager : componentManagers )
-                {
-                    if ( isAssignableFrom( type, componentManager.getType() )) {
-                        return (ComponentManager<T>) componentManager;
-                    }
-                }
+            if ( isAssignableFrom( type, componentManager.getType() )) {
+                return (ComponentManager<T>) componentManager;
             }
         }
 
@@ -203,31 +243,27 @@ public class DefaultComponentManagerManager
     {
         Map<String, ComponentManager<?>> found = new LinkedHashMap<String, ComponentManager<?>>();
 
-        Map<String, List<ComponentManager<?>>> roleHintIndex = roleIndex.get( role );
-        if ( roleHintIndex != null )
+        ListMultimap<String, ComponentManager<?>> roleHintIndex = getComponentManagers( role );
+        if ( roleHints != null )
         {
-            if ( roleHints != null )
+            for ( String roleHint : roleHints )
             {
-                for ( String roleHint : roleHints )
-                {
-                    List<ComponentManager<?>> components = roleHintIndex.get( roleHint );
-                    if ( components != null && !components.isEmpty() )
-                    {
-                        found.put( roleHint, components.get( 0 ) );
-                    }
+                List<ComponentManager<?>> componentManagers = roleHintIndex.get( roleHint );
+                if (!componentManagers.isEmpty()) {
+                    found.put( roleHint, componentManagers.get(0) );
                 }
             }
-            else
+        }
+        else
+        {
+            for ( Entry<String, ComponentManager<?>> entry : roleHintIndex.entries() )
             {
-                for ( Entry<String, List<ComponentManager<?>>> entry : roleHintIndex.entrySet() )
-                {
-                    String roleHint = entry.getKey();
-                    List<ComponentManager<?>> components = entry.getValue();
-                    if ( !components.isEmpty() )
-                    {
-                        found.put( roleHint, components.get( 0 ) );
-                    }
+                String roleHint = entry.getKey();
+                ComponentManager<?> manager = entry.getValue();
+                if (!found.containsKey( roleHint )) {
+                    found.put(roleHint, manager);
                 }
+
             }
         }
 
@@ -245,7 +281,7 @@ public class DefaultComponentManagerManager
         {
             componentManagers = new ArrayList<ComponentManager<?>>( activeComponentManagers.values() );
             activeComponentManagers.clear();
-            roleIndex.clear();
+            index.clear();
         }
 
         // Call dispose callback outside of synchronized lock to avoid deadlocks
@@ -292,23 +328,13 @@ public class DefaultComponentManagerManager
                 {
                     dispose.add( componentManager );
                     it.remove();
-
-                    // remove component from role index
-                    Map<String, List<ComponentManager<?>>> roleHintIndex = roleIndex.get( key.role );
-                    if ( roleHintIndex != null )
-                    {
-                        List<ComponentManager<?>> components = roleHintIndex.get( key.roleHint );
-                        if ( components != null )
-                        {
-                            components.remove( componentManager );
-                        }
-                    }
                 }
                 else
                 {
                     componentManager.dissociateComponentRealm( componentRealm );
                 }
             }
+            index.remove(componentRealm);
         }
 
         // Call dispose callback outside of synchronized lock to avoid deadlocks

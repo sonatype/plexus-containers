@@ -17,7 +17,11 @@ package org.codehaus.plexus.container.initialization;
  */
 
 import org.codehaus.plexus.component.repository.ComponentRepository;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 /**
  * @author Jason van Zyl
@@ -30,17 +34,27 @@ public class InitializeComponentRepositoryPhase
     {
         ComponentRepository componentRepository = context.getContainerConfiguration().getComponentRepository();
 
-        componentRepository.configure( context.getContainerXmlConfiguration() );
-
-        componentRepository.setClassRealm( context.getContainer().getContainerRealm() );
-
+        // Add the components defined in the container xml configuration
         try
         {
-            componentRepository.initialize();
+            PlexusConfiguration configuration = context.getContainerXmlConfiguration();
+
+            PlexusConfiguration[] componentConfigurations = configuration.getChild( "components" ).getChildren( "component" );
+            for ( PlexusConfiguration componentConfiguration : componentConfigurations )
+            {
+                ComponentDescriptor<?> componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );
+                componentDescriptor.setRealm( context.getContainer().getContainerRealm() );
+                componentRepository.addComponentDescriptor( componentDescriptor );
+            }
+        }
+        catch ( PlexusConfigurationException e )
+        {
+            throw new ContainerInitializationException( "Error initializing component repository: " +
+                "Cannot unmarshall component descriptor: ", e );
         }
         catch ( ComponentRepositoryException e )
         {
-            throw new ContainerInitializationException( "Error initializing component repository.", e );
+            throw new ContainerInitializationException( "Error initializing component repository: ", e );
         }
 
         context.getContainer().setComponentRepository( componentRepository );

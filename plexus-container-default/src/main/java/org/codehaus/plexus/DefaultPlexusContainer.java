@@ -508,6 +508,11 @@ public class DefaultPlexusContainer
 
     public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) throws ComponentRepositoryException
     {
+        if ( componentDescriptor.getRealm() == null )
+        {
+            componentDescriptor.setRealm( this.containerRealm );
+            // throw new ComponentImplementationNotFoundException( "ComponentDescriptor is missing realmId" );
+        }
         componentRepository.addComponentDescriptor( componentDescriptor );
     }
 
