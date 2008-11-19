@@ -218,8 +218,6 @@ public class DefaultPlexusContainer
         }
     }
 
-    boolean initialized;
-
     private void construct( ContainerConfiguration c )
         throws PlexusContainerException
     {
@@ -571,11 +569,6 @@ public class DefaultPlexusContainer
     protected void initialize( ContainerConfiguration containerConfiguration )
         throws PlexusContainerException
     {
-        if ( initialized )
-        {
-            throw new PlexusContainerException( "The container has already been initialized!" );
-        }
-
         try
         {
             initializeConfiguration( containerConfiguration );
@@ -594,8 +587,6 @@ public class DefaultPlexusContainer
         {
             throw new PlexusContainerException( "Error reading configuration file", e );
         }
-
-        initialized = true;
     }
 
     protected void initializePhases( ContainerConfiguration containerConfiguration )
