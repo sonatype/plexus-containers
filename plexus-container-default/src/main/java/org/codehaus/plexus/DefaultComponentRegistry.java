@@ -372,6 +372,8 @@ public class DefaultComponentRegistry implements ComponentRegistry
                                                             String roleHint )
         throws ComponentLookupException
     {
+        verifyComponentDescriptor( descriptor );
+
         // Get the ComponentManagerFactory
         String instantiationStrategy = descriptor.getInstantiationStrategy();
         if ( instantiationStrategy == null )
@@ -416,6 +418,44 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
 
         return componentManager;
+    }
+
+    private void verifyComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
+        throws ComponentLookupException
+    {
+        String role = componentDescriptor.getRole();
+        String roleHint = componentDescriptor.getRoleHint();
+        ClassRealm realm = componentDescriptor.getRealm();
+
+        if (realm == null)
+        {
+            throw new ComponentLookupException( "ComponentDescriptor realm is null", role, roleHint, realm);
+        }
+
+        Class<?> implementationClass = componentDescriptor.getImplementationClass();
+        if (implementationClass.equals( Object.class ))
+        {
+            throw new ComponentLookupException( "ComponentDescriptor implementation class could not be loaded", role, roleHint, realm);
+        }
+
+        if (role == null)
+        {
+            throw new ComponentLookupException( "ComponentDescriptor role is null", role, roleHint, realm);
+        }
+
+        Class<?> roleClass;
+        try
+        {
+            roleClass = realm.loadClass( role );
+        }
+        catch ( ClassNotFoundException e )
+        {
+            throw new ComponentLookupException( "ComponentDescriptor role is not a class", role, roleHint, realm);
+        }
+
+        if (!roleClass.isAssignableFrom( implementationClass )) {
+            throw new ComponentLookupException( "ComponentDescriptor implementation class does not implement the role class: implementationClass=" + implementationClass, role, roleHint, realm);            
+        }
     }
 
     private static class Key implements Comparable<Key>
