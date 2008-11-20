@@ -17,7 +17,6 @@ public class SingletonComponentManagerFactory implements ComponentManagerFactory
                                                     ComponentDescriptor componentDescriptor,
                                                     String role,
                                                     String roleHint )
-        throws UndefinedComponentManagerException
     {
         return new SingletonComponentManager( container, lifecycleHandler, componentDescriptor, role, roleHint );
     }

@@ -45,7 +45,7 @@ public class InitializeLoggerManagerPhase
         {
             try
             {
-                loggerManager = (LoggerManager) context.getContainer().lookup( LoggerManager.class );
+                loggerManager = context.getContainer().lookup( LoggerManager.class );
             }
             catch ( ComponentLookupException e )
             {

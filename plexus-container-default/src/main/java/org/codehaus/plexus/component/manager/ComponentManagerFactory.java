@@ -20,5 +20,5 @@ public interface ComponentManagerFactory
                                              LifecycleHandler lifecycleHandler,
                                              ComponentDescriptor<T> componentDescriptor,
                                              String role,
-                                             String roleHint ) throws UndefinedComponentManagerException;
+                                             String roleHint );
 }

@@ -36,9 +36,7 @@ public class LogDisablePhase
         if ( object instanceof LogEnabled )
         {
             LoggerManager loggerManager = componentManager.getContainer().getLoggerManager();
-
-            ComponentDescriptor descriptor = componentManager.getComponentDescriptor();
-            loggerManager.returnComponentLogger( descriptor.getRole(), descriptor.getRoleHint() );
+            loggerManager.returnComponentLogger( componentManager.getRole(), componentManager.getRoleHint() );
         }
     }
 }

@@ -21,14 +21,31 @@ import java.util.Map;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.manager.ComponentManagerFactory;
 
 /**
  * @author Jason van Zyl
  * @author Kenney Westerhof
+ * @author Dain Sundstrom
  */
-public interface ComponentLookupManager
+public interface ComponentRegistry
 {
-    String ROLE = ComponentLookupManager.class.getName();
+    void registerComponentManagerFactory( ComponentManagerFactory componentManagerFactory );
+
+    void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
+        throws ComponentRepositoryException;
+
+    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint );
+
+    @Deprecated
+    ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint, ClassRealm realm );
+
+    <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type, String role );
+
+    <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type, String role );
 
     <T> T lookup( Class<T> type, String role, String roleHint )
         throws ComponentLookupException;
@@ -38,4 +55,10 @@ public interface ComponentLookupManager
 
     <T> Map<String, T> lookupMap( Class<T> type, String role, List<String> hints )
         throws ComponentLookupException;
+
+    void release( Object component ) throws ComponentLifecycleException;
+
+    void removeComponentRealm( ClassRealm classRealm ) throws PlexusContainerException;
+
+    void dispose();
 }

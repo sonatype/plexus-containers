@@ -32,13 +32,13 @@ public class LogEnablePhase
     {
         if ( object instanceof LogEnabled )
         {
+            LogEnabled logEnabled = (LogEnabled) object;
+
             LoggerManager loggerManager = componentManager.getContainer().getLoggerManager();
 
-            ComponentDescriptor descriptor = componentManager.getComponentDescriptor();
+            Logger logger = loggerManager.getLoggerForComponent( componentManager.getRole(), componentManager.getRoleHint() );
 
-            Logger logger = loggerManager.getLoggerForComponent( descriptor.getRole(), descriptor.getRoleHint() );
-
-            ( (LogEnabled) object ).enableLogging( logger );
+            logEnabled.enableLogging( logger );
         }
     }
 }

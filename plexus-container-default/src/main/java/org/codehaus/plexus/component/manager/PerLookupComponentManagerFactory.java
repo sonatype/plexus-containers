@@ -17,7 +17,6 @@ public class PerLookupComponentManagerFactory implements ComponentManagerFactory
                                                     ComponentDescriptor componentDescriptor,
                                                     String role,
                                                     String roleHint )
-        throws UndefinedComponentManagerException
     {
         return new PerLookupComponentManager( container, lifecycleHandler, componentDescriptor, role, roleHint );
     }

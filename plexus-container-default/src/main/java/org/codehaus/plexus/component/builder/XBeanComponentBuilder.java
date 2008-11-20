@@ -25,6 +25,7 @@ import org.apache.xbean.recipe.RecipeHelper;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.ComponentRegistry;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.collections.ComponentList;
@@ -45,7 +46,6 @@ import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentRequirementList;
-import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -250,9 +250,9 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
             // if the type to be created is an instance of the expected type, return true
             try {
-                ComponentRepository repository = container.getComponentRepository();
+                ComponentRegistry componentRegistry = container.getComponentRegistry();
 
-                return repository.getComponentDescriptor(propertyType, requirement.getRole(), requirement.getRoleHint()) != null;
+                return componentRegistry.getComponentDescriptor(propertyType, requirement.getRole(), requirement.getRoleHint()) != null;
             } catch (Exception e) {
             }
 

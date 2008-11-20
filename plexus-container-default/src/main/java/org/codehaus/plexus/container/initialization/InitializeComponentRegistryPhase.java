@@ -20,19 +20,41 @@ import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.component.manager.PerLookupComponentManagerFactory;
+import org.codehaus.plexus.component.manager.SingletonComponentManagerFactory;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.DefaultComponentRegistry;
+import org.codehaus.plexus.ComponentRegistry;
+import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 
 /**
  * @author Jason van Zyl
  */
-public class InitializeComponentRepositoryPhase
-    extends AbstractCoreComponentInitializationPhase
+public class InitializeComponentRegistryPhase implements ContainerInitializationPhase
 {
-    public void initializeCoreComponent( ContainerInitializationContext context )
+    public void execute( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        ComponentRepository componentRepository = context.getContainerConfiguration().getComponentRepository();
+        ComponentRepository repository = getComponentRepository( context );
+
+        LifecycleHandlerManager lifecycleHandlerManager = getLifecycleHandlerManager( context );
+
+        ComponentRegistry componentRegistry = new DefaultComponentRegistry( context.getContainer(),
+            repository,
+            lifecycleHandlerManager );
+
+        componentRegistry.registerComponentManagerFactory( new PerLookupComponentManagerFactory() );
+
+        componentRegistry.registerComponentManagerFactory( new SingletonComponentManagerFactory() );
+
+        context.getContainer().setComponentRegistry( componentRegistry );
+    }
+
+    private ComponentRepository getComponentRepository( ContainerInitializationContext context )
+        throws ContainerInitializationException
+    {
+        ComponentRepository repository = context.getContainerConfiguration().getComponentRepository();
 
         // Add the components defined in the container xml configuration
         try
@@ -44,7 +66,7 @@ public class InitializeComponentRepositoryPhase
             {
                 ComponentDescriptor<?> componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );
                 componentDescriptor.setRealm( context.getContainer().getContainerRealm() );
-                componentRepository.addComponentDescriptor( componentDescriptor );
+                repository.addComponentDescriptor( componentDescriptor );
             }
         }
         catch ( PlexusConfigurationException e )
@@ -56,7 +78,13 @@ public class InitializeComponentRepositoryPhase
         {
             throw new ContainerInitializationException( "Error initializing component repository: ", e );
         }
+        return repository;
+    }
 
-        context.getContainer().setComponentRepository( componentRepository );
+    private LifecycleHandlerManager getLifecycleHandlerManager( ContainerInitializationContext context )
+    {
+        LifecycleHandlerManager lifecycleHandlerManager = context.getContainerConfiguration().getLifecycleHandlerManager();
+        lifecycleHandlerManager.initialize();
+        return lifecycleHandlerManager;
     }
 }

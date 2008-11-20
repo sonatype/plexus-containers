@@ -49,7 +49,8 @@ public abstract class AbstractComponentManager<T>
     
     private final String roleHint;
 
-    protected final ComponentBuilder<T> builder;
+    protected final ComponentBuilder<T> builder = new XBeanComponentBuilder<T>(this);
+
 
     private final LifecycleHandler lifecycleHandler;
 
@@ -67,7 +68,7 @@ public abstract class AbstractComponentManager<T>
                        LifecycleHandler lifecycleHandler,
                        ComponentDescriptor<T> componentDescriptor,
                        String role,
-                       String roleHint) throws UndefinedComponentManagerException
+                       String roleHint)
     {
         if ( container == null )
         {
@@ -102,13 +103,6 @@ public abstract class AbstractComponentManager<T>
         this.realm = componentDescriptor.getRealm();
 
         this.type = componentDescriptor.getImplementationClass();
-
-        builder = createComponentBuilder();
-    }
-
-    protected ComponentBuilder<T> createComponentBuilder() {
-        return new XBeanComponentBuilder<T>(this);
-        // return new DefaultComponentBuilder(this);
     }
 
     public ComponentDescriptor<T> getComponentDescriptor()

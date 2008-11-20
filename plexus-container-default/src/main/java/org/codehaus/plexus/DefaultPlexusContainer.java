@@ -26,10 +26,7 @@ import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
-import org.codehaus.plexus.component.manager.ComponentManager;
-import org.codehaus.plexus.component.manager.ComponentManagerManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
@@ -46,7 +43,6 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.context.DefaultContext;
-import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.LoggerManager;
@@ -59,7 +55,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -96,21 +91,7 @@ public class DefaultPlexusContainer
     // Core components
     // ----------------------------------------------------------------------------
 
-    /**
-     * A repository of component descriptions which are used to create new components and for tooling.
-     */
-    protected ComponentRepository componentRepository;
-
-    /**
-     * The main component registry.  Components are wrapped in a ComponentManager and the ComponentManagerManager
-     * is the index of all existing ComponentManagers in this container.
-     */
-    protected ComponentManagerManager componentManagerManager;
-
-    /**
-     * Simple index (registry) of LifecycleHandler instances.
-     */
-    protected LifecycleHandlerManager lifecycleHandlerManager;
+    private ComponentRegistry componentRegistry;
 
     /**
      * Simple index (registry) of ComponentDiscovers and ComponentDiscoveryListener.
@@ -121,11 +102,6 @@ public class DefaultPlexusContainer
      * Trivial class to look-up ComponentFactory instances in this container.
      */
     protected ComponentFactoryManager componentFactoryManager;
-
-    /**
-     * Encapsulates the algorithm for finding components by role, roleHint, and classRealm.
-     */
-    protected ComponentLookupManager componentLookupManager;
 
     /**
      * Generic logger interface.
@@ -245,9 +221,7 @@ public class DefaultPlexusContainer
             }
             catch ( NoSuchRealmException e )
             {
-                List realms = new LinkedList( classWorld.getRealms() );
-
-                containerRealm = (ClassRealm) realms.get( 0 );
+                containerRealm = (ClassRealm) classWorld.getRealms().iterator().next();
 
                 if ( containerRealm == null )
                 {
@@ -364,80 +338,80 @@ public class DefaultPlexusContainer
         return Object.class;
     }
     
-    private Class getRoleClass( String role )
+    private Class<?> getRoleClass( String role )
     {
         return getInterfaceClass( role, null );        
     }
 
-    private Class getRoleClass( String role, String hint )
+    private Class<?> getRoleClass( String role, String hint )
     {
         return getInterfaceClass( role, hint );
     }
 
     public Object lookup( String role ) throws ComponentLookupException
     {
-        return componentLookupManager.lookup( getRoleClass( role ), role, PLEXUS_DEFAULT_HINT );
+        return componentRegistry.lookup( getRoleClass( role ), role, PLEXUS_DEFAULT_HINT );
     }
 
     public Object lookup( String role, String roleHint ) throws ComponentLookupException
     {
-        return componentLookupManager.lookup( getRoleClass( role, roleHint ), role, roleHint );
+        return componentRegistry.lookup( getRoleClass( role, roleHint ), role, roleHint );
     }
 
     public <T> T lookup( Class<T> type ) throws ComponentLookupException
     {
-        return componentLookupManager.lookup( type, type.getName(), PLEXUS_DEFAULT_HINT );
+        return componentRegistry.lookup( type, type.getName(), PLEXUS_DEFAULT_HINT );
     }
 
     public <T> T lookup( Class<T> type, String roleHint ) throws ComponentLookupException
     {
-        return componentLookupManager.lookup( type, type.getName(), roleHint );
+        return componentRegistry.lookup( type, type.getName(), roleHint );
     }
 
     public <T> T lookup( Class<T> type, String role, String roleHint ) throws ComponentLookupException
     {
         
-        return componentLookupManager.lookup( type, role, roleHint );
+        return componentRegistry.lookup( type, role, roleHint );
     }
 
     public List<Object> lookupList( String role ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupList( getRoleClass( role ), role, null);
+        return cast(componentRegistry.lookupList( getRoleClass( role ), role, null));
     }
 
     public List<Object> lookupList( String role, List<String> roleHints ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupList( getRoleClass( role ), role, roleHints );
+        return cast(componentRegistry.lookupList( getRoleClass( role ), role, roleHints ));
     }
 
     public <T> List<T> lookupList( Class<T> type ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupList( type, type.getName(), null );
+        return componentRegistry.lookupList( type, type.getName(), null );
     }
 
     public <T> List<T> lookupList( Class<T> type, List<String> roleHints ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupList( type, type.getName(), roleHints );
+        return componentRegistry.lookupList( type, type.getName(), roleHints );
     }
 
     public Map<String, Object> lookupMap( String role ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupMap(  getRoleClass( role ), role, null );
+        return cast(componentRegistry.lookupMap(  getRoleClass( role ), role, null ));
     }
 
     public Map<String, Object> lookupMap( String role, List<String> roleHints ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupMap( getRoleClass( role ), role, roleHints );
+        return cast(componentRegistry.lookupMap( getRoleClass( role ), role, roleHints ));
     }
 
     public <T> Map<String, T> lookupMap( Class<T> type ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupMap( type, type.getName(), null );
+        return componentRegistry.lookupMap( type, type.getName(), null );
     }
 
     public <T> Map<String, T> lookupMap( Class<T> type, List<String> roleHints ) throws ComponentLookupException
     {
-        return componentLookupManager.lookupMap( type, type.getName(), roleHints );
+        return componentRegistry.lookupMap( type, type.getName(), roleHints );
     }
 
     // ----------------------------------------------------------------------
@@ -446,62 +420,62 @@ public class DefaultPlexusContainer
 
     public boolean hasComponent( String role )
     {
-        return componentRepository.getComponentDescriptor( Object.class, role, PLEXUS_DEFAULT_HINT ) != null;
+        return componentRegistry.getComponentDescriptor( Object.class, role, PLEXUS_DEFAULT_HINT ) != null;
     }
 
     public boolean hasComponent( String role, String roleHint )
     {
-        return componentRepository.getComponentDescriptor( Object.class, role, roleHint ) != null;
+        return componentRegistry.getComponentDescriptor( Object.class, role, roleHint ) != null;
     }
 
     public boolean hasComponent( Class<?> type )
     {
-        return componentRepository.getComponentDescriptor( type, type.getName(), PLEXUS_DEFAULT_HINT ) != null;
+        return componentRegistry.getComponentDescriptor( type, type.getName(), PLEXUS_DEFAULT_HINT ) != null;
     }
 
     public boolean hasComponent( Class<?> type, String roleHint )
     {
-        return componentRepository.getComponentDescriptor( type, type.getName(), roleHint ) != null;
+        return componentRegistry.getComponentDescriptor( type, type.getName(), roleHint ) != null;
     }
 
     public boolean hasComponent( Class<?> type, String role, String roleHint )
     {
-        return componentRepository.getComponentDescriptor( type, role, roleHint ) != null;
+        return componentRegistry.getComponentDescriptor( type, role, roleHint ) != null;
     }
 
     public ComponentDescriptor<?> getComponentDescriptor( String role )
     {
-        return componentRepository.getComponentDescriptor( Object.class, role, PLEXUS_DEFAULT_HINT );
+        return componentRegistry.getComponentDescriptor( Object.class, role, PLEXUS_DEFAULT_HINT );
     }
 
     public ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint )
     {
-        return componentRepository.getComponentDescriptor( Object.class, role, roleHint );
+        return componentRegistry.getComponentDescriptor( Object.class, role, roleHint );
     }
 
     public <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint )
     {
-        return componentRepository.getComponentDescriptor( type, role, roleHint );
+        return componentRegistry.getComponentDescriptor( type, role, roleHint );
     }
 
     public Map<String, ComponentDescriptor<?>> getComponentDescriptorMap( String role )
     {
-        return cast(componentRepository.getComponentDescriptorMap( Object.class, role ));
+        return cast(componentRegistry.getComponentDescriptorMap( Object.class, role ));
     }
 
     public <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type, String role )
     {
-        return componentRepository.getComponentDescriptorMap( type, role );
+        return componentRegistry.getComponentDescriptorMap( type, role );
     }
 
     public List<ComponentDescriptor<?>> getComponentDescriptorList( String role )
     {
-        return cast(componentRepository.getComponentDescriptorList( Object.class, role ));
+        return cast(componentRegistry.getComponentDescriptorList( Object.class, role ));
     }
 
     public <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type, String role )
     {
-        return componentRepository.getComponentDescriptorList( type, role );
+        return componentRegistry.getComponentDescriptorList( type, role );
     }
 
     public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) throws ComponentRepositoryException
@@ -511,7 +485,7 @@ public class DefaultPlexusContainer
             componentDescriptor.setRealm( this.containerRealm );
             // throw new ComponentImplementationNotFoundException( "ComponentDescriptor is missing realmId" );
         }
-        componentRepository.addComponentDescriptor( componentDescriptor );
+        componentRegistry.addComponentDescriptor( componentDescriptor );
     }
 
     // ----------------------------------------------------------------------
@@ -521,27 +495,7 @@ public class DefaultPlexusContainer
     public void release( Object component )
         throws ComponentLifecycleException
     {
-        if ( component == null )
-        {
-            return;
-        }
-
-        ComponentManager<?> componentManager = componentManagerManager.findComponentManagerByComponentInstance( component );
-
-        if ( componentManager == null )
-        {
-            // This needs to be tracked down but the user doesn't need to see this
-            getLogger().debug( "Component manager not found for returned component. Ignored. component=" + component );
-        }
-        else
-        {
-            componentManager.release( component );
-
-            if ( componentManager.getConnections() <= 0 )
-            {
-                componentManagerManager.unassociateComponentWithComponentManager( component );
-            }
-        }
+        componentRegistry.release( component );
     }
 
     public void releaseAll( Map<String, ?> components )
@@ -643,7 +597,7 @@ public class DefaultPlexusContainer
     {
         try
         {
-            disposeAllComponents();
+            componentRegistry.dispose();
 
             boolean needToDisposeRealm = false;
 
@@ -665,11 +619,6 @@ public class DefaultPlexusContainer
         {
             lookupRealm.set( null );
         }
-    }
-
-    protected void disposeAllComponents()
-    {
-        componentManagerManager.disposeAllComponents( getLogger() );
     }
 
     public void addContextValue( Object key, Object value )
@@ -776,34 +725,14 @@ public class DefaultPlexusContainer
     // Mutable Container Interface
     // ----------------------------------------------------------------------------
 
-    public ComponentRepository getComponentRepository()
+    public ComponentRegistry getComponentRegistry()
     {
-        return componentRepository;
+        return componentRegistry;
     }
 
-    public void setComponentRepository( ComponentRepository componentRepository )
+    public void setComponentRegistry( ComponentRegistry componentRegistry )
     {
-        this.componentRepository = componentRepository;
-    }
-
-    public ComponentManagerManager getComponentManagerManager()
-    {
-        return componentManagerManager;
-    }
-
-    public void setComponentManagerManager( ComponentManagerManager componentManagerManager )
-    {
-        this.componentManagerManager = componentManagerManager;
-    }
-
-    public LifecycleHandlerManager getLifecycleHandlerManager()
-    {
-        return lifecycleHandlerManager;
-    }
-
-    public void setLifecycleHandlerManager( LifecycleHandlerManager lifecycleHandlerManager )
-    {
-        this.lifecycleHandlerManager = lifecycleHandlerManager;
+        this.componentRegistry = componentRegistry;
     }
 
     public ComponentDiscovererManager getComponentDiscovererManager()
@@ -824,16 +753,6 @@ public class DefaultPlexusContainer
     public void setComponentFactoryManager( ComponentFactoryManager componentFactoryManager )
     {
         this.componentFactoryManager = componentFactoryManager;
-    }
-
-    public ComponentLookupManager getComponentLookupManager()
-    {
-        return componentLookupManager;
-    }
-
-    public void setComponentLookupManager( ComponentLookupManager componentLookupManager )
-    {
-        this.componentLookupManager = componentLookupManager;
     }
 
     // Configuration
@@ -884,15 +803,7 @@ public class DefaultPlexusContainer
                 + "\n(trying to remove container realm as if it were a component realm)." );
         }
 
-        componentRepository.removeComponentRealm( realm );
-        try
-        {
-            componentManagerManager.dissociateComponentRealm( realm );
-        }
-        catch ( ComponentLifecycleException e )
-        {
-            throw new PlexusContainerException( "Failed to dissociate component realm: " + realm.getId(), e );
-        }
+        componentRegistry.removeComponentRealm( realm );
 
         ClassRealm lookupRealm = getLookupRealm();
         if ( ( lookupRealm != null ) && lookupRealm.getId().equals( realm.getId() ) )

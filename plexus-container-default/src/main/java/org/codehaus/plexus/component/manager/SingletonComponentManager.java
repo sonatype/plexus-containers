@@ -36,7 +36,6 @@ public class SingletonComponentManager<T>
                                       ComponentDescriptor<T> componentDescriptor,
                                       String role,
                                       String roleHint )
-        throws UndefinedComponentManagerException
     {
         super( container, lifecycleHandler, componentDescriptor, role, roleHint );
     }

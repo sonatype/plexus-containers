@@ -13,11 +13,6 @@ import org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.factory.DefaultComponentFactoryManager;
-import org.codehaus.plexus.component.manager.ComponentManagerManager;
-import org.codehaus.plexus.component.manager.DefaultComponentManagerManager;
-import org.codehaus.plexus.component.manager.PerLookupComponentManagerFactory;
-import org.codehaus.plexus.component.manager.SingletonComponentManagerFactory;
-import org.codehaus.plexus.component.manager.ComponentLookupManagerComponentManagerFactory;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
@@ -25,16 +20,13 @@ import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase;
-import org.codehaus.plexus.container.initialization.InitializeComponentLookupManagerPhase;
-import org.codehaus.plexus.container.initialization.InitializeComponentManagerManagerPhase;
-import org.codehaus.plexus.container.initialization.InitializeComponentRepositoryPhase;
 import org.codehaus.plexus.container.initialization.InitializeContainerConfigurationSourcePhase;
 import org.codehaus.plexus.container.initialization.InitializeContextPhase;
-import org.codehaus.plexus.container.initialization.InitializeLifecycleHandlerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase;
 import org.codehaus.plexus.container.initialization.InitializeUserConfigurationSourcePhase;
 import org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase;
+import org.codehaus.plexus.container.initialization.InitializeComponentRegistryPhase;
 import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
@@ -154,12 +146,8 @@ public class DefaultContainerConfiguration
 
     private ContainerInitializationPhase[] initializationPhases =
         {
-
-        new InitializeComponentRepositoryPhase(),
-            new InitializeLifecycleHandlerManagerPhase(),
-            new InitializeComponentManagerManagerPhase(),
+            new InitializeComponentRegistryPhase(),
             new InitializeComponentFactoryManagerPhase(),
-            new InitializeComponentLookupManagerPhase(),
             new InitializeContainerConfigurationSourcePhase(),
             new InitializeLoggerManagerPhase(),
             new InitializeContextPhase(),
@@ -170,11 +158,6 @@ public class DefaultContainerConfiguration
             new StartLoadOnStartComponentsPhase(),
 
         };
-
-    public ComponentLookupManager getComponentLookupManager()
-    {
-        return new DefaultComponentLookupManager();
-    }
 
     // Component discoverer
 
@@ -231,31 +214,6 @@ public class DefaultContainerConfiguration
     public ContainerConfiguration setComponentFactoryManager( ComponentFactoryManager componentFactoryManager )
     {
         this.componentFactoryManager = componentFactoryManager;
-
-        return this;
-    }
-
-    private ComponentManagerManager componentManagerManager;
-
-    public ComponentManagerManager getComponentManagerManager()
-    {
-        if ( componentManagerManager == null )
-        {
-            componentManagerManager = new DefaultComponentManagerManager();
-
-            componentManagerManager.addComponentManagerFactory( new PerLookupComponentManagerFactory() );
-
-            componentManagerManager.addComponentManagerFactory( new SingletonComponentManagerFactory() );
-
-            componentManagerManager.addComponentManagerFactory( new ComponentLookupManagerComponentManagerFactory() );
-        }
-
-        return componentManagerManager;
-    }
-
-    public ContainerConfiguration setComponentManagerManager( ComponentManagerManager componentManagerManager )
-    {
-        this.componentManagerManager = componentManagerManager;
 
         return this;
     }
