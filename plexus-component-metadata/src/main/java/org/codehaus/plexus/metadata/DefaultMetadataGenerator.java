@@ -52,8 +52,6 @@ public class DefaultMetadataGenerator
         throws Exception
     {
         assert outputFile != null;
-
-        System.out.println( "output file: " + outputFile);
         
         // If no extractors are configured then use a default (javadoc-style source extraction)
         if ( extractors == null || extractors.length == 0 )
