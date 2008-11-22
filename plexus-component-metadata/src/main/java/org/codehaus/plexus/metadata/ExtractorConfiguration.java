@@ -9,5 +9,7 @@ public class ExtractorConfiguration
     
     public List sourceDirectories;
     
-    public File outputDirectory;    
+    public File classesDirectory;  
+    
+    public boolean useContextClassLoader;
 }

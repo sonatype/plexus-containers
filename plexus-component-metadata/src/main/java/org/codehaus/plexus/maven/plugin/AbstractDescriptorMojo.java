@@ -91,13 +91,13 @@ public abstract class AbstractDescriptorMojo
             if ( scope.equals( COMPILE_SCOPE ) )
             {
                 ec.classpath = mavenProject.getCompileClasspathElements();
-                ec.outputDirectory = new File( mavenProject.getBuild().getOutputDirectory() );
+                ec.classesDirectory = new File( mavenProject.getBuild().getOutputDirectory() );
                 ec.sourceDirectories = mavenProject.getCompileSourceRoots();
             }
             else if ( scope.equals( TEST_SCOPE ) )
             {
                 ec.classpath = mavenProject.getTestClasspathElements();
-                ec.outputDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
+                ec.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
                 ec.sourceDirectories = mavenProject.getTestCompileSourceRoots();                
             }
             

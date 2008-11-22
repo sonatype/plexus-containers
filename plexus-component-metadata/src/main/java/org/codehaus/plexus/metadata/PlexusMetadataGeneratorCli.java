@@ -13,8 +13,9 @@ import org.codehaus.plexus.tools.cli.AbstractCli;
 public class PlexusMetadataGeneratorCli
     extends AbstractCli
 {
-    public static final char DIRECTORY = 'd';
-    public static final char OUTPUT = 'o';
+    public static final char SOURCE_DIRECTORY = 's';
+    public static final char CLASSES_DIRECTORY = 'c';
+    public static final char OUTPUT_FILE = 'o';
 
     public static void main( String[] args )
         throws Exception
@@ -32,8 +33,9 @@ public class PlexusMetadataGeneratorCli
     @SuppressWarnings("static-access")
     public Options buildCliOptions( Options options )
     {
-        options.addOption( OptionBuilder.withLongOpt( "directory" ).hasArg().withDescription( "Project directory." ).create( DIRECTORY ) );
-        options.addOption( OptionBuilder.withLongOpt( "output" ).hasArg().withDescription( "Output directory." ).create( OUTPUT ) );
+        options.addOption( OptionBuilder.withLongOpt( "source" ).hasArg().withDescription( "Source directory." ).create( SOURCE_DIRECTORY ) );
+        options.addOption( OptionBuilder.withLongOpt( "classes" ).hasArg().withDescription( "Classes directory." ).create( CLASSES_DIRECTORY ) );
+        options.addOption( OptionBuilder.withLongOpt( "output" ).hasArg().withDescription( "Output directory." ).create( OUTPUT_FILE ) );
         return options;
     }    
 
@@ -41,12 +43,11 @@ public class PlexusMetadataGeneratorCli
         throws Exception
     {
         MetadataGenerator mg = (MetadataGenerator) plexus.lookup( MetadataGenerator.class );
-        File directory = new File( cli.getOptionValue( DIRECTORY ) );        
         ExtractorConfiguration extractorConfiguration = new ExtractorConfiguration();        
-        extractorConfiguration.outputDirectory = new File( directory, "target/classes" );
+        extractorConfiguration.classesDirectory = new File( cli.getOptionValue( CLASSES_DIRECTORY ) );
         extractorConfiguration.classpath = Collections.EMPTY_LIST;
-        extractorConfiguration.sourceDirectories = Arrays.asList( new String[]{ new File( directory, "src/main/java" ).getAbsolutePath() } );
-        File output = new File( cli.getOptionValue( OUTPUT ) );
-        mg.generateDescriptor( extractorConfiguration, output );
+        extractorConfiguration.sourceDirectories = Arrays.asList( new String[]{ new File( cli.getOptionValue( SOURCE_DIRECTORY ) ).getAbsolutePath() } );
+        extractorConfiguration.useContextClassLoader = true;
+        mg.generateDescriptor( extractorConfiguration, new File( cli.getOptionValue( OUTPUT_FILE ) ) );
     }
 }

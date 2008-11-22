@@ -61,24 +61,31 @@ public class ClassComponentDescriptorExtractor
             throw new IllegalStateException( "Gleaner is not bound" );
         }
 
-        if ( !configuration.outputDirectory.exists() )
+        if ( !configuration.classesDirectory.exists() )
         {
             //getLogger().warn( "Missing classes directory: " + classesDir );
             return Collections.EMPTY_LIST;
         }
 
-        final ClassLoader prev = Thread.currentThread().getContextClassLoader();
-        final ClassLoader cl = createClassLoader( configuration.classpath );
-
-        Thread.currentThread().setContextClassLoader( cl );
-
-        try
+        if ( configuration.useContextClassLoader )
         {
-            return extract( configuration.outputDirectory, cl, getDefaultsByRole( roleDefaults ) );
+            return extract( configuration.classesDirectory, Thread.currentThread().getContextClassLoader(), getDefaultsByRole( roleDefaults ) );
         }
-        finally
+        else
         {
-            Thread.currentThread().setContextClassLoader( prev );
+            ClassLoader prev = Thread.currentThread().getContextClassLoader();
+            ClassLoader cl = createClassLoader( configuration.classpath );
+
+            Thread.currentThread().setContextClassLoader( cl );
+
+            try
+            {
+                return extract( configuration.classesDirectory, cl, getDefaultsByRole( roleDefaults ) );
+            }
+            finally
+            {
+                Thread.currentThread().setContextClassLoader( prev );
+            }
         }
     }
 
@@ -134,7 +141,7 @@ public class ClassComponentDescriptorExtractor
 
         String[] includes = scanner.getIncludedFiles();
 
-        for (String include : includes) 
+        for ( String include : includes )
         {
             String className = include.substring( 0, include.lastIndexOf( ".class" ) ).replace( '\\', '.' ).replace( '/', '.' );
 

@@ -53,6 +53,8 @@ public class DefaultMetadataGenerator
     {
         assert outputFile != null;
 
+        System.out.println( "output file: " + outputFile);
+        
         // If no extractors are configured then use a default (javadoc-style source extraction)
         if ( extractors == null || extractors.length == 0 )
         {
@@ -91,7 +93,7 @@ public class DefaultMetadataGenerator
             set.setComponents( descriptors );
             set.setDependencies( Collections.EMPTY_LIST );
 
-            try
+            try 
             {
                 writeDescriptor( set, outputFile );
             }
@@ -104,12 +106,12 @@ public class DefaultMetadataGenerator
 
     private void writeDescriptor( ComponentSetDescriptor desc, File outputFile )
         throws Exception
-    {
+    {        
         assert desc != null;
         assert outputFile != null;
 
         FileUtils.forceMkdir( outputFile.getParentFile() );
-
+        
         BufferedWriter output =
             new BufferedWriter( new OutputStreamWriter( new FileOutputStream( outputFile ), "UTF-8" ) );
 
