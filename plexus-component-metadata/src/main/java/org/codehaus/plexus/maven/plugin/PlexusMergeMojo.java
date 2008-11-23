@@ -34,9 +34,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @goal merge-metadata
- * 
- * @phase process-resources
- * 
+ * @phase process-classes
  * @description Merges all Plexus descriptors in the main sources.
  * 
  * @author <a href="mailto:trygve.laugstol@objectware.no">Trygve Laugst&oslash;l</a>
