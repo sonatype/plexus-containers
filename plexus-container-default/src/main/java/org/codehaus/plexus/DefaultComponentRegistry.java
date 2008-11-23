@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.IdentityHashMap;
@@ -40,7 +41,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         Collections.synchronizedMap( new TreeMap<String, ComponentManagerFactory>() );
 
     private final Map<Key, ComponentManager<?>> componentManagers = new TreeMap<Key, ComponentManager<?>>();
-    private final IdentityHashMap<Object, ComponentManager<?>> componentManagersByComponent = new IdentityHashMap<Object, ComponentManager<?>>();
+    private final Map<Object, ComponentManager<?>> componentManagersByComponent = new IdentityHashMap<Object, ComponentManager<?>>();
 
     public DefaultComponentRegistry( MutablePlexusContainer container,
                                      ComponentRepository repository,
@@ -93,7 +94,6 @@ public class DefaultComponentRegistry implements ComponentRegistry
     }
 
     @Deprecated
-    @SuppressWarnings({"deprecation"})
     public ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint, ClassRealm realm )
     {
         return repository.getComponentDescriptor( role, roleHint, realm );
@@ -213,7 +213,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
             return;
         }
 
-        // get the comonent manager
+        // get the component manager
         ComponentManager<?> componentManager;
         synchronized ( this )
         {
@@ -283,24 +283,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
     private <T> T getComponent( Class<T> type, String role, String roleHint, ComponentDescriptor<T> descriptor )
         throws ComponentLookupException
     {
-        ComponentManager<T> componentManager = getComponentManager( type, role, roleHint );
-        if ( componentManager == null )
-        {
-            // we need to create a component manager, but first we must have a descriptor
-            if ( descriptor == null )
-            {
-                descriptor = getComponentDescriptor( type, role, roleHint );
-                if ( descriptor == null )
-                {
-                    throw new ComponentLookupException(
-                        "Component descriptor cannot be found in the component repository",
-                        role,
-                        roleHint );
-                }
-            }
-
-            componentManager = createComponentManager( descriptor, role, roleHint );
-        }
+        ComponentManager<T> componentManager = getComponentManager( type, role, roleHint, descriptor );
 
         // Get instance from manager... may result in creation
         try
@@ -326,9 +309,33 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
     }
 
-    private synchronized <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint )
+    private synchronized <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint, ComponentDescriptor<T> descriptor )
+        throws ComponentLookupException
     {
-        LinkedHashSet<ClassRealm> realms = getSearchRealms();
+        ComponentManager<T> componentManager = getComponentManager( type, role, roleHint );
+        if ( componentManager == null )
+        {
+            // we need to create a component manager, but first we must have a descriptor
+            if ( descriptor == null )
+            {
+                descriptor = getComponentDescriptor( type, role, roleHint );
+                if ( descriptor == null )
+                {
+                    throw new ComponentLookupException(
+                        "Component descriptor cannot be found in the component repository",
+                        role,
+                        roleHint );
+                }
+            }
+
+            componentManager = createComponentManager( descriptor, role, roleHint );
+        }
+        return componentManager;
+    }
+
+    private <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint )
+    {
+        Set<ClassRealm> realms = getSearchRealms();
 
         // return the component in the first realm
         for ( ClassRealm realm : realms )
@@ -342,10 +349,10 @@ public class DefaultComponentRegistry implements ComponentRegistry
         return null;
     }
 
-    private LinkedHashSet<ClassRealm> getSearchRealms()
+    private Set<ClassRealm> getSearchRealms()
     {
         // determine realms to search
-        LinkedHashSet<ClassRealm> realms = new LinkedHashSet<ClassRealm>();
+        Set<ClassRealm> realms = new LinkedHashSet<ClassRealm>();
         for ( ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); classLoader != null; classLoader = classLoader.getParent() )
         {
             if ( classLoader instanceof ClassRealm )
@@ -409,11 +416,8 @@ public class DefaultComponentRegistry implements ComponentRegistry
             roleHint );
 
         // Add componentManager to indexes
-        synchronized ( this )
-        {
-            Key key = new Key( descriptor.getRealm(), role, roleHint );
-            componentManagers.put( key, componentManager );
-        }
+        Key key = new Key( descriptor.getRealm(), role, roleHint );
+        componentManagers.put( key, componentManager );
 
         return componentManager;
     }
