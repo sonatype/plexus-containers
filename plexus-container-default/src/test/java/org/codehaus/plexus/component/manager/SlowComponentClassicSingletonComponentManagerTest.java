@@ -34,7 +34,6 @@ public class SlowComponentClassicSingletonComponentManagerTest
 
     /**
      * Tests that multiple concurrent threads don't acquire different components.
-     * @todo [BP] I've seen this fail at random
      */
     public void testThreads1000()
         throws Exception
