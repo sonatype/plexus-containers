@@ -1,0 +1,57 @@
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+import org.codehaus.plexus.util.*;
+
+setAccessibility( true );
+
+File docsDir = new File( basedir, "target/site/apidocs" );
+System.out.println( "Checking for existence of: " + docsDir );
+if ( !docsDir.exists() )
+{
+    throw new FileNotFoundException( docsDir + " was not created" );
+}
+
+File docFile = new File( docsDir, "plexus/test/App.html" );
+System.out.println( "Checking for existence of: " + docFile );
+if ( !docFile.isFile() )
+{
+    throw new FileNotFoundException( docFile + " was not created" );
+}
+
+String html = FileUtils.fileRead( docFile, "UTF-8" ).replaceAll( "(\r\n)|(\r)|(\n)", "" );
+
+System.out.println( "Checking for documentation of Plexus component" );
+String plexusComponent = "<dt><b>plexus component:</b></dt><dd>"
+    + "<table cellpadding=\"2\" cellspacing=\"0\"><tr><td>" + "<dl>"
+    + "<dt><b>role:</b></dt>"
+    + "<dd>\"org.codehaus.plexus.test.app\"</dd>"
+    + "<dt><b>role-hint:</b></dt>" + "<dd>\"app\"</dd>"
+    + "</dl></td></tr></table></dd>";
+if ( html.toLowerCase( Locale.ENGLISH ).indexOf( ( plexusComponent ).toLowerCase( Locale.ENGLISH ) ) < 0 )
+{
+    throw new IllegalStateException( "Plexus component doc wrong" );
+}
+
+System.out.println( "Checking for documentation of Plexus configuration" );
+String plexusConfig = "<dt><b>plexus configuration:</b></dt><dd>"
+    + "<table cellpadding=\"2\" cellspacing=\"0\"><tr><td><dl>"
+    + "<dt><b>default-value:</b></dt>"
+    + "<dd>\"someone\"</dd></dl></td></tr></table></dd></dl>";
+if ( html.toLowerCase( Locale.ENGLISH ).indexOf( ( plexusConfig ).toLowerCase( Locale.ENGLISH ) ) < 0 )
+{
+    throw new IllegalStateException( "Plexus configuration doc wrong" );
+}
+
+System.out.println( "Checking for documentation of Plexus requirement" );
+String plexusRequirement = "<dt><b>plexus requirement:</b></dt><dd>"
+    + "<table cellpadding=\"2\" cellspacing=\"0\"><tr><td><dl>"
+    + "<dt><b>role-hint:</b></dt><dd>\"foo\"</dd>"
+    + "</dl></td></tr></table></dd></dl>";
+if ( html.toLowerCase( Locale.ENGLISH ).indexOf( ( plexusRequirement ).toLowerCase( Locale.ENGLISH ) ) < 0 )
+{
+    throw new IllegalStateException( "Plexus requirement doc wrong" );
+}
+
+return true;
