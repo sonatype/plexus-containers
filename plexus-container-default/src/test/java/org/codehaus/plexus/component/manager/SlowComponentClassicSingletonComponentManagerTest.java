@@ -36,21 +36,25 @@ public class SlowComponentClassicSingletonComponentManagerTest
      * Tests that multiple concurrent threads don't acquire different components.
      * @todo [BP] I've seen this fail at random
      */
-    public void testThreads10()
+    public void testThreads1000()
         throws Exception
     {
-        test( 10 );
+        test( 1000 );
     }
 
-    public void test( int count )
+    private void test( int count )
         throws Exception
     {
         ComponentLookupThread components[] = new ComponentLookupThread[ count ];
-        //Start them
+        //Create them
         for ( int i = 0; i < count; i++ )
         {
             components[ i ] = new ComponentLookupThread( getContainer() );
-            components[ i ].start();
+        }
+        //Start them
+        for ( int i = 0; i < count; i++ )
+        {
+            components[i].start();
         }
 
         //Wait for them to finish
@@ -80,6 +84,10 @@ public class SlowComponentClassicSingletonComponentManagerTest
 
         public ComponentLookupThread( PlexusContainer container )
         {
+            /*
+             * NOTE: A high priority seems to increase the likelihood of exhibiting missing synchronization.
+             */
+            setPriority( MAX_PRIORITY );
             this.container = container;
         }
 
