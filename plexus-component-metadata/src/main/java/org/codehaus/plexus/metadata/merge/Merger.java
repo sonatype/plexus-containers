@@ -26,6 +26,7 @@ package org.codehaus.plexus.metadata.merge;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.jdom.Document;
 
@@ -58,4 +59,7 @@ public interface Merger
      */
     void writeMergedDocument( Document mergedDocument, File file )
         throws IOException;
+    
+    void mergeDescriptors( File outputDescriptor, List<File> descriptors )
+        throws IOException;    
 }

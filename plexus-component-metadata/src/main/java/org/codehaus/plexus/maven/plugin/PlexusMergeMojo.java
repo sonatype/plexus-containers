@@ -20,7 +20,19 @@ package org.codehaus.plexus.maven.plugin;
  */
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+
+import org.apache.maven.model.Resource;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.plexus.metadata.ComponentDescriptorCreator;
+import org.codehaus.plexus.metadata.ComponentDescriptorCreatorException;
+import org.codehaus.plexus.metadata.merge.Merger;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @goal merge-metadata
@@ -33,7 +45,7 @@ import java.util.List;
  * @version $Id$
  */
 public class PlexusMergeMojo
-    extends AbstractMergeMojo
+    extends AbstractMojo
 {
     /**
      * @parameter expression="${project.resources}"
@@ -47,13 +59,92 @@ public class PlexusMergeMojo
      */
     private File output;
 
-    protected List getResources()
-    {
-        return resources;
-    }
+    /**
+     * @parameter
+     */
+    private File[] descriptors;
 
-    protected File getOutput()
+    /** @component */
+    private Merger merger;
+
+    public void execute()
+        throws MojoExecutionException
     {
-        return output;
+        // ----------------------------------------------------------------------
+        // Locate files
+        // ----------------------------------------------------------------------
+
+        List files = new ArrayList();
+
+        for ( Iterator it = resources.iterator(); it.hasNext(); )
+        {
+            Resource resource = (Resource) it.next();
+
+            String includes = "META-INF/plexus/components.xml";
+
+            String excludes = "";
+
+            for ( Iterator j = resource.getExcludes().iterator(); j.hasNext(); )
+            {
+                String exclude = (String) j.next();
+                excludes += exclude + ",";
+            }
+
+            try
+            {
+                File basedir = new File( resource.getDirectory() );
+
+                getLog().debug( "Searching for component.xml files. Basedir: " + basedir.getAbsolutePath() + ", includes: " + includes + ", excludes=" + excludes );
+
+                if ( !basedir.isDirectory() )
+                {
+                    getLog().debug( "Skipping, not a directory." );
+
+                    continue;
+                }
+
+                List list = FileUtils.getFiles( basedir, includes, excludes );
+
+                files.addAll( list );
+            }
+            catch ( IOException e )
+            {
+                throw new MojoExecutionException( "Error while scanning for component.xml files.", e );
+            }
+        }
+
+        if ( descriptors != null )
+        {
+            files.addAll( Arrays.asList( descriptors ) );
+        }
+
+        // ----------------------------------------------------------------------
+        // Merge the component set descriptors
+        // ----------------------------------------------------------------------
+
+        if ( files.isEmpty() )
+        {
+            getLog().debug( "Didn't find any files to merge." );
+
+            return;
+        }
+
+        getLog().debug( "Found " + files.size() + " files to merge:" );
+
+        for ( Iterator it = files.iterator(); it.hasNext(); )
+        {
+            File file = (File) it.next();
+
+            getLog().debug( file.getAbsolutePath() );
+        }
+
+        try
+        {
+            merger.mergeDescriptors( output, files );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Error while executing component descritor creator.", e );
+        }
     }
 }
