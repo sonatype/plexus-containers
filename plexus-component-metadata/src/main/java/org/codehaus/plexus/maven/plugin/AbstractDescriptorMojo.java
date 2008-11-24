@@ -113,7 +113,14 @@ public abstract class AbstractDescriptorMojo
                 
                 componentDescriptors.add( sourceComponentDescriptor );
                 
-                componentDescriptors.add( intermediaryComponentDescriptor );
+                // We have run the metadata generator but we may have the case where there is entire
+                // overlap in the source descriptor and what's being generated. This happens during
+                // a transition phase when moving from manually crafted descriptors to purely
+                // generated descriptors.
+                if ( intermediaryComponentDescriptor.exists() )
+                {
+                    componentDescriptors.add( intermediaryComponentDescriptor );
+                }
                 
                 merger.mergeDescriptors( outputFile, componentDescriptors );
             }
