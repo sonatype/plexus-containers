@@ -19,9 +19,6 @@ package org.codehaus.plexus.maven.plugin;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.io.File;
-
-import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
@@ -31,36 +28,16 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @goal generate-metadata
  * @phase process-classes
  * @requiresDependencyResolution compile
- * 
- * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @author Jason van Zyl
+ * @author Trygve Laugst&oslash;l
  * @version $Id$
  */
 public class PlexusDescriptorMojo
     extends AbstractDescriptorMojo
 {
-    /**
-     * The directory where the descriptor is written.
-     * 
-     * @parameter default-value="${project.build.outputDirectory}"
-     * @required
-     */
-    private File outputDirectory;
-
     public void execute()
         throws MojoExecutionException
     {
-        // Only execute if the current project looks like its got Java bits in it
-        ArtifactHandler artifactHandler = getMavenProject().getArtifact().getArtifactHandler();
-
-        if ( !"java".equals( artifactHandler.getLanguage() ) )
-        {
-            getLog().debug( "Not executing on non-Java project" );
-        }
-        else
-        {
-            File f = new File( outputDirectory, fileName );
-                     
-            generateDescriptor( COMPILE_SCOPE, f );
-        }
+        generateDescriptor( COMPILE_SCOPE, generatedComponentDescriptor );
     }
 }

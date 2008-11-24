@@ -23,41 +23,30 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.metadata.merge.Merger;
-import org.codehaus.plexus.util.FileUtils;
 
 /**
  * @goal merge-metadata
  * @phase process-classes
  * @description Merges all Plexus descriptors in the main sources.
- * 
- * @author <a href="mailto:trygve.laugstol@objectware.no">Trygve Laugst&oslash;l</a>
+ * @author Jason van Zyl
+ * @author Trygve Laugst&oslash;l
  * @version $Id$
  */
 public class PlexusMergeMojo
     extends AbstractMojo
 {
     /**
-     * @parameter expression="${project.resources}"
-     * @required
-     */
-    private List resources;
-
-    /**
      * @parameter default-value="${project.build.outputDirectory}/META-INF/plexus/components.xml"
      * @required
      */
     private File output;
 
-    /**
-     * @parameter
-     */
+    /** @parameter */
     private File[] descriptors;
 
     /** @component */
@@ -66,72 +55,16 @@ public class PlexusMergeMojo
     public void execute()
         throws MojoExecutionException
     {
-        // ----------------------------------------------------------------------
-        // Locate files
-        // ----------------------------------------------------------------------
-
-        List files = new ArrayList();
-
-        for ( Iterator it = resources.iterator(); it.hasNext(); )
-        {
-            Resource resource = (Resource) it.next();
-
-            String includes = "META-INF/plexus/components.xml";
-
-            String excludes = "";
-
-            for ( Iterator j = resource.getExcludes().iterator(); j.hasNext(); )
-            {
-                String exclude = (String) j.next();
-                excludes += exclude + ",";
-            }
-
-            try
-            {
-                File basedir = new File( resource.getDirectory() );
-
-                getLog().debug( "Searching for component.xml files. Basedir: " + basedir.getAbsolutePath() + ", includes: " + includes + ", excludes=" + excludes );
-
-                if ( !basedir.isDirectory() )
-                {
-                    getLog().debug( "Skipping, not a directory." );
-
-                    continue;
-                }
-
-                List list = FileUtils.getFiles( basedir, includes, excludes );
-
-                files.addAll( list );
-            }
-            catch ( IOException e )
-            {
-                throw new MojoExecutionException( "Error while scanning for component.xml files.", e );
-            }
-        }
+        List<File> files = new ArrayList<File>();
 
         if ( descriptors != null )
         {
             files.addAll( Arrays.asList( descriptors ) );
         }
 
-        // ----------------------------------------------------------------------
-        // Merge the component set descriptors
-        // ----------------------------------------------------------------------
-
         if ( files.isEmpty() )
         {
-            getLog().debug( "Didn't find any files to merge." );
-
             return;
-        }
-
-        getLog().debug( "Found " + files.size() + " files to merge:" );
-
-        for ( Iterator it = files.iterator(); it.hasNext(); )
-        {
-            File file = (File) it.next();
-
-            getLog().debug( file.getAbsolutePath() );
         }
 
         try

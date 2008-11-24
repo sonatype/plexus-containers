@@ -19,10 +19,8 @@ package org.codehaus.plexus.maven.plugin;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.io.File;
 import java.util.Collections;
 
-import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
@@ -32,44 +30,19 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @goal generate-test-metadata
  * @phase process-test-classes
  * @requiresDependencyResolution test
- * 
- * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
+ * @author Jason van Zyl
+ * @author Trygve Laugst&oslash;l
  * @version $Id$
  * @since 1.3.4
  */
 public class PlexusTestDescriptorMojo
     extends AbstractDescriptorMojo
 {
-    //
-    // FIXME: When running as process-classes, which is required to deal with the class-based annotation gleaning
-    //        we can't put the generated file into resources, as it will never make it to the correct directory
-    //
-    //        expression="${project.build.directory}/generated-test-resources/plexus/"
-    //
-
-    /**
-     * The output directory where the descriptor is written.
-     * 
-     * @parameter default-value="${project.build.testOutputDirectory}"
-     * @required
-     */
-    private File outputDirectory;
-
     public void execute()
         throws MojoExecutionException
     {
-        // Only execute if the current project looks like its got Java bits in it
-        ArtifactHandler artifactHandler = getMavenProject().getArtifact().getArtifactHandler();
+        generateDescriptor( TEST_SCOPE, generatedComponentDescriptor );
 
-        if ( !"java".equals( artifactHandler.getLanguage() ) )
-        {
-            getLog().debug( "Not executing on non-Java project" );
-        }
-        else
-        {
-            generateDescriptor( TEST_SCOPE, new File( outputDirectory, fileName ) );
-
-            getMavenProjectHelper().addTestResource( getMavenProject(), outputDirectory.getAbsolutePath(), Collections.EMPTY_LIST, Collections.EMPTY_LIST );
-        }
+        mavenProjectHelper.addTestResource( mavenProject, generatedComponentDescriptor.getParentFile().getAbsolutePath(), Collections.EMPTY_LIST, Collections.EMPTY_LIST );
     }
 }

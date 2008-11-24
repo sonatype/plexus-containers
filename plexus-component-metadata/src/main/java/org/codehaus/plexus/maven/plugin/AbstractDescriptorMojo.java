@@ -22,6 +22,8 @@ package org.codehaus.plexus.maven.plugin;
  */
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -29,6 +31,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.metadata.ExtractorConfiguration;
 import org.codehaus.plexus.metadata.MetadataGenerator;
+import org.codehaus.plexus.metadata.merge.Merger;
 
 /**
  * @author <a href='mailto:rahul.thakur.xdev@gmail.com'>Rahul Thakur</a>
@@ -42,10 +45,22 @@ public abstract class AbstractDescriptorMojo
     protected static final String TEST_SCOPE = "test";
 
     /**
-     * @parameter default-value="META-INF/plexus/components.xml"
+     * @parameter default-value="${project.build.outputDirectory}/META-INF/plexus/components.xml"
      * @required
      */
-    protected String fileName;
+    protected File generatedComponentDescriptor;
+
+    /**
+     * @parameter default-value="${basedir}/src/main/resources/META-INF/plexus/components.xml"
+     * @required
+     */
+    protected File sourceComponentDescriptor;
+
+    /**
+     * @parameter default-value="${project.build.directory}/components.xml"
+     * @required
+     */
+    protected File intermediaryComponentDescriptor;
 
     /**
      * Whether to generate a Plexus Container descriptor instead of a component descriptor.
@@ -59,49 +74,53 @@ public abstract class AbstractDescriptorMojo
      * @parameter expression="${project}"
      * @required
      */
-    private MavenProject mavenProject;
+    protected MavenProject mavenProject;
 
     /** @component */
-    private MavenProjectHelper mavenProjectHelper;
+    protected MavenProjectHelper mavenProjectHelper;
 
-      /** @component */
-    private MetadataGenerator metadataGenerator;    
-    
-    protected MavenProject getMavenProject()
-    {
-        return mavenProject;
-    }
+    /** @component */
+    protected MetadataGenerator metadataGenerator;    
 
-    protected MavenProjectHelper getMavenProjectHelper()
-    {
-        return mavenProjectHelper;
-    }
-        
-    // -----------------------------------------------------------------------
-    //
-    // -----------------------------------------------------------------------
+    /** @component */
+    private Merger merger;
 
     protected void generateDescriptor( String scope, File outputFile )
         throws MojoExecutionException
     {
-        ExtractorConfiguration ec = new ExtractorConfiguration();
-                
+        ExtractorConfiguration extractorConfiguration = new ExtractorConfiguration();
+        
         try
         {
             if ( scope.equals( COMPILE_SCOPE ) )
             {
-                ec.classpath = mavenProject.getCompileClasspathElements();
-                ec.classesDirectory = new File( mavenProject.getBuild().getOutputDirectory() );
-                ec.sourceDirectories = mavenProject.getCompileSourceRoots();
+                extractorConfiguration.classpath = mavenProject.getCompileClasspathElements();
+                extractorConfiguration.classesDirectory = new File( mavenProject.getBuild().getOutputDirectory() );
+                extractorConfiguration.sourceDirectories = mavenProject.getCompileSourceRoots();
             }
             else if ( scope.equals( TEST_SCOPE ) )
             {
-                ec.classpath = mavenProject.getTestClasspathElements();
-                ec.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
-                ec.sourceDirectories = mavenProject.getTestCompileSourceRoots();                
+                extractorConfiguration.classpath = mavenProject.getTestClasspathElements();
+                extractorConfiguration.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
+                extractorConfiguration.sourceDirectories = mavenProject.getTestCompileSourceRoots();                
             }
             
-            metadataGenerator.generateDescriptor( ec, outputFile );
+            if ( sourceComponentDescriptor.exists() )
+            {
+                metadataGenerator.generateDescriptor( extractorConfiguration, intermediaryComponentDescriptor );
+                
+                List<File> componentDescriptors = new ArrayList<File>();
+                
+                componentDescriptors.add( sourceComponentDescriptor );
+                
+                componentDescriptors.add( intermediaryComponentDescriptor );
+                
+                merger.mergeDescriptors( outputFile, componentDescriptors );
+            }
+            else
+            {
+                metadataGenerator.generateDescriptor( extractorConfiguration, generatedComponentDescriptor );                
+            }                        
         }
         catch ( Exception e )
         {

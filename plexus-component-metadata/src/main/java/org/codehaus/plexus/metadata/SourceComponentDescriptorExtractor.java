@@ -67,11 +67,6 @@ public class SourceComponentDescriptorExtractor
     public List extract( ExtractorConfiguration configuration, final ComponentDescriptor[] roleDefaults )
         throws Exception
     {
-        // getDefaultsByRole() seems to check for null and maven-artifact project works fine when
-        // assertions are disabled.        
-        //        assert roleDefaults != null;
-
-        // Use a default source gleaner if none was configured
         if ( gleaner == null )
         {
             gleaner = new QDoxComponentGleaner();
@@ -94,11 +89,6 @@ public class SourceComponentDescriptorExtractor
         if ( StringUtils.isNotEmpty( encoding ) )
         {
             builder.setEncoding( encoding );
-        }
-        else
-        {
-            //getLogger().warn( "File encoding has not been set, using platform encoding "
-            //    + System.getProperty( "file.encoding" ) + ", i.e. build is platform dependent!" );
         }
 
         for ( Iterator iter = sourceDirectories.iterator(); iter.hasNext(); )

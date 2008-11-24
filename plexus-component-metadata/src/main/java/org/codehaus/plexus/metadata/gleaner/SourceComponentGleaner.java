@@ -1,3 +1,5 @@
+package org.codehaus.plexus.metadata.gleaner;
+
 /*
  * Copyright (C) 2007 the original author or authors.
  *
@@ -14,8 +16,6 @@
  * limitations under the License.
  */
 
-package org.codehaus.plexus.metadata.gleaner;
-
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 import com.thoughtworks.qdox.model.JavaClass;
@@ -30,5 +30,6 @@ public interface SourceComponentGleaner
 {
     String ROLE = SourceComponentGleaner.class.getName();
 
-    ComponentDescriptor glean(JavaClassCache classCache, JavaClass javaClass) throws ComponentGleanerException;
+    ComponentDescriptor glean(JavaClassCache classCache, JavaClass javaClass) 
+        throws ComponentGleanerException;
 }

@@ -82,8 +82,6 @@ public class QDoxComponentGleaner
 
     public static final String PLEXUS_INSTANTIATION_STARTEGY_PARAMETER = "instantiation-strategy";
 
-    // XXX This is a duplicate of the constant in PlexusConstants, as we do not want to be tied to a
-    // particular container API
     public static final String PLEXUS_DEFAULT_HINT = "default";
 
     // ----------------------------------------------------------------------

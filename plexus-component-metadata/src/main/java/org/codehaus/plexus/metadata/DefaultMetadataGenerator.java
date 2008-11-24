@@ -53,7 +53,6 @@ public class DefaultMetadataGenerator
     {
         assert outputFile != null;
         
-        // If no extractors are configured then use a default (javadoc-style source extraction)
         if ( extractors == null || extractors.length == 0 )
         {
             extractors = new ComponentDescriptorExtractor[] { new SourceComponentDescriptorExtractor(), new ClassComponentDescriptorExtractor( new AnnotationComponentGleaner() ) };
@@ -75,7 +74,7 @@ public class DefaultMetadataGenerator
             }
             catch ( Exception e )
             {
-                throw new MojoExecutionException( "Failed to extract descriptors", e );
+                throw new Exception( "Failed to extract descriptors", e );
             }
         }
 

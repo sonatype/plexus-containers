@@ -1,4 +1,6 @@
-    /*
+package org.codehaus.plexus.metadata.gleaner;
+
+/*
  * Copyright (C) 2007 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +16,6 @@
  * limitations under the License.
  */
 
-package org.codehaus.plexus.metadata.gleaner;
-
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /**
@@ -27,6 +27,7 @@ public interface ClassComponentGleaner
 {
     String ROLE = ClassComponentGleaner.class.getName();
 
-    ComponentDescriptor glean(String className, ClassLoader cl) throws ComponentGleanerException;
+    ComponentDescriptor glean(String className, ClassLoader cl) 
+        throws ComponentGleanerException;
     
 }
