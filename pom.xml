@@ -19,6 +19,7 @@
   <modules>
     <module>plexus-component-annotations</module>
     <module>plexus-component-metadata</module>
+    <module>plexus-component-javadoc</module>
     <module>plexus-container-default</module>
   </modules>
   <scm>

@@ -37,7 +37,7 @@
           </taglets>
           <tagletArtifact>
             <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-javadoc</artifactId>
+            <artifactId>plexus-component-javadoc</artifactId>
             <version>@project.version@</version>
           </tagletArtifact>
         </configuration>

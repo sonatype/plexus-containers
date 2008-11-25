@@ -7,8 +7,8 @@
     <artifactId>plexus-containers</artifactId>
     <version>1.0-beta-2-SNAPSHOT</version>
   </parent>
-  <artifactId>plexus-javadoc</artifactId>
-  <name>Plexus javadoc</name>
+  <artifactId>plexus-component-javadoc</artifactId>
+  <name>Plexus :: Javadoc Taglets</name>
   <inceptionYear>2007</inceptionYear>
   <reporting>
     <plugins>
