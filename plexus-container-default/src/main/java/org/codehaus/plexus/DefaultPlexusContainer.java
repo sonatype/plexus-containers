@@ -164,17 +164,6 @@ public class DefaultPlexusContainer
         construct( c );
     }
 
-    // ----------------------------------------------------------------------------
-    // Requirements
-    // ----------------------------------------------------------------------------
-    // o discover all components that are present in the artifact
-    // o create a separate realm for the components
-    // o retrieve all the dependencies for the artifact: this last part unfortunately
-    // only works in Maven where artifacts are downloaded
-    // ----------------------------------------------------------------------------
-
-    // TODO This needs to be connected to the parent realm most likely
-
     public ClassRealm createChildRealm( String id )
     {
         try
