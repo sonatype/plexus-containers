@@ -49,7 +49,7 @@ public class PlexusMergeMojo
     /** @parameter */
     private File[] descriptors;
 
-    /** @component */
+    /** @component role-hint="componentsXml" */
     private Merger merger;
 
     public void execute()

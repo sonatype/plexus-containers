@@ -82,7 +82,7 @@ public abstract class AbstractDescriptorMojo
     /** @component */
     protected MetadataGenerator metadataGenerator;    
 
-    /** @component */
+    /** @component role-hint="componentsXml" */
     private Merger merger;
 
     protected void generateDescriptor( String scope, File outputFile )
