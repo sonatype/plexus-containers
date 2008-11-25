@@ -17,16 +17,29 @@ package org.codehaus.plexus;
  */
 
 import static org.codehaus.plexus.PlexusConstants.PLEXUS_DEFAULT_HINT;
+import static org.codehaus.plexus.component.CastUtils.cast;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
-import static org.codehaus.plexus.component.CastUtils.cast;
+import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
@@ -36,7 +49,6 @@ import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
-import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationContext;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.context.Context;
@@ -49,15 +61,6 @@ import org.codehaus.plexus.logging.LoggerManager;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.plexus.util.ReaderFactory;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Default implementation of PlexusContainer and MutablePlexusContainer.
@@ -517,6 +520,10 @@ public class DefaultPlexusContainer
             initializeConfiguration( containerConfiguration );
 
             initializePhases( containerConfiguration );
+            
+            containerContext.put( PlexusConstants.PLEXUS_KEY, this );
+            
+            discoverComponents( getContainerRealm() );   
         }
         catch ( ContextException e )
         {
@@ -530,6 +537,10 @@ public class DefaultPlexusContainer
         {
             throw new PlexusContainerException( "Error reading configuration file", e );
         }
+        catch ( ComponentRepositoryException e )
+        {
+            throw new PlexusContainerException( "Error discoverying components.", e );
+        }        
     }
 
     protected void initializePhases( ContainerConfiguration containerConfiguration )
@@ -556,23 +567,6 @@ public class DefaultPlexusContainer
                     + ".", e );
             }
         }
-    }
-
-    // We need to be aware of dependencies between discovered components when the listed component
-    // as the discovery listener itself depends on components that need to be discovered.
-    public List<ComponentDescriptor<?>> discoverComponents( ClassRealm classRealm )
-        throws PlexusConfigurationException, ComponentRepositoryException
-    {
-        return discoverComponents( classRealm, false );
-    }
-
-    /**
-     * @see org.codehaus.plexus.MutablePlexusContainer#discoverComponents(org.codehaus.plexus.classworlds.realm.ClassRealm,boolean)
-     */
-    public List<ComponentDescriptor<?>> discoverComponents( ClassRealm classRealm, boolean override )
-        throws PlexusConfigurationException, ComponentRepositoryException
-    {
-        return ComponentDiscoveryPhase.discoverComponents( this, classRealm );
     }
 
     protected void start()
@@ -868,5 +862,28 @@ public class DefaultPlexusContainer
     {
         this.loggerManager = loggerManager;
 
+    }
+    
+    // Discovery
+
+    public List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm )
+        throws PlexusConfigurationException, ComponentRepositoryException
+    {
+        List<ComponentDescriptor<?>> discoveredComponentDescriptors = new ArrayList<ComponentDescriptor<?>>();
+
+        for ( ComponentDiscoverer componentDiscoverer : getComponentDiscovererManager().getComponentDiscoverers() )
+        {
+            for ( ComponentSetDescriptor componentSet : componentDiscoverer.findComponents( getContext(), realm ) )
+            {
+                for ( ComponentDescriptor<?> componentDescriptor : componentSet.getComponents() )
+                {
+                    addComponentDescriptor( componentDescriptor );
+
+                    discoveredComponentDescriptors.add( componentDescriptor );
+                }
+            }
+        }
+
+        return discoveredComponentDescriptors;
     }
 }

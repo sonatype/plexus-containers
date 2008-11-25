@@ -16,12 +16,10 @@ import org.codehaus.plexus.component.factory.DefaultComponentFactoryManager;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
-import org.codehaus.plexus.container.initialization.ComponentDiscoveryPhase;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeContainerConfigurationSourcePhase;
-import org.codehaus.plexus.container.initialization.InitializeContextPhase;
 import org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase;
 import org.codehaus.plexus.container.initialization.InitializeUserConfigurationSourcePhase;
@@ -150,10 +148,8 @@ public class DefaultContainerConfiguration
             new InitializeComponentFactoryManagerPhase(),
             new InitializeContainerConfigurationSourcePhase(),
             new InitializeLoggerManagerPhase(),
-            new InitializeContextPhase(),
             new InitializeSystemPropertiesPhase(),
             new InitializeComponentDiscovererManagerPhase(),
-            new ComponentDiscoveryPhase(),
             new InitializeUserConfigurationSourcePhase(),
             new StartLoadOnStartComponentsPhase(),
 

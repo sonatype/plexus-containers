@@ -221,9 +221,8 @@ public class DefaultComponentRegistry implements ComponentRegistry
             if ( componentManager == null )
             {
                 // This needs to be tracked down but the user doesn't need to see this
-                /* FIXME: The logger here is null, see PLX-397
-                logger.debug( "Component manager not found for returned component. Ignored. component=" + component );
-                */
+                // during the maven bootstrap this logger is null.
+                //logger.debug( "Component manager not found for returned component. Ignored. component=" + component );
                 return;
             }
         }

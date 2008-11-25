@@ -344,7 +344,7 @@ public interface PlexusContainer
      * @throws PlexusConfigurationException
      * @throws ComponentRepositoryException
      */
-    List<ComponentDescriptor<?>> discoverComponents( ClassRealm childRealm, boolean override )
+    List<ComponentDescriptor<?>> discoverComponents( ClassRealm childRealm )
         throws PlexusConfigurationException, ComponentRepositoryException;    
     
     // ----------------------------------------------------------------------------

@@ -142,7 +142,7 @@ public class ComponentRealmCompositionTest
         }
 
         // descover all component definitions in the realm and register them with the repository
-        getContainer().discoverComponents( classRealm, false );
+        getContainer().discoverComponents( classRealm );
 
         return classRealm;
     }
