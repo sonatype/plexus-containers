@@ -19,8 +19,10 @@ package org.codehaus.plexus.metadata.gleaner;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
@@ -119,6 +121,34 @@ public class AnnotationComponentGleaner
 
     private AnnClass readClass(String className, ClassLoader cl) throws ComponentGleanerException 
     {
+    	InputStream is = null;
+    	
+    	try 
+    	{
+    		// only read annotation from project classes (not jars)
+    		Enumeration<URL> en = cl.getResources( className + ".class" );
+    		while ( en.hasMoreElements() ) {
+				URL url = (URL) en.nextElement();
+				if( url.toString().startsWith( "file:" ) ) 
+				{
+					is = url.openStream();
+					return AnnReader.read( is, cl );
+				}	
+			}
+    		throw new ComponentGleanerException("Can't find class " + className);
+        } 
+        catch (IOException ex) 
+        {
+        	throw new ComponentGleanerException("Can't read class " + className, ex);
+        }
+        finally
+        {
+        	IOUtil.close(is);
+        }
+    }
+
+    private AnnClass readClass2(String className, ClassLoader cl) throws ComponentGleanerException 
+    {
         InputStream is = null;
         try 
         {
@@ -134,7 +164,7 @@ public class AnnotationComponentGleaner
           IOUtil.close(is);
         }
     }
-
+    
     /**
      * Returns a list of all of the classes which the given type inherits from.
      */
@@ -146,7 +176,7 @@ public class AnnotationComponentGleaner
         while(annClass!=null) {
             classes.add(annClass);
             if(annClass.getSuperName()!=null) {
-              annClass = readClass(annClass.getSuperName(), cl);
+              annClass = readClass2(annClass.getSuperName(), cl);
             } else {
               break;
             }
