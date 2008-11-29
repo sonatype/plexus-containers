@@ -41,8 +41,8 @@ public class PlexusTestDescriptorMojo
     public void execute()
         throws MojoExecutionException
     {
-        generateDescriptor( TEST_SCOPE, generatedComponentDescriptor );
+        generateDescriptor( TEST_SCOPE, generatedMetadata );
 
-        mavenProjectHelper.addTestResource( mavenProject, generatedComponentDescriptor.getParentFile().getAbsolutePath(), Collections.EMPTY_LIST, Collections.EMPTY_LIST );
+        mavenProjectHelper.addTestResource( mavenProject, generatedMetadata.getParentFile().getAbsolutePath(), Collections.EMPTY_LIST, Collections.EMPTY_LIST );
     }
 }

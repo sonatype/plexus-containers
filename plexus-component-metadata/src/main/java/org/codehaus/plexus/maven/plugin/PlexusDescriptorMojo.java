@@ -38,6 +38,6 @@ public class PlexusDescriptorMojo
     public void execute()
         throws MojoExecutionException
     {
-        generateDescriptor( COMPILE_SCOPE, generatedComponentDescriptor );
+        generateDescriptor( COMPILE_SCOPE, generatedMetadata );
     }
 }

@@ -60,6 +60,7 @@ public class AnnotationComponentGleaner
             return null;
         }
         
+        
         Component anno = annClass.getAnnotation(Component.class);
 
         if (anno == null) {

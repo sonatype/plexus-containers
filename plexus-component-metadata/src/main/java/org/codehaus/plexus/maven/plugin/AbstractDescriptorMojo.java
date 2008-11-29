@@ -48,19 +48,19 @@ public abstract class AbstractDescriptorMojo
      * @parameter default-value="${project.build.outputDirectory}/META-INF/plexus/components.xml"
      * @required
      */
-    protected File generatedComponentDescriptor;
+    protected File generatedMetadata;
 
     /**
-     * @parameter default-value="${basedir}/src/main/resources/META-INF/plexus/components.xml"
+     * @parameter default-value="${basedir}/src/main/resources/META-INF/plexus"
      * @required
      */
-    protected File sourceComponentDescriptor;
+    protected File staticMetadataDirectory;
 
     /**
      * @parameter default-value="${project.build.directory}/components.xml"
      * @required
      */
-    protected File intermediaryComponentDescriptor;
+    protected File intermediaryMetadata;
 
     /**
      * Whether to generate a Plexus Container descriptor instead of a component descriptor.
@@ -105,28 +105,36 @@ public abstract class AbstractDescriptorMojo
                 extractorConfiguration.sourceDirectories = mavenProject.getTestCompileSourceRoots();                
             }
             
-            if ( sourceComponentDescriptor.exists() )
+            if ( staticMetadataDirectory.exists() )
             {
-                metadataGenerator.generateDescriptor( extractorConfiguration, intermediaryComponentDescriptor );
+                metadataGenerator.generateDescriptor( extractorConfiguration, intermediaryMetadata );
                 
                 List<File> componentDescriptors = new ArrayList<File>();
                 
-                componentDescriptors.add( sourceComponentDescriptor );
+                File[] files = staticMetadataDirectory.listFiles();
                 
+                for( File file: files )
+                {
+                    if ( file.getName().endsWith( ".xml" ) && !file.getName().equals( "plexus.xml" ) )
+                    {
+                        componentDescriptors.add( file );                        
+                    }
+                }
+                                
                 // We have run the metadata generator but we may have the case where there is entire
                 // overlap in the source descriptor and what's being generated. This happens during
                 // a transition phase when moving from manually crafted descriptors to purely
                 // generated descriptors.
-                if ( intermediaryComponentDescriptor.exists() )
+                if ( intermediaryMetadata.exists() )
                 {
-                    componentDescriptors.add( intermediaryComponentDescriptor );
+                    componentDescriptors.add( intermediaryMetadata );
                 }
                 
                 merger.mergeDescriptors( outputFile, componentDescriptors );
             }
             else
             {
-                metadataGenerator.generateDescriptor( extractorConfiguration, generatedComponentDescriptor );                
+                metadataGenerator.generateDescriptor( extractorConfiguration, generatedMetadata );                
             }                        
         }
         catch ( Exception e )
