@@ -207,9 +207,7 @@ public class ComponentValueSetter
         }
     }
 
-    public void configure( PlexusConfiguration config,
-                           ClassLoader cl,
-                           ExpressionEvaluator evaluator )
+    public void configure( PlexusConfiguration config, ClassLoader classLoader, ExpressionEvaluator evaluator )
         throws ComponentConfigurationException
     {
         Object value = null;
@@ -220,7 +218,7 @@ public class ComponentValueSetter
         {
             try
             {
-                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), cl, evaluator, listener );
+                value = setterTypeConverter.fromConfiguration( lookup, config, setterParamType, object.getClass(), classLoader, evaluator, listener );
 
                 if ( value != null )
                 {
@@ -259,7 +257,7 @@ public class ComponentValueSetter
         // either no value or setting went wrong. Try
         // new converter.
 
-        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), cl, evaluator, listener );
+        value = fieldTypeConverter.fromConfiguration( lookup, config, fieldType, object.getClass(), classLoader, evaluator, listener );
 
         if ( value != null )
         {

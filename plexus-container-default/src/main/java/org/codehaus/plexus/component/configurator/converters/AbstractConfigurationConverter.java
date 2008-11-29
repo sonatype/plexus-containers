@@ -147,11 +147,11 @@ public abstract class AbstractConfigurationConverter
         return StringUtils.addAndDeHump( fieldName );
     }
 
-    protected Object fromExpression( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator,
-                                     Class type )
+    protected Object fromExpression( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator, Class type )
         throws ComponentConfigurationException
     {
         Object v = fromExpression( configuration, expressionEvaluator );
+        
         if ( v != null )
         {
             if ( !type.isAssignableFrom( v.getClass() ) )
@@ -209,7 +209,6 @@ public abstract class AbstractConfigurationConverter
                                      Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
-        return fromConfiguration( converterLookup, configuration, type, baseType, classLoader, expressionEvaluator,
-                                  null );
+        return fromConfiguration( converterLookup, configuration, type, baseType, classLoader, expressionEvaluator, null );
     }
 }

@@ -24,6 +24,7 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
@@ -68,14 +69,14 @@ public class ArrayConverter
 
         for ( int i = 0; i < configuration.getChildCount(); i++ )
         {
-            PlexusConfiguration c = configuration.getChild( i );
+            PlexusConfiguration childConfiguration = configuration.getChild( i );
 
-            String configEntry = c.getName();
+            String configEntry = childConfiguration.getName();
 
             String name = fromXML( configEntry );
-
-            Class childType = getClassForImplementationHint( null, c, classLoader );
-
+            
+            Class childType = getClassForImplementationHint( null, childConfiguration, classLoader );
+            
             // check if the name is a fully qualified classname
 
             if ( childType == null && name.indexOf( '.' ) > 0 )
@@ -108,10 +109,9 @@ public class ArrayConverter
                 else
                 {
                     String basePackage = baseTypeName.substring( 0, lastDot );
-
                     className = basePackage + "." + StringUtils.capitalizeFirstLetter( name );
                 }
-
+                
                 try
                 {
                     childType = classLoader.loadClass( className );
@@ -119,7 +119,7 @@ public class ArrayConverter
                 catch ( ClassNotFoundException e )
                 {
                     // doesn't exist, continue processing
-                }
+                }                               
             }
 
             // finally just try the component type of the array
@@ -130,9 +130,14 @@ public class ArrayConverter
             }
 
             ConfigurationConverter converter = converterLookup.lookupConverterForType( childType );
-
-            Object object = converter.fromConfiguration( converterLookup, c, childType, baseType, classLoader,
-                                                         expressionEvaluator, listener );
+            
+            Object object = converter.fromConfiguration( converterLookup, 
+                                                         childConfiguration, 
+                                                         childType, 
+                                                         baseType, 
+                                                         classLoader,
+                                                         expressionEvaluator, 
+                                                         listener );
 
             values.add( object );
         }
