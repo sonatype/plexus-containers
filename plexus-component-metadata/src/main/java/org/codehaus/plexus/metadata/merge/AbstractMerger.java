@@ -92,11 +92,11 @@ public abstract class AbstractMerger
             }
             catch ( JDOMException e )
             {
-                throw new IOException( "Invalid input descriptor for merge: " + f );
+                throw new IOException( "Invalid input descriptor for merge: " + f + " --> " + e.getMessage() );
             }
             catch ( MergeException e )
             {
-                throw new IOException( "Error merging descriptor: " + f );
+                throw new IOException( "Error merging descriptor: " + f + " --> " + e.getMessage() );
             }
         }
 

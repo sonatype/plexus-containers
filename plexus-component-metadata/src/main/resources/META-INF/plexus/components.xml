@@ -35,6 +35,12 @@
     <component>
       <role>org.codehaus.plexus.metadata.MetadataGenerator</role>
       <implementation>org.codehaus.plexus.metadata.DefaultMetadataGenerator</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.metadata.merge.Merger</role>
+          <role-hint>componentsXml</role-hint>
+        </requirement>
+      </requirements>
     </component>
   </components>
 </component-set>

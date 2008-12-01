@@ -16,6 +16,7 @@ public class PlexusMetadataGeneratorCli
     public static final char SOURCE_DIRECTORY = 's';
     public static final char CLASSES_DIRECTORY = 'c';
     public static final char OUTPUT_FILE = 'o';
+    public static final char DESCRIPTORS_DIRECTORY = 'm';
 
     public static void main( String[] args )
         throws Exception
@@ -36,18 +37,23 @@ public class PlexusMetadataGeneratorCli
         options.addOption( OptionBuilder.withLongOpt( "source" ).hasArg().withDescription( "Source directory." ).create( SOURCE_DIRECTORY ) );
         options.addOption( OptionBuilder.withLongOpt( "classes" ).hasArg().withDescription( "Classes directory." ).create( CLASSES_DIRECTORY ) );
         options.addOption( OptionBuilder.withLongOpt( "output" ).hasArg().withDescription( "Output directory." ).create( OUTPUT_FILE ) );
+        options.addOption( OptionBuilder.withLongOpt( "descriptors" ).hasArg().withDescription( "Descriptors directory." ).create( DESCRIPTORS_DIRECTORY ) );
         return options;
     }    
 
     public void invokePlexusComponent( CommandLine cli, PlexusContainer plexus )
         throws Exception
     {
-        MetadataGenerator mg = (MetadataGenerator) plexus.lookup( MetadataGenerator.class );
-        ExtractorConfiguration extractorConfiguration = new ExtractorConfiguration();        
-        extractorConfiguration.classesDirectory = new File( cli.getOptionValue( CLASSES_DIRECTORY ) );
-        extractorConfiguration.classpath = Collections.EMPTY_LIST;
-        extractorConfiguration.sourceDirectories = Arrays.asList( new String[]{ new File( cli.getOptionValue( SOURCE_DIRECTORY ) ).getAbsolutePath() } );
-        extractorConfiguration.useContextClassLoader = true;
-        mg.generateDescriptor( extractorConfiguration, new File( cli.getOptionValue( OUTPUT_FILE ) ) );
+        MetadataGenerator metadataGenerator = (MetadataGenerator) plexus.lookup( MetadataGenerator.class );
+        
+        MetadataGenerationRequest request = new MetadataGenerationRequest();        
+        request.classesDirectory = new File( cli.getOptionValue( CLASSES_DIRECTORY ) );
+        request.classpath = Collections.EMPTY_LIST;
+        request.sourceDirectories = Arrays.asList( new String[]{ new File( cli.getOptionValue( SOURCE_DIRECTORY ) ).getAbsolutePath() } );
+        request.useContextClassLoader = true;
+        request.outputFile = new File( cli.getOptionValue( OUTPUT_FILE ) );
+        request.componentDescriptorDirectory = new File( cli.getOptionValue( DESCRIPTORS_DIRECTORY ) );
+        
+        metadataGenerator.generateDescriptor( request );
     }
 }
