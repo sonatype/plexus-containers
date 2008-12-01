@@ -30,29 +30,40 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.metadata.gleaner.AnnotationComponentGleaner;
+import org.codehaus.plexus.metadata.merge.Merger;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author Jason van Zyl
  */
+@Component(role = MetadataGenerator.class)
 public class DefaultMetadataGenerator
     extends AbstractLogEnabled
     implements MetadataGenerator
 {
-    private ComponentDescriptor[] roleDefaults;
+    @Requirement
+    private Merger merger;
+
+    private ComponentDescriptor<?>[] roleDefaults;
+
+    // should be a component
     private ComponentDescriptorExtractor[] extractors;
+
+    // should be a component
     private ComponentDescriptorWriter writer = new DefaultComponentDescriptorWriter();
 
-    public void generateDescriptor( ExtractorConfiguration configuration, File outputFile )
+    public void generateDescriptor( MetadataGenerationRequest request )
         throws Exception
     {
-        assert outputFile != null;
-        
+        assert request.outputFile != null;
+
         if ( extractors == null || extractors.length == 0 )
         {
             extractors = new ComponentDescriptorExtractor[] { new SourceComponentDescriptorExtractor(), new ClassComponentDescriptorExtractor( new AnnotationComponentGleaner() ) };
@@ -62,11 +73,9 @@ public class DefaultMetadataGenerator
 
         for ( int i = 0; i < extractors.length; i++ )
         {
-            getLogger().debug( "Using extractor: " + extractors[i] );
-
             try
             {
-                List list = extractors[i].extract( configuration, roleDefaults );
+                List list = extractors[i].extract( request, roleDefaults );
                 if ( list != null && !list.isEmpty() )
                 {
                     descriptors.addAll( list );
@@ -78,39 +87,61 @@ public class DefaultMetadataGenerator
             }
         }
 
-        if ( descriptors.size() == 0 )
-        {
-            getLogger().debug( "No components found" );
-        }
-        else
+        List<File> componentDescriptors = new ArrayList<File>();        
+        
+        //
+        // If we found descriptors, write out the discovered descriptors
+        //
+        if ( descriptors.size() > 0 )
         {
             getLogger().info( "Discovered " + descriptors.size() + " component descriptors(s)" );
 
             ComponentSetDescriptor set = new ComponentSetDescriptor();
             set.setComponents( descriptors );
             set.setDependencies( Collections.EMPTY_LIST );
+            
+            if ( request.componentDescriptorDirectory == null )
+            {
+                writeDescriptor( set, request.outputFile );
+            }
+            else
+            {
+                writeDescriptor( set, request.intermediaryFile );
+                componentDescriptors.add( request.intermediaryFile );
+            }
+        }
+        
+        //
+        // Deal with merging
+        //
+        if ( request.componentDescriptorDirectory.exists() )
+        {
+            File[] files = request.componentDescriptorDirectory.listFiles();
 
-            try 
+            for ( File file : files )
             {
-                writeDescriptor( set, outputFile );
+                if ( file.getName().endsWith( ".xml" ) && !file.getName().equals( "plexus.xml" ) )
+                {
+                    componentDescriptors.add( file );
+                }
             }
-            catch ( Exception e )
-            {
-                throw new MojoExecutionException( "Failed to write output file", e );
-            }
+        }
+
+        if ( componentDescriptors.size() > 0 )
+        {
+            merger.mergeDescriptors( request.outputFile, componentDescriptors );
         }
     }
 
     private void writeDescriptor( ComponentSetDescriptor desc, File outputFile )
         throws Exception
-    {        
+    {
         assert desc != null;
         assert outputFile != null;
 
         FileUtils.forceMkdir( outputFile.getParentFile() );
-        
-        BufferedWriter output =
-            new BufferedWriter( new OutputStreamWriter( new FileOutputStream( outputFile ), "UTF-8" ) );
+
+        BufferedWriter output = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( outputFile ), "UTF-8" ) );
 
         try
         {

@@ -29,7 +29,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
-import org.codehaus.plexus.metadata.ExtractorConfiguration;
+import org.codehaus.plexus.metadata.MetadataGenerationRequest;
 import org.codehaus.plexus.metadata.MetadataGenerator;
 import org.codehaus.plexus.metadata.merge.Merger;
 
@@ -88,27 +88,25 @@ public abstract class AbstractDescriptorMojo
     protected void generateDescriptor( String scope, File outputFile )
         throws MojoExecutionException
     {
-        ExtractorConfiguration extractorConfiguration = new ExtractorConfiguration();
+        MetadataGenerationRequest request = new MetadataGenerationRequest();
         
         try
         {
             if ( scope.equals( COMPILE_SCOPE ) )
             {
-                extractorConfiguration.classpath = mavenProject.getCompileClasspathElements();
-                extractorConfiguration.classesDirectory = new File( mavenProject.getBuild().getOutputDirectory() );
-                extractorConfiguration.sourceDirectories = mavenProject.getCompileSourceRoots();
+                request.classpath = mavenProject.getCompileClasspathElements();
+                request.classesDirectory = new File( mavenProject.getBuild().getOutputDirectory() );
+                request.sourceDirectories = mavenProject.getCompileSourceRoots();
             }
             else if ( scope.equals( TEST_SCOPE ) )
             {
-                extractorConfiguration.classpath = mavenProject.getTestClasspathElements();
-                extractorConfiguration.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
-                extractorConfiguration.sourceDirectories = mavenProject.getTestCompileSourceRoots();                
+                request.classpath = mavenProject.getTestClasspathElements();
+                request.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
+                request.sourceDirectories = mavenProject.getTestCompileSourceRoots();                
             }
             
             if ( staticMetadataDirectory.exists() )
-            {
-                metadataGenerator.generateDescriptor( extractorConfiguration, intermediaryMetadata );
-                
+            {                
                 List<File> componentDescriptors = new ArrayList<File>();
                 
                 File[] files = staticMetadataDirectory.listFiles();
@@ -129,13 +127,13 @@ public abstract class AbstractDescriptorMojo
                 {
                     componentDescriptors.add( intermediaryMetadata );
                 }
-                
-                merger.mergeDescriptors( outputFile, componentDescriptors );
+                                
+                request.componentDescriptors = componentDescriptors;                
+                request.intermediaryFile = intermediaryMetadata;    
+                request.outputFile = generatedMetadata;
             }
-            else
-            {
-                metadataGenerator.generateDescriptor( extractorConfiguration, generatedMetadata );                
-            }                        
+                            
+            metadataGenerator.generateDescriptor( request );                            
         }
         catch ( Exception e )
         {
