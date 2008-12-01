@@ -80,7 +80,7 @@ public abstract class AbstractDescriptorMojo
     protected MavenProjectHelper mavenProjectHelper;
 
     /** @component */
-    protected MetadataGenerator metadataGenerator;    
+    protected MetadataGenerator metadataGenerator;
 
     /** @component role-hint="componentsXml" */
     private Merger merger;
@@ -89,7 +89,7 @@ public abstract class AbstractDescriptorMojo
         throws MojoExecutionException
     {
         MetadataGenerationRequest request = new MetadataGenerationRequest();
-        
+
         try
         {
             if ( scope.equals( COMPILE_SCOPE ) )
@@ -102,42 +102,18 @@ public abstract class AbstractDescriptorMojo
             {
                 request.classpath = mavenProject.getTestClasspathElements();
                 request.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
-                request.sourceDirectories = mavenProject.getTestCompileSourceRoots();                
+                request.sourceDirectories = mavenProject.getTestCompileSourceRoots();
             }
-            
-            if ( staticMetadataDirectory.exists() )
-            {                
-                List<File> componentDescriptors = new ArrayList<File>();
-                
-                File[] files = staticMetadataDirectory.listFiles();
-                
-                for( File file: files )
-                {
-                    if ( file.getName().endsWith( ".xml" ) && !file.getName().equals( "plexus.xml" ) )
-                    {
-                        componentDescriptors.add( file );                        
-                    }
-                }
-                                
-                // We have run the metadata generator but we may have the case where there is entire
-                // overlap in the source descriptor and what's being generated. This happens during
-                // a transition phase when moving from manually crafted descriptors to purely
-                // generated descriptors.
-                if ( intermediaryMetadata.exists() )
-                {
-                    componentDescriptors.add( intermediaryMetadata );
-                }
-                                
-                request.componentDescriptors = componentDescriptors;                
-                request.intermediaryFile = intermediaryMetadata;    
-                request.outputFile = generatedMetadata;
-            }
-                            
-            metadataGenerator.generateDescriptor( request );                            
+
+            request.componentDescriptorDirectory = staticMetadataDirectory;
+            request.intermediaryFile = intermediaryMetadata;
+            request.outputFile = generatedMetadata;
+
+            metadataGenerator.generateDescriptor( request );
         }
         catch ( Exception e )
         {
             throw new MojoExecutionException( "Error generating metadata: ", e );
-        }        
+        }
     }
 }

@@ -106,15 +106,20 @@ public class DefaultMetadataGenerator
             }
             else
             {
+                if ( request.intermediaryFile == null )
+                {
+                    request.intermediaryFile = File.createTempFile( "plexus-metadata", "xml" );                    
+                }
                 writeDescriptor( set, request.intermediaryFile );
                 componentDescriptors.add( request.intermediaryFile );
             }
         }
         
+
         //
         // Deal with merging
         //
-        if ( request.componentDescriptorDirectory.exists() )
+        if ( request.componentDescriptorDirectory != null && request.componentDescriptorDirectory.exists() )
         {
             File[] files = request.componentDescriptorDirectory.listFiles();
 
