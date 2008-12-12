@@ -18,6 +18,8 @@ package org.codehaus.plexus.component.repository;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class ComponentDescriptorTest
     {
         String cc1 =
             "<component>" +
+            "  <implementation>java.lang.String</implementation>" +
             "  <role>c1</role>" +
             "  <role-hint>role-hint</role-hint>" +
             "  <component-profile>component-profile</component-profile>" +
@@ -49,7 +52,10 @@ public class ComponentDescriptorTest
             "  </requirements>" +
             "</component>";
 
-        ComponentDescriptor<?> c1 = PlexusTools.buildComponentDescriptor( cc1 );
+        ClassWorld classWorld = new ClassWorld( "test", Thread.currentThread().getContextClassLoader() );
+        ClassRealm realm = classWorld.getRealm( "test" );
+
+        ComponentDescriptor<?> c1 = PlexusTools.buildComponentDescriptor( cc1, realm );
 
         assertEquals( "c1", c1.getRole() );
 

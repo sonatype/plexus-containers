@@ -71,4 +71,9 @@ public class SingletonComponentManager<T>
 
         return singleton;
     }
+
+    public String toString()
+    {
+        return "SingletonComponentManager[" + singleton == null ? componentDescriptor.getImplementationClass().getName() : singleton + "]";
+    }
 }

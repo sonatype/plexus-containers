@@ -26,8 +26,10 @@ import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.ComponentRegistry;
+import static org.codehaus.plexus.PlexusConstants.PLEXUS_DEFAULT_HINT;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
+import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
 import org.codehaus.plexus.component.collections.ComponentList;
 import org.codehaus.plexus.component.collections.ComponentMap;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
@@ -250,9 +252,18 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
             // if the type to be created is an instance of the expected type, return true
             try {
-                ComponentRegistry componentRegistry = container.getComponentRegistry();
 
-                return componentRegistry.getComponentDescriptor(propertyType, requirement.getRole(), requirement.getRoleHint()) != null;
+                String roleHint = requirement.getRoleHint();
+                Class<?> roleType = getInterfaceClass( container, requirement.getRole(), roleHint );
+
+                ComponentRegistry componentRegistry = container.getComponentRegistry();
+                for ( ComponentDescriptor<?> descriptor : componentRegistry.getComponentDescriptorList( roleType ) )
+                {
+                    if ( descriptor.getRoleHint().equals( roleHint ) && isAssignableFrom( propertyType, descriptor.getImplementationClass() ) )
+                    {
+                        return true;
+                    }
+                }
             } catch (Exception e) {
             }
 
@@ -264,7 +275,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
             Class<?> propertyType = toClass(expectedType);
 
             try {
-                String role = requirement.getRole();
+                Class<?> roleType = getInterfaceClass( container, requirement.getRole(), requirement.getRoleHint() );
                 List<String> roleHints = null;
                 if (requirement instanceof ComponentRequirementList) {
                     roleHints = ((ComponentRequirementList) requirement).getRoleHints();
@@ -272,7 +283,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
                 Object assignment;
                 if (propertyType.isArray()) {
-                    assignment = new ArrayList<Object>(container.lookupList(role, roleHints));
+                    assignment = new ArrayList<Object>(container.lookupList(roleType, roleHints));
                 }
 
                 // Map.class.isAssignableFrom( clazz ) doesn't make sense, since Map.class doesn't really
@@ -294,11 +305,17 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
                             }
                         }
 
+                        // if no generic type, load the roll as a class
+                        Class<?> valueClass = toClass( valueType );
+                        if (valueClass.equals( Object.class )) {
+                            valueClass = roleType;
+                        }
+
                         // todo verify key type is String
 
                         assignment = new ComponentMap(container,
-                                toClass(valueType),
-                                role,
+                                valueClass,
+                                roleType.getName(),
                                 roleHints,
                                 componentDescriptor.getHumanReadableKey());
                     }
@@ -314,11 +331,17 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
                             componentType = typeParameters[0];
                         }
 
-                        assignment = new ComponentList(container,
-                                toClass( componentType ),
-                                role,
-                                roleHints,
-                                componentDescriptor.getHumanReadableKey());
+                        // if no generic type, load the roll as a class
+                        Class<?> componentClass = toClass( componentType );
+                        if (componentClass.equals( Object.class )) {
+                            componentClass = roleType;
+                        }
+
+                        assignment = new ComponentList( container,
+                            componentClass,
+                            roleType.getName(),
+                            roleHints,
+                            componentDescriptor.getHumanReadableKey() );
                     }
                     // Set.class.isAssignableFrom( clazz ) doesn't make sense, since Set.class doesn't really
                     // have a meaningful superclass other than Collection.class, and that would make this
@@ -326,7 +349,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
                     // check in for Collection.class.
                     else if (Set.class.equals(propertyType) || Collection.class.isAssignableFrom(propertyType)) {
                         // todo why isn't this lazy as above?
-                        assignment = container.lookupMap(role, roleHints);
+                        assignment = container.lookupMap(roleType, roleHints);
                     } else if (Logger.class.equals(propertyType)) {
                         // todo magic reference
                         assignment = container.getLoggerManager().getLoggerForComponent(componentDescriptor.getRole());
@@ -335,7 +358,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
                         assignment = container;
                     } else {
                         String roleHint = requirement.getRoleHint();
-                        assignment = container.lookup(propertyType, role, roleHint);
+                        assignment = container.lookup(roleType, roleHint);
                     }
                 }
 
@@ -440,5 +463,53 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
             mapOrientedComponent.setComponentConfiguration( context );
         }
+    }
+
+    private static Class<?> getInterfaceClass( PlexusContainer container, String role, String hint )
+    {
+        if ( hint == null ) hint = PLEXUS_DEFAULT_HINT;
+
+        try
+        {
+            ClassRealm realm = container.getLookupRealm();
+
+            if ( realm != null )
+            {
+                return realm.loadClass( role );
+            }
+        }
+        catch ( Throwable e )
+        {
+        }
+
+        try
+        {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            if ( loader != null )
+            {
+                return loader.loadClass( role );
+            }
+        }
+        catch ( Throwable e )
+        {
+        }
+
+        try
+        {
+            ComponentDescriptor<?> cd = container.getComponentDescriptor( role, hint );
+            if ( cd != null )
+            {
+                ClassLoader loader = cd.getImplementationClass().getClassLoader();
+                if ( loader != null )
+                {
+                    return loader.loadClass( role );
+                }
+            }
+        }
+        catch ( Throwable ignored )
+        {
+        }
+
+        return Object.class;
     }
 }

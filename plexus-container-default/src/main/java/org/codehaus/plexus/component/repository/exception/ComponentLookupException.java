@@ -45,6 +45,15 @@ public class ComponentLookupException
         this.roleHint = roleHint;
     }
 
+    public ComponentLookupException( String message, Class<?> type, String roleHint )
+    {
+        super( message );
+
+        this.role = type.getName();
+
+        this.roleHint = roleHint;
+    }
+
     public ComponentLookupException( String message, String role, String roleHint, Throwable cause )
     {
         super( message, cause );
@@ -70,6 +79,17 @@ public class ComponentLookupException
         super( message, cause );
 
         this.role = role;
+
+        this.roleHint = roleHint;
+
+        this.realm = realm;
+    }
+
+    public ComponentLookupException( String message, Class<?> type, String roleHint, ClassRealm realm )
+    {
+        super( message );
+
+        this.role = type.getName();
 
         this.roleHint = roleHint;
 

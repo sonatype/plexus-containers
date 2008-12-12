@@ -25,6 +25,8 @@ import org.codehaus.plexus.context.DefaultContext;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Jason van Zyl
@@ -49,20 +51,30 @@ public class ComponentDiscovererTest
 
         core.addURL( testClasses.toURL() );
 
+        File classes = new File( getBasedir(), "target/classes" );
+
+        core.addURL( classes.toURL() );
+
         List<ComponentSetDescriptor> componentSetDescriptors = componentDiscoverer.findComponents( new DefaultContext(), core );
 
-        assertEquals( 1, componentSetDescriptors.size() );
+        ComponentDescriptor<?> componentDescriptor = byImplementation(componentSetDescriptors).get( "org.codehaus.plexus.component.discovery.DefaultDiscoveredComponent" );
 
-        assertEquals( ComponentSetDescriptor.class.getName(), componentSetDescriptors.get( 0 ).getClass().getName() );
+        assertNotNull("componentDescriptor is null", componentDescriptor );
 
-        ComponentSetDescriptor componentSet = componentSetDescriptors.get( 0 );
+        assertEquals( "org.codehaus.plexus.component.discovery.DiscoveredComponent", componentDescriptor.getRole() );
 
-        List<ComponentDescriptor<?>> components = componentSet.getComponents();
+        assertEquals( "org.codehaus.plexus.component.discovery.DefaultDiscoveredComponent", componentDescriptor.getImplementation() );
+    }
 
-        ComponentDescriptor<?> cd = components.get( 0 );
-
-        assertEquals( "org.codehaus.plexus.component.discovery.DiscoveredComponent", cd.getRole() );
-
-        assertEquals( "org.codehaus.plexus.component.discovery.DefaultDiscoveredComponent", cd.getImplementation() );
+    private static Map<String, ComponentDescriptor<?>> byImplementation(List<ComponentSetDescriptor> descriptorSets) {
+        TreeMap<String, ComponentDescriptor<?>> index = new TreeMap<String, ComponentDescriptor<?>>();
+        for ( ComponentSetDescriptor descriptorSet : descriptorSets )
+        {
+            for ( ComponentDescriptor<?> descriptor : descriptorSet.getComponents() )
+            {
+                index.put(descriptor.getImplementation(), descriptor);
+            }
+        }
+        return index;
     }
 }

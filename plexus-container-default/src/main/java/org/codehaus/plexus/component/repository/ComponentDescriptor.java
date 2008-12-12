@@ -92,9 +92,11 @@ public class ComponentDescriptor<T>
     {
     }
 
-    public ComponentDescriptor( Class<T> implementationClass )
+    public ComponentDescriptor( Class<T> implementationClass, ClassRealm realm )
     {
         this.implementationClass = implementationClass;
+        this.implementation = implementationClass.getName();
+        this.realm = realm;
     }
 
     /**
@@ -254,9 +256,11 @@ public class ComponentDescriptor<T>
             try
             {
                 implementationClass = realm.loadClass( implementation );
+                Thread.currentThread();
             }
             catch ( Throwable ignored )
             {
+                Thread.currentThread();
             }
         }
     }

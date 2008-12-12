@@ -81,6 +81,7 @@ public interface PlexusContainer
      * @param roleHint a hint for the desired component implementation
      * @return a Plexus component object
      */
+    @Deprecated
     <T> T lookup( Class<T> type, String role, String roleHint )
         throws ComponentLookupException;
 
@@ -170,14 +171,21 @@ public interface PlexusContainer
     ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint );
 
     /**
+     * Returns the ComponentDescriptor with the given component role and the default role hint.
+     * Searches up the hierarchy until one is found, null if none is found.
+     * @param type the unique type of the component within the container
+     * @return the ComponentDescriptor with the given component role
+     */
+    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type );
+
+    /**
      * Returns the ComponentDescriptor with the given component role and hint.
      * Searches up the hierarchy until one is found, null if none is found.
-     * @param type the Java type of the desired component
-     * @param role a unique role for the desired component's descriptor
+     * @param type the non-unique type of the component
      * @param roleHint a hint showing which implementation should be used
      * @return the ComponentDescriptor with the given component role
      */
-    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint );
+    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String roleHint );
 
     /**
      * Returns a Map of ComponentDescriptors with the given role, keyed by role-hint. Searches up the hierarchy until
@@ -194,6 +202,7 @@ public interface PlexusContainer
      * @param role a non-unique key for the desired components
      * @return a Map of component descriptors keyed by role-hint
      */
+    @Deprecated
     <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type, String role );
 
     /**
@@ -211,6 +220,7 @@ public interface PlexusContainer
      * @param role a non-unique key for the desired components
      * @return a List of component descriptors
      */
+    @Deprecated
     <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type,  String role );
 
     /**
@@ -278,15 +288,6 @@ public interface PlexusContainer
      * @return true if this container has a component with the given role/role-hint
      */
     boolean hasComponent( Class<?> type, String roleHint );
-
-    /**
-     * Returns true if this container has a component with the given role/role-hint.
-     * @param type the non-unique type of the component
-     * @param role a non-unique key for the desired component
-     * @param roleHint a hint for the desired component implementation
-     * @return true if this container has a component with the given role/role-hint
-     */
-    boolean hasComponent( Class<?> type, String role, String roleHint );
 
     /**
      * Disposes of this container, which in turn disposes all of it's components. This container should also remove

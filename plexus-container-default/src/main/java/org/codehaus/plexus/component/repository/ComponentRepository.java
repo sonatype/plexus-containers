@@ -27,14 +27,11 @@ public interface ComponentRepository
     void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
         throws ComponentRepositoryException;
 
-    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint );
+    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String roleHint );
 
-    @Deprecated
-    ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint, ClassRealm realm );
+    <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type );
 
-    <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type, String role );
-
-    <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type, String role );
+    <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type );
 
     void removeComponentRealm( ClassRealm classRealm );
 }

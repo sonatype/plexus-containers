@@ -38,22 +38,19 @@ public interface ComponentRegistry
     void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
         throws ComponentRepositoryException;
 
-    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint );
+    <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String roleHint );
 
-    @Deprecated
-    ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint, ClassRealm realm );
+    <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type );
 
-    <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type, String role );
+    <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type );
 
-    <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type, String role );
-
-    <T> T lookup( Class<T> type, String role, String roleHint )
+    <T> T lookup( Class<T> type, String roleHint )
         throws ComponentLookupException;
 
-    <T> List<T> lookupList( Class<T> type, String role, List<String> hints )
+    <T> List<T> lookupList( Class<T> type, List<String> hints )
         throws ComponentLookupException;
 
-    <T> Map<String, T> lookupMap( Class<T> type, String role, List<String> hints )
+    <T> Map<String, T> lookupMap( Class<T> type, List<String> hints )
         throws ComponentLookupException;
 
     void release( Object component ) throws ComponentLifecycleException;

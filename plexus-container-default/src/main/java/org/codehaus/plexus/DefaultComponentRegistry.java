@@ -1,7 +1,7 @@
 package org.codehaus.plexus;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
+import org.codehaus.plexus.component.ComponentIndex;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
@@ -17,16 +17,14 @@ import org.codehaus.plexus.logging.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.IdentityHashMap;
-import java.util.Collections;
 
 public class DefaultComponentRegistry implements ComponentRegistry
 {
@@ -40,7 +38,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
     private final Map<String, ComponentManagerFactory> componentManagerFactories =
         Collections.synchronizedMap( new TreeMap<String, ComponentManagerFactory>() );
 
-    private final Map<Key, ComponentManager<?>> componentManagers = new TreeMap<Key, ComponentManager<?>>();
+    private final ComponentIndex<ComponentManager<?>> index = new ComponentIndex<ComponentManager<?>>();
     private final Map<Object, ComponentManager<?>> componentManagersByComponent = new IdentityHashMap<Object, ComponentManager<?>>();
 
     public DefaultComponentRegistry( MutablePlexusContainer container,
@@ -58,8 +56,8 @@ public class DefaultComponentRegistry implements ComponentRegistry
         Collection<ComponentManager<?>> managers;
         synchronized ( this )
         {
-            managers = new ArrayList<ComponentManager<?>>( componentManagers.values() );
-            componentManagers.clear();
+            managers = index.getAll();
+            index.clear();
             componentManagersByComponent.clear();
         }
 
@@ -88,47 +86,37 @@ public class DefaultComponentRegistry implements ComponentRegistry
         repository.addComponentDescriptor( componentDescriptor );
     }
 
-    public <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint )
+    public <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String roleHint )
     {
-        return repository.getComponentDescriptor( type, role, roleHint );
+        return repository.getComponentDescriptor( type, roleHint );
     }
 
-    @Deprecated
-    public ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint, ClassRealm realm )
+    public <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type )
     {
-        return repository.getComponentDescriptor( role, roleHint, realm );
+        return repository.getComponentDescriptorMap( type );
     }
 
-    public <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type, String role )
+    public <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type )
     {
-        return repository.getComponentDescriptorMap( type, role );
+        return repository.getComponentDescriptorList( type );
     }
 
-    public <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type, String role )
-    {
-        return repository.getComponentDescriptorList( type, role );
-    }
-
-    public <T> T lookup( Class<T> type, String role, String roleHint ) throws ComponentLookupException
+    public <T> T lookup( Class<T> type, String roleHint ) throws ComponentLookupException
     {
         // verify arguments
         if ( type == null )
         {
             throw new NullPointerException( "type is null" );
         }
-        if ( role == null )
-        {
-            throw new NullPointerException( "role is null" );
-        }
         if ( roleHint == null )
         {
             roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
         }
 
-        return getComponent( type, role, roleHint, null );
+        return getComponent( type, roleHint, null );
     }
 
-    public <T> Map<String, T> lookupMap( Class<T> type, String role, List<String> roleHints )
+    public <T> Map<String, T> lookupMap( Class<T> type, List<String> roleHints )
         throws ComponentLookupException
     {
         // verify arguments
@@ -136,22 +124,18 @@ public class DefaultComponentRegistry implements ComponentRegistry
         {
             throw new NullPointerException( "type is null" );
         }
-        if ( role == null )
-        {
-            throw new NullPointerException( "role is null" );
-        }
 
         // if no hints provided, get all valid hints for this role
         Map<String, T> components = new LinkedHashMap<String, T>();
         if ( roleHints == null )
         {
-            Map<String, ComponentDescriptor<T>> componentDescriptors = getComponentDescriptorMap( type, role );
+            Map<String, ComponentDescriptor<T>> componentDescriptors = getComponentDescriptorMap( type );
             for ( Entry<String, ComponentDescriptor<T>> entry : componentDescriptors.entrySet() )
             {
                 String roleHint = entry.getKey();
                 ComponentDescriptor<T> componentDescriptor = entry.getValue();
                 // todo dain catch the exception... it isn't the callers problem when one component in a collection fails
-                T component = getComponent( type, role, roleHint, componentDescriptor );
+                T component = getComponent( type, roleHint, componentDescriptor );
                 components.put( roleHint, component );
             }
         }
@@ -160,7 +144,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
             for ( String roleHint : roleHints )
             {
                 // todo dain catch the exception... it isn't the callers problem when one component in a collection fails
-                T component = getComponent( type, role, roleHint, null );
+                T component = getComponent( type, roleHint, null );
                 components.put( roleHint, component );
             }
         }
@@ -168,27 +152,23 @@ public class DefaultComponentRegistry implements ComponentRegistry
         return components;
     }
 
-    public <T> List<T> lookupList( Class<T> type, String role, List<String> roleHints ) throws ComponentLookupException
+    public <T> List<T> lookupList( Class<T> type, List<String> roleHints ) throws ComponentLookupException
     {
         // verify arguments
         if ( type == null )
         {
             throw new NullPointerException( "type is null" );
         }
-        if ( role == null )
-        {
-            throw new NullPointerException( "role is null" );
-        }
 
         // if no hints provided, get all valid hints for this role
         List<T> components = new ArrayList<T>();
         if ( roleHints == null )
         {
-            List<ComponentDescriptor<T>> componentDescriptors = getComponentDescriptorList( type, role );
+            List<ComponentDescriptor<T>> componentDescriptors = getComponentDescriptorList( type );
             for ( ComponentDescriptor<T> componentDescriptor : componentDescriptors )
             {
                 // todo dain catch the exception... it isn't the callers problem when one component in a collection fails
-                T component = getComponent( type, role, componentDescriptor.getRoleHint(), componentDescriptor );
+                T component = getComponent( type, componentDescriptor.getRoleHint(), componentDescriptor );
                 components.add( component );
             }
         }
@@ -197,7 +177,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
             for ( String roleHint : roleHints )
             {
                 // todo dain catch the exception... it isn't the callers problem when one component in a collection fails
-                T component = getComponent( type, role, roleHint, null );
+                T component = getComponent( type, roleHint, null );
                 components.add( component );
             }
         }
@@ -205,8 +185,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         return components;
     }
 
-    public void release( Object component )
-        throws ComponentLifecycleException
+    public void release( Object component ) throws ComponentLifecycleException
     {
         if ( component == null )
         {
@@ -245,27 +224,18 @@ public class DefaultComponentRegistry implements ComponentRegistry
     {
         repository.removeComponentRealm( classRealm );
 
-        List<ComponentManager<?>> dispose = new ArrayList<ComponentManager<?>>();
+        LinkedHashSet<ComponentManager<?>> dispose;
         try
         {
             synchronized ( this )
             {
-                for ( Iterator<Entry<Key, ComponentManager<?>>> it = componentManagers.entrySet().iterator(); it.hasNext(); )
+                // remove all component managers associated with the realm
+                dispose = new LinkedHashSet<ComponentManager<?>>(index.removeAll( classRealm ));
+
+                // disassociate realm from all remaining component managers
+                for ( ComponentManager<?> componentManager : index.getAll() )
                 {
-                    Entry<Key, ComponentManager<?>> entry = it.next();
-                    Key key = entry.getKey();
-
-                    ComponentManager<?> componentManager = entry.getValue();
-
-                    if ( key.realm.equals( classRealm ) )
-                    {
-                        dispose.add( componentManager );
-                        it.remove();
-                    }
-                    else
-                    {
-                        componentManager.dissociateComponentRealm( classRealm );
-                    }
+                    componentManager.dissociateComponentRealm( classRealm );
                 }
             }
 
@@ -281,10 +251,10 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
     }
 
-    private <T> T getComponent( Class<T> type, String role, String roleHint, ComponentDescriptor<T> descriptor )
+    private <T> T getComponent( Class<T> type, String roleHint, ComponentDescriptor<T> descriptor )
         throws ComponentLookupException
     {
-        ComponentManager<T> componentManager = getComponentManager( type, role, roleHint, descriptor );
+        ComponentManager<T> componentManager = getComponentManager( type, roleHint, descriptor );
 
         // Get instance from manager... may result in creation
         try
@@ -310,76 +280,36 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
     }
 
-    private synchronized <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint, ComponentDescriptor<T> descriptor )
-        throws ComponentLookupException
+    private synchronized <T> ComponentManager<T> getComponentManager( Class<T> type, String roleHint, ComponentDescriptor<T> descriptor ) throws ComponentLookupException
     {
-        ComponentManager<T> componentManager = getComponentManager( type, role, roleHint );
+        ComponentManager<T> componentManager = (ComponentManager<T>) index.get( type, roleHint );
+
+        // if component manager is not found, create one
         if ( componentManager == null )
         {
             // we need to create a component manager, but first we must have a descriptor
             if ( descriptor == null )
             {
-                descriptor = getComponentDescriptor( type, role, roleHint );
+                descriptor = getComponentDescriptor( type, roleHint );
                 if ( descriptor == null )
                 {
                     throw new ComponentLookupException(
                         "Component descriptor cannot be found in the component repository",
-                        role,
+                        type,
                         roleHint );
                 }
             }
 
-            componentManager = createComponentManager( descriptor, role, roleHint );
+            componentManager = createComponentManager( descriptor, type, roleHint );
         }
         return componentManager;
     }
 
-    private <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint )
-    {
-        Set<ClassRealm> realms = getSearchRealms();
-
-        // return the component in the first realm
-        for ( ClassRealm realm : realms )
-        {
-            ComponentManager<?> manager = componentManagers.get( new Key( realm, role, roleHint ) );
-            if ( manager != null && isAssignableFrom( type, manager.getType() ) )
-            {
-                return (ComponentManager<T>) manager;
-            }
-        }
-        return null;
-    }
-
-    private Set<ClassRealm> getSearchRealms()
-    {
-        // determine realms to search
-        Set<ClassRealm> realms = new LinkedHashSet<ClassRealm>();
-        for ( ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); classLoader != null; classLoader = classLoader.getParent() )
-        {
-            if ( classLoader instanceof ClassRealm )
-            {
-                ClassRealm realm = (ClassRealm) classLoader;
-                while ( realm != null )
-                {
-                    realms.add( realm );
-                    realm = realm.getParentRealm();
-                }
-            }
-        }
-
-        if ( realms.isEmpty() )
-        {
-            realms.addAll( container.getClassWorld().getRealms() );
-        }
-
-        return realms;
-    }
-
-    private <T> ComponentManager<T> createComponentManager( ComponentDescriptor<T> descriptor,
-                                                            String role,
-                                                            String roleHint )
+    private <T> ComponentManager<T> createComponentManager( ComponentDescriptor<T> descriptor, Class<T> type, String roleHint )
         throws ComponentLookupException
     {
+        verifyComponentDescriptor( descriptor );
+
         // Get the ComponentManagerFactory
         String instantiationStrategy = descriptor.getInstantiationStrategy();
         if ( instantiationStrategy == null )
@@ -390,7 +320,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         if ( componentManagerFactory == null )
         {
             throw new ComponentLookupException( "Unsupported instantiation strategy: " + instantiationStrategy,
-                role,
+                type,
                 roleHint,
                 descriptor.getRealm() );
         }
@@ -404,7 +334,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         catch ( UndefinedLifecycleHandlerException e )
         {
             throw new ComponentLookupException( "Undefined lifecycle handler: " + descriptor.getLifecycleHandler(),
-                role,
+                type,
                 roleHint,
                 descriptor.getRealm() );
         }
@@ -413,96 +343,50 @@ public class DefaultComponentRegistry implements ComponentRegistry
         ComponentManager<T> componentManager = componentManagerFactory.createComponentManager( container,
             lifecycleHandler,
             descriptor,
-            role,
+            descriptor.getRole(),
             roleHint );
 
-        // Add componentManager to indexes
-        Key key = new Key( descriptor.getRealm(), role, roleHint );
-        componentManagers.put( key, componentManager );
+        // Add componentManager to indexe
+        index.add(descriptor.getRealm(), type, roleHint, componentManager);
 
         return componentManager;
     }
 
-    private static class Key implements Comparable<Key>
+    private void verifyComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
+        throws ComponentLookupException
     {
-        private final ClassRealm realm;
-        private final String role;
-        private final String roleHint;
-        private final int hashCode;
+        String role = componentDescriptor.getRole();
+        String roleHint = componentDescriptor.getRoleHint();
+        ClassRealm realm = componentDescriptor.getRealm();
 
-        private Key( ClassRealm realm, String role, String roleHint )
+        if (realm == null)
         {
-            this.realm = realm;
-
-            if ( role == null )
-            {
-                role = "null";
-            }
-            this.role = role;
-
-            if ( roleHint == null )
-            {
-                roleHint = "null";
-            }
-            this.roleHint = roleHint;
-
-            int hashCode;
-            hashCode = ( realm != null ? realm.hashCode() : 0 );
-            hashCode = 31 * hashCode + role.hashCode();
-            hashCode = 31 * hashCode + roleHint.hashCode();
-            this.hashCode = hashCode;
+            throw new ComponentLookupException( "ComponentDescriptor realm is null", role, roleHint, realm);
         }
 
-        public boolean equals( Object o )
+        Class<?> implementationClass = componentDescriptor.getImplementationClass();
+        if (implementationClass.equals( Object.class ))
         {
-            if ( this == o )
-            {
-                return true;
-            }
-            if ( o == null || getClass() != o.getClass() )
-            {
-                return false;
-            }
-
-            Key key = (Key) o;
-
-            return !( realm != null ? !realm.equals( key.realm ) : key.realm != null ) &&
-                role.equals( key.role ) &&
-                roleHint.equals( key.roleHint );
-
+            throw new ComponentLookupException( "ComponentDescriptor implementation class could not be loaded", role, roleHint, realm);
         }
 
-        public int hashCode()
+        if (role == null)
         {
-            return hashCode;
+            throw new ComponentLookupException( "ComponentDescriptor role is null", role, roleHint, realm);
         }
 
-        public String toString()
+        Class<?> roleClass;
+        try
         {
-            return realm + "/" + role + "/" + roleHint;
+            roleClass = realm.loadClass( role );
+        }
+        catch ( ClassNotFoundException e )
+        {
+            throw new ComponentLookupException( "ComponentDescriptor role is not a class", role, roleHint, realm);
         }
 
-        public int compareTo( Key o )
-        {
-            int value;
-            if ( realm != null )
-            {
-                value = realm.getId().compareTo( o.realm.getId() );
-            }
-            else
-            {
-                value = o.realm == null ? 0 : 1;
-            }
-
-            if ( value == 0 )
-            {
-                value = role.compareTo( o.role );
-                if ( value == 0 )
-                {
-                    value = roleHint.compareTo( o.roleHint );
-                }
-            }
-            return value;
+        if (!roleClass.isAssignableFrom( implementationClass )) {
+            throw new ComponentLookupException( "ComponentDescriptor implementation class does not implement the role class: implementationClass=" + implementationClass, role, roleHint, realm);
         }
     }
 }

@@ -58,7 +58,7 @@ public abstract class AbstractComponentManager<T>
      * Contains a mapping from singleton instances to the realms
      * they were used to configure with. This realm will be used to
      * call all lifecycle methods.
-     * @return a synchronized map, make sure to synchronize the map when iterating.
+     * This is a synchronized map, make sure to synchronize the map when iterating.
      */
     protected final Map<Object, ClassRealm> componentContextRealms = Collections.synchronizedMap(new HashMap<Object, ClassRealm>());
 

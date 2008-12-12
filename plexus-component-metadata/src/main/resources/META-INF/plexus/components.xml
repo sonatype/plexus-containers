@@ -9,10 +9,6 @@
       <implementation>org.codehaus.plexus.metadata.gleaner.QDoxComponentGleaner</implementation>
     </component>
     <component>
-      <role>org.codehaus.plexus.metadata.ComponentDescriptorCreator</role>
-      <implementation>org.codehaus.plexus.metadata.DefaultComponentDescriptorCreator</implementation>
-    </component>
-    <component>
       <role>org.codehaus.plexus.metadata.ComponentDescriptorWriter</role>
       <implementation>org.codehaus.plexus.metadata.DefaultComponentDescriptorWriter</implementation>
     </component>

@@ -21,6 +21,7 @@ import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class DefaultComponentDiscoverer
         return "META-INF/plexus/components.xml";
     }
 
-    public ComponentSetDescriptor createComponentDescriptors( Reader componentDescriptorReader, String source )
+    public ComponentSetDescriptor createComponentDescriptors( Reader componentDescriptorReader, String source, ClassRealm realm )
         throws PlexusConfigurationException
     {
         PlexusConfiguration componentDescriptorConfiguration = PlexusTools.buildConfiguration( source, componentDescriptorReader );
@@ -55,7 +56,7 @@ public class DefaultComponentDiscoverer
             ComponentDescriptor<?> componentDescriptor;
             try
             {
-                componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );
+                componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration, realm );
             }
             catch ( PlexusConfigurationException e )
             {
@@ -65,6 +66,8 @@ public class DefaultComponentDiscoverer
             componentDescriptor.setSource( source );
 
             componentDescriptor.setComponentType( "plexus" );
+
+            componentDescriptor.setComponentSetDescriptor( componentSetDescriptor );
 
             componentDescriptors.add( componentDescriptor );
         }

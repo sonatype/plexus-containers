@@ -64,8 +64,8 @@ public class InitializeComponentRegistryPhase implements ContainerInitialization
             PlexusConfiguration[] componentConfigurations = configuration.getChild( "components" ).getChildren( "component" );
             for ( PlexusConfiguration componentConfiguration : componentConfigurations )
             {
-                ComponentDescriptor<?> componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );
-                componentDescriptor.setRealm( context.getContainer().getContainerRealm() );
+                ComponentDescriptor<?> componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration, context.getContainer().getContainerRealm() );
+                if (componentDescriptor == null) continue;
                 repository.addComponentDescriptor( componentDescriptor );
             }
         }

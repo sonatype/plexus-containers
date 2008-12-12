@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Multimap;
+
 @SuppressWarnings({"unchecked", "UnusedDeclaration"})
 public final class CastUtils {
     private CastUtils() {
@@ -20,6 +22,14 @@ public final class CastUtils {
 
     public static <T, U> Map<T, U> cast(Map<?, ?> p, Class<T> t, Class<U> u) {
         return (Map<T, U>) p;
+    }
+
+    public static <T, U> Multimap<T, U> cast(Multimap<?, ?> p) {
+        return (Multimap<T, U>) p;
+    }
+
+    public static <T, U> Multimap<T, U> cast(Multimap<?, ?> p, Class<T> t, Class<U> u) {
+        return (Multimap<T, U>) p;
     }
 
     public static <T> Collection<T> cast(Collection<?> p) {

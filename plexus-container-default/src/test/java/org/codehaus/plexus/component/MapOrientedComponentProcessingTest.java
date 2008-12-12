@@ -35,7 +35,10 @@ public class MapOrientedComponentProcessingTest
     public void testShouldFindAndInitializeMapOrientedComponent()
         throws Exception
     {
-        ComponentDescriptor<TestMapOrientedComponent> descriptor = new ComponentDescriptor(TestMapOrientedComponent.class);
+        PlexusContainer embedder = new DefaultPlexusContainer();
+
+        ComponentDescriptor<TestMapOrientedComponent> descriptor =
+            new ComponentDescriptor(TestMapOrientedComponent.class, embedder.getContainerRealm());
 
         descriptor.setRole( TestMapOrientedComponent.ROLE );
 
@@ -63,7 +66,6 @@ public class MapOrientedComponentProcessingTest
 
         descriptor.setConfiguration( configuration );
 
-        PlexusContainer embedder = new DefaultPlexusContainer();
 
         embedder.addComponentDescriptor( descriptor );
 
