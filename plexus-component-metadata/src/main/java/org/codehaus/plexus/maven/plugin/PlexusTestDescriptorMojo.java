@@ -19,6 +19,7 @@ package org.codehaus.plexus.maven.plugin;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import java.io.File;
 import java.util.Collections;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -38,11 +39,15 @@ import org.apache.maven.plugin.MojoExecutionException;
 public class PlexusTestDescriptorMojo
     extends AbstractDescriptorMojo
 {
+    /**
+     * @parameter default-value="${project.build.testOutputDirectory}/META-INF/plexus/components.xml"
+     * @required
+     */
+    protected File testGeneratedMetadata;
+    
     public void execute()
         throws MojoExecutionException
     {
-        generateDescriptor( TEST_SCOPE, generatedMetadata );
-
-        mavenProjectHelper.addTestResource( mavenProject, generatedMetadata.getParentFile().getAbsolutePath(), Collections.EMPTY_LIST, Collections.EMPTY_LIST );
+        generateDescriptor( TEST_SCOPE, testGeneratedMetadata );
     }
 }
