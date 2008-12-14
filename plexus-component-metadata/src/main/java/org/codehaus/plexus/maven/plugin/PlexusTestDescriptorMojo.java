@@ -71,6 +71,7 @@ public class PlexusTestDescriptorMojo
             request.componentDescriptorDirectory = testStaticMetadataDirectory;
             request.intermediaryFile = testIntermediaryMetadata;
             request.outputFile = testGeneratedMetadata;
+            
             metadataGenerator.generateDescriptor( request );
         }
         catch ( Exception e )
