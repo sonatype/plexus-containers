@@ -22,6 +22,7 @@ package org.codehaus.plexus.maven.plugin;
 import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.plexus.metadata.MetadataGenerationRequest;
 
 /**
  * Generates a Plexus <tt>components.xml</tt> component descriptor file from test source (javadoc)
@@ -39,14 +40,42 @@ public class PlexusTestDescriptorMojo
     extends AbstractDescriptorMojo
 {
     /**
-     * @parameter default-value="${project.build.testOutputDirectory}/META-INF/plexus/components.xml"
+     * @parameter 
+     *            default-value="${project.build.testOutputDirectory}/META-INF/plexus/components.xml"
      * @required
      */
     protected File testGeneratedMetadata;
-    
+
+    /**
+     * @parameter default-value="${basedir}/src/test/resources/META-INF/plexus"
+     * @required
+     */
+    protected File testStaticMetadataDirectory;
+
+    /**
+     * @parameter default-value="${project.build.directory}/test-components.xml"
+     * @required
+     */
+    protected File testIntermediaryMetadata;
+
     public void execute()
         throws MojoExecutionException
     {
-        generateDescriptor( TEST_SCOPE, testGeneratedMetadata );
+        MetadataGenerationRequest request = new MetadataGenerationRequest();
+
+        try
+        {
+            request.classpath = mavenProject.getTestClasspathElements();
+            request.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
+            request.sourceDirectories = mavenProject.getTestCompileSourceRoots();
+            request.componentDescriptorDirectory = testStaticMetadataDirectory;
+            request.intermediaryFile = testIntermediaryMetadata;
+            request.outputFile = testGeneratedMetadata;
+            metadataGenerator.generateDescriptor( request );
+        }
+        catch ( Exception e )
+        {
+            throw new MojoExecutionException( "Error generating test metadata: ", e );
+        }
     }
 }
