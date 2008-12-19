@@ -58,15 +58,13 @@ public class StartLoadOnStartComponentsPhase
 
                 if ( roleHint.equals( "*" ) )
                 {
-                    context.getContainer().getLogger().info(
-                        "Loading on start all components with [role]: " + "[" + role + "]" );
+                    context.getContainer().getLogger().info( "Loading on start all components with [role]: " + "[" + role + "]" );
 
                     context.getContainer().lookupList( role );
                 }
                 else
                 {
-                    context.getContainer().getLogger().info(
-                        "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
+                    context.getContainer().getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
 
                     context.getContainer().lookup( role, roleHint );
                 }

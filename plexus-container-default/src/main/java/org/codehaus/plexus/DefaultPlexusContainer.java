@@ -50,6 +50,7 @@ import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.container.initialization.ContainerInitializationContext;
+import org.codehaus.plexus.container.initialization.ContainerInitializationException;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
@@ -230,14 +231,13 @@ public class DefaultPlexusContainer
         // Context
         // ----------------------------------------------------------------------------
 
-        containerContext = new DefaultContext();
-
         if ( c.getContext() != null )
         {
-            for ( Entry<Object, Object> entry : c.getContext().entrySet() )
-            {
-                addContextValue( entry.getKey(), entry.getValue() );
-            }
+            containerContext = new DefaultContext( c.getContext() );            
+        }
+        else
+        {                
+            containerContext = new DefaultContext();
         }
 
         // ----------------------------------------------------------------------------
@@ -524,6 +524,56 @@ public class DefaultPlexusContainer
             containerContext.put( PlexusConstants.PLEXUS_KEY, this );
             
             discoverComponents( getContainerRealm() );   
+            
+            PlexusConfiguration[] loadOnStartComponents = getConfiguration().getChild( "load-on-start" ).getChildren( "component" );
+
+            getLogger().debug( "Found " + loadOnStartComponents.length + " components to load on start" );
+
+            ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
+
+            //Thread.currentThread().setContextClassLoader( context.getContainerRealm() );
+
+            try
+            {
+                for ( PlexusConfiguration loadOnStartComponent : loadOnStartComponents )
+                {
+                    String role = loadOnStartComponent.getChild( "role" ).getValue( null );
+
+                    String roleHint = loadOnStartComponent.getChild( "role-hint" ).getValue( null );
+
+                    if ( role == null )
+                    {
+                        throw new PlexusContainerException( "Missing 'role' element from load-on-start." );
+                    }
+
+                    if ( roleHint == null )
+                    {
+                        roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
+                    }
+
+                    if ( roleHint.equals( "*" ) )
+                    {
+                        getLogger().info( "Loading on start all components with [role]: " + "[" + role + "]" );
+
+                        lookupList( role );
+                    }
+                    else
+                    {
+                        getLogger().info( "Loading on start [role,roleHint]: " + "[" + role + "," + roleHint + "]" );
+
+                        lookup( role, roleHint );
+                    }
+                }
+            }
+            catch ( ComponentLookupException e )
+            {
+                throw new PlexusContainerException( "Error looking up load-on-start component.", e );
+            }
+            finally
+            {
+                Thread.currentThread().setContextClassLoader( prevCl );
+            }
+            
         }
         catch ( ContextException e )
         {

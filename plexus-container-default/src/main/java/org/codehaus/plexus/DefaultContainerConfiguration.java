@@ -150,8 +150,7 @@ public class DefaultContainerConfiguration
             new InitializeLoggerManagerPhase(),
             new InitializeSystemPropertiesPhase(),
             new InitializeComponentDiscovererManagerPhase(),
-            new InitializeUserConfigurationSourcePhase(),
-            new StartLoadOnStartComponentsPhase(),
+            new InitializeUserConfigurationSourcePhase()
 
         };
 

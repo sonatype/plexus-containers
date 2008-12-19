@@ -145,4 +145,9 @@ public class DefaultContext
             throw new IllegalStateException( "Context is read only and can not be modified" );
         }
     }
+    
+    public String toString()
+    {
+        return contextData.toString();
+    }
 }
