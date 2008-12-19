@@ -9,7 +9,7 @@
   <artifactId>plexus-containers</artifactId>
   <version>1.0-beta-3.0.2-SNAPSHOT</version>
   <properties>
-    <classWorldsVersion>1.3</classWorldsVersion>
+    <classWorldsVersion>1.4</classWorldsVersion>
     <plexusUtilsVersion>1.4.5</plexusUtilsVersion>
     <xbeanReflectVersion>3.4</xbeanReflectVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
