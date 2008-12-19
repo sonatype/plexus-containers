@@ -52,13 +52,13 @@ public abstract class PlexusTestCase
         // Context Setup
         // ----------------------------------------------------------------------------
 
-        Map<Object, Object> context = new HashMap<Object, Object>();
+        DefaultContext context = new DefaultContext();
 
         context.put( "basedir", getBasedir() );
 
-        customizeContext( new DefaultContext( context ) );
+        customizeContext( context );
 
-        boolean hasPlexusHome = context.containsKey( "plexus.home" );
+        boolean hasPlexusHome = context.contains( "plexus.home" );
 
         System.out.println( context );
         
@@ -85,7 +85,7 @@ public abstract class PlexusTestCase
 
         ContainerConfiguration containerConfiguration = new DefaultContainerConfiguration()
             .setName( "test" )
-            .setContext( context );
+            .setContext( context.getContextData() );
 
         if ( config != null )
         {
