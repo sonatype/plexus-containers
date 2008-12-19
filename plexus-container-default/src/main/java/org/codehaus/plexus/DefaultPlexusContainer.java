@@ -531,8 +531,6 @@ public class DefaultPlexusContainer
 
             ClassLoader prevCl = Thread.currentThread().getContextClassLoader();
 
-            //Thread.currentThread().setContextClassLoader( context.getContainerRealm() );
-
             try
             {
                 for ( PlexusConfiguration loadOnStartComponent : loadOnStartComponents )
