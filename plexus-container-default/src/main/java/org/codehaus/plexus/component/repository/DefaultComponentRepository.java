@@ -16,27 +16,27 @@ package org.codehaus.plexus.component.repository;
  * limitations under the License.
  */
 
+import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CompositionException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
-
-import java.util.Map;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.TreeMap;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.SortedMap;
-import java.util.LinkedHashSet;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import com.google.common.collect.ArrayListMultimap;
 
 /**
  * @author Jason van Zyl
@@ -82,7 +82,7 @@ public class DefaultComponentRepository
         }
 
         // Get all valid component descriptors
-        Multimap<String, ComponentDescriptor<?>> roleHintIndex = Multimaps.newHashMultimap();
+        Multimap<String, ComponentDescriptor<?>> roleHintIndex = Multimaps.newLinkedHashMultimap();
         for ( ClassRealm realm : realms )
         {
             SortedMap<String, Multimap<String, ComponentDescriptor<?>>> roleIndex = index.get( realm );
@@ -189,7 +189,7 @@ public class DefaultComponentRepository
         Multimap<String, ComponentDescriptor<?>> roleHintIndex = roleIndex.get( role );
         if ( roleHintIndex == null )
         {
-            roleHintIndex = new ArrayListMultimap<String, ComponentDescriptor<?>>();
+            roleHintIndex = Multimaps.newLinkedHashMultimap();
             roleIndex.put( role, roleHintIndex );
         }
         roleHintIndex.put( componentDescriptor.getRoleHint(), componentDescriptor );
