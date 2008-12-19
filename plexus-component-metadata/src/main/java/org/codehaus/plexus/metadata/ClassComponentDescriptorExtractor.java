@@ -50,7 +50,7 @@ public class ClassComponentDescriptorExtractor
         this.gleaner = new AnnotationComponentGleaner();
     }
 
-    public List extract( ExtractorConfiguration configuration, final ComponentDescriptor[] roleDefaults )
+    public List extract( MetadataGenerationRequest configuration, final ComponentDescriptor[] roleDefaults )
         throws Exception
     {
         assert roleDefaults != null;
@@ -63,7 +63,6 @@ public class ClassComponentDescriptorExtractor
 
         if ( !configuration.classesDirectory.exists() )
         {
-            //getLogger().warn( "Missing classes directory: " + classesDir );
             return Collections.EMPTY_LIST;
         }
 
@@ -89,7 +88,6 @@ public class ClassComponentDescriptorExtractor
         }
     }
 
-    // XXX replace ClassLoader with own abstraction for getting class files
     private ClassLoader createClassLoader( final List elements )
         throws Exception
     {

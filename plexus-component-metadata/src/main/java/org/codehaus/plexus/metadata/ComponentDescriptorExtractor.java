@@ -27,6 +27,6 @@ public interface ComponentDescriptorExtractor
 {
     String ROLE = ComponentDescriptorExtractor.class.getName();
 
-    List<ComponentDescriptor> extract( ExtractorConfiguration configuration, ComponentDescriptor[] roleDefaults )
+    List<ComponentDescriptor> extract( MetadataGenerationRequest configuration, ComponentDescriptor[] roleDefaults )
         throws Exception;
 }

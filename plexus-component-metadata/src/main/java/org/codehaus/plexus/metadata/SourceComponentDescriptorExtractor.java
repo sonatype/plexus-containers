@@ -64,7 +64,7 @@ public class SourceComponentDescriptorExtractor
         this.encoding = encoding;
     }
 
-    public List extract( ExtractorConfiguration configuration, final ComponentDescriptor[] roleDefaults )
+    public List extract( MetadataGenerationRequest configuration, final ComponentDescriptor[] roleDefaults )
         throws Exception
     {
         if ( gleaner == null )

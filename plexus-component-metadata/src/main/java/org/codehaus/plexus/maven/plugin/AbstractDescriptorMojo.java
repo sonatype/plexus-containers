@@ -21,47 +21,18 @@ package org.codehaus.plexus.maven.plugin;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
-import org.codehaus.plexus.metadata.ExtractorConfiguration;
 import org.codehaus.plexus.metadata.MetadataGenerator;
 import org.codehaus.plexus.metadata.merge.Merger;
 
 /**
- * @author <a href='mailto:rahul.thakur.xdev@gmail.com'>Rahul Thakur</a>
- * @since 1.3.4
+ * @author Jason van Zyl
  */
 public abstract class AbstractDescriptorMojo
     extends AbstractMojo
 {
-    protected static final String COMPILE_SCOPE = "compile";
-
-    protected static final String TEST_SCOPE = "test";
-
-    /**
-     * @parameter default-value="${project.build.outputDirectory}/META-INF/plexus/components.xml"
-     * @required
-     */
-    protected File generatedMetadata;
-
-    /**
-     * @parameter default-value="${basedir}/src/main/resources/META-INF/plexus"
-     * @required
-     */
-    protected File staticMetadataDirectory;
-
-    /**
-     * @parameter default-value="${project.build.directory}/components.xml"
-     * @required
-     */
-    protected File intermediaryMetadata;
-
     /**
      * Whether to generate a Plexus Container descriptor instead of a component descriptor.
      * 
@@ -80,66 +51,8 @@ public abstract class AbstractDescriptorMojo
     protected MavenProjectHelper mavenProjectHelper;
 
     /** @component */
-    protected MetadataGenerator metadataGenerator;    
+    protected MetadataGenerator metadataGenerator;
 
     /** @component role-hint="componentsXml" */
     private Merger merger;
-
-    protected void generateDescriptor( String scope, File outputFile )
-        throws MojoExecutionException
-    {
-        ExtractorConfiguration extractorConfiguration = new ExtractorConfiguration();
-        
-        try
-        {
-            if ( scope.equals( COMPILE_SCOPE ) )
-            {
-                extractorConfiguration.classpath = mavenProject.getCompileClasspathElements();
-                extractorConfiguration.classesDirectory = new File( mavenProject.getBuild().getOutputDirectory() );
-                extractorConfiguration.sourceDirectories = mavenProject.getCompileSourceRoots();
-            }
-            else if ( scope.equals( TEST_SCOPE ) )
-            {
-                extractorConfiguration.classpath = mavenProject.getTestClasspathElements();
-                extractorConfiguration.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
-                extractorConfiguration.sourceDirectories = mavenProject.getTestCompileSourceRoots();                
-            }
-            
-            if ( staticMetadataDirectory.exists() )
-            {
-                metadataGenerator.generateDescriptor( extractorConfiguration, intermediaryMetadata );
-                
-                List<File> componentDescriptors = new ArrayList<File>();
-                
-                File[] files = staticMetadataDirectory.listFiles();
-                
-                for( File file: files )
-                {
-                    if ( file.getName().endsWith( ".xml" ) && !file.getName().equals( "plexus.xml" ) )
-                    {
-                        componentDescriptors.add( file );                        
-                    }
-                }
-                                
-                // We have run the metadata generator but we may have the case where there is entire
-                // overlap in the source descriptor and what's being generated. This happens during
-                // a transition phase when moving from manually crafted descriptors to purely
-                // generated descriptors.
-                if ( intermediaryMetadata.exists() )
-                {
-                    componentDescriptors.add( intermediaryMetadata );
-                }
-                
-                merger.mergeDescriptors( outputFile, componentDescriptors );
-            }
-            else
-            {
-                metadataGenerator.generateDescriptor( extractorConfiguration, generatedMetadata );                
-            }                        
-        }
-        catch ( Exception e )
-        {
-            throw new MojoExecutionException( "Error generating metadata: ", e );
-        }        
-    }
 }

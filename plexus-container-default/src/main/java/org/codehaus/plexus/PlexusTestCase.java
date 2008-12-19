@@ -60,6 +60,8 @@ public abstract class PlexusTestCase
 
         boolean hasPlexusHome = context.containsKey( "plexus.home" );
 
+        System.out.println( context );
+        
         if ( !hasPlexusHome )
         {
             File f = getTestFile( "target/plexus-home" );
@@ -72,6 +74,9 @@ public abstract class PlexusTestCase
             context.put( "plexus.home", f.getAbsolutePath() );
         }
 
+        System.out.println( context );
+        
+        
         // ----------------------------------------------------------------------------
         // Configuration
         // ----------------------------------------------------------------------------

@@ -23,7 +23,6 @@ import org.codehaus.plexus.container.initialization.InitializeContainerConfigura
 import org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase;
 import org.codehaus.plexus.container.initialization.InitializeUserConfigurationSourcePhase;
-import org.codehaus.plexus.container.initialization.StartLoadOnStartComponentsPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentRegistryPhase;
 import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
@@ -150,8 +149,7 @@ public class DefaultContainerConfiguration
             new InitializeLoggerManagerPhase(),
             new InitializeSystemPropertiesPhase(),
             new InitializeComponentDiscovererManagerPhase(),
-            new InitializeUserConfigurationSourcePhase(),
-            new StartLoadOnStartComponentsPhase(),
+            new InitializeUserConfigurationSourcePhase()
 
         };
 
