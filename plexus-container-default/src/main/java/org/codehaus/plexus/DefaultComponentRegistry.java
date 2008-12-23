@@ -1,7 +1,21 @@
 package org.codehaus.plexus;
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
@@ -15,19 +29,6 @@ import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.IdentityHashMap;
-import java.util.Collections;
-
 public class DefaultComponentRegistry implements ComponentRegistry
 {
     private static final String DEFAULT_INSTANTIATION_STRATEGY = "singleton";
@@ -36,6 +37,8 @@ public class DefaultComponentRegistry implements ComponentRegistry
     private final ComponentRepository repository;
     private final LifecycleHandlerManager lifecycleHandlerManager;
     private final Logger logger;
+
+    private boolean disposingComponents; 
 
     private final Map<String, ComponentManagerFactory> componentManagerFactories =
         Collections.synchronizedMap( new TreeMap<String, ComponentManagerFactory>() );
@@ -61,19 +64,31 @@ public class DefaultComponentRegistry implements ComponentRegistry
             managers = new ArrayList<ComponentManager<?>>( componentManagers.values() );
             componentManagers.clear();
             componentManagersByComponent.clear();
+
+            disposingComponents = true;
         }
 
         // Call dispose callback outside of synchronized lock to avoid deadlocks
-        for ( ComponentManager<?> componentManager : managers )
+        try
         {
-            try
+            for ( ComponentManager<?> componentManager : managers )
             {
-                componentManager.dispose();
+                try
+                {
+                    componentManager.dispose();
+                }
+                catch ( Exception e )
+                {
+                    // todo dain use a monitor instead of a logger
+                    logger.error( "Error while disposing component manager. Continuing with the rest", e );
+                }
             }
-            catch ( Exception e )
+        }
+        finally 
+        {
+            synchronized ( this )
             {
-                // todo dain use a monitor instead of a logger
-                logger.error( "Error while disposing component manager. Continuing with the rest", e );
+                disposingComponents = false;
             }
         }
     }
@@ -313,6 +328,13 @@ public class DefaultComponentRegistry implements ComponentRegistry
     private synchronized <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint, ComponentDescriptor<T> descriptor )
         throws ComponentLookupException
     {
+        if ( disposingComponents )
+        {
+            throw new ComponentLookupException("ComponentRegistry is not active",
+                role,
+                roleHint );
+        }
+
         ComponentManager<T> componentManager = getComponentManager( type, role, roleHint );
         if ( componentManager == null )
         {
