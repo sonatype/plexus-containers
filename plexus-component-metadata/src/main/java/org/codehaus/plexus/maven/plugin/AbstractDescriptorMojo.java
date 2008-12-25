@@ -44,8 +44,16 @@ public abstract class AbstractDescriptorMojo
     /**
      * @parameter expression="${project}"
      * @required
+     * @readonly
      */
     protected MavenProject mavenProject;
+
+    /**
+     * The file encoding of the source files.
+     * 
+     * @parameter default-value="${project.build.sourceEncoding}"
+     */
+    protected String sourceEncoding;
 
     /** @component */
     protected MavenProjectHelper mavenProjectHelper;

@@ -66,6 +66,7 @@ public class PlexusDescriptorMojo
             request.classpath = mavenProject.getCompileClasspathElements();
             request.classesDirectory = new File( mavenProject.getBuild().getOutputDirectory() );
             request.sourceDirectories = mavenProject.getCompileSourceRoots();
+            request.sourceEncoding = sourceEncoding;
             request.componentDescriptorDirectory = staticMetadataDirectory;
             request.intermediaryFile = intermediaryMetadata;
             request.outputFile = generatedMetadata;

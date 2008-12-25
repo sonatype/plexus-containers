@@ -68,6 +68,7 @@ public class PlexusTestDescriptorMojo
             request.classpath = mavenProject.getTestClasspathElements();
             request.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
             request.sourceDirectories = mavenProject.getTestCompileSourceRoots();
+            request.sourceEncoding = sourceEncoding;
             request.componentDescriptorDirectory = testStaticMetadataDirectory;
             request.intermediaryFile = testIntermediaryMetadata;
             request.outputFile = testGeneratedMetadata;

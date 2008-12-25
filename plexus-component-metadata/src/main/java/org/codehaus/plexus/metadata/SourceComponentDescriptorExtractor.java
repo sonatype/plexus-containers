@@ -37,30 +37,13 @@ public class SourceComponentDescriptorExtractor
 {
     private SourceComponentGleaner gleaner;
 
-    /**
-     * The character encoding of the source files, can be <code>null</code> or empty to use the platform default
-     * encoding.
-     */
-    private String encoding;
-
     public SourceComponentDescriptorExtractor()
     {
-    }
-
-    public SourceComponentDescriptorExtractor( final String encoding )
-    {
-        this.encoding = encoding;
     }
 
     public SourceComponentDescriptorExtractor( final SourceComponentGleaner gleaner )
     {
         this.gleaner = gleaner;
-    }
-
-    public SourceComponentDescriptorExtractor( final SourceComponentGleaner gleaner, final String encoding )
-    {
-        this.gleaner = gleaner;
-        this.encoding = encoding;
     }
 
     public List<ComponentDescriptor<?>> extract( MetadataGenerationRequest configuration, final ComponentDescriptor<?>[] roleDefaults )
@@ -71,10 +54,10 @@ public class SourceComponentDescriptorExtractor
             gleaner = new QDoxComponentGleaner();
         }
 
-        return extract( configuration.sourceDirectories, getDefaultsByRole( roleDefaults ) );
+        return extract( configuration.sourceDirectories, configuration.sourceEncoding, getDefaultsByRole( roleDefaults ) );
     }
 
-    private List<ComponentDescriptor<?>> extract( final List<String> sourceDirectories,
+    private List<ComponentDescriptor<?>> extract( final List<String> sourceDirectories, final String sourceEncoding,
                                                   final Map<String, ComponentDescriptor<?>> defaultsByRole )
         throws Exception
     {
@@ -86,9 +69,9 @@ public class SourceComponentDescriptorExtractor
         // Scan the sources
         JavaDocBuilder builder = new JavaDocBuilder();
 
-        if ( StringUtils.isNotEmpty( encoding ) )
+        if ( StringUtils.isNotEmpty( sourceEncoding ) )
         {
-            builder.setEncoding( encoding );
+            builder.setEncoding( sourceEncoding );
         }
 
         for ( String sourceDirectory : sourceDirectories )
