@@ -25,7 +25,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.metadata.MetadataGenerator;
-import org.codehaus.plexus.metadata.merge.Merger;
 
 /**
  * @author Jason van Zyl
@@ -33,13 +32,6 @@ import org.codehaus.plexus.metadata.merge.Merger;
 public abstract class AbstractDescriptorMojo
     extends AbstractMojo
 {
-    /**
-     * Whether to generate a Plexus Container descriptor instead of a component descriptor.
-     * 
-     * @parameter default-value="false"
-     * @required
-     */
-    private boolean containerDescriptor;
 
     /**
      * @parameter expression="${project}"
@@ -61,6 +53,4 @@ public abstract class AbstractDescriptorMojo
     /** @component */
     protected MetadataGenerator metadataGenerator;
 
-    /** @component role-hint="componentsXml" */
-    private Merger merger;
 }
