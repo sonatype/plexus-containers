@@ -27,9 +27,9 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 public abstract class ComponentDescriptorExtractorSupport
     implements ComponentDescriptorExtractor
 {
-    protected Map getDefaultsByRole( final ComponentDescriptor[] roleDefaults )
+    protected Map<String, ComponentDescriptor<?>> getDefaultsByRole( final ComponentDescriptor<?>[] roleDefaults )
     {
-        Map defaultsByRole = new HashMap();
+        Map<String, ComponentDescriptor<?>> defaultsByRole = new HashMap<String, ComponentDescriptor<?>>();
 
         if ( roleDefaults != null )
         {
@@ -49,14 +49,15 @@ public abstract class ComponentDescriptorExtractorSupport
         return defaultsByRole;
     }
 
-    protected void applyDefaults( final ComponentDescriptor descriptor, final Map defaultsByRole )
+    protected void applyDefaults( final ComponentDescriptor<?> descriptor,
+                                  final Map<String, ComponentDescriptor<?>> defaultsByRole )
     {
         assert descriptor != null;
         assert defaultsByRole != null;
 
         if ( defaultsByRole.containsKey( descriptor.getRole() ) )
         {
-            ComponentDescriptor defaults = (ComponentDescriptor) defaultsByRole.get( descriptor.getRole() );
+            ComponentDescriptor<?> defaults = defaultsByRole.get( descriptor.getRole() );
 
             if ( descriptor.getInstantiationStrategy() == null )
             {

@@ -16,7 +16,6 @@ package org.codehaus.plexus.metadata;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +63,7 @@ public class SourceComponentDescriptorExtractor
         this.encoding = encoding;
     }
 
-    public List extract( MetadataGenerationRequest configuration, final ComponentDescriptor[] roleDefaults )
+    public List<ComponentDescriptor<?>> extract( MetadataGenerationRequest configuration, final ComponentDescriptor<?>[] roleDefaults )
         throws Exception
     {
         if ( gleaner == null )
@@ -75,13 +74,14 @@ public class SourceComponentDescriptorExtractor
         return extract( configuration.sourceDirectories, getDefaultsByRole( roleDefaults ) );
     }
 
-    private List extract( final List sourceDirectories, final Map defaultsByRole )
+    private List<ComponentDescriptor<?>> extract( final List<String> sourceDirectories,
+                                                  final Map<String, ComponentDescriptor<?>> defaultsByRole )
         throws Exception
     {
         assert sourceDirectories != null;
         assert defaultsByRole != null;
 
-        List descriptors = new ArrayList();
+        List<ComponentDescriptor<?>> descriptors = new ArrayList<ComponentDescriptor<?>>();
 
         // Scan the sources
         JavaDocBuilder builder = new JavaDocBuilder();
@@ -91,9 +91,9 @@ public class SourceComponentDescriptorExtractor
             builder.setEncoding( encoding );
         }
 
-        for ( Iterator iter = sourceDirectories.iterator(); iter.hasNext(); )
+        for ( String sourceDirectory : sourceDirectories )
         {
-            File dir = new File( (String) iter.next() );
+            File dir = new File( sourceDirectory );
 
             builder.addSourceTree( dir );
         }
@@ -103,7 +103,7 @@ public class SourceComponentDescriptorExtractor
         // For each class we find, try to glean off a descriptor
         for ( int i = 0; i < classes.length; i++ )
         {
-            ComponentDescriptor descriptor = gleaner.glean( builder, classes[i] );
+            ComponentDescriptor<?> descriptor = gleaner.glean( builder, classes[i] );
 
             if ( descriptor != null )
             {

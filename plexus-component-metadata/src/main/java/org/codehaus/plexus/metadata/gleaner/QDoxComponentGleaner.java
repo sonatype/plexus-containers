@@ -88,7 +88,7 @@ public class QDoxComponentGleaner
     // ComponentGleaner Implementation
     // ----------------------------------------------------------------------
 
-    public ComponentDescriptor glean( JavaClassCache classCache, JavaClass javaClass )
+    public ComponentDescriptor<?> glean( JavaClassCache classCache, JavaClass javaClass )
         throws ComponentGleanerException
     {
         DocletTag tag = javaClass.getTagByName( PLEXUS_COMPONENT_TAG );
@@ -98,7 +98,7 @@ public class QDoxComponentGleaner
             return null;
         }
 
-        Map parameters = tag.getNamedParameterMap();
+        Map<String, String> parameters = tag.getNamedParameterMap();
 
         // ----------------------------------------------------------------------
         //
@@ -108,7 +108,7 @@ public class QDoxComponentGleaner
 
         //log.debug( "Creating descriptor for component: {}", fqn );
 
-        ComponentDescriptor componentDescriptor = new ComponentDescriptor();
+        ComponentDescriptor<?> componentDescriptor = new ComponentDescriptor<Object>();
 
         componentDescriptor.setImplementation( fqn );
 
@@ -226,7 +226,7 @@ public class QDoxComponentGleaner
     //
     // ----------------------------------------------------------------------
 
-    private final static List IGNORED_INTERFACES = Collections.unmodifiableList( Arrays.asList( new String[]{
+    private final static List<String> IGNORED_INTERFACES = Collections.unmodifiableList( Arrays.asList( new String[]{
         LogEnabled.class.getName(),
         Initializable.class.getName(),
         Configurable.class.getName(),
@@ -241,11 +241,11 @@ public class QDoxComponentGleaner
         // Remove any Plexus specific interfaces from the calculation
         // ----------------------------------------------------------------------
 
-        List interfaces = new ArrayList( Arrays.asList( javaClass.getImplementedInterfaces() ) );
+        List<JavaClass> interfaces = new ArrayList<JavaClass>( Arrays.asList( javaClass.getImplementedInterfaces() ) );
 
-        for ( Iterator it = interfaces.iterator(); it.hasNext(); )
+        for ( Iterator<JavaClass> it = interfaces.iterator(); it.hasNext(); )
         {
-            JavaClass ifc = (JavaClass) it.next();
+            JavaClass ifc = it.next();
 
             if ( IGNORED_INTERFACES.contains( ifc.getFullyQualifiedName() ) )
             {
@@ -262,9 +262,9 @@ public class QDoxComponentGleaner
 
         String className = javaClass.getName();
 
-        for ( Iterator it = interfaces.iterator(); it.hasNext(); )
+        for ( Iterator<JavaClass> it = interfaces.iterator(); it.hasNext(); )
         {
-            JavaClass ifc = (JavaClass) it.next();
+            JavaClass ifc = it.next();
 
             String fqn = ifc.getFullyQualifiedName();
 
@@ -330,7 +330,7 @@ public class QDoxComponentGleaner
         return role;
     }
 
-    private void findRequirements( JavaClassCache classCache, ComponentDescriptor componentDescriptor,
+    private void findRequirements( JavaClassCache classCache, ComponentDescriptor<?> componentDescriptor,
                                    JavaClass javaClass )
     {
         JavaField[] fields = javaClass.getFields();
@@ -359,7 +359,7 @@ public class QDoxComponentGleaner
                 continue;
             }
 
-            Map parameters = new HashMap( tag.getNamedParameterMap() );
+            Map<String, String> parameters = new HashMap<String, String>( tag.getNamedParameterMap() );
 
             // ----------------------------------------------------------------------
             // Role
@@ -491,10 +491,10 @@ public class QDoxComponentGleaner
                 continue;
             }
 
-            Map parameters = new HashMap( tag.getNamedParameterMap() );
+            Map<String, String> parameters = new HashMap<String, String>( tag.getNamedParameterMap() );
 
             /* don't use the getParameter helper as we like empty strings */
-            String defaultValue = (String) parameters.remove( PLEXUS_DEFAULT_VALUE_PARAMETER );
+            String defaultValue = parameters.remove( PLEXUS_DEFAULT_VALUE_PARAMETER );
 
             if ( defaultValue == null )
             {
@@ -526,19 +526,19 @@ public class QDoxComponentGleaner
     //
     // ----------------------------------------------------------------------
 
-    private void findExtraParameters( String tagName, Map parameters )
+    private void findExtraParameters( String tagName, Map<String, String> parameters )
     {
-        for ( Iterator it = parameters.keySet().iterator(); it.hasNext(); )
+        for ( Iterator<String> it = parameters.keySet().iterator(); it.hasNext(); )
         {
-            String s = (String) it.next();
+            String s = it.next();
 
             //log.warn( "Extra parameter on the '" + tagName + "' tag: '" + s + "'." );
         }
     }
 
-    private String getParameter( Map parameters, String parameter )
+    private String getParameter( Map<String, String> parameters, String parameter )
     {
-        String value = (String) parameters.remove( parameter );
+        String value = parameters.remove( parameter );
 
         if ( StringUtils.isEmpty( value ) )
         {

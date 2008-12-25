@@ -44,11 +44,11 @@ public class PlexusMetadataGeneratorCli
     public void invokePlexusComponent( CommandLine cli, PlexusContainer plexus )
         throws Exception
     {
-        MetadataGenerator metadataGenerator = (MetadataGenerator) plexus.lookup( MetadataGenerator.class );
+        MetadataGenerator metadataGenerator = plexus.lookup( MetadataGenerator.class );
         
         MetadataGenerationRequest request = new MetadataGenerationRequest();        
         request.classesDirectory = new File( cli.getOptionValue( CLASSES_DIRECTORY ) );
-        request.classpath = Collections.EMPTY_LIST;
+        request.classpath = Collections.emptyList();
         request.sourceDirectories = Arrays.asList( new String[]{ new File( cli.getOptionValue( SOURCE_DIRECTORY ) ).getAbsolutePath() } );
         request.useContextClassLoader = true;
         request.outputFile = new File( cli.getOptionValue( OUTPUT_FILE ) );

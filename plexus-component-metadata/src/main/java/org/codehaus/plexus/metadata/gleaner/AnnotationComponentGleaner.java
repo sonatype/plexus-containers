@@ -48,7 +48,7 @@ public class AnnotationComponentGleaner
     extends ComponentGleanerSupport
     implements ClassComponentGleaner
 {
-    public ComponentDescriptor glean(String className, ClassLoader cl) throws ComponentGleanerException 
+    public ComponentDescriptor<?> glean(String className, ClassLoader cl) throws ComponentGleanerException 
     {
         assert className != null;
         assert cl != null;
@@ -67,7 +67,7 @@ public class AnnotationComponentGleaner
             return null;
         }
 
-        ComponentDescriptor component = new ComponentDescriptor();
+        ComponentDescriptor<?> component = new ComponentDescriptor<Object>();
         
         component.setRole(anno.role().getName());
 
@@ -129,7 +129,7 @@ public class AnnotationComponentGleaner
     		// only read annotation from project classes (not jars)
     		Enumeration<URL> en = cl.getResources( className + ".class" );
     		while ( en.hasMoreElements() ) {
-				URL url = (URL) en.nextElement();
+				URL url = en.nextElement();
 				if( url.toString().startsWith( "file:" ) ) 
 				{
 					is = url.openStream();
