@@ -71,10 +71,7 @@ public class DefaultComponentRepository
             if ( classLoader instanceof ClassRealm )
             {
                 ClassRealm realm = (ClassRealm) classLoader;
-                while (realm != null) {
-                    realms.add(realm);
-                    realm = realm.getParentRealm();
-                }
+                realms.addAll( realm.getAccessibleRealms() );
             }
         }
         if (realms.isEmpty()) {

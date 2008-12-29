@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -520,11 +521,14 @@ public class DefaultPlexusContainer
             initializeConfiguration( containerConfiguration );
 
             initializePhases( containerConfiguration );
-            
+
             containerContext.put( PlexusConstants.PLEXUS_KEY, this );
-            
-            discoverComponents( getContainerRealm() );   
-            
+
+            for ( ClassRealm realm : (Collection<ClassRealm>) getClassWorld().getRealms() )
+            {
+                discoverComponents( realm );
+            }
+
             PlexusConfiguration[] loadOnStartComponents = getConfiguration().getChild( "load-on-start" ).getChildren( "component" );
 
             getLogger().debug( "Found " + loadOnStartComponents.length + " components to load on start" );
