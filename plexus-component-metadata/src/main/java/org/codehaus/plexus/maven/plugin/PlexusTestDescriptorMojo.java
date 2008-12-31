@@ -34,7 +34,6 @@ import org.codehaus.plexus.metadata.MetadataGenerationRequest;
  * @author Jason van Zyl
  * @author Trygve Laugst&oslash;l
  * @version $Id$
- * @since 1.3.4
  */
 public class PlexusTestDescriptorMojo
     extends AbstractDescriptorMojo
