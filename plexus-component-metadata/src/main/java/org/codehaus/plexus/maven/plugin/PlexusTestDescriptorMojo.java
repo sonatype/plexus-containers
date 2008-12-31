@@ -40,19 +40,26 @@ public class PlexusTestDescriptorMojo
     extends AbstractDescriptorMojo
 {
     /**
-     * @parameter 
-     *            default-value="${project.build.testOutputDirectory}/META-INF/plexus/components.xml"
+     * The output location for the generated descriptor.
+     * 
+     * @parameter default-value="${project.build.testOutputDirectory}/META-INF/plexus/components.xml"
      * @required
      */
     protected File testGeneratedMetadata;
 
     /**
+     * The location of manually crafted component descriptors. The contents of the descriptor files in this directory is
+     * merged with the information extracted from the project's sources/classes.
+     * 
      * @parameter default-value="${basedir}/src/test/resources/META-INF/plexus"
      * @required
      */
     protected File testStaticMetadataDirectory;
 
     /**
+     * The output location for the intermediary descriptor. This descriptors contains only the information extracted
+     * from the project's sources/classes.
+     * 
      * @parameter default-value="${project.build.directory}/test-components.xml"
      * @required
      */
