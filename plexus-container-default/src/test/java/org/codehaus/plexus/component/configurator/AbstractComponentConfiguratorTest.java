@@ -573,4 +573,39 @@ public abstract class AbstractComponentConfiguratorTest
 
     }
 
+    public void testComponentConfigurationWhereFieldIsBadArray()
+        throws Exception
+    {
+        String xml = "<configuration>" //
+            + "  <integerArray><java.lang.String>string</java.lang.String></integerArray>" //
+            + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithArrayFields component = new ComponentWithArrayFields();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration( configuration );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        try
+        {
+            configureComponent( component, descriptor, realm );
+            fail( "Configuration did not fail" );
+        }
+        catch ( ComponentConfigurationException e )
+        {
+            // expected
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -4,6 +4,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.builder.XBeanComponentBuilder;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.apache.xbean.recipe.ConstructionException;
 import org.apache.xbean.recipe.ObjectRecipe;
 import org.apache.xbean.recipe.ExecutionContext;
 import org.apache.xbean.recipe.DefaultExecutionContext;
@@ -22,9 +23,16 @@ public class XBeanComponentConfiguratorTest extends AbstractComponentConfigurato
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(realm);
         ExecutionContext.setContext(executionContext);
-        try {
-            recipe.setProperties(component);
-        } finally {
+        try
+        {
+            recipe.setProperties( component );
+        }
+        catch ( ConstructionException e )
+        {
+            throw new ComponentConfigurationException( "Failed to configure component", e );
+        }
+        finally
+        {
             ExecutionContext.setContext(null);
             Thread.currentThread().setContextClassLoader(oldClassLoader);
         }
