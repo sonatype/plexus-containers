@@ -12,12 +12,10 @@ public class SingletonComponentManagerFactory implements ComponentManagerFactory
     }
 
     @SuppressWarnings({"RawUseOfParameterizedType"})
-    public ComponentManager<?> createComponentManager( MutablePlexusContainer container,
-                                                    LifecycleHandler lifecycleHandler,
-                                                    ComponentDescriptor componentDescriptor,
-                                                    String role,
-                                                    String roleHint )
+    public <T> ComponentManager<T> createComponentManager( MutablePlexusContainer container,
+                                                       LifecycleHandler lifecycleHandler,
+                                                       ComponentDescriptor<T> componentDescriptor )
     {
-        return new SingletonComponentManager( container, lifecycleHandler, componentDescriptor, role, roleHint );
+        return new SingletonComponentManager( container, lifecycleHandler, componentDescriptor );
     }
 }

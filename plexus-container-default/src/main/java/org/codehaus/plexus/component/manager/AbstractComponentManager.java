@@ -16,59 +16,28 @@ package org.codehaus.plexus.component.manager;
 * limitations under the License.
 */
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.builder.AbstractComponentBuildListener;
 import org.codehaus.plexus.component.builder.ComponentBuilder;
 import org.codehaus.plexus.component.builder.XBeanComponentBuilder;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
-public abstract class AbstractComponentManager<T>
-    implements ComponentManager<T>
+public abstract class AbstractComponentManager<T> implements ComponentManager<T>
 {
-    protected final MutablePlexusContainer container;
+    private final MutablePlexusContainer container;
 
-    private final ClassRealm realm;
+    private final ComponentDescriptor<T> componentDescriptor;
 
-    protected final ComponentDescriptor<T> componentDescriptor;
-
-    private final Class<? extends T> type;
-
-    private final String role;
-    
-    private final String roleHint;
-
-    protected final ComponentBuilder<T> builder = new XBeanComponentBuilder<T>(this);
-
+    private final ComponentBuilder<T> builder = new XBeanComponentBuilder<T>( this );
 
     private final LifecycleHandler lifecycleHandler;
 
-    /**
-     * Contains a mapping from singleton instances to the realms
-     * they were used to configure with. This realm will be used to
-     * call all lifecycle methods.
-     * This is a synchronized map, make sure to synchronize the map when iterating.
-     */
-    protected final Map<Object, ClassRealm> componentContextRealms = Collections.synchronizedMap(new HashMap<Object, ClassRealm>());
-
-    private int connections;
-
     public AbstractComponentManager( MutablePlexusContainer container,
-                       LifecycleHandler lifecycleHandler,
-                       ComponentDescriptor<T> componentDescriptor,
-                       String role,
-                       String roleHint)
+                                     LifecycleHandler lifecycleHandler,
+                                     ComponentDescriptor<T> componentDescriptor )
     {
         if ( container == null )
         {
@@ -87,22 +56,6 @@ public abstract class AbstractComponentManager<T>
             throw new NullPointerException( "componentDescriptor is null" );
         }
         this.componentDescriptor = componentDescriptor;
-
-        if ( role == null )
-        {
-            throw new NullPointerException( "role is null" );
-        }
-        this.role = role;
-
-        if ( roleHint == null )
-        {
-            throw new NullPointerException( "roleHint is null" );
-        }
-        this.roleHint = roleHint;
-
-        this.realm = componentDescriptor.getRealm();
-
-        this.type = componentDescriptor.getImplementationClass();
     }
 
     public ComponentDescriptor<T> getComponentDescriptor()
@@ -110,77 +63,21 @@ public abstract class AbstractComponentManager<T>
         return componentDescriptor;
     }
 
-    public Class<? extends T> getType()
-    {
-        return type;
-    }
-
-    public ClassRealm getRealm()
-    {
-        return realm;
-    }
-
-    public String getRole()
-    {
-        return role;
-    }
-
-    public String getRoleHint()
-    {
-        return roleHint;
-    }
-
     public LifecycleHandler getLifecycleHandler()
     {
         return lifecycleHandler;
     }
 
-    protected void incrementConnectionCount()
+    protected T createInstance() throws ComponentInstantiationException, ComponentLifecycleException
     {
-        connections++;
+        return builder.build( componentDescriptor, componentDescriptor.getRealm(), null );
     }
 
-    protected void decrementConnectionCount()
+    protected void destroyInstance( Object component ) throws ComponentLifecycleException
     {
-        connections--;
-    }
-
-    protected boolean connected()
-    {
-        return connections > 0;
-    }
-
-    public int getConnections()
-    {
-        return connections;
-    }
-
-    // ----------------------------------------------------------------------
-    // Lifecylce Management
-    // ----------------------------------------------------------------------
-
-    protected T createComponentInstance()
-        throws ComponentInstantiationException, ComponentLifecycleException
-    {
-        return builder.build(componentDescriptor, realm, new AbstractComponentBuildListener() {
-            public void componentCreated( ComponentDescriptor<?> componentDescriptor, Object component, ClassRealm realm) {
-                componentContextRealms.put( component, realm );
-            }
-        });
-    }
-
-    protected void endComponentLifecycle( Object component )
-        throws ComponentLifecycleException
-    {
-        ClassRealm contextRealm = componentContextRealms.remove( component );
-        if ( contextRealm == null )
-        {
-            contextRealm = container.getLookupRealm( component );
-        }
-
         try
         {
-            getLifecycleHandler().end( component, this, contextRealm );
+            lifecycleHandler.end( component, this, componentDescriptor.getRealm() );
         }
         catch ( PhaseExecutionException e )
         {
@@ -191,28 +88,5 @@ public abstract class AbstractComponentManager<T>
     public MutablePlexusContainer getContainer()
     {
         return container;
-    }
-
-    public Logger getLogger()
-    {
-        return container.getLogger();
-    }
-
-    public void dissociateComponentRealm( ClassRealm realm )
-        throws ComponentLifecycleException
-    {
-        synchronized ( componentContextRealms )
-        {
-            for ( Iterator<Entry<Object, ClassRealm>> iterator = componentContextRealms.entrySet().iterator(); iterator.hasNext(); )
-            {
-                Entry<Object, ClassRealm> entry = iterator.next();
-                ClassRealm componentRealm = entry.getValue();
-
-                if ( componentRealm.getId().equals( realm.getId() ) )
-                {
-                    iterator.remove();
-                }
-            }
-        }
     }
 }

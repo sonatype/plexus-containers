@@ -36,7 +36,8 @@ public class LogEnablePhase
 
             LoggerManager loggerManager = componentManager.getContainer().getLoggerManager();
 
-            Logger logger = loggerManager.getLoggerForComponent( componentManager.getRole(), componentManager.getRoleHint() );
+            ComponentDescriptor<?> descriptor = componentManager.getComponentDescriptor();
+            Logger logger = loggerManager.getLoggerForComponent( descriptor.getRole(), descriptor.getRoleHint() );
 
             logEnabled.enableLogging( logger );
         }

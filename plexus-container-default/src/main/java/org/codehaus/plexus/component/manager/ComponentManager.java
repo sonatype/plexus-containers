@@ -38,30 +38,16 @@ public interface ComponentManager<T>
 {
     String ROLE = ComponentManager.class.getName();
 
-    int getConnections();
-
     LifecycleHandler getLifecycleHandler();
 
-    void dispose()
-        throws ComponentLifecycleException;
+    void dispose() throws ComponentLifecycleException;
 
-    void release( Object component )
-        throws ComponentLifecycleException;
+    void release( Object component ) throws ComponentLifecycleException;
 
     T getComponent() throws ComponentInstantiationException, ComponentLifecycleException;
 
     ComponentDescriptor<T> getComponentDescriptor();
 
-    Class<? extends T> getType();
-
-    String getRole();
-
-    String getRoleHint();
-
     MutablePlexusContainer getContainer();
 
-    void dissociateComponentRealm( ClassRealm realm )
-        throws ComponentLifecycleException;
-
-    ClassRealm getRealm();
 }

@@ -126,15 +126,7 @@ public class DefaultPlexusContainer
     public void addComponent( Object component, String role )
         throws ComponentRepositoryException
     {
-        ComponentDescriptor<?> cd = new ComponentDescriptor<Object>();
-
-        cd.setRole( role );
-
-        cd.setRoleHint( PLEXUS_DEFAULT_HINT );
-
-        cd.setImplementation( role );
-
-        addComponentDescriptor( cd );
+        componentRegistry.addComponent( component, role, PLEXUS_DEFAULT_HINT );
     }
 
     public ClassRealm setLookupRealm( ClassRealm realm )

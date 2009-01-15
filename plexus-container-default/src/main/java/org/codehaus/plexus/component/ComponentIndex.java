@@ -32,7 +32,7 @@ public class ComponentIndex<V>
 
     /**
      * This is the actual index.
-     * ClassLoader -> Class -> RoleHint -> Value
+     * ClassLoader -> Class -> RoleHint -> Values
      */
     private final Map<ClassLoader, SortedMap<Class<?>, Multimap<String, V>>> index =
         new LinkedHashMap<ClassLoader, SortedMap<Class<?>, Multimap<String, V>>>();
@@ -347,9 +347,11 @@ public class ComponentIndex<V>
     /**
      * Removes all values from this index.
      */
-    public synchronized void clear()
+    public synchronized Collection<V> clear()
     {
+        Collection<V> all = getAll();
         index.clear();
+        return all;
     }
 
     private Set<Class<?>> getAllTypes( Class<?> type )

@@ -20,19 +20,6 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 
-public abstract class AbstractPhase
-    implements Phase
+public abstract class AbstractPhase implements Phase
 {
-    /** Execute the phase. */
-    public abstract void execute( Object component, ComponentManager manager, ClassRealm realm )
-        throws PhaseExecutionException;
-
-    /**
-     * @deprecated
-     */
-    public final void execute( Object component, ComponentManager manager )
-        throws PhaseExecutionException
-    {
-        execute( component, manager, manager.getContainer().getLookupRealm( component ) );
-    }
 }

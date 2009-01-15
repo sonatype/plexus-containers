@@ -1,6 +1,7 @@
 package org.codehaus.plexus.component.repository.exception;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
 /*
  * Copyright 2001-2006 Codehaus Foundation.
@@ -94,6 +95,14 @@ public class ComponentLookupException
         this.roleHint = roleHint;
 
         this.realm = realm;
+    }
+
+    public ComponentLookupException( String message, ComponentDescriptor<?> descriptor ) {
+        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm() );
+    }
+
+    public ComponentLookupException( String message, ComponentDescriptor<?> descriptor, Throwable cause ) {
+        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm(), cause );
     }
 
     public String getMessage()

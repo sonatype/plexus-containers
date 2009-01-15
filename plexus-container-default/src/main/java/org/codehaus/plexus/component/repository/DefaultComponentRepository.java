@@ -63,6 +63,7 @@ public class DefaultComponentRepository implements ComponentRepository
                 componentDescriptor.getRoleHint(),
                 componentDescriptor );
 
+            // assure that no circular references exist
             try
             {
                 compositionResolver.addComponentDescriptor( componentDescriptor );
