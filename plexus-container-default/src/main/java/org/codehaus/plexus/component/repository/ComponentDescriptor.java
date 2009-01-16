@@ -386,6 +386,16 @@ public class ComponentDescriptor<T>
      *
      * @param requirement the requirement to add
      */
+    public void addRequirement( ComponentRequirement requirement )
+    {
+        this.requirements.add( requirement );
+    }
+
+    /**
+     * Add a project requirement to this component.
+     *
+     * @param requirement the requirement to add
+     */
     public void addRequirement( ComponentRequirement... requirement )
     {
         this.requirements.addAll( Arrays.asList( requirement ));
