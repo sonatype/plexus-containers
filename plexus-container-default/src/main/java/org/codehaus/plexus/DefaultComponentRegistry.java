@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Comparator;
 import java.util.Map.Entry;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -58,7 +59,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
     public void dispose()
     {
-        Collection<ComponentManager<?>> managers;
+        List<ComponentManager<?>> managers;
         synchronized ( this )
         {
             managers = new ArrayList<ComponentManager<?>>( componentManagers.values() );
@@ -67,6 +68,25 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
             disposingComponents = true;
         }
+
+        // reverse sort the managers by startId
+        Collections.sort( managers, new Comparator<ComponentManager<?>>() {
+            public int compare( ComponentManager<?> left, ComponentManager<?> right )
+            {
+                if (left.getStartId() < right.getStartId() )
+                {
+                    return 1;
+                }
+                else if (left.getStartId() == right.getStartId() )
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+        });
 
         // Call dispose callback outside of synchronized lock to avoid deadlocks
         try

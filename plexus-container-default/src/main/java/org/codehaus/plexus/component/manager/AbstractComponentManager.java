@@ -16,12 +16,6 @@ package org.codehaus.plexus.component.manager;
 * limitations under the License.
 */
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.builder.AbstractComponentBuildListener;
@@ -33,6 +27,12 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public abstract class AbstractComponentManager<T>
     implements ComponentManager<T>
@@ -63,6 +63,8 @@ public abstract class AbstractComponentManager<T>
     protected final Map<Object, ClassRealm> componentContextRealms = Collections.synchronizedMap(new HashMap<Object, ClassRealm>());
 
     private int connections;
+
+    private long startId;
 
     public AbstractComponentManager( MutablePlexusContainer container,
                        LifecycleHandler lifecycleHandler,
@@ -158,6 +160,20 @@ public abstract class AbstractComponentManager<T>
     // ----------------------------------------------------------------------
     // Lifecylce Management
     // ----------------------------------------------------------------------
+
+    public void start( Object component ) throws PhaseExecutionException
+    {
+        startId = NEXT_START_ID.getAndIncrement();
+        getLifecycleHandler().start( component,  this, componentDescriptor.getRealm() );
+    }
+
+    /**
+     * @deprecated for internal use only.. will be removed
+     */
+    public long getStartId()
+    {
+        return startId;
+    }
 
     protected T createComponentInstance()
         throws ComponentInstantiationException, ComponentLifecycleException

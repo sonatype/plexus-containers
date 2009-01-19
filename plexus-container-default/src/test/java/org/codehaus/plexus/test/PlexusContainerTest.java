@@ -446,4 +446,32 @@ public class PlexusContainerTest
 
         assertNotNull( discoveredComponent );
     }
+    
+    public void testStartableComponentSnake()
+        throws Exception
+    {
+        DefaultStartableComponentA ca = (DefaultStartableComponentA) container.lookup( StartableComponent.ROLE, "A-snake" );
+        
+        assertNotNull( ca );
+        
+        ca.assertStartOrderCorrect();
+        
+        container.dispose();
+        
+        ca.assertStopOrderCorrect();
+    }
+    
+    public void testStartableComponentTree()
+        throws Exception
+    {
+        DefaultStartableComponentA ca = (DefaultStartableComponentA) container.lookup( StartableComponent.ROLE, "A-tree" );
+    
+        assertNotNull( ca );
+    
+        ca.assertStartOrderCorrect();
+
+        container.dispose();
+
+        ca.assertStopOrderCorrect();
+    }
 }
