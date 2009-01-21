@@ -18,6 +18,7 @@ package org.codehaus.plexus.context;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -65,7 +66,21 @@ public class DefaultContext
         {
             throw new NullPointerException( "contextData is null" );
         }
-        this.contextData.putAll(contextData);
+
+        // check for nulls in key and value
+        for ( Entry<Object, Object> entry : contextData.entrySet() )
+        {
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            if ( key == null )
+            {
+                throw new IllegalArgumentException( "Key is null" );
+            }
+            if ( value != null )
+            {
+                this.contextData.put( key, value );
+            }
+        }
     }
 
     public boolean contains( Object key )
@@ -92,6 +107,12 @@ public class DefaultContext
         throws IllegalStateException
     {
         checkWriteable();
+
+        // check for a null key
+        if (key == null)
+        {
+            throw new IllegalArgumentException("Key is null");
+        }
 
         if ( value == null )
         {
@@ -144,5 +165,10 @@ public class DefaultContext
         {
             throw new IllegalStateException( "Context is read only and can not be modified" );
         }
+    }
+    
+    public String toString()
+    {
+        return contextData.toString();
     }
 }

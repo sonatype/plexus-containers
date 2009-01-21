@@ -30,6 +30,6 @@ public interface SourceComponentGleaner
 {
     String ROLE = SourceComponentGleaner.class.getName();
 
-    ComponentDescriptor glean(JavaClassCache classCache, JavaClass javaClass) 
+    ComponentDescriptor<?> glean(JavaClassCache classCache, JavaClass javaClass) 
         throws ComponentGleanerException;
 }

@@ -21,6 +21,7 @@ import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.test.lifecycle.phase.EenyPhase;
@@ -445,5 +446,47 @@ public class PlexusContainerTest
         DiscoveredComponent discoveredComponent = container.lookup( DiscoveredComponent.class );
 
         assertNotNull( discoveredComponent );
+    }
+    
+    public void testStartableComponentSnake()
+        throws Exception
+    {
+        StartableComponent ca = container.lookup( StartableComponent.class, "A-snake" );
+        
+        assertNotNull( ca );
+        
+        ca.assertStartOrderCorrect();
+        
+        container.dispose();
+        
+        ca.assertStopOrderCorrect();
+    }
+    
+    public void testStartableComponentTree()
+        throws Exception
+    {
+        StartableComponent ca = container.lookup( StartableComponent.class, "A-tree" );
+    
+        assertNotNull( ca );
+    
+        ca.assertStartOrderCorrect();
+
+        container.dispose();
+
+        ca.assertStopOrderCorrect();
+    }
+
+    public void testLookupCircularity()
+        throws Exception
+    {
+        try
+        {
+            container.lookup( CircularComponent.class, "A" );
+            fail("Expected ComponentLookupException due to circularity");
+        }
+        catch ( ComponentLookupException e )
+        {
+            // todo actually test nested exception is as expected when 
+        }
     }
 }

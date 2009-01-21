@@ -7,7 +7,10 @@ public class MetadataGenerationRequest
 {
     /** Source to examine for Javadoc annotions which are used to generate component metadata. */
     public List<String> sourceDirectories; //todo: these should be files
-    
+
+    /** The character encoding of the source files, may be {@code null} or empty to use platform's default encoding. */
+    public String sourceEncoding;
+
     /** Classes to examine for annotations which are used to generate component metadata. */
     public File classesDirectory;  
 

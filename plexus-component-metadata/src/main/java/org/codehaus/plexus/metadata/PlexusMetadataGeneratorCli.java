@@ -14,6 +14,7 @@ public class PlexusMetadataGeneratorCli
     extends AbstractCli
 {
     public static final char SOURCE_DIRECTORY = 's';
+    public static final char SOURCE_ENCODING = 'e';
     public static final char CLASSES_DIRECTORY = 'c';
     public static final char OUTPUT_FILE = 'o';
     public static final char DESCRIPTORS_DIRECTORY = 'm';
@@ -35,6 +36,7 @@ public class PlexusMetadataGeneratorCli
     public Options buildCliOptions( Options options )
     {
         options.addOption( OptionBuilder.withLongOpt( "source" ).hasArg().withDescription( "Source directory." ).create( SOURCE_DIRECTORY ) );
+        options.addOption( OptionBuilder.withLongOpt( "encoding" ).hasArg().withDescription( "Source file encoding." ).create( SOURCE_ENCODING ) );
         options.addOption( OptionBuilder.withLongOpt( "classes" ).hasArg().withDescription( "Classes directory." ).create( CLASSES_DIRECTORY ) );
         options.addOption( OptionBuilder.withLongOpt( "output" ).hasArg().withDescription( "Output directory." ).create( OUTPUT_FILE ) );
         options.addOption( OptionBuilder.withLongOpt( "descriptors" ).hasArg().withDescription( "Descriptors directory." ).create( DESCRIPTORS_DIRECTORY ) );
@@ -44,12 +46,13 @@ public class PlexusMetadataGeneratorCli
     public void invokePlexusComponent( CommandLine cli, PlexusContainer plexus )
         throws Exception
     {
-        MetadataGenerator metadataGenerator = (MetadataGenerator) plexus.lookup( MetadataGenerator.class );
+        MetadataGenerator metadataGenerator = plexus.lookup( MetadataGenerator.class );
         
         MetadataGenerationRequest request = new MetadataGenerationRequest();        
         request.classesDirectory = new File( cli.getOptionValue( CLASSES_DIRECTORY ) );
-        request.classpath = Collections.EMPTY_LIST;
+        request.classpath = Collections.emptyList();
         request.sourceDirectories = Arrays.asList( new String[]{ new File( cli.getOptionValue( SOURCE_DIRECTORY ) ).getAbsolutePath() } );
+        request.sourceEncoding = cli.getOptionValue( SOURCE_ENCODING );
         request.useContextClassLoader = true;
         request.outputFile = new File( cli.getOptionValue( OUTPUT_FILE ) );
         request.componentDescriptorDirectory = new File( cli.getOptionValue( DESCRIPTORS_DIRECTORY ) );

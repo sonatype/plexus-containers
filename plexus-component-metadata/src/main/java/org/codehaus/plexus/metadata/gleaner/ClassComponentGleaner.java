@@ -27,7 +27,7 @@ public interface ClassComponentGleaner
 {
     String ROLE = ClassComponentGleaner.class.getName();
 
-    ComponentDescriptor glean(String className, ClassLoader cl) 
+    ComponentDescriptor<?> glean(String className, ClassLoader cl) 
         throws ComponentGleanerException;
     
 }

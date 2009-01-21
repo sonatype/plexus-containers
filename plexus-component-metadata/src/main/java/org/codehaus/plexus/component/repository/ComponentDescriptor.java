@@ -31,7 +31,7 @@ import java.util.Collections;
  * @author Jason van Zyl
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter</a>
  * @author <a href="mailto:mmaczka@interia.pl">Michal Maczka</a>
- * @version $Id: ComponentDescriptor.java 7828 2008-11-14 22:07:56Z dain $
+ * @version $Id: ComponentDescriptor.java 8048 2009-01-16 00:54:39Z jvanzyl $
  */
 public class ComponentDescriptor<T>
 {
@@ -379,6 +379,16 @@ public class ComponentDescriptor<T>
     public void setComponentProfile( String componentProfile )
     {
         this.componentProfile = componentProfile;
+    }
+
+    /**
+     * Add a project requirement to this component.
+     *
+     * @param requirement the requirement to add
+     */
+    public void addRequirement( ComponentRequirement requirement )
+    {
+        this.requirements.add( requirement );
     }
 
     /**

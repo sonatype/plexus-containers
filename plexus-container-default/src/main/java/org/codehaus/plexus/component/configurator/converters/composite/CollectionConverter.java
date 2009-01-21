@@ -40,6 +40,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 /**
@@ -190,6 +192,10 @@ public class CollectionConverter
         if ( List.class.isAssignableFrom( collectionType ) )
         {
             retValue = new ArrayList();
+        }
+        else if ( SortedSet.class.isAssignableFrom( collectionType ) )
+        {
+            retValue = new TreeSet();
         }
         else if ( Set.class.isAssignableFrom( collectionType ) )
         {

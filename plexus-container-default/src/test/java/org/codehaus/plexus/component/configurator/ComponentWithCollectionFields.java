@@ -26,6 +26,8 @@ package org.codehaus.plexus.component.configurator;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.Vector;
 
 /**
@@ -36,20 +38,24 @@ public class ComponentWithCollectionFields
 {
     private Vector vector;
 
-    private HashSet set;
+    private HashSet hashSet;
 
     private List list;
 
     private List stringList;
+
+    private Set set;
+
+    private SortedSet sortedSet;
 
     public Vector getVector()
     {
         return vector;
     }
 
-    public HashSet getSet()
+    public HashSet getHashSet()
     {
-        return set;
+        return hashSet;
     }
 
     public List getList()
@@ -60,5 +66,15 @@ public class ComponentWithCollectionFields
     public List getStringList()
     {
         return stringList;
+    }
+
+    public Set getSet()
+    {
+        return set;
+    }
+
+    public SortedSet getSortedSet()
+    {
+        return sortedSet;
     }
 }

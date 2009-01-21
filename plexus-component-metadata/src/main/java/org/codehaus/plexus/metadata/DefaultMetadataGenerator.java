@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
+import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -68,13 +69,13 @@ public class DefaultMetadataGenerator
             extractors = new ComponentDescriptorExtractor[] { new SourceComponentDescriptorExtractor(), new ClassComponentDescriptorExtractor( new AnnotationComponentGleaner() ) };
         }
 
-        List descriptors = new ArrayList();
+        List<ComponentDescriptor<?>> descriptors = new ArrayList<ComponentDescriptor<?>>();
 
         for ( int i = 0; i < extractors.length; i++ )
         {
             try
             {
-                List list = extractors[i].extract( request, roleDefaults );
+                List<ComponentDescriptor<?>> list = extractors[i].extract( request, roleDefaults );
                 if ( list != null && !list.isEmpty() )
                 {
                     descriptors.addAll( list );
@@ -97,7 +98,7 @@ public class DefaultMetadataGenerator
 
             ComponentSetDescriptor set = new ComponentSetDescriptor();
             set.setComponents( descriptors );
-            set.setDependencies( Collections.EMPTY_LIST );
+            set.setDependencies( Collections.<ComponentDependency> emptyList() );
             
             if ( request.componentDescriptorDirectory == null )
             {
@@ -107,7 +108,8 @@ public class DefaultMetadataGenerator
             {
                 if ( request.intermediaryFile == null )
                 {
-                    request.intermediaryFile = File.createTempFile( "plexus-metadata", "xml" );                    
+                    request.intermediaryFile = File.createTempFile( "plexus-metadata", "xml" );
+                    request.intermediaryFile.deleteOnExit();
                 }
                 writeDescriptor( set, request.intermediaryFile );
                 componentDescriptors.add( request.intermediaryFile );
@@ -118,7 +120,7 @@ public class DefaultMetadataGenerator
         //
         // Deal with merging
         //
-        if ( request.componentDescriptorDirectory != null && request.componentDescriptorDirectory.exists() )
+        if ( request.componentDescriptorDirectory != null && request.componentDescriptorDirectory.isDirectory() )
         {
             File[] files = request.componentDescriptorDirectory.listFiles();
 

@@ -18,11 +18,13 @@ package org.codehaus.plexus.component.manager;
  */
 
 import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Manages a component manager.
@@ -38,6 +40,14 @@ public interface ComponentManager<T>
 {
     String ROLE = ComponentManager.class.getName();
 
+    /**
+     * @deprecated for internal use only.. will be removed
+     */
+    AtomicLong NEXT_START_ID = new AtomicLong( 1 );
+
+    /**
+     * @deprecated use start instead
+     */
     LifecycleHandler getLifecycleHandler();
 
     void dispose() throws ComponentLifecycleException;
@@ -50,4 +60,11 @@ public interface ComponentManager<T>
 
     MutablePlexusContainer getContainer();
 
+
+    void start(Object component) throws PhaseExecutionException;
+
+    /**
+     * @deprecated for internal use only.. will be removed
+     */
+    long getStartId();
 }

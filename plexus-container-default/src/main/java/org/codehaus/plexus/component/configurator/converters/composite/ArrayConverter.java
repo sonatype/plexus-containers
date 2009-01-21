@@ -24,7 +24,6 @@ package org.codehaus.plexus.component.configurator.converters.composite;
  * SOFTWARE.
  */
 
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
@@ -36,10 +35,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -142,23 +138,15 @@ public class ArrayConverter
             values.add( object );
         }
 
-        return values.toArray( (Object []) Array.newInstance( type.getComponentType(), 0 ) );
-    }
-
-    protected Collection getDefaultCollection( Class collectionType )
-    {
-        Collection retValue = null;
-
-        if ( List.class.isAssignableFrom( collectionType ) )
+        try
         {
-            retValue = new ArrayList();
+            return values.toArray( (Object[]) Array.newInstance( type.getComponentType(), 0 ) );
         }
-        else if ( Set.class.isAssignableFrom( collectionType ) )
+        catch ( ArrayStoreException e )
         {
-            retValue = new HashSet();
+            throw new ComponentConfigurationException( "Cannot assign configuration values to array of type "
+                + type.getComponentType().getName() + ": " + values );
         }
-
-        return retValue;
     }
 
 }

@@ -42,13 +42,13 @@ public abstract class ComponentGleanerSupport
         }
     }
 
-    protected boolean isRequirementListType(final Class type) {
+    protected boolean isRequirementListType(final Class<?> type) {
         // assert type != null;
 
         return Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type);
     }
 
-    protected void addChildConfiguration(final ComponentDescriptor component, final PlexusConfiguration config) {
+    protected void addChildConfiguration(final ComponentDescriptor<?> component, final PlexusConfiguration config) {
         // assert component != null;
         // assert config != null;
 

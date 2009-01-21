@@ -245,11 +245,13 @@ public abstract class AbstractComponentConfiguratorTest
         throws Exception
     {
         String xml = "<configuration>" + "  <vector>" + "    <important-thing>" + "       <name>life</name>"
-            + "    </important-thing>" + "  </vector>" + "  <set>" + "    <important-thing>"
-            + "       <name>life</name>" + "    </important-thing>" + "  </set>"
+            + "    </important-thing>" + "  </vector>" + "  <hashSet>" + "    <important-thing>"
+            + "       <name>life</name>" + "    </important-thing>" + "  </hashSet>"
             + "   <list implementation=\"java.util.LinkedList\">" + "     <important-thing>"
             + "       <name>life</name>" + "    </important-thing>" + "  </list>" + "  <stringList>"
-            + "    <something>abc</something>" + "    <somethingElse>def</somethingElse>" + "  </stringList>" +
+            + "    <something>abc</something>" + "    <somethingElse>def</somethingElse>" + "  </stringList>"
+            + "   <set><something>abc</something></set>"
+            + "   <sortedSet><something>abc</something></sortedSet>" +
             // TODO: implement List<int> etc..
             //  "<intList>" +
             //  "  <something>12</something>" +
@@ -281,7 +283,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( 1, vector.size() );
 
-        Set set = component.getSet();
+        Set set = component.getHashSet();
 
         assertEquals( 1, set.size() );
 
@@ -304,6 +306,14 @@ public abstract class AbstractComponentConfiguratorTest
         assertEquals( "def", (String) stringList.get( 1 ) );
 
         assertEquals( 2, stringList.size() );
+
+        set = component.getSet();
+
+        assertEquals( 1, set.size() );
+
+        set = component.getSortedSet();
+
+        assertEquals( 1, set.size() );
     }
 
     public void testComponentConfigurationWhereFieldsAreArrays()
@@ -561,6 +571,41 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "Westerhof", map.get( "lastName" ) );
 
+    }
+
+    public void testComponentConfigurationWhereFieldIsBadArray()
+        throws Exception
+    {
+        String xml = "<configuration>" //
+            + "  <integerArray><java.lang.String>string</java.lang.String></integerArray>" //
+            + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithArrayFields component = new ComponentWithArrayFields();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration( configuration );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        try
+        {
+            configureComponent( component, descriptor, realm );
+            fail( "Configuration did not fail" );
+        }
+        catch ( ComponentConfigurationException e )
+        {
+            // expected
+            e.printStackTrace();
+        }
     }
 
 }

@@ -46,7 +46,7 @@
             
             <plugin>
                 <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-metadata-generator</artifactId>
+                <artifactId>plexus-component-metadata</artifactId>
                 <version>testing</version>
                 <executions>
                     <execution>

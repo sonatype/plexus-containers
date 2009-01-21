@@ -19,9 +19,10 @@ package org.codehaus.plexus.maven.plugin;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import java.util.Collections;
+import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.plexus.metadata.MetadataGenerationRequest;
 
 /**
  * Generates a Plexus <tt>components.xml</tt> component descriptor file from test source (javadoc)
@@ -33,16 +34,56 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @author Jason van Zyl
  * @author Trygve Laugst&oslash;l
  * @version $Id$
- * @since 1.3.4
  */
 public class PlexusTestDescriptorMojo
     extends AbstractDescriptorMojo
 {
+    /**
+     * The output location for the generated descriptor.
+     * 
+     * @parameter default-value="${project.build.testOutputDirectory}/META-INF/plexus/components.xml"
+     * @required
+     */
+    protected File testGeneratedMetadata;
+
+    /**
+     * The location of manually crafted component descriptors. The contents of the descriptor files in this directory is
+     * merged with the information extracted from the project's sources/classes.
+     * 
+     * @parameter default-value="${basedir}/src/test/resources/META-INF/plexus"
+     * @required
+     */
+    protected File testStaticMetadataDirectory;
+
+    /**
+     * The output location for the intermediary descriptor. This descriptors contains only the information extracted
+     * from the project's sources/classes.
+     * 
+     * @parameter default-value="${project.build.directory}/test-components.xml"
+     * @required
+     */
+    protected File testIntermediaryMetadata;
+
     public void execute()
         throws MojoExecutionException
     {
-        generateDescriptor( TEST_SCOPE, generatedMetadata );
+        MetadataGenerationRequest request = new MetadataGenerationRequest();
 
-        mavenProjectHelper.addTestResource( mavenProject, generatedMetadata.getParentFile().getAbsolutePath(), Collections.EMPTY_LIST, Collections.EMPTY_LIST );
+        try
+        {
+            request.classpath = mavenProject.getTestClasspathElements();
+            request.classesDirectory = new File( mavenProject.getBuild().getTestOutputDirectory() );
+            request.sourceDirectories = mavenProject.getTestCompileSourceRoots();
+            request.sourceEncoding = sourceEncoding;
+            request.componentDescriptorDirectory = testStaticMetadataDirectory;
+            request.intermediaryFile = testIntermediaryMetadata;
+            request.outputFile = testGeneratedMetadata;
+            
+            metadataGenerator.generateDescriptor( request );
+        }
+        catch ( Exception e )
+        {
+            throw new MojoExecutionException( "Error generating test metadata: ", e );
+        }
     }
 }

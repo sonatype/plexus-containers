@@ -217,7 +217,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
     protected void startComponentLifecycle(Object component, ClassRealm realm) throws ComponentLifecycleException {
         try {
-            componentManager.getLifecycleHandler().start(component, componentManager, realm);
+            componentManager.start(component);
         } catch (PhaseExecutionException e) {
             throw new ComponentLifecycleException("Error starting component", e);
         }

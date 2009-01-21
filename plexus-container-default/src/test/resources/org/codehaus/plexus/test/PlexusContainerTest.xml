@@ -262,5 +262,148 @@
       </requirements>
     </component>
 
+	<!-- A single linear dependency "snake" -->
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>A-snake</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentA</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.StartableComponent</role>
+          <role-hint>B-snake</role-hint>
+          <field-name>component1</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>B-snake</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentB</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.StartableComponent</role>
+          <role-hint>C-snake</role-hint>
+          <field-name>component1</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>C-snake</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentC</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.StartableComponent</role>
+          <role-hint>D-snake</role-hint>
+          <field-name>component1</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>D-snake</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentD</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.StartableComponent</role>
+          <role-hint>E-snake</role-hint>
+          <field-name>component1</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>E-snake</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentE</implementation>
+    </component>
+
+	<!-- A binary tree dependency "tree" -->
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>A-tree</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentA</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.StartableComponent</role>
+          <role-hint>B-tree</role-hint>
+          <field-name>component1</field-name>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.test.StartableComponent</role>
+          <role-hint>C-tree</role-hint>
+          <field-name>component2</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>B-tree</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentB</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.StartableComponent</role>
+          <role-hint>D-tree</role-hint>
+          <field-name>component1</field-name>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.test.StartableComponent</role>
+          <role-hint>E-tree</role-hint>
+          <field-name>component2</field-name>
+        </requirement>
+      </requirements>
+    </component>
+    
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>C-tree</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentC</implementation>
+    </component>
+    
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>D-tree</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentD</implementation>
+    </component>
+    
+    <component>
+      <role>org.codehaus.plexus.test.StartableComponent</role>
+      <role-hint>E-tree</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultStartableComponentE</implementation>
+    </component>
+
+    <!-- Circularity detection test components -->
+    <component>
+      <role>org.codehaus.plexus.test.CircularComponent</role>
+      <role-hint>A</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultCircularComponent</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.CircularComponent</role>
+          <role-hint>B</role-hint>
+          <field-name>requirement</field-name>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.test.CircularComponent</role>
+      <role-hint>B</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultCircularComponent</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.PlexusContainer</role>
+          <field-name>container</field-name>
+        </requirement>
+      </requirements>
+      <configuration>
+        <lookup>A</lookup>
+      </configuration>
+    </component>
+
  </components>
 </plexus>

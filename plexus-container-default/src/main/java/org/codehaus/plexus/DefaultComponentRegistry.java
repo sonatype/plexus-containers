@@ -4,8 +4,8 @@ import static com.google.common.base.ReferenceType.WEAK;
 import static com.google.common.collect.Maps.newConcurrentHashMap;
 import com.google.common.collect.ReferenceMap;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.ComponentIndex;
 import static org.codehaus.plexus.component.CastUtils.cast;
+import org.codehaus.plexus.component.ComponentIndex;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
@@ -21,22 +21,34 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.NullLogger;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DefaultComponentRegistry implements ComponentRegistry
 {
     private static final String DEFAULT_INSTANTIATION_STRATEGY = "singleton";
 
+    private static final ThreadLocal<LinkedHashSet<ComponentDescriptor<?>>> STACK =
+        new ThreadLocal<LinkedHashSet<ComponentDescriptor<?>>>()
+        {
+            protected LinkedHashSet<ComponentDescriptor<?>> initialValue()
+            {
+                return new LinkedHashSet<ComponentDescriptor<?>>();
+            }
+        };
+
     private final MutablePlexusContainer container;
     private final LifecycleHandlerManager lifecycleHandlerManager;
     private final Logger logger;
+
+    private final AtomicBoolean disposed = new AtomicBoolean( false );
 
     private final ConcurrentMap<String, ComponentManagerFactory> componentManagerFactories = newConcurrentHashMap();
 
@@ -62,8 +74,37 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
     public void dispose()
     {
-        Collection<ComponentManager<?>> managers = index.clear();
-        componentManagersByComponent.clear();
+        if (disposed.getAndSet( true )) {
+            // already disposed
+            return;
+        }
+
+        List<ComponentManager<?>> managers;
+        synchronized ( this )
+        {
+            managers = new ArrayList<ComponentManager<?>>( index.clear() );
+            componentManagersByComponent.clear();
+
+        }
+
+        // reverse sort the managers by startId
+        Collections.sort( managers, new Comparator<ComponentManager<?>>() {
+            public int compare( ComponentManager<?> left, ComponentManager<?> right )
+            {
+                if (left.getStartId() < right.getStartId() )
+                {
+                    return 1;
+                }
+                else if (left.getStartId() == right.getStartId() )
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+        });
 
         // Call dispose callback outside of synchronized lock to avoid deadlocks
         for ( ComponentManager<?> componentManager : managers )
@@ -86,6 +127,11 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
     public void registerComponentManagerFactory( ComponentManagerFactory componentManagerFactory )
     {
+        if ( disposed.get() )
+        {
+            throw new IllegalStateException("ComponentRegistry has been disposed");
+        }
+
         componentManagerFactories.put( componentManagerFactory.getId(), componentManagerFactory );
     }
 
@@ -95,6 +141,11 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
     public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) throws ComponentRepositoryException
     {
+        if ( disposed.get() )
+        {
+            throw new ComponentRepositoryException("ComponentRegistry has been disposed", componentDescriptor);
+        }
+
         // verify the descriptor matches the role hint and type
         verifyComponentDescriptor( componentDescriptor );
 
@@ -178,6 +229,11 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
     public <T> void addComponent( T instance, Class<?> type, String roleHint, ClassRealm realm ) throws ComponentRepositoryException
     {
+        if ( disposed.get() )
+        {
+            throw new ComponentRepositoryException("ComponentRegistry has been disposed", type, roleHint, realm);
+        }
+
         StaticComponentManager<T> componentManager = new StaticComponentManager<T>( container, instance, type, roleHint, realm );
 
         // verify descriptor is consistent
@@ -327,7 +383,28 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
     private <T> T getComponent( ComponentManager<T> componentManager ) throws ComponentLookupException
     {
+        ComponentDescriptor<T> descriptor = componentManager.getComponentDescriptor();
+
+        // check for creation circularity
+        LinkedHashSet<ComponentDescriptor<?>> stack = STACK.get();
+        if ( stack.contains( descriptor ) )
+        {
+            // create list of circularity
+            List<ComponentDescriptor<?>> circularity = new ArrayList<ComponentDescriptor<?>>( stack );
+            circularity.subList( circularity.indexOf( descriptor ), circularity.size() );
+            circularity.add( descriptor );
+
+            // nice circularity message
+            String message = "Creation circularity: ";
+            for ( ComponentDescriptor<?> componentDescriptor : circularity )
+            {
+                message += "\n\t[" + componentDescriptor.getRole() + ", " + componentDescriptor.getRoleHint() + "]";
+            }
+            throw new ComponentLookupException( message, descriptor );
+        }
+
         // Get instance from manager... may result in creation
+        stack.add( descriptor );
         try
         {
             T component = componentManager.getComponent();
@@ -338,11 +415,13 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
         catch ( ComponentInstantiationException e )
         {
-            throw new ComponentLookupException( "Component could not be created", componentManager.getComponentDescriptor(), e );
+            throw new ComponentLookupException( "Component could not be created", descriptor, e );
         }
         catch ( ComponentLifecycleException e )
         {
-            throw new ComponentLookupException( "Component could not be started", componentManager.getComponentDescriptor(), e );
+            throw new ComponentLookupException( "Component could not be started", descriptor, e );
+        } finally {
+            stack.remove( descriptor );
         }
     }
 

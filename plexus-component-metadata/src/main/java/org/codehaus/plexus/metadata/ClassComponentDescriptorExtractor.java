@@ -20,7 +20,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class ClassComponentDescriptorExtractor
         this.gleaner = new AnnotationComponentGleaner();
     }
 
-    public List extract( MetadataGenerationRequest configuration, final ComponentDescriptor[] roleDefaults )
+    public List<ComponentDescriptor<?>> extract( MetadataGenerationRequest configuration, final ComponentDescriptor<?>[] roleDefaults )
         throws Exception
     {
         assert roleDefaults != null;
@@ -63,7 +62,7 @@ public class ClassComponentDescriptorExtractor
 
         if ( !configuration.classesDirectory.exists() )
         {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         if ( configuration.useContextClassLoader )
@@ -88,16 +87,14 @@ public class ClassComponentDescriptorExtractor
         }
     }
 
-    private ClassLoader createClassLoader( final List elements )
+    private ClassLoader createClassLoader( final List<String> elements )
         throws Exception
     {
-        List list = new ArrayList();
+        List<URL> list = new ArrayList<URL>();
 
         // Add the projects dependencies
-        for ( Iterator iter = elements.iterator(); iter.hasNext(); )
+        for ( String filename : elements )
         {
-            String filename = (String) iter.next();
-
             try
             {
                 list.add( new File( filename ).toURI().toURL() );
@@ -108,7 +105,7 @@ public class ClassComponentDescriptorExtractor
             }
         }
 
-        URL[] urls = (URL[]) list.toArray( new URL[list.size()] );
+        URL[] urls = list.toArray( new URL[list.size()] );
 
         //getLogger().debug( "Classpath:" );
         for ( int i = 0; i < urls.length; i++ )
@@ -119,14 +116,15 @@ public class ClassComponentDescriptorExtractor
         return new URLClassLoader( urls, getClass().getClassLoader() );
     }
 
-    private List extract( final File classesDir, final ClassLoader cl, final Map defaultsByRole )
+    private List<ComponentDescriptor<?>> extract( final File classesDir, final ClassLoader cl,
+                                                  final Map<String, ComponentDescriptor<?>> defaultsByRole )
         throws Exception
     {
         assert classesDir != null;
         assert cl != null;
         assert defaultsByRole != null;
 
-        List descriptors = new ArrayList();
+        List<ComponentDescriptor<?>> descriptors = new ArrayList<ComponentDescriptor<?>>();
 
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir( classesDir );
@@ -147,7 +145,7 @@ public class ClassComponentDescriptorExtractor
             {
                 // Class type = cl.loadClass( className );
 
-                ComponentDescriptor descriptor = gleaner.glean( className, cl );
+                ComponentDescriptor<?> descriptor = gleaner.glean( className, cl );
 
                 if ( descriptor != null )
                 {

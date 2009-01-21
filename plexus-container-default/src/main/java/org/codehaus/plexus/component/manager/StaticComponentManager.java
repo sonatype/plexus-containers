@@ -5,6 +5,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 public class StaticComponentManager<T> implements ComponentManager<T>
@@ -12,6 +13,8 @@ public class StaticComponentManager<T> implements ComponentManager<T>
     private final MutablePlexusContainer container;
     private T instance;
     private final ComponentDescriptor<T> descriptor;
+
+    private long startId;
     private boolean disposed;
 
     public StaticComponentManager( MutablePlexusContainer container, T instance, Class<?> role, String roleHint, ClassRealm realm)
@@ -59,6 +62,16 @@ public class StaticComponentManager<T> implements ComponentManager<T>
     public MutablePlexusContainer getContainer()
     {
         return container;
+    }
+
+    public void start( Object component ) throws PhaseExecutionException
+    {
+        startId = NEXT_START_ID.getAndIncrement();
+    }
+
+    public long getStartId()
+    {
+        return startId;
     }
 
     public synchronized String toString()

@@ -35,6 +35,8 @@ public abstract class AbstractComponentManager<T> implements ComponentManager<T>
 
     private final LifecycleHandler lifecycleHandler;
 
+    private long startId;
+
     public AbstractComponentManager( MutablePlexusContainer container,
                                      LifecycleHandler lifecycleHandler,
                                      ComponentDescriptor<T> componentDescriptor )
@@ -83,6 +85,24 @@ public abstract class AbstractComponentManager<T> implements ComponentManager<T>
         {
             throw new ComponentLifecycleException( "Error ending component lifecycle", e );
         }
+    }
+
+    // ----------------------------------------------------------------------
+    // Lifecylce Management
+    // ----------------------------------------------------------------------
+
+    public void start( Object component ) throws PhaseExecutionException
+    {
+        startId = NEXT_START_ID.getAndIncrement();
+        getLifecycleHandler().start( component,  this, componentDescriptor.getRealm() );
+    }
+
+    /**
+     * @deprecated for internal use only.. will be removed
+     */
+    public long getStartId()
+    {
+        return startId;
     }
 
     public MutablePlexusContainer getContainer()
