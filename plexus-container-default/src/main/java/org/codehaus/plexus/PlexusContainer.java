@@ -217,11 +217,9 @@ public interface PlexusContainer
      * Returns a List of ComponentDescriptors with the given role. Searches up the hierarchy until all are found, an
      * empty List if none are found.
      * @param type the Java type of the desired components
-     * @param role a non-unique key for the desired components
      * @return a List of component descriptors
      */
-    @Deprecated
-    <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type,  String role );
+    <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type );
 
     /**
      * Adds a component descriptor to this container. componentDescriptor should have realmId set.
@@ -340,7 +338,6 @@ public interface PlexusContainer
     /**
      * Discovers components in the given realm.
      * @param childRealm
-     * @param override wheter to override/merge any conflicting components, where the new component takes precedence.
      * @return
      * @throws PlexusConfigurationException
      * @throws ComponentRepositoryException

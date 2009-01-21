@@ -13,8 +13,6 @@ import org.codehaus.plexus.component.discovery.DefaultComponentDiscovererManager
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.factory.DefaultComponentFactoryManager;
-import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.component.repository.DefaultComponentRepository;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase;
@@ -212,25 +210,6 @@ public class DefaultContainerConfiguration
         this.componentFactoryManager = componentFactoryManager;
 
         return this;
-    }
-
-    private ComponentRepository componentRepository;
-
-    public ContainerConfiguration setComponentRepository( ComponentRepository componentRepository )
-    {
-        this.componentRepository = componentRepository;
-
-        return this;
-    }
-
-    public ComponentRepository getComponentRepository()
-    {
-        if ( componentRepository == null )
-        {
-            componentRepository = new DefaultComponentRepository();
-        }
-
-        return componentRepository;
     }
 
     // Lifecycle handler manager

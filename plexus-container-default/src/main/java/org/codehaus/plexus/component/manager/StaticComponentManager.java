@@ -5,6 +5,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLifecycleExce
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.MutablePlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 public class StaticComponentManager<T> implements ComponentManager<T>
 {
@@ -13,14 +14,15 @@ public class StaticComponentManager<T> implements ComponentManager<T>
     private final ComponentDescriptor<T> descriptor;
     private boolean disposed;
 
-    public StaticComponentManager( MutablePlexusContainer container, T instance, String role, String roleHint)
+    public StaticComponentManager( MutablePlexusContainer container, T instance, Class<?> role, String roleHint, ClassRealm realm)
     {
         this.container = container;
         this.instance = instance;
 
         descriptor = new ComponentDescriptor<T>();
-        descriptor.setRole( role );
+        descriptor.setRole( role.getName() );
         descriptor.setRoleHint( roleHint );
+        descriptor.setRealm( realm );
         descriptor.setImplementationClass( (Class<? extends T>) instance.getClass() );
     }
 

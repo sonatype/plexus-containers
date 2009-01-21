@@ -44,7 +44,7 @@ public interface ComponentRegistry
 
     <T> Map<String, ComponentDescriptor<T>> getComponentDescriptorMap( Class<T> type );
 
-    <T> void addComponent( T instance, String role, String roleHint ) throws ComponentRepositoryException;
+    <T> void addComponent( T instance, Class<?> type, String roleHint, ClassRealm realm ) throws ComponentRepositoryException;
 
     <T> T lookup( Class<T> type, String roleHint )
         throws ComponentLookupException;

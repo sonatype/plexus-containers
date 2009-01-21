@@ -25,7 +25,6 @@ import org.apache.xbean.recipe.RecipeHelper;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.ComponentRegistry;
 import static org.codehaus.plexus.PlexusConstants.PLEXUS_DEFAULT_HINT;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
@@ -256,8 +255,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
                 String roleHint = requirement.getRoleHint();
                 Class<?> roleType = getInterfaceClass( container, requirement.getRole(), roleHint );
 
-                ComponentRegistry componentRegistry = container.getComponentRegistry();
-                for ( ComponentDescriptor<?> descriptor : componentRegistry.getComponentDescriptorList( roleType ) )
+                for ( ComponentDescriptor<?> descriptor : container.getComponentDescriptorList( roleType ) )
                 {
                     if ( descriptor.getRoleHint().equals( roleHint ) && isAssignableFrom( propertyType, descriptor.getImplementationClass() ) )
                     {

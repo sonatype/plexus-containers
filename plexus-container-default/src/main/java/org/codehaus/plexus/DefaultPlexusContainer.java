@@ -126,7 +126,26 @@ public class DefaultPlexusContainer
     public void addComponent( Object component, String role )
         throws ComponentRepositoryException
     {
-        componentRegistry.addComponent( component, role, PLEXUS_DEFAULT_HINT );
+        ClassRealm classRealm = null;
+
+        // find a realm for this instance
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        if ( classLoader instanceof ClassRealm )
+        {
+            classRealm = (ClassRealm) classLoader;
+        }
+        if (classRealm == null)
+        {
+            classRealm = getContainerRealm();
+        }
+
+        addComponent( component, getRoleClass( role ), PLEXUS_DEFAULT_HINT, classRealm );
+    }
+
+    public <T> void addComponent( T component, Class<?> type, String roleHint, ClassRealm classRealm )
+        throws ComponentRepositoryException
+    {
+        componentRegistry.addComponent( component, type, roleHint, classRealm );
     }
 
     public ClassRealm setLookupRealm( ClassRealm realm )
@@ -465,8 +484,7 @@ public class DefaultPlexusContainer
         return cast(componentRegistry.getComponentDescriptorList( getRoleClass( role ) ));
     }
 
-    @Deprecated
-    public <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type, String role )
+    public <T> List<ComponentDescriptor<T>> getComponentDescriptorList( Class<T> type )
     {
         return componentRegistry.getComponentDescriptorList( type );
     }
@@ -870,21 +888,26 @@ public class DefaultPlexusContainer
     public List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm )
         throws PlexusConfigurationException, ComponentRepositoryException
     {
-        List<ComponentDescriptor<?>> discoveredComponentDescriptors = new ArrayList<ComponentDescriptor<?>>();
 
+        List<ComponentSetDescriptor> componentSets = new ArrayList<ComponentSetDescriptor>();
         for ( ComponentDiscoverer componentDiscoverer : getComponentDiscovererManager().getComponentDiscoverers() )
         {
             for ( ComponentSetDescriptor componentSet : componentDiscoverer.findComponents( getContext(), realm ) )
             {
-                for ( ComponentDescriptor<?> componentDescriptor : componentSet.getComponents() )
-                {
-                    addComponentDescriptor( componentDescriptor );
-
-                    discoveredComponentDescriptors.add( componentDescriptor );
-                }
+                componentSets.add(componentSet);
             }
         }
 
+        List<ComponentDescriptor<?>> discoveredComponentDescriptors = new ArrayList<ComponentDescriptor<?>>();
+        for ( ComponentSetDescriptor componentSet : componentSets )
+        {
+            for ( ComponentDescriptor<?> componentDescriptor : componentSet.getComponents() )
+            {
+                addComponentDescriptor( componentDescriptor );
+
+                discoveredComponentDescriptors.add( componentDescriptor );
+            }
+        }
         return discoveredComponentDescriptors;
     }
 }

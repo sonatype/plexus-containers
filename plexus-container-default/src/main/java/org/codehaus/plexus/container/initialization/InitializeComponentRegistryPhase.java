@@ -16,16 +16,15 @@ package org.codehaus.plexus.container.initialization;
  * limitations under the License.
  */
 
-import org.codehaus.plexus.component.repository.ComponentRepository;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.repository.io.PlexusTools;
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.ComponentRegistry;
+import org.codehaus.plexus.DefaultComponentRegistry;
 import org.codehaus.plexus.component.manager.PerLookupComponentManagerFactory;
 import org.codehaus.plexus.component.manager.SingletonComponentManagerFactory;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
-import org.codehaus.plexus.DefaultComponentRegistry;
-import org.codehaus.plexus.ComponentRegistry;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 
 /**
@@ -36,37 +35,40 @@ public class InitializeComponentRegistryPhase implements ContainerInitialization
     public void execute( ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        ComponentRepository repository = getComponentRepository( context );
-
         LifecycleHandlerManager lifecycleHandlerManager = getLifecycleHandlerManager( context );
 
         ComponentRegistry componentRegistry = new DefaultComponentRegistry( context.getContainer(),
-            repository,
             lifecycleHandlerManager );
 
         componentRegistry.registerComponentManagerFactory( new PerLookupComponentManagerFactory() );
 
         componentRegistry.registerComponentManagerFactory( new SingletonComponentManagerFactory() );
 
+        initializeComponentRegistry( componentRegistry, context );
+
         context.getContainer().setComponentRegistry( componentRegistry );
     }
 
-    private ComponentRepository getComponentRepository( ContainerInitializationContext context )
+    private void initializeComponentRegistry( ComponentRegistry componentRegistry,
+                                              ContainerInitializationContext context )
         throws ContainerInitializationException
     {
-        ComponentRepository repository = context.getContainerConfiguration().getComponentRepository();
-
         // Add the components defined in the container xml configuration
         try
         {
             PlexusConfiguration configuration = context.getContainerXmlConfiguration();
 
-            PlexusConfiguration[] componentConfigurations = configuration.getChild( "components" ).getChildren( "component" );
+            PlexusConfiguration[] componentConfigurations = configuration.getChild( "components" ).getChildren(
+                "component" );
             for ( PlexusConfiguration componentConfiguration : componentConfigurations )
             {
-                ComponentDescriptor<?> componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration, context.getContainer().getContainerRealm() );
-                if (componentDescriptor == null) continue;
-                repository.addComponentDescriptor( componentDescriptor );
+                ComponentDescriptor<?> componentDescriptor = PlexusTools.buildComponentDescriptor(
+                    componentConfiguration, context.getContainer().getContainerRealm() );
+
+                if ( componentDescriptor != null )
+                {
+                    componentRegistry.addComponentDescriptor( componentDescriptor );
+                }
             }
         }
         catch ( PlexusConfigurationException e )
@@ -78,7 +80,6 @@ public class InitializeComponentRegistryPhase implements ContainerInitialization
         {
             throw new ContainerInitializationException( "Error initializing component repository: ", e );
         }
-        return repository;
     }
 
     private LifecycleHandlerManager getLifecycleHandlerManager( ContainerInitializationContext context )

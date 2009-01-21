@@ -9,7 +9,6 @@ import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
-import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
@@ -74,16 +73,6 @@ public interface ContainerConfiguration
     ContainerConfiguration setComponentFactoryManager( ComponentFactoryManager componentFactoryManager );
 
     ComponentFactoryManager getComponentFactoryManager();
-
-    // Component manager manager
-
-    // Component repository
-
-    ContainerConfiguration setComponentRepository( ComponentRepository componentRepository );
-
-    ComponentRepository getComponentRepository();
-
-    // Component composer
 
     // Lifecycle handler manager
 
