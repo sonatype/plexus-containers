@@ -376,5 +376,34 @@
       <implementation>org.codehaus.plexus.test.DefaultStartableComponentE</implementation>
     </component>
 
+    <!-- Circularity detection test components -->
+    <component>
+      <role>org.codehaus.plexus.test.CircularComponent</role>
+      <role-hint>A</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultCircularComponent</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.CircularComponent</role>
+          <role-hint>B</role-hint>
+          <field-name>requirement</field-name>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
+      <role>org.codehaus.plexus.test.CircularComponent</role>
+      <role-hint>B</role-hint>
+      <implementation>org.codehaus.plexus.test.DefaultCircularComponent</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.PlexusContainer</role>
+          <field-name>container</field-name>
+        </requirement>
+      </requirements>
+      <configuration>
+        <lookup>A</lookup>
+      </configuration>
+    </component>
+
  </components>
 </plexus>

@@ -61,8 +61,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.LinkedHashSet;
 
 public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
+    private static final ThreadLocal<LinkedHashSet<ComponentDescriptor<?>>> STACK =
+        new ThreadLocal<LinkedHashSet<ComponentDescriptor<?>>>()
+        {
+            protected LinkedHashSet<ComponentDescriptor<?>> initialValue()
+            {
+                return new LinkedHashSet<ComponentDescriptor<?>>();
+            }
+        };
+
     private ComponentManager<T> componentManager;
 
     public XBeanComponentBuilder() {
@@ -84,24 +94,50 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
         return componentManager.getContainer();
     }
 
-    public T build(ComponentDescriptor<T> descriptor, ClassRealm realm, ComponentBuildListener listener) throws ComponentInstantiationException, ComponentLifecycleException {
-        if (listener != null) {
-            listener.beforeComponentCreate(descriptor, realm);
+    public T build( ComponentDescriptor<T> descriptor, ClassRealm realm, ComponentBuildListener listener )
+        throws ComponentInstantiationException, ComponentLifecycleException
+    {
+        LinkedHashSet<ComponentDescriptor<?>> stack = STACK.get();
+        if ( stack.contains( descriptor ) )
+        {
+            // create list of circularity
+            List<ComponentDescriptor<?>> circularity = new ArrayList<ComponentDescriptor<?>>( stack );
+            circularity.subList( circularity.indexOf( descriptor ), circularity.size() );
+            circularity.add( descriptor );
+
+            // nice circularity message
+            String message = "Creation circularity: ";
+            for ( ComponentDescriptor<?> componentDescriptor : circularity )
+            {
+                message += "\n\t[" + componentDescriptor.getRole() + ", " + componentDescriptor.getRoleHint() + "]";
+            }
+            throw new ComponentInstantiationException( message );
         }
+        stack.add( descriptor );
+        try
+        {
+            if (listener != null) {
+                listener.beforeComponentCreate(descriptor, realm);
+            }
 
-        T component = createComponentInstance(descriptor, realm);
+            T component = createComponentInstance(descriptor, realm);
 
-        if (listener != null) {
-            listener.componentCreated(descriptor, component, realm);
+            if (listener != null) {
+                listener.componentCreated(descriptor, component, realm);
+            }
+
+            startComponentLifecycle(component, realm);
+
+            if (listener != null) {
+                listener.componentConfigured(descriptor, component, realm);
+            }
+
+            return component;
         }
-
-        startComponentLifecycle(component, realm);
-
-        if (listener != null) {
-            listener.componentConfigured(descriptor, component, realm);
+        finally
+        {
+            stack.remove( descriptor );
         }
-
-        return component;
     }
 
     protected T createComponentInstance(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException, ComponentLifecycleException {

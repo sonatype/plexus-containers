@@ -9,4 +9,8 @@ public interface StartableComponent
     AtomicInteger startGenerator = new AtomicInteger( 1 );
 
     AtomicInteger stopGenerator = new AtomicInteger( 1 );
+
+    void assertStartOrderCorrect();
+
+    void assertStopOrderCorrect();
 }
