@@ -181,7 +181,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
         // Add componentManager to indexe
         index.add( componentDescriptor.getRealm(),
-            componentDescriptor.getImplementationClass(),
+            componentDescriptor.getRoleClass(),
             componentDescriptor.getRoleHint(),
             componentManager);
 
@@ -240,7 +240,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         ComponentDescriptor<T> descriptor = componentManager.getComponentDescriptor();
         verifyComponentDescriptor( descriptor );
 
-        index.add(descriptor.getRealm(), descriptor.getImplementationClass(), descriptor.getRoleHint(), componentManager);
+        index.add(descriptor.getRealm(), descriptor.getRoleClass(), descriptor.getRoleHint(), componentManager);
     }
 
     public <T> T lookup( Class<T> type, String roleHint ) throws ComponentLookupException

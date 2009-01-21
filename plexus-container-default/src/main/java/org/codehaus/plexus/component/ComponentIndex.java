@@ -42,7 +42,7 @@ public class ComponentIndex<V>
      */
     public ComponentIndex()
     {
-        this( true );
+        this( false );
     }
 
     /**
