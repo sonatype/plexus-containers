@@ -19,6 +19,7 @@ package org.codehaus.plexus;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentDescriptorListener;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
@@ -72,6 +73,14 @@ public interface PlexusContainer
      * @return a Plexus component object
      */
     <T> T lookup( Class<T> type, String roleHint )
+        throws ComponentLookupException;
+
+    /**
+     * Looks up and returns a component object for the specified and registered component descriptor.
+     * @param descriptor a conponent descriptor registered with the container
+     * @return a Plexus component object
+     */
+    <T> T lookup( ComponentDescriptor<T> descriptor )
         throws ComponentLookupException;
 
     /**
@@ -317,6 +326,13 @@ public interface PlexusContainer
      * @return the ClassRealm of this Container
      */
     ClassRealm getContainerRealm();
+
+    // ----------------------------------------------------------------------
+    // ComponentListener
+    // ----------------------------------------------------------------------
+    void addComponentDescriptorListener( ComponentDescriptorListener<?> listener );
+
+    void removeComponentDescriptorListener( ComponentDescriptorListener<?> listener );
 
     // ----------------------------------------------------------------------
     // Discovery

@@ -30,7 +30,7 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
 import org.codehaus.plexus.component.collections.ComponentList;
-import org.codehaus.plexus.component.collections.ComponentMap;
+import org.codehaus.plexus.component.collections.LiveMap;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
@@ -311,9 +311,8 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
                         // todo verify key type is String
 
-                        assignment = new ComponentMap(container,
-                                valueClass,
-                                roleType.getName(),
+                        assignment = new LiveMap(container,
+                                roleType,
                                 roleHints,
                                 componentDescriptor.getHumanReadableKey());
                     }

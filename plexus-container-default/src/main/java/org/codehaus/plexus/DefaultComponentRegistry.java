@@ -3,6 +3,8 @@ package org.codehaus.plexus;
 import static com.google.common.base.ReferenceType.WEAK;
 import static com.google.common.collect.Maps.newConcurrentHashMap;
 import com.google.common.collect.ReferenceMap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import static org.codehaus.plexus.component.CastUtils.cast;
 import org.codehaus.plexus.component.ComponentIndex;
@@ -11,6 +13,7 @@ import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
 import org.codehaus.plexus.component.manager.StaticComponentManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentDescriptorListener;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
@@ -53,8 +56,13 @@ public class DefaultComponentRegistry implements ComponentRegistry
     private final ConcurrentMap<String, ComponentManagerFactory> componentManagerFactories = newConcurrentHashMap();
 
     private final ComponentIndex<ComponentManager<?>> index = new ComponentIndex<ComponentManager<?>>();
+    private final Map<ComponentDescriptor<?>, ComponentManager<?>> componentManagersByComponentDescriptor =
+        new ReferenceMap<ComponentDescriptor<?>, ComponentManager<?>>( WEAK, WEAK);
+
     private final Map<Object, ComponentManager<?>> componentManagersByComponent =
         new ReferenceMap<Object, ComponentManager<?>>( WEAK, WEAK);
+
+    private final ListMultimap<Pair<Class<?>, String>, ComponentDescriptorListener<?>> listeners = Multimaps.newArrayListMultimap();
 
     public DefaultComponentRegistry( MutablePlexusContainer container, LifecycleHandlerManager lifecycleHandlerManager )
     {
@@ -80,9 +88,10 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
 
         List<ComponentManager<?>> managers;
-        synchronized ( this )
+        synchronized ( index )
         {
             managers = new ArrayList<ComponentManager<?>>( index.clear() );
+            componentManagersByComponentDescriptor.clear();
             componentManagersByComponent.clear();
 
         }
@@ -118,6 +127,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
                 // todo dain use a monitor instead of a logger
                 logger.error( "Error while disposing component manager. Continuing with the rest", e );
             }
+            fireComponentDescriptorRemoved( componentManager.getComponentDescriptor() );
         }
     }
 
@@ -139,7 +149,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
     // Component Descriptors
     //
 
-    public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) throws ComponentRepositoryException
+    public <T> void addComponentDescriptor( ComponentDescriptor<T> componentDescriptor ) throws ComponentRepositoryException
     {
         if ( disposed.get() )
         {
@@ -175,16 +185,21 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
 
         // Create the ComponentManager
-        ComponentManager<?> componentManager = componentManagerFactory.createComponentManager( container,
+        ComponentManager<T> componentManager = componentManagerFactory.createComponentManager( container,
             lifecycleHandler,
             componentDescriptor );
 
         // Add componentManager to indexe
-        index.add( componentDescriptor.getRealm(),
-            componentDescriptor.getRoleClass(),
-            componentDescriptor.getRoleHint(),
-            componentManager);
+        synchronized ( index )
+        {
+            index.add( componentDescriptor.getRealm(),
+                componentDescriptor.getRoleClass(),
+                componentDescriptor.getRoleHint(),
+                componentManager);
+            componentManagersByComponentDescriptor.put(componentDescriptor, componentManager);
+        }
 
+        fireComponentDescriptorAdded( componentDescriptor );
     }
 
     public <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String roleHint )
@@ -240,7 +255,13 @@ public class DefaultComponentRegistry implements ComponentRegistry
         ComponentDescriptor<T> descriptor = componentManager.getComponentDescriptor();
         verifyComponentDescriptor( descriptor );
 
-        index.add(descriptor.getRealm(), descriptor.getRoleClass(), descriptor.getRoleHint(), componentManager);
+        synchronized ( index )
+        {
+            index.add( descriptor.getRealm(), descriptor.getRoleClass(), descriptor.getRoleHint(), componentManager);
+            componentManagersByComponentDescriptor.put( descriptor, componentManager);
+        }
+
+        fireComponentDescriptorAdded( descriptor );
     }
 
     public <T> T lookup( Class<T> type, String roleHint ) throws ComponentLookupException
@@ -256,6 +277,16 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
 
         return getComponent( type, roleHint );
+    }
+
+    public <T> T lookup( ComponentDescriptor<T> componentDescriptor ) throws ComponentLookupException
+    {
+        ComponentManager<T> componentManager = (ComponentManager<T>) componentManagersByComponentDescriptor.get( componentDescriptor );
+        if ( componentManager == null )
+        {
+            throw new ComponentLookupException( "Component descriptor is not registered with PlexusContainer", componentDescriptor);
+        }
+        return getComponent( componentManager );
     }
 
     public <T> Map<String, T> lookupMap( Class<T> type, List<String> roleHints )
@@ -329,6 +360,98 @@ public class DefaultComponentRegistry implements ComponentRegistry
         return components;
     }
 
+    public <T> void addComponentDescriptorListener( ComponentDescriptorListener<T> listener )
+    {
+        Class<T> type = listener.getType();
+        List<String> roleHints = listener.getRoleHints();
+        synchronized ( this )
+        {
+            if (roleHints == null )
+            {
+                listeners.put(new Pair<Class<?>, String>(type, null), listener);
+            }
+            else
+            {
+                for ( String roleHint : roleHints )
+                {
+                    listeners.put(new Pair<Class<?>, String>(type, roleHint), listener);
+                }
+            }
+        }
+
+        // if no hints provided, get all valid hints for this role
+        if ( roleHints == null )
+        {
+            List<ComponentManager<T>> componentManagers = cast( index.getAll( type ) );
+            for ( ComponentManager<T> componentManager : componentManagers )
+            {
+                listener.componentDescriptorAdded( componentManager.getComponentDescriptor() );
+            }
+        }
+        else
+        {
+            for ( String roleHint : roleHints )
+            {
+                ComponentManager<T> componentManager = (ComponentManager<T>) index.get( type, roleHint );
+                if (componentManager != null) {
+                    listener.componentDescriptorAdded( componentManager.getComponentDescriptor() );
+                }
+            }
+        }
+    }
+
+    public synchronized <T> void removeComponentDescriptorListener( ComponentDescriptorListener<T> listener )
+    {
+        Class<?> type = listener.getType();
+        List<String> roleHints = listener.getRoleHints();
+        if (roleHints == null || roleHints.isEmpty())
+        {
+            listeners.remove(new Pair<Class<?>, String>(type, null), listener);
+        }
+        else
+        {
+            for ( String roleHint : roleHints )
+            {
+                listeners.remove(new Pair<Class<?>, String>(type, roleHint), listener);
+            }
+        }
+    }
+
+    private synchronized <T> List<ComponentDescriptorListener<T>> getListeners(ComponentDescriptor<T> descriptor)
+    {
+        return cast(listeners.get(new Pair<Class<?>, String>(descriptor.getRoleClass(), descriptor.getRoleHint())));
+    }
+
+    private <T> void fireComponentDescriptorAdded( ComponentDescriptor<T> componentDescriptor )
+    {
+        for ( ComponentDescriptorListener<T> listener : getListeners( componentDescriptor ))
+        {
+            try
+            {
+                listener.componentDescriptorAdded( componentDescriptor );
+            }
+            catch ( Throwable e )
+            {
+                logger.debug( "ComponentDescriptorListener threw exception while processing " + componentDescriptor, e );
+            }
+        }
+    }
+
+    private <T> void fireComponentDescriptorRemoved( ComponentDescriptor<T> componentDescriptor )
+    {
+        for ( ComponentDescriptorListener<T> listener : getListeners( componentDescriptor ))
+        {
+            try
+            {
+                listener.componentDescriptorRemoved( componentDescriptor );
+            }
+            catch ( Throwable e )
+            {
+                logger.debug( "ComponentDescriptorListener threw exception while processing " + componentDescriptor, e );
+            }
+        }
+    }
+
     public void release( Object component ) throws ComponentLifecycleException
     {
         if ( component == null )
@@ -353,11 +476,20 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
     public void removeComponentRealm( ClassRealm classRealm ) throws PlexusContainerException
     {
-        LinkedHashSet<ComponentManager<?>> dispose;
         try
         {
             // remove all component managers associated with the realm
-            dispose = new LinkedHashSet<ComponentManager<?>>(index.removeAll( classRealm ));
+            LinkedHashSet<ComponentManager<?>> dispose;
+            synchronized ( index )
+            {
+                dispose = new LinkedHashSet<ComponentManager<?>>(index.removeAll( classRealm ));
+                for ( ComponentManager<?> componentManager : dispose )
+                {
+                    ComponentDescriptor<?> descriptor = componentManager.getComponentDescriptor();
+                    componentManagersByComponentDescriptor.remove( descriptor );
+                    fireComponentDescriptorRemoved( descriptor );
+                }
+            }
 
             // Call dispose callback outside of synchronized lock to avoid deadlocks
             for ( ComponentManager<?> componentManager : dispose )
@@ -460,6 +592,67 @@ public class DefaultComponentRegistry implements ComponentRegistry
             throw new ComponentRepositoryException( "ComponentDescriptor implementation class does not implement the role class:" +
                 " implementationClass=" + implementationClass.getName() + " roleClass=" + roleClass.getName(),
                 descriptor);
+        }
+    }
+
+    public static class Pair<L,R> {
+        private final L left;
+        private final R right;
+
+        public Pair( L left, R right )
+        {
+            this.left = left;
+            this.right = right;
+        }
+
+        public L getLeft()
+        {
+            return left;
+        }
+
+        public R getRight()
+        {
+            return right;
+        }
+
+        public boolean equals( Object o )
+        {
+            if ( this == o )
+            {
+                return true;
+            }
+            if ( !( o instanceof Pair ) )
+            {
+                return false;
+            }
+
+            Pair pair = (Pair) o;
+
+            if ( left != null ? !left.equals( pair.left ) : pair.left != null )
+            {
+                return false;
+            }
+            if ( right != null ? !right.equals( pair.right ) : pair.right != null )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int hashCode()
+        {
+            int result;
+            result = ( left != null ? left.hashCode() : 0 );
+            result = 31 * result + ( right != null ? right.hashCode() : 0 );
+            return result;
+        }
+
+        public String toString()
+        {
+            StringBuilder buf = new StringBuilder( );
+            buf.append("[").append(left).append(", ").append(right).append("]");
+            return buf.toString();
         }
     }
 }

@@ -24,6 +24,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentDescriptorListener;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
 
 /**
@@ -35,7 +36,7 @@ public interface ComponentRegistry
 {
     void registerComponentManagerFactory( ComponentManagerFactory componentManagerFactory );
 
-    void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
+    <T> void addComponentDescriptor( ComponentDescriptor<T> componentDescriptor )
         throws ComponentRepositoryException;
 
     <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String roleHint );
@@ -49,11 +50,18 @@ public interface ComponentRegistry
     <T> T lookup( Class<T> type, String roleHint )
         throws ComponentLookupException;
 
+    <T> T lookup( ComponentDescriptor<T> componentDescriptor )
+        throws ComponentLookupException;
+
     <T> List<T> lookupList( Class<T> type, List<String> hints )
         throws ComponentLookupException;
 
     <T> Map<String, T> lookupMap( Class<T> type, List<String> hints )
         throws ComponentLookupException;
+
+    <T> void addComponentDescriptorListener( ComponentDescriptorListener<T> listener );
+
+    <T> void removeComponentDescriptorListener( ComponentDescriptorListener<T> listener );
 
     void release( Object component ) throws ComponentLifecycleException;
 

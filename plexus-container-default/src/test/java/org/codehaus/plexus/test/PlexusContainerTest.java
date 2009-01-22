@@ -420,26 +420,6 @@ public class PlexusContainerTest
         assertTrue( ( (Valve) valves.get( 0 ) ).getState() );
     }
 
-    public void testComponentCompositionWhereTargetFieldAMapThatMustRetainTheOrderOfComponentsGivenASetOfRoleHints()
-        throws Exception
-    {
-        Pipeline pipeline = container.lookup( Pipeline.class, "chubby" );
-
-        Map valveMap = pipeline.getValveMap();
-
-        List valves = new ArrayList( valveMap.values() );
-
-        assertEquals( "Expecting three valves.", 4, valves.size() );
-
-        assertTrue( "Expecting valve one.", valves.get(0) instanceof ValveOne );
-
-        assertTrue( "Expecting valve two.", valves.get(1) instanceof ValveTwo );
-
-        assertTrue( "Expecting valve three.", valves.get(2) instanceof ValveThree );
-
-        assertTrue( "Expecting valve four.", valves.get(3) instanceof ValveFour );        
-    }
-
     public void testLookupOfComponentThatShouldBeDiscovered()
         throws Exception
     {

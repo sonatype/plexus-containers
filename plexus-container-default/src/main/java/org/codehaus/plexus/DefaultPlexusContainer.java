@@ -27,7 +27,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -40,6 +39,7 @@ import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.component.repository.ComponentDescriptorListener;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
@@ -50,7 +50,6 @@ import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.container.initialization.ContainerInitializationContext;
-import org.codehaus.plexus.container.initialization.ContainerInitializationException;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
@@ -244,10 +243,10 @@ public class DefaultPlexusContainer
 
         if ( c.getContext() != null )
         {
-            containerContext = new DefaultContext( c.getContext() );            
+            containerContext = new DefaultContext( c.getContext() );
         }
         else
-        {                
+        {
             containerContext = new DefaultContext();
         }
 
@@ -380,8 +379,12 @@ public class DefaultPlexusContainer
     @Deprecated
     public <T> T lookup( Class<T> type, String role, String roleHint ) throws ComponentLookupException
     {
-        
         return componentRegistry.lookup( type, roleHint );
+    }
+
+    public <T> T lookup( ComponentDescriptor<T> descriptor ) throws ComponentLookupException
+    {
+        return componentRegistry.lookup( descriptor );
     }
 
     public List<Object> lookupList( String role ) throws ComponentLookupException
@@ -543,7 +546,7 @@ public class DefaultPlexusContainer
             containerContext.put( PlexusConstants.PLEXUS_KEY, this );
             
             discoverComponents( getContainerRealm() );   
-            
+
             PlexusConfiguration[] loadOnStartComponents = getConfiguration().getChild( "load-on-start" ).getChildren( "component" );
 
             getLogger().debug( "Found " + loadOnStartComponents.length + " components to load on start" );
@@ -590,7 +593,7 @@ public class DefaultPlexusContainer
             {
                 Thread.currentThread().setContextClassLoader( prevCl );
             }
-            
+
         }
         catch ( ContextException e )
         {
@@ -707,6 +710,20 @@ public class DefaultPlexusContainer
     public Context getContext()
     {
         return containerContext;
+    }
+
+    // ----------------------------------------------------------------------
+    // ComponentListener
+    // ----------------------------------------------------------------------
+
+    public void addComponentDescriptorListener( ComponentDescriptorListener<?> listener )
+    {
+        componentRegistry.addComponentDescriptorListener( listener );
+    }
+
+    public void removeComponentDescriptorListener( ComponentDescriptorListener<?> listener )
+    {
+        componentRegistry.removeComponentDescriptorListener( listener );
     }
 
     // ----------------------------------------------------------------------
