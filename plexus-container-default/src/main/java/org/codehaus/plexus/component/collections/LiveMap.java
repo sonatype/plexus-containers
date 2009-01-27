@@ -24,34 +24,33 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentDescriptorListener;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import static java.util.Collections.*;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
-/**
- * @author Jason van Zyl FIXME: [jdcasey] We need to review the efficiency (in speed and memory) of this collection...
- */
 public class LiveMap<T>
     implements ConcurrentMap<String, T>
 {
     /** The reference to the PlexusContainer */
-    private MutablePlexusContainer container;
+    private final MutablePlexusContainer container;
 
     /** The type of the components held by this collection */
     private final Class<T> type;
 
     /** The role hint of the components we are holding in this Collection. */
-    private List<String> roleHints;
+    private final List<String> roleHints;
 
     /** The component that requires this collection of components */
-    private String hostComponent;
+    private final String hostComponent;
 
     private final ConcurrentMap<String, T> components = new ReferenceMap<String, T>( STRONG, WEAK );
     private final Map<String, T> immutableComponents = unmodifiableMap( components );
-    private final ConcurrentMap< ComponentDescriptor<? extends T>, T> componentsByDescriptor =
+    private final ConcurrentMap<ComponentDescriptor<? extends T>, T> componentsByDescriptor =
         new ReferenceMap<ComponentDescriptor<? extends T>, T>( STRONG, WEAK );
 
     public LiveMap( MutablePlexusContainer container, Class<T> type, List<String> roleHints, String hostComponent )
@@ -60,13 +59,13 @@ public class LiveMap<T>
 
         this.type = type;
 
-        if (roleHints == null)
+        if ( roleHints == null )
         {
             this.roleHints = null;
         }
         else
         {
-            this.roleHints = unmodifiableList(roleHints);
+            this.roleHints = unmodifiableList( new ArrayList<String>( roleHints ) );
         }
 
         this.hostComponent = hostComponent;
@@ -101,7 +100,7 @@ public class LiveMap<T>
 
     public T get( Object key )
     {
-        return immutableComponents.get(key);
+        return immutableComponents.get( key );
     }
 
     public Set<String> keySet()

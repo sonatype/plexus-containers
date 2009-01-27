@@ -29,8 +29,8 @@ import static org.codehaus.plexus.PlexusConstants.PLEXUS_DEFAULT_HINT;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
-import org.codehaus.plexus.component.collections.ComponentList;
 import org.codehaus.plexus.component.collections.LiveMap;
+import org.codehaus.plexus.component.collections.LiveList;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
@@ -334,9 +334,8 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
                             componentClass = roleType;
                         }
 
-                        assignment = new ComponentList( container,
-                            componentClass,
-                            roleType.getName(),
+                        assignment = new LiveList( container,
+                            roleType,
                             roleHints,
                             componentDescriptor.getHumanReadableKey() );
                     }

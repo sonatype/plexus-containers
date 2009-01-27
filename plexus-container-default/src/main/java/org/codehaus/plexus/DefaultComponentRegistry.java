@@ -1,10 +1,12 @@
 package org.codehaus.plexus;
 
 import static com.google.common.base.ReferenceType.WEAK;
-import static com.google.common.collect.Maps.newConcurrentHashMap;
-import com.google.common.collect.ReferenceMap;
+import static com.google.common.collect.Iterables.concat;
 import com.google.common.collect.ListMultimap;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newConcurrentHashMap;
 import com.google.common.collect.Multimaps;
+import com.google.common.collect.ReferenceMap;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import static org.codehaus.plexus.component.CastUtils.cast;
 import org.codehaus.plexus.component.ComponentIndex;
@@ -419,7 +421,12 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
     private synchronized <T> List<ComponentDescriptorListener<T>> getListeners(ComponentDescriptor<T> descriptor)
     {
-        return cast(listeners.get(new Pair<Class<?>, String>(descriptor.getRoleClass(), descriptor.getRoleHint())));
+        List<ComponentDescriptorListener<T>> allHintListeners =
+            cast( listeners.get( new Pair<Class<?>, String>( descriptor.getRoleClass(), null ) ) );
+        List<ComponentDescriptorListener<T>> specificHintListeners =
+            cast( listeners.get( new Pair<Class<?>, String>( descriptor.getRoleClass(), descriptor.getRoleHint() ) ) );
+
+        return newArrayList( concat(allHintListeners, specificHintListeners) );
     }
 
     private <T> void fireComponentDescriptorAdded( ComponentDescriptor<T> componentDescriptor )
@@ -626,7 +633,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
                 return false;
             }
 
-            Pair pair = (Pair) o;
+            Pair<?,?> pair = (Pair<?,?>) o;
 
             if ( left != null ? !left.equals( pair.left ) : pair.left != null )
             {
