@@ -286,7 +286,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         ComponentManager<T> componentManager = (ComponentManager<T>) componentManagersByComponentDescriptor.get( componentDescriptor );
         if ( componentManager == null )
         {
-            throw new ComponentLookupException( "Component descriptor is not registered with PlexusContainer", componentDescriptor);
+            throw new ComponentLookupException( "Component descriptor is not registered with PlexusContainer", componentDescriptor, STACK.get());
         }
         return getComponent( componentManager );
     }
@@ -454,7 +454,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
             }
             catch ( Throwable e )
             {
-                logger.debug( "ComponentDescriptorListener threw exception while processing " + componentDescriptor, e );
+                logger.error( "ComponentDescriptorListener threw exception while processing " + componentDescriptor, e );
             }
         }
     }
@@ -515,7 +515,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         ComponentManager<T> componentManager = (ComponentManager<T>) index.get( type, roleHint );
         if ( componentManager == null )
         {
-            throw new ComponentLookupException( "Component descriptor cannot be found", type, roleHint );
+            throw new ComponentLookupException( "Component descriptor cannot be found", type, roleHint, STACK.get() );
         }
         return getComponent( componentManager );
     }
@@ -539,7 +539,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
             {
                 message += "\n\t[" + componentDescriptor.getRole() + ", " + componentDescriptor.getRoleHint() + "]";
             }
-            throw new ComponentLookupException( message, descriptor );
+            throw new ComponentLookupException( message, descriptor, STACK.get() );
         }
 
         // Get instance from manager... may result in creation
@@ -554,12 +554,30 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
         catch ( ComponentInstantiationException e )
         {
-            throw new ComponentLookupException( "Component could not be created", descriptor, e );
+            Throwable cause = e.getCause();
+            if ( cause == null )
+            {
+                cause = e;
+            }
+            throw new ComponentLookupException( "Component could not be created: " + cause.getMessage(),
+                descriptor,
+                STACK.get(),
+                cause );
         }
         catch ( ComponentLifecycleException e )
         {
-            throw new ComponentLookupException( "Component could not be started", descriptor, e );
-        } finally {
+            Throwable cause = e.getCause();
+            if ( cause == null )
+            {
+                cause = e;
+            }
+            throw new ComponentLookupException( "Component could not be started: " + cause.getMessage(),
+                descriptor,
+                STACK.get(),
+                cause );
+        }
+        finally
+        {
             stack.remove( descriptor );
         }
     }

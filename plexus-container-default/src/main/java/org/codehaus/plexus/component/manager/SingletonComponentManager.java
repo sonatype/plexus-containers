@@ -109,6 +109,10 @@ public class SingletonComponentManager<T> extends AbstractComponentManager<T>
             {
                 cause = e;
             }
+            if ( cause instanceof ComponentInstantiationException )
+            {
+                throw (ComponentInstantiationException) cause;
+            }
             if ( cause instanceof ComponentLifecycleException )
             {
                 throw (ComponentLifecycleException) cause;

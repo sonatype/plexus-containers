@@ -34,7 +34,7 @@ public class StaticComponentManager<T> implements ComponentManager<T>
         return null;
     }
 
-    public synchronized T getComponent() throws ComponentInstantiationException, ComponentLifecycleException
+    public synchronized T getComponent() throws ComponentLifecycleException
     {
         if (disposed)
         {

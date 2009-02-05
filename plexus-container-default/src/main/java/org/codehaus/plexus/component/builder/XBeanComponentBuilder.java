@@ -42,6 +42,7 @@ import org.codehaus.plexus.component.configurator.converters.special.ClassRealmC
 import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
+import org.codehaus.plexus.component.factory.UndefinedComponentFactoryException;
 import org.codehaus.plexus.component.factory.java.JavaComponentFactory;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -105,7 +106,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
         return component;
     }
 
-    protected T createComponentInstance(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException, ComponentLifecycleException {
+    protected T createComponentInstance(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException {
         MutablePlexusContainer container = getContainer();
         if (realm == null) {
             realm = descriptor.getRealm();
@@ -135,14 +136,31 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
             }
 
             return instance;
-        } catch (Exception e) {
-            throw new ComponentLifecycleException("Error constructing component " + descriptor.getHumanReadableKey(), e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldClassLoader);
+        }
+        catch ( ConstructionException e )
+        {
+            Throwable cause = e.getCause();
+            if (cause instanceof ComponentInstantiationException)
+            {
+                throw (ComponentInstantiationException) cause;
+            }
+            if ( cause == null )
+            {
+                cause = e;
+            }
+            throw new ComponentInstantiationException( "Error constructing component " + descriptor.getHumanReadableKey(), cause );
+        }
+        catch ( UndefinedComponentFactoryException e )
+        {
+            throw new ComponentInstantiationException( e );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldClassLoader );
         }
     }
 
-    public ObjectRecipe createObjectRecipe(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException, PlexusConfigurationException {
+    public ObjectRecipe createObjectRecipe(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException {
         String factoryMethod = null;
         String[] constructorArgNames = null;
         Class[] constructorArgTypes = null;
@@ -219,7 +237,12 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
         try {
             componentManager.start(component);
         } catch (PhaseExecutionException e) {
-            throw new ComponentLifecycleException("Error starting component", e);
+            Throwable cause = e.getCause();
+            if (cause == null)
+            {
+                cause = e;
+            }
+            throw new ComponentLifecycleException("Error starting component", cause);
         }
     }
 
@@ -415,7 +438,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
     }
 
 
-    private void processMapOrientedComponent(ComponentDescriptor<?> descriptor, MapOrientedComponent mapOrientedComponent, ClassRealm realm) throws ComponentConfigurationException, ComponentLookupException {
+    private void processMapOrientedComponent(ComponentDescriptor<?> descriptor, MapOrientedComponent mapOrientedComponent, ClassRealm realm) throws ComponentInstantiationException {
         MutablePlexusContainer container = getContainer();
 
         for (ComponentRequirement requirement : descriptor.getRequirements()) {
@@ -423,23 +446,34 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
             String hint = requirement.getRoleHint();
             String mappingType = requirement.getFieldMappingType();
 
-            Object value;
 
-            // if the hint is not empty (and not default), we don't care about mapping type...
-            // it's a single-value, not a collection.
-            if (StringUtils.isNotEmpty(hint) && !hint.equals(PlexusConstants.PLEXUS_DEFAULT_HINT)) {
-                value = container.lookup(role, hint);
-            } else if ("single".equals(mappingType)) {
-                value = container.lookup(role, hint);
-            } else if ("map".equals(mappingType)) {
-                value = container.lookupMap(role);
-            } else if ("set".equals(mappingType)) {
-                value = new HashSet<Object>(container.lookupList(role));
-            } else {
-                value = container.lookup(role, hint);
+            try
+            {
+                // if the hint is not empty (and not default), we don't care about mapping type...
+                // it's a single-value, not a collection.
+                Object value;
+                if (StringUtils.isNotEmpty(hint) && !hint.equals(PlexusConstants.PLEXUS_DEFAULT_HINT)) {
+                    value = container.lookup(role, hint);
+                } else if ("single".equals(mappingType)) {
+                    value = container.lookup(role, hint);
+                } else if ("map".equals(mappingType)) {
+                    value = container.lookupMap(role);
+                } else if ("set".equals(mappingType)) {
+                    value = new HashSet<Object>(container.lookupList(role));
+                } else {
+                    value = container.lookup(role, hint);
+                }
+
+                mapOrientedComponent.addComponentRequirement(requirement, value);
             }
-
-            mapOrientedComponent.addComponentRequirement(requirement, value);
+            catch ( ComponentLookupException e )
+            {
+                throw new ComponentInstantiationException( "Error looking up requirement of MapOrientedComponent ", e );
+            }
+            catch ( ComponentConfigurationException e )
+            {
+                throw new ComponentInstantiationException( "Error adding requirement to MapOrientedComponent ", e );
+            }
         }
 
         MapConverter converter = new MapConverter();
@@ -449,15 +483,22 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
         if ( configuration != null )
         {
-            Map context = (Map) converter.fromConfiguration(converterLookup,
-                                                            configuration,
-                                                            null,
-                                                            null,
-                                                            realm,
-                                                            expressionEvaluator,
-                                                            null );
+            try
+            {
+                Map context = (Map) converter.fromConfiguration(converterLookup,
+                                                                configuration,
+                                                                null,
+                                                                null,
+                                                                realm,
+                                                                expressionEvaluator,
+                                                                null );
 
-            mapOrientedComponent.setComponentConfiguration( context );
+                mapOrientedComponent.setComponentConfiguration( context );
+            }
+            catch ( ComponentConfigurationException e )
+            {
+                throw new ComponentInstantiationException( "Error adding configuration to MapOrientedComponent ", e );
+            }
         }
     }
 

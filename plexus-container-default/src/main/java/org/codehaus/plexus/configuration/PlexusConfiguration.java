@@ -46,10 +46,8 @@ public interface PlexusConfiguration
     /**
      * Returns the value of this configuration.
      * @return the value of this configuration
-     * @throws PlexusConfigurationException
      */
-    String getValue()
-        throws PlexusConfigurationException;
+    String getValue();
 
     /**
      * Returns the value of this configuration, or default if one cannot be

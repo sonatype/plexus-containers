@@ -3,6 +3,11 @@ package org.codehaus.plexus.component.repository.exception;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Collection;
+
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -37,72 +42,85 @@ public class ComponentLookupException
 
     private ClassRealm realm;
 
+    private List<ComponentDescriptor<?>> componentStack = new ArrayList<ComponentDescriptor<?>>();
+
     public ComponentLookupException( String message, String role, String roleHint )
     {
-        super( message );
-
-        this.role = role;
-
-        this.roleHint = roleHint;
+        this( message, role, roleHint, null, null, null);
     }
 
     public ComponentLookupException( String message, Class<?> type, String roleHint )
     {
-        super( message );
+        this( message, type.getName(), roleHint, null, null, null);
+    }
 
-        this.role = type.getName();
-
-        this.roleHint = roleHint;
+    public ComponentLookupException( String message, Class<?> type, String roleHint, Collection<ComponentDescriptor<?>> componentStack )
+    {
+        this( message, type.getName(), roleHint, null, componentStack, null);
     }
 
     public ComponentLookupException( String message, String role, String roleHint, Throwable cause )
     {
-        super( message, cause );
-
-        this.role = role;
-
-        this.roleHint = roleHint;
+        this( message, role, roleHint, null, null, cause);
     }
 
     public ComponentLookupException( String message, String role, String roleHint, ClassRealm realm )
     {
-        super( message );
+        this( message, role, roleHint, realm, null, null );
+    }
 
-        this.role = role;
-
-        this.roleHint = roleHint;
-
-        this.realm = realm;
+    public ComponentLookupException( String message, String role, String roleHint, ClassRealm realm,  Collection<ComponentDescriptor<?>> componentStack )
+    {
+        this( message, role, roleHint, realm, componentStack, null );
     }
 
     public ComponentLookupException( String message, String role, String roleHint, ClassRealm realm, Throwable cause )
     {
+        this( message, role, roleHint, realm, null, cause );
+    }
+
+    public ComponentLookupException( String message, String role, String roleHint, ClassRealm realm, Collection<ComponentDescriptor<?>> componentStack, Throwable cause )
+    {
         super( message, cause );
-
         this.role = role;
-
         this.roleHint = roleHint;
-
         this.realm = realm;
+        if ( componentStack != null )
+        {
+            this.componentStack.addAll( componentStack );
+        }
     }
 
     public ComponentLookupException( String message, Class<?> type, String roleHint, ClassRealm realm )
     {
-        super( message );
-
-        this.role = type.getName();
-
-        this.roleHint = roleHint;
-
-        this.realm = realm;
+        this( message, type.getName(), roleHint, realm, null, null);
     }
 
     public ComponentLookupException( String message, ComponentDescriptor<?> descriptor ) {
-        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm() );
+        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm(), null, null );
+    }
+
+    public ComponentLookupException( String message, ComponentDescriptor<?> descriptor,  Collection<ComponentDescriptor<?>> componentStack ) {
+        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm(), componentStack, null );
     }
 
     public ComponentLookupException( String message, ComponentDescriptor<?> descriptor, Throwable cause ) {
-        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm(), cause );
+        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm(), null, cause );
+    }
+
+    public ComponentLookupException( String message, ComponentDescriptor<?> descriptor,  Collection<ComponentDescriptor<?>> componentStack, Throwable cause ) {
+        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm(), componentStack, cause );
+    }
+
+    public List<ComponentDescriptor<?>> getComponentStack()
+    {
+        return Collections.unmodifiableList( componentStack );
+    }
+
+    public void setComponentStack( List<ComponentDescriptor<?>> componentStack )
+    {
+        this.componentStack.clear();
+        this.componentStack.addAll( componentStack );
     }
 
     public String getMessage()
@@ -122,7 +140,17 @@ public class ComponentLookupException
         {
             sb.append( "none specified" );
         }
+        sb.append( LS );
 
+        sb.append( LS );
+        sb.append( "Component stack:" ).append( LS );
+        for ( ComponentDescriptor<?> descriptor : componentStack )
+        {
+            sb.append( '\t' ).append( descriptor.getHumanReadableKey() ).append( LS );
+        }
+
+        sb.append( LS );
+        sb.append( "Code stack:" );
         return sb.toString();
     }
 }
