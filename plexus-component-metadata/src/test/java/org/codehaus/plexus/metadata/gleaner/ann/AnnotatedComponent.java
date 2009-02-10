@@ -16,6 +16,8 @@
 
 package org.codehaus.plexus.metadata.gleaner.ann;
 
+import java.util.List;
+
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Configuration;
 import org.codehaus.plexus.component.annotations.Requirement;
@@ -29,5 +31,8 @@ public class AnnotatedComponent implements AnnotatedComponentRole {
   @Requirement(hint="default")
   @Configuration(name="param", value="value")
   AnnotatedComponentDependency dependency;
+  
+  @Requirement(role=AnnotatedComponentDependency.class, hints={"release", "latest", "snapshot"})
+  List<AnnotatedComponentDependency> dependency2;
   
 }
