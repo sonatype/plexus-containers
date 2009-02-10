@@ -113,7 +113,7 @@ public class ClassComponentDescriptorExtractor
             //getLogger().debug( "    " + urls[i] );
         }
 
-        return new URLClassLoader( urls, getClass().getClassLoader() );
+        return new URLClassLoader( urls, null );
     }
 
     private List<ComponentDescriptor<?>> extract( final File classesDir, final ClassLoader cl,
