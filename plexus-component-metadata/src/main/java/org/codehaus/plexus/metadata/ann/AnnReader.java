@@ -18,6 +18,7 @@ package org.codehaus.plexus.metadata.ann;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -207,13 +208,49 @@ public class AnnReader implements ClassVisitor {
     }
 
     public AnnotationVisitor visitArray(String name) {
-      // TODO Auto-generated method stub
-      return null;
+      return new AnnAnnArrayReader(ann, name);
     }
 
     public void visitEnd() {
     }
     
+  }
+  
+  static class AnnAnnArrayReader implements AnnotationVisitor {
+
+    private Ann ann;
+
+    private String name;
+
+    // TODO good enough for now, but does not cover general case
+    private ArrayList<String> array = new ArrayList<String>();
+
+    public AnnAnnArrayReader(Ann ann, String name) {
+      this.ann = ann;
+      this.name = name;
+    }
+
+    public void visit(String name, Object value) {
+      if(value instanceof String) {
+        array.add((String) value);
+      }
+    }
+
+    public AnnotationVisitor visitAnnotation(String name, String value) {
+      return null;
+    }
+
+    public AnnotationVisitor visitArray(String arg0) {
+      return null;
+    }
+
+    public void visitEnd() {
+      ann.addParam(name, array.toArray(new String[array.size()]));
+    }
+
+    public void visitEnum(String arg0, String arg1, String arg2) {
+    }
+
   }
 
 }

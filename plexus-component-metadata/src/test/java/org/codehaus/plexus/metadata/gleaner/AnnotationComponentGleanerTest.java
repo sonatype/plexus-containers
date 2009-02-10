@@ -39,14 +39,17 @@ public class AnnotationComponentGleanerTest extends TestCase {
     assertEquals("foo", descriptor.getComponentType());
     assertEquals(AnnotatedComponentRole.class.getName(), descriptor.getRole());
     
-    @SuppressWarnings("unchecked")
     List<ComponentRequirement> requirements = descriptor.getRequirements();
-    assertEquals(requirements.toString(), 1, requirements.size());
-    
+    assertEquals(requirements.toString(), 2, requirements.size());
+
     ComponentRequirement requirement = requirements.get(0);
     assertEquals("dependency", requirement.getFieldName());
     assertEquals("default", requirement.getRoleHint());
-    
+
+    ComponentRequirement requirement2 = requirements.get(1);
+    assertEquals("dependency2", requirement2.getFieldName());
+    assertEquals("release,latest,snapshot", requirement2.getRoleHint());
+
     PlexusConfiguration configuration = descriptor.getConfiguration();
     assertEquals(1, configuration.getChildCount());
     PlexusConfiguration child = configuration.getChild(0);

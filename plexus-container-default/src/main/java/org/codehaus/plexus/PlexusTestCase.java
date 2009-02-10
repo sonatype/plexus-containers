@@ -59,8 +59,6 @@ public abstract class PlexusTestCase
         customizeContext( context );
 
         boolean hasPlexusHome = context.contains( "plexus.home" );
-
-        System.out.println( context );
         
         if ( !hasPlexusHome )
         {
@@ -74,9 +72,6 @@ public abstract class PlexusTestCase
             context.put( "plexus.home", f.getAbsolutePath() );
         }
 
-        System.out.println( context );
-        
-        
         // ----------------------------------------------------------------------------
         // Configuration
         // ----------------------------------------------------------------------------

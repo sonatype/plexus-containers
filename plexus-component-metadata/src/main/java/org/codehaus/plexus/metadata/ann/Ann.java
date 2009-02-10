@@ -52,7 +52,7 @@ public class Ann {
 
   @SuppressWarnings("unchecked")
   public <T> T getAnnotation(Class<T> c, ClassLoader cl) {
-    return (T) Proxy.newProxyInstance(cl, new Class[] { c }, //
+    return (T) Proxy.newProxyInstance(Ann.class.getClassLoader(), new Class[] { c }, //
         new AnnInvocationHandler(this, cl, c));
   }
   
