@@ -32,7 +32,7 @@ public class AutoConfigurePhase
     public static final String DEFAULT_CONFIGURATOR_ID = "default";
 
     public void execute( Object object,
-                         ComponentManager manager,
+                         ComponentManager<?> manager,
                          ClassRealm lookupRealm )
         throws PhaseExecutionException
     {
@@ -53,7 +53,7 @@ public class AutoConfigurePhase
 
             if ( configuration != null )
             {
-                ClassRealm realm = manager.getRealm();
+                ClassRealm realm = descriptor.getRealm();
 
                 componentConfigurator.configureComponent( object, configuration, realm );
             }

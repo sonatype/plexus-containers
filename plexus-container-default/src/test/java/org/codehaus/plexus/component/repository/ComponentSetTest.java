@@ -18,6 +18,8 @@ package org.codehaus.plexus.component.repository;
 
 import junit.framework.TestCase;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.util.List;
 
@@ -38,6 +40,7 @@ public class ComponentSetTest
             "<component-set>" +
             "  <components>" +
             "    <component>" +
+            "      <implementation>java.lang.String</implementation>" +
             "      <role>c1</role>" +
             "      <role-hint>role-hint</role-hint>" +
             "      <component-profile>component-profile</component-profile>" +
@@ -60,7 +63,10 @@ public class ComponentSetTest
             "  </dependencies>" +
             "</component-set>";
 
-        ComponentSetDescriptor cs = PlexusTools.buildComponentSet( PlexusTools.buildConfiguration( xml ) );
+        ClassWorld classWorld = new ClassWorld( "test", Thread.currentThread().getContextClassLoader() );
+        ClassRealm realm = classWorld.getRealm( "test" );
+
+        ComponentSetDescriptor cs = PlexusTools.buildComponentSet( PlexusTools.buildConfiguration( xml ), realm );
 
         ComponentDescriptor<?> c1 = cs.getComponents().get( 0 );
 

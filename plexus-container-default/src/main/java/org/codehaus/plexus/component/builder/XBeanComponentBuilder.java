@@ -25,11 +25,13 @@ import org.apache.xbean.recipe.RecipeHelper;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
-import org.codehaus.plexus.ComponentRegistry;
+import static org.codehaus.plexus.PlexusConstants.PLEXUS_DEFAULT_HINT;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.MapOrientedComponent;
-import org.codehaus.plexus.component.collections.ComponentList;
-import org.codehaus.plexus.component.collections.ComponentMap;
+import static org.codehaus.plexus.component.ComponentStack.setComponentStackProperty;
+import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
+import org.codehaus.plexus.component.collections.LiveMap;
+import org.codehaus.plexus.component.collections.LiveList;
 import org.codehaus.plexus.component.configurator.BasicComponentConfigurator;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ComponentConfigurator;
@@ -41,6 +43,7 @@ import org.codehaus.plexus.component.configurator.converters.special.ClassRealmC
 import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEvaluator;
 import org.codehaus.plexus.component.factory.ComponentFactory;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
+import org.codehaus.plexus.component.factory.UndefinedComponentFactoryException;
 import org.codehaus.plexus.component.factory.java.JavaComponentFactory;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -61,18 +64,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.LinkedHashSet;
 
 public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
-    private static final ThreadLocal<LinkedHashSet<ComponentDescriptor<?>>> STACK =
-        new ThreadLocal<LinkedHashSet<ComponentDescriptor<?>>>()
-        {
-            protected LinkedHashSet<ComponentDescriptor<?>> initialValue()
-            {
-                return new LinkedHashSet<ComponentDescriptor<?>>();
-            }
-        };
-
     private ComponentManager<T> componentManager;
 
     public XBeanComponentBuilder() {
@@ -94,53 +87,27 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
         return componentManager.getContainer();
     }
 
-    public T build( ComponentDescriptor<T> descriptor, ClassRealm realm, ComponentBuildListener listener )
-        throws ComponentInstantiationException, ComponentLifecycleException
-    {
-        LinkedHashSet<ComponentDescriptor<?>> stack = STACK.get();
-        if ( stack.contains( descriptor ) )
-        {
-            // create list of circularity
-            List<ComponentDescriptor<?>> circularity = new ArrayList<ComponentDescriptor<?>>( stack );
-            circularity.subList( circularity.indexOf( descriptor ), circularity.size() );
-            circularity.add( descriptor );
-
-            // nice circularity message
-            String message = "Creation circularity: ";
-            for ( ComponentDescriptor<?> componentDescriptor : circularity )
-            {
-                message += "\n\t[" + componentDescriptor.getRole() + ", " + componentDescriptor.getRoleHint() + "]";
-            }
-            throw new ComponentInstantiationException( message );
+    public T build(ComponentDescriptor<T> descriptor, ClassRealm realm, ComponentBuildListener listener) throws ComponentInstantiationException, ComponentLifecycleException {
+        if (listener != null) {
+            listener.beforeComponentCreate(descriptor, realm);
         }
-        stack.add( descriptor );
-        try
-        {
-            if (listener != null) {
-                listener.beforeComponentCreate(descriptor, realm);
-            }
 
-            T component = createComponentInstance(descriptor, realm);
+        T component = createComponentInstance(descriptor, realm);
 
-            if (listener != null) {
-                listener.componentCreated(descriptor, component, realm);
-            }
-
-            startComponentLifecycle(component, realm);
-
-            if (listener != null) {
-                listener.componentConfigured(descriptor, component, realm);
-            }
-
-            return component;
+        if (listener != null) {
+            listener.componentCreated(descriptor, component, realm);
         }
-        finally
-        {
-            stack.remove( descriptor );
+
+        startComponentLifecycle(component, realm);
+
+        if (listener != null) {
+            listener.componentConfigured(descriptor, component, realm);
         }
+
+        return component;
     }
 
-    protected T createComponentInstance(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException, ComponentLifecycleException {
+    protected T createComponentInstance(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException {
         MutablePlexusContainer container = getContainer();
         if (realm == null) {
             realm = descriptor.getRealm();
@@ -170,14 +137,39 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
             }
 
             return instance;
-        } catch (Exception e) {
-            throw new ComponentLifecycleException("Error constructing component " + descriptor.getHumanReadableKey(), e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldClassLoader);
+        }
+        catch ( ConstructionException e )
+        {
+            Throwable cause = unwrapConstructionException( e );
+
+            // do not rewrap
+            if (cause instanceof ComponentInstantiationException)
+            {
+                throw (ComponentInstantiationException) cause;
+            }
+
+            // reuse original exception message.. the ones from XBean contain a lot of information
+            if ( cause != null )
+            {
+                // wrap real cause if we got one
+                throw new ComponentInstantiationException( e.getMessage(), cause );
+            }
+            else
+            {
+                throw new ComponentInstantiationException( e.getMessage() );
+            }
+        }
+        catch ( UndefinedComponentFactoryException e )
+        {
+            throw new ComponentInstantiationException( e );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldClassLoader );
         }
     }
 
-    public ObjectRecipe createObjectRecipe(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException, PlexusConfigurationException {
+    public ObjectRecipe createObjectRecipe(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException {
         String factoryMethod = null;
         String[] constructorArgNames = null;
         Class[] constructorArgTypes = null;
@@ -246,6 +238,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
         return true;
     }
+
     protected String fromXML(String elementName) {
         return StringUtils.lowercaseFirstLetter(StringUtils.removeAndHump(elementName, "-"));
     }
@@ -253,8 +246,15 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
     protected void startComponentLifecycle(Object component, ClassRealm realm) throws ComponentLifecycleException {
         try {
             componentManager.start(component);
-        } catch (PhaseExecutionException e) {
-            throw new ComponentLifecycleException("Error starting component", e);
+        } catch (Exception e) {
+            Throwable cause = e;
+            // if we got a PhaseExecutionException, unwrap it
+            if ( e instanceof PhaseExecutionException && e.getCause() != null )
+            {
+                cause = e.getCause();
+            }
+
+            throw new ComponentLifecycleException("Error invoking start method", cause);
         }
     }
 
@@ -286,9 +286,17 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
             // if the type to be created is an instance of the expected type, return true
             try {
-                ComponentRegistry componentRegistry = container.getComponentRegistry();
 
-                return componentRegistry.getComponentDescriptor(propertyType, requirement.getRole(), requirement.getRoleHint()) != null;
+                String roleHint = requirement.getRoleHint();
+                Class<?> roleType = getInterfaceClass( container, requirement.getRole(), roleHint );
+
+                for ( ComponentDescriptor<?> descriptor : container.getComponentDescriptorList( roleType ) )
+                {
+                    if ( descriptor.getRoleHint().equals( roleHint ) && isAssignableFrom( propertyType, descriptor.getImplementationClass() ) )
+                    {
+                        return true;
+                    }
+                }
             } catch (Exception e) {
             }
 
@@ -296,90 +304,126 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
         }
 
         @Override
-        protected Object internalCreate(Type expectedType, boolean lazyRefAllowed) throws ConstructionException {
+        protected Object internalCreate(Type expectedType, boolean lazyRefAllowed) throws ConstructionException
+        {
             Class<?> propertyType = toClass(expectedType);
 
-            try {
-                String role = requirement.getRole();
+            // push requirement property name on the stack
+            setComponentStackProperty( requirement.getFieldName() );
+            try
+            {
+                Class<?> roleType = getInterfaceClass( container, requirement.getRole(), requirement.getRoleHint() );
                 List<String> roleHints = null;
-                if (requirement instanceof ComponentRequirementList) {
-                    roleHints = ((ComponentRequirementList) requirement).getRoleHints();
+                if ( requirement instanceof ComponentRequirementList )
+                {
+                    roleHints = ( (ComponentRequirementList) requirement ).getRoleHints();
                 }
 
                 Object assignment;
-                if (propertyType.isArray()) {
-                    assignment = new ArrayList<Object>(container.lookupList(role, roleHints));
+                if ( propertyType.isArray() )
+                {
+                    assignment = new ArrayList<Object>( container.lookupList( roleType, roleHints ) );
                 }
 
                 // Map.class.isAssignableFrom( clazz ) doesn't make sense, since Map.class doesn't really
                 // have a meaningful superclass.
-                else {
-                    if (Map.class.equals(propertyType)) {
+                else
+                {
+                    if ( Map.class.equals( propertyType ) )
+                    {
                         // todo this is a lazy map
 
                         // get component type
                         Type keyType = Object.class;
                         Type valueType = Object.class;
-                        Type[] typeParameters = RecipeHelper.getTypeParameters(Collection.class, expectedType);
-                        if (typeParameters != null && typeParameters.length == 2) {
-                            if (typeParameters[0] instanceof Class) {
+                        Type[] typeParameters = RecipeHelper.getTypeParameters( Collection.class, expectedType );
+                        if ( typeParameters != null && typeParameters.length == 2 )
+                        {
+                            if ( typeParameters[0] instanceof Class )
+                            {
                                 keyType = typeParameters[0];
                             }
-                            if (typeParameters[1] instanceof Class) {
+                            if ( typeParameters[1] instanceof Class )
+                            {
                                 valueType = typeParameters[1];
                             }
                         }
 
+                        // if no generic type, load the roll as a class
+                        Class<?> valueClass = toClass( valueType );
+                        if ( valueClass.equals( Object.class ) )
+                        {
+                            valueClass = roleType;
+                        }
+
                         // todo verify key type is String
 
-                        assignment = new ComponentMap(container,
-                                toClass(valueType),
-                                role,
-                                roleHints,
-                                componentDescriptor.getHumanReadableKey());
+                        assignment = new LiveMap( container,
+                            roleType,
+                            roleHints,
+                            componentDescriptor.getHumanReadableKey() );
                     }
                     // List.class.isAssignableFrom( clazz ) doesn't make sense, since List.class doesn't really
                     // have a meaningful superclass other than Collection.class, which we'll handle next.
-                    else if (List.class.equals(propertyType)) {
-                        // todo this is a lazy list
-
+                    else if ( List.class.equals( propertyType ) )
+                    {
                         // get component type
-                        Type[] typeParameters = RecipeHelper.getTypeParameters(Collection.class, expectedType);
+                        Type[] typeParameters = RecipeHelper.getTypeParameters( Collection.class, expectedType );
                         Type componentType = Object.class;
-                        if (typeParameters != null && typeParameters.length == 1 && typeParameters[0] instanceof Class) {
+                        if ( typeParameters != null && typeParameters.length == 1 && typeParameters[0] instanceof Class )
+                        {
                             componentType = typeParameters[0];
                         }
 
-                        assignment = new ComponentList(container,
-                                toClass( componentType ),
-                                role,
-                                roleHints,
-                                componentDescriptor.getHumanReadableKey());
+                        // if no generic type, load the roll as a class
+                        Class<?> componentClass = toClass( componentType );
+                        if ( componentClass.equals( Object.class ) )
+                        {
+                            componentClass = roleType;
+                        }
+
+                        assignment = new LiveList( container,
+                            roleType,
+                            roleHints,
+                            componentDescriptor.getHumanReadableKey() );
                     }
                     // Set.class.isAssignableFrom( clazz ) doesn't make sense, since Set.class doesn't really
                     // have a meaningful superclass other than Collection.class, and that would make this
                     // if-else cascade unpredictable (both List and Set extend Collection, so we'll put another
                     // check in for Collection.class.
-                    else if (Set.class.equals(propertyType) || Collection.class.isAssignableFrom(propertyType)) {
+                    else if ( Set.class.equals( propertyType ) || Collection.class.isAssignableFrom( propertyType ) )
+                    {
                         // todo why isn't this lazy as above?
-                        assignment = container.lookupMap(role, roleHints);
-                    } else if (Logger.class.equals(propertyType)) {
-                        // todo magic reference
-                        assignment = container.getLoggerManager().getLoggerForComponent(componentDescriptor.getRole());
-                    } else if (PlexusContainer.class.equals(propertyType)) {
-                        // todo magic reference
+                        assignment = container.lookupMap( roleType, roleHints );
+                    }
+                    else if ( Logger.class.equals( propertyType ) )
+                    {
+                        // todo magic reference types should not be handled here
+                        assignment = container.getLoggerManager().getLoggerForComponent(
+                            componentDescriptor.getRole() );
+                    }
+                    else if ( PlexusContainer.class.equals( propertyType ) )
+                    {
+                        // todo magic reference types should not be handled here
                         assignment = container;
-                    } else {
+                    }
+                    else
+                    {
                         String roleHint = requirement.getRoleHint();
-                        assignment = container.lookup(propertyType, role, roleHint);
+                        assignment = container.lookup( roleType, roleHint );
                     }
                 }
 
                 return assignment;
-            } catch (ComponentLookupException e) {
-                throw new ConstructionException("Composition failed of field " + requirement.getFieldName() + " "
-                        + "in object of type " + componentDescriptor.getImplementation() + " because the requirement "
-                        + requirement + " was missing)", e);
+            }
+            catch ( ComponentLookupException e )
+            {
+                // simply wrap exception, so it can be unwrapped and rethrown
+                throw new ConstructionException( e );
+            }
+            finally
+            {
+                setComponentStackProperty( null );
             }
         }
 
@@ -389,50 +433,74 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
         }
     }
 
-    private class PlexusConfigurationRecipe extends AbstractRecipe {
+    private class PlexusConfigurationRecipe extends AbstractRecipe
+    {
         private final PlexusConfiguration child;
 
-        public PlexusConfigurationRecipe(PlexusConfiguration child) {
+        public PlexusConfigurationRecipe( PlexusConfiguration child )
+        {
             this.child = child;
         }
 
-        public boolean canCreate(Type type) {
-            try {
+        public boolean canCreate( Type type )
+        {
+            try
+            {
                 ConverterLookup lookup = createConverterLookup();
-                lookup.lookupConverterForType(toClass(type));
+                lookup.lookupConverterForType( toClass( type ) );
                 return true;
-            } catch (ComponentConfigurationException e) {
+            }
+            catch ( ComponentConfigurationException e )
+            {
                 return false;
             }
         }
 
         @Override
-        protected Object internalCreate(Type expectedType, boolean lazyRefAllowed) throws ConstructionException {
-            try {
+        protected Object internalCreate( Type expectedType, boolean lazyRefAllowed ) throws ConstructionException
+        {
+            setComponentStackProperty( child.getName() );
+            try
+            {
                 ConverterLookup lookup = createConverterLookup();
-                ConfigurationConverter converter = lookup.lookupConverterForType(toClass(expectedType));
+                ConfigurationConverter converter = lookup.lookupConverterForType( toClass( expectedType ) );
 
                 // todo this will not work for static factories
                 ObjectRecipe caller = (ObjectRecipe) RecipeHelper.getCaller();
-                Class parentClass = toClass(caller.getType());
+                Class parentClass = toClass( caller.getType() );
 
-                Object value = converter.fromConfiguration(lookup, child, toClass(expectedType), parentClass, Thread.currentThread().getContextClassLoader(), new DefaultExpressionEvaluator());
+                Object value = converter.fromConfiguration(
+                    lookup,
+                    child,
+                    toClass( expectedType ),
+                    parentClass,
+                    Thread.currentThread().getContextClassLoader(),
+                    new DefaultExpressionEvaluator() );
+
                 return value;
-            } catch (ComponentConfigurationException e) {
-                throw new ConstructionException("Unable to convert configuration for property " + child.getName() + " to " + toClass(expectedType).getName());
+            }
+            catch ( ComponentConfigurationException e )
+            {
+                // simply wrap exception, so it can be unwrapped and rethrown
+                throw new ConstructionException( e );
+            }
+            finally
+            {
+                setComponentStackProperty( null );
             }
         }
 
-        private ConverterLookup createConverterLookup() {
+        private ConverterLookup createConverterLookup()
+        {
             ClassRealm realm = (ClassRealm) Thread.currentThread().getContextClassLoader();
             ConverterLookup lookup = new DefaultConverterLookup();
-            lookup.registerConverter( new ClassRealmConverter(realm) );
+            lookup.registerConverter( new ClassRealmConverter( realm ) );
             return lookup;
         }
     }
 
 
-    private void processMapOrientedComponent(ComponentDescriptor<?> descriptor, MapOrientedComponent mapOrientedComponent, ClassRealm realm) throws ComponentConfigurationException, ComponentLookupException {
+    private void processMapOrientedComponent(ComponentDescriptor<?> descriptor, MapOrientedComponent mapOrientedComponent, ClassRealm realm) throws ComponentInstantiationException {
         MutablePlexusContainer container = getContainer();
 
         for (ComponentRequirement requirement : descriptor.getRequirements()) {
@@ -440,23 +508,34 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
             String hint = requirement.getRoleHint();
             String mappingType = requirement.getFieldMappingType();
 
-            Object value;
 
-            // if the hint is not empty (and not default), we don't care about mapping type...
-            // it's a single-value, not a collection.
-            if (StringUtils.isNotEmpty(hint) && !hint.equals(PlexusConstants.PLEXUS_DEFAULT_HINT)) {
-                value = container.lookup(role, hint);
-            } else if ("single".equals(mappingType)) {
-                value = container.lookup(role, hint);
-            } else if ("map".equals(mappingType)) {
-                value = container.lookupMap(role);
-            } else if ("set".equals(mappingType)) {
-                value = new HashSet<Object>(container.lookupList(role));
-            } else {
-                value = container.lookup(role, hint);
+            try
+            {
+                // if the hint is not empty (and not default), we don't care about mapping type...
+                // it's a single-value, not a collection.
+                Object value;
+                if (StringUtils.isNotEmpty(hint) && !hint.equals(PlexusConstants.PLEXUS_DEFAULT_HINT)) {
+                    value = container.lookup(role, hint);
+                } else if ("single".equals(mappingType)) {
+                    value = container.lookup(role, hint);
+                } else if ("map".equals(mappingType)) {
+                    value = container.lookupMap(role);
+                } else if ("set".equals(mappingType)) {
+                    value = new HashSet<Object>(container.lookupList(role));
+                } else {
+                    value = container.lookup(role, hint);
+                }
+
+                mapOrientedComponent.addComponentRequirement(requirement, value);
             }
-
-            mapOrientedComponent.addComponentRequirement(requirement, value);
+            catch ( ComponentLookupException e )
+            {
+                throw new ComponentInstantiationException( "Error looking up requirement of MapOrientedComponent ", e );
+            }
+            catch ( ComponentConfigurationException e )
+            {
+                throw new ComponentInstantiationException( "Error adding requirement to MapOrientedComponent ", e );
+            }
         }
 
         MapConverter converter = new MapConverter();
@@ -466,15 +545,83 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
         if ( configuration != null )
         {
-            Map context = (Map) converter.fromConfiguration(converterLookup,
-                                                            configuration,
-                                                            null,
-                                                            null,
-                                                            realm,
-                                                            expressionEvaluator,
-                                                            null );
+            try
+            {
+                Map context = (Map) converter.fromConfiguration(converterLookup,
+                                                                configuration,
+                                                                null,
+                                                                null,
+                                                                realm,
+                                                                expressionEvaluator,
+                                                                null );
 
-            mapOrientedComponent.setComponentConfiguration( context );
+                mapOrientedComponent.setComponentConfiguration( context );
+            }
+            catch ( ComponentConfigurationException e )
+            {
+                throw new ComponentInstantiationException( "Error adding configuration to MapOrientedComponent ", e );
+            }
         }
+    }
+
+    private static Class<?> getInterfaceClass( PlexusContainer container, String role, String hint )
+    {
+        if ( hint == null ) hint = PLEXUS_DEFAULT_HINT;
+
+        try
+        {
+            ClassRealm realm = container.getLookupRealm();
+
+            if ( realm != null )
+            {
+                return realm.loadClass( role );
+            }
+        }
+        catch ( Throwable e )
+        {
+        }
+
+        try
+        {
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            if ( loader != null )
+            {
+                return loader.loadClass( role );
+            }
+        }
+        catch ( Throwable e )
+        {
+        }
+
+        try
+        {
+            ComponentDescriptor<?> cd = container.getComponentDescriptor( role, hint );
+            if ( cd != null )
+            {
+                ClassLoader loader = cd.getImplementationClass().getClassLoader();
+                if ( loader != null )
+                {
+                    return loader.loadClass( role );
+                }
+            }
+        }
+        catch ( Throwable ignored )
+        {
+        }
+
+        return Object.class;
+    }
+
+    /**
+     * There are a few bugs in XBean reflect where a constuction exception is wrapped with another constuction exception.
+     */
+    private static Throwable unwrapConstructionException( ConstructionException e )
+    {
+        Throwable cause = e;
+        while ( cause instanceof ConstructionException && e.getCause() != null)
+        {
+            cause = cause.getCause();
+        }
+        return cause;
     }
 }

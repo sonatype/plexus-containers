@@ -23,6 +23,6 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionExce
 public interface Phase
 {
     /** Execute the phase. */
-    public void execute( Object component, ComponentManager manager, ClassRealm realm )
+    public void execute( Object component, ComponentManager<?> manager, ClassRealm realm )
         throws PhaseExecutionException;
 }

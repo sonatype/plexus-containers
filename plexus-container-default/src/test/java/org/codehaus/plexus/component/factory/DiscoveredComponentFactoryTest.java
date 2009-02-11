@@ -46,22 +46,29 @@ public class DiscoveredComponentFactoryTest
     private void lookupTestComponent( String factoryId )
         throws Exception
     {
-        ComponentDescriptor descriptor = new ComponentDescriptor();
+        ComponentDescriptor<?> descriptor = new ComponentDescriptor<Object>();
 
         descriptor.setComponentFactory( factoryId );
 
-        descriptor.setRole( "role" );
+        descriptor.setRole( TestRole.class.getName() );
 
         descriptor.setRoleHint( "hint" );
 
-        descriptor.setImplementation( "something interesting" );
+        descriptor.setImplementation( DefaultTestRole.class.getName() );
 
         getContainer().addComponentDescriptor( descriptor );
 
-        Object component = lookup( "role", "hint" );
+        // this will return a TestFactoryResultComponent due to the component factory set above 
+        Object component = lookup( TestRole.class.getName(), "hint" );
 
         assertTrue( component instanceof TestFactoryResultComponent );
 
         assertEquals( factoryId, ( (TestFactoryResultComponent) component ).getFactoryId() );
+    }
+
+    public interface TestRole {
+    }
+
+    public class DefaultTestRole implements TestRole {
     }
 }

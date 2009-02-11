@@ -219,7 +219,7 @@ public class PlexusContainerTest
         // Make sure the component is alive.
         assertNotNull( serviceC1 );
 
-        assertTrue( serviceC1.started ); 
+        assertTrue( serviceC1.started );
 
         assertFalse( serviceC1.stopped );
 
@@ -420,26 +420,6 @@ public class PlexusContainerTest
         assertTrue( ( (Valve) valves.get( 0 ) ).getState() );
     }
 
-    public void testComponentCompositionWhereTargetFieldAMapThatMustRetainTheOrderOfComponentsGivenASetOfRoleHints()
-        throws Exception
-    {
-        Pipeline pipeline = container.lookup( Pipeline.class, "chubby" );
-
-        Map valveMap = pipeline.getValveMap();
-
-        List valves = new ArrayList( valveMap.values() );
-
-        assertEquals( "Expecting three valves.", 4, valves.size() );
-
-        assertTrue( "Expecting valve one.", valves.get(0) instanceof ValveOne );
-
-        assertTrue( "Expecting valve two.", valves.get(1) instanceof ValveTwo );
-
-        assertTrue( "Expecting valve three.", valves.get(2) instanceof ValveThree );
-
-        assertTrue( "Expecting valve four.", valves.get(3) instanceof ValveFour );        
-    }
-
     public void testLookupOfComponentThatShouldBeDiscovered()
         throws Exception
     {
@@ -447,28 +427,28 @@ public class PlexusContainerTest
 
         assertNotNull( discoveredComponent );
     }
-    
+
     public void testStartableComponentSnake()
         throws Exception
     {
         StartableComponent ca = container.lookup( StartableComponent.class, "A-snake" );
-        
+
         assertNotNull( ca );
-        
+
         ca.assertStartOrderCorrect();
-        
+
         container.dispose();
-        
+
         ca.assertStopOrderCorrect();
     }
-    
+
     public void testStartableComponentTree()
         throws Exception
     {
         StartableComponent ca = container.lookup( StartableComponent.class, "A-tree" );
-    
+
         assertNotNull( ca );
-    
+
         ca.assertStartOrderCorrect();
 
         container.dispose();
@@ -486,7 +466,7 @@ public class PlexusContainerTest
         }
         catch ( ComponentLookupException e )
         {
-            // todo actually test nested exception is as expected when 
+            // todo actually test nested exception is as expected when
         }
     }
 }

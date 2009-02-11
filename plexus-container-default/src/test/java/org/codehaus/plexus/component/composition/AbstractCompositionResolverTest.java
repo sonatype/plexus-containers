@@ -19,6 +19,8 @@ package org.codehaus.plexus.component.composition;
 import junit.framework.TestCase;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.util.List;
 
@@ -58,6 +60,7 @@ public abstract class AbstractCompositionResolverTest
     {
         String cc1 =
             "<component>" +
+            "  <implementation>java.lang.String</implementation>" +
             "  <role>c1</role>" +
             "  <requirements>" +
             "    <requirement>" +
@@ -71,21 +74,26 @@ public abstract class AbstractCompositionResolverTest
 
         String cc2 =
             "<component>" +
+            "  <implementation>java.lang.String</implementation>" +
             "  <role>c2</role>" +
             "</component>";
 
         String cc3 =
             "<component>" +
+            "  <implementation>java.lang.String</implementation>" +
             "  <role>c3</role>" +
             "</component>";
 
+        ClassWorld classWorld = new ClassWorld( "test", Thread.currentThread().getContextClassLoader() );
+        ClassRealm realm = classWorld.getRealm( "test" );
+
         CompositionResolver compositionResolver = getCompositionResolver();
 
-        ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
+        ComponentDescriptor<?> c1 = PlexusTools.buildComponentDescriptor( cc1, realm );
 
-        ComponentDescriptor c2 = PlexusTools.buildComponentDescriptor( cc2 );
+        ComponentDescriptor<?> c2 = PlexusTools.buildComponentDescriptor( cc2, realm );
 
-        ComponentDescriptor c3 = PlexusTools.buildComponentDescriptor( cc3 );
+        ComponentDescriptor<?> c3 = PlexusTools.buildComponentDescriptor( cc3, realm );
 
         compositionResolver.addComponentDescriptor( c1 );
 
@@ -128,6 +136,7 @@ public abstract class AbstractCompositionResolverTest
     {
         String cc1 =
             "<component>" +
+            "  <implementation>java.lang.String</implementation>" +
             "  <role>c1</role>" +
             "  <requirements>" +
             "    <requirement>" +
@@ -141,11 +150,13 @@ public abstract class AbstractCompositionResolverTest
 
         String cc2 =
             "<component>" +
+            "  <implementation>java.lang.String</implementation>" +
             "  <role>c2</role>" +
             "</component>";
 
         String cc3 =
             "<component>" +
+            "  <implementation>java.lang.String</implementation>" +
             "  <role>c3</role>" +
             "  <requirements>" +
             "    <requirement>" +
@@ -159,26 +170,30 @@ public abstract class AbstractCompositionResolverTest
 
         String cc4 =
             "<component>" +
+            "  <implementation>java.lang.String</implementation>" +
             "  <role>c4</role>" +
             "</component>";
 
         String cc5 =
             "<component>" +
+            "  <implementation>java.lang.String</implementation>" +
             "  <role>c5</role>" +
             "</component>";
 
+        ClassWorld classWorld = new ClassWorld( "test", Thread.currentThread().getContextClassLoader() );
+        ClassRealm realm = classWorld.getRealm( "test" );
 
         CompositionResolver compositionResolver = getCompositionResolver();
 
-        ComponentDescriptor c1 = PlexusTools.buildComponentDescriptor( cc1 );
+        ComponentDescriptor<?> c1 = PlexusTools.buildComponentDescriptor( cc1, realm );
 
-        ComponentDescriptor c2 = PlexusTools.buildComponentDescriptor( cc2 );
+        ComponentDescriptor<?> c2 = PlexusTools.buildComponentDescriptor( cc2, realm );
 
-        ComponentDescriptor c3 = PlexusTools.buildComponentDescriptor( cc3 );
+        ComponentDescriptor<?> c3 = PlexusTools.buildComponentDescriptor( cc3, realm );
 
-        ComponentDescriptor c4 = PlexusTools.buildComponentDescriptor( cc4 );
+        ComponentDescriptor<?> c4 = PlexusTools.buildComponentDescriptor( cc4, realm );
 
-        ComponentDescriptor c5 = PlexusTools.buildComponentDescriptor( cc5 );
+        ComponentDescriptor<?> c5 = PlexusTools.buildComponentDescriptor( cc5, realm );
 
         compositionResolver.addComponentDescriptor( c1 );
 

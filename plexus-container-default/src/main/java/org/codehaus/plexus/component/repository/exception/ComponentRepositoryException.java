@@ -1,5 +1,8 @@
 package org.codehaus.plexus.component.repository.exception;
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -28,22 +31,102 @@ public class ComponentRepositoryException
 {
     private static final long serialVersionUID = 3698017788731736736L;
 
-    /**
-     * Construct a new <code>ComponentRepositoryException</code> instance.
-     * @param message exception message
-     */
-    public ComponentRepositoryException( String message )
+    private String LS = System.getProperty( "line.separator" );
+
+    private String role;
+
+    private String roleHint;
+
+    private ClassRealm realm;
+
+    public ComponentRepositoryException( String message, String role, String roleHint )
     {
         super( message );
+
+        this.role = role;
+
+        this.roleHint = roleHint;
     }
 
-    /**
-     * Construct a new <code>ComponentRepositoryException</code> instance.
-     * @param message exception message
-     * @param cause causing exception to chain
-     */
-    public ComponentRepositoryException( String message, Throwable cause )
+    public ComponentRepositoryException( String message, Class<?> type, String roleHint )
+    {
+        super( message );
+
+        this.role = type.getName();
+
+        this.roleHint = roleHint;
+    }
+
+    public ComponentRepositoryException( String message, String role, String roleHint, Throwable cause )
     {
         super( message, cause );
+
+        this.role = role;
+
+        this.roleHint = roleHint;
+    }
+
+    public ComponentRepositoryException( String message, String role, String roleHint, ClassRealm realm )
+    {
+        super( message );
+
+        this.role = role;
+
+        this.roleHint = roleHint;
+
+        this.realm = realm;
+    }
+
+    public ComponentRepositoryException( String message, String role, String roleHint, ClassRealm realm, Throwable cause )
+    {
+        super( message, cause );
+
+        this.role = role;
+
+        this.roleHint = roleHint;
+
+        this.realm = realm;
+    }
+
+    public ComponentRepositoryException( String message, Class<?> type, String roleHint, ClassRealm realm )
+    {
+        super( message );
+
+        this.role = type.getName();
+
+        this.roleHint = roleHint;
+
+        this.realm = realm;
+    }
+
+    public ComponentRepositoryException( String message, ComponentDescriptor<?> descriptor )
+    {
+        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm() );
+    }
+
+    public ComponentRepositoryException( String message, ComponentDescriptor<?> descriptor, Throwable cause )
+    {
+        this( message, descriptor.getRole(), descriptor.getRoleHint(), descriptor.getRealm(), cause );
+    }
+
+    public String getMessage()
+    {
+        StringBuffer sb = new StringBuffer()
+            .append( super.getMessage() ).append( LS )
+            .append( "      role: " ).append( role ).append( LS )
+            .append( "  roleHint: " ).append( roleHint ).append( LS )
+            .append( "classRealm: " );
+
+        if ( realm != null )
+        {
+            sb.append( realm.getId() );
+            realm.display();
+        }
+        else
+        {
+            sb.append( "none specified" );
+        }
+
+        return sb.toString();
     }
 }

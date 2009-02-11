@@ -25,6 +25,6 @@ package org.codehaus.plexus.test;
  * @version $Id$
  */
 public class DefaultLoadOnStartServiceWithRoleHint
-    implements LoadOnStartService
+    implements LoadOnStartServiceWithRoleHint, LoadOnStartService
 {
 }

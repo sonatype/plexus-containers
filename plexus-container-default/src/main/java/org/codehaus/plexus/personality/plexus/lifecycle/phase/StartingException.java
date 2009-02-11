@@ -34,4 +34,9 @@ public class StartingException
     {
         super( message, cause );
     }
+
+    public StartingException( Throwable cause )
+    {
+        super( cause );
+    }
 }

@@ -141,7 +141,8 @@ public class PlexusXmlComponentDiscoverer
                 ComponentDescriptor<?> componentDescriptor;
                 try
                 {
-                    componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );
+                    componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration, realm );
+                    if (componentDescriptor == null) continue;
                 }
                 catch ( PlexusConfigurationException e )
                 {
@@ -151,8 +152,6 @@ public class PlexusXmlComponentDiscoverer
                 }
 
                 componentDescriptor.setComponentType( "plexus" );
-
-                componentDescriptor.setRealm( realm );
 
                 componentDescriptor.setComponentSetDescriptor( componentSetDescriptor );
 

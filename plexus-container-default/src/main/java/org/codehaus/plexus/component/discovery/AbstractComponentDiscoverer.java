@@ -52,7 +52,7 @@ public abstract class AbstractComponentDiscoverer
     protected abstract String getComponentDescriptorLocation();
 
     protected abstract ComponentSetDescriptor createComponentDescriptors( Reader reader,
-                                                                          String source )
+                                                                          String source, ClassRealm realm )
         throws PlexusConfigurationException;
 
     // ----------------------------------------------------------------------
@@ -107,16 +107,7 @@ public abstract class AbstractComponentDiscoverer
                     new InterpolationFilterReader( reader, new ContextMapAdapter( context ) );
 
                 ComponentSetDescriptor componentSetDescriptor =
-                    createComponentDescriptors( interpolationFilterReader, url.toString() );
-
-                if ( componentSetDescriptor.getComponents() != null )
-                {
-                    for ( ComponentDescriptor<?> cd : componentSetDescriptor.getComponents() )
-                    {
-                        cd.setComponentSetDescriptor( componentSetDescriptor );
-                        cd.setRealm( realm );
-                    }
-                }
+                    createComponentDescriptors( interpolationFilterReader, url.toString(), realm );
 
                 componentSetDescriptors.add( componentSetDescriptor );
 

@@ -20,8 +20,10 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
@@ -54,6 +56,7 @@ public class DefaultComponentDescriptorWriterTest
         ComponentSetDescriptor set = new ComponentSetDescriptor();
 
         ComponentDescriptor component = new ComponentDescriptor();
+        component.setImplementation("java.lang.String");
         component.setRole("foo");
         component.setRoleHint("bar");
         component.setComponentFactory("baz");
@@ -72,7 +75,9 @@ public class DefaultComponentDescriptorWriterTest
         PlexusConfiguration config = PlexusTools.buildConfiguration(xml);
         assertNotNull(config);
         
-        org.codehaus.plexus.component.repository.ComponentSetDescriptor set2 = PlexusTools.buildComponentSet(config);
+        ClassWorld classWorld = new ClassWorld( "test", Thread.currentThread().getContextClassLoader() );
+        ClassRealm realm = classWorld.getRealm( "test" );
+        org.codehaus.plexus.component.repository.ComponentSetDescriptor set2 = PlexusTools.buildComponentSet(config, realm);
         assertNotNull(set2);
 
         List components = set2.getComponents();

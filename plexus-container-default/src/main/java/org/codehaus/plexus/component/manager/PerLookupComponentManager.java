@@ -22,6 +22,12 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 
+import java.util.Map;
+import java.util.Set;
+
+import com.google.common.collect.ReferenceMap;
+import static com.google.common.base.ReferenceType.WEAK;
+
 /**
  * Creates a new component manager for every lookup
  *
@@ -32,33 +38,97 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
 public class PerLookupComponentManager<T>
     extends AbstractComponentManager<T>
 {
+    private boolean disposed;
+    private final Map<T, T> instances = new ReferenceMap<T, T>( WEAK, WEAK);
+    
     public PerLookupComponentManager( MutablePlexusContainer container,
                                       LifecycleHandler lifecycleHandler,
-                                      ComponentDescriptor<T> componentDescriptor,
-                                      String role,
-                                      String roleHint )
+                                      ComponentDescriptor<T> componentDescriptor )
     {
-        super( container, lifecycleHandler, componentDescriptor, role, roleHint );
+        super( container, lifecycleHandler, componentDescriptor );
     }
 
-    public void dispose()
+    public void dispose() throws ComponentLifecycleException
     {
+        Set<T> instances;
+        synchronized (this) {
+            disposed = true;
+            instances = this.instances.keySet();
+            this.instances.clear();
+        }
+
+        ComponentLifecycleException componentLifecycleException = null;
+        for ( T instance : instances )
+        {
+            try
+            {
+                // do not call destroyInstance inside of a synchronized block because
+                // destroyInstance results in several callbacks to user code which
+                // could result in a dead lock
+                destroyInstance( instance );
+            }
+            catch ( ComponentLifecycleException e )
+            {
+                if (componentLifecycleException == null) {
+                    componentLifecycleException = e;
+                }
+            }
+        }
+
+        if (componentLifecycleException == null) {
+            throw componentLifecycleException;
+        }
     }
 
-    public T getComponent( )
-        throws ComponentInstantiationException, ComponentLifecycleException
+    public T getComponent( ) throws ComponentInstantiationException, ComponentLifecycleException
     {
-        T component = createComponentInstance();
+        synchronized (this) {
+            if (disposed)
+            {
+                throw new ComponentLifecycleException("This ComponentManager has already been destroyed");
+            }
+        }
 
-        return component;
+        // do not call createInstance inside of a synchronized block because
+        // createInstance results in several callbacks to user code which
+        // could result in a dead lock
+        T instance = createInstance();
+
+        synchronized (this) {
+            // if this manager has been destroyed during create, destroy newly
+            // created component
+            if (disposed)
+            {
+                try
+                {
+                    destroyInstance( instance );
+                }
+                catch ( ComponentLifecycleException e )
+                {
+                    // todo: log ignored exception
+                }
+
+                throw new ComponentLifecycleException("This ComponentManager has already been destroyed");
+            }
+
+            instances.put(instance, instance);
+        }
+
+        return instance;
     }
 
-    public void release( Object component )
-        throws ComponentLifecycleException
+    public void release( Object component ) throws ComponentLifecycleException
     {
-        decrementConnectionCount();
-        endComponentLifecycle( component );
-        // non cleanup map references for per-lookup cause leak
-        componentContextRealms.remove( component );
+        T instance;
+        synchronized (this) {
+            instance = instances.remove(component);
+        }
+
+        // do not call destroyInstance inside of a synchronized block because
+        // destroyInstance results in several callbacks to user code which
+        // could result in a dead lock
+        if (instance != null ) {
+            destroyInstance( component );
+        }
     }
 }

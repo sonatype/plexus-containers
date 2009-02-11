@@ -35,20 +35,22 @@ public class ComponentRealmCompositionTest
     //
     private static final String PLUGIN_0_REALM = "plugin0Realm";
     private static final String PLUGIN_1_REALM = "plugin1Realm";
+    private ClassRealm classRealm0;
+    private ClassRealm classRealm1;
 
     protected void setUp() throws Exception
     {
         super.setUp();
 
         // Create ClassRealm plugin0 with plugin0 -> A, plugin0 -> B
-        createClassRealm( PLUGIN_0_REALM,
+        classRealm0 = createClassRealm( PLUGIN_0_REALM,
             PLUGIN_0_JAR,
             COMPONENT_A_JAR,
             COMPONENT_B_JAR,
             ARCHIVER_JAR );
 
         // Create ClassRealm plugin1 with plugin1 -> A, plugin1 -> C
-        createClassRealm( PLUGIN_1_REALM,
+        classRealm1 = createClassRealm( PLUGIN_1_REALM,
             PLUGIN_1_JAR,
             COMPONENT_A_JAR,
             COMPONENT_C_JAR,
@@ -70,19 +72,29 @@ public class ComponentRealmCompositionTest
     public void testCompositionWhereTheSameImplementationExistsInDifferentRealms()
         throws Exception
     {
-        // Plugin0
-        getContainer().lookup( PLUGIN_0_ROLE );
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+        try
+        {
+            // Plugin0
+            Thread.currentThread().setContextClassLoader( classRealm0 );
+            getContainer().lookup( PLUGIN_0_ROLE );
 
+            // Plugin1
+            Thread.currentThread().setContextClassLoader( classRealm1 );
+            getContainer().lookup( PLUGIN_1_ROLE );
 
-        // Plugin1
-        getContainer().lookup( PLUGIN_1_ROLE );
+            // Plugin0(alt)
+            Thread.currentThread().setContextClassLoader( classRealm0 );
+            getContainer().lookup( PLUGIN_0_ROLE, "alt" );
 
-        // Plugin0(alt)
-        getContainer().lookup( PLUGIN_0_ROLE, "alt" );
-
-
-        // Plugin1(alt)
-        getContainer().lookup( PLUGIN_1_ROLE, "alt" );
+            // Plugin1(alt)
+            Thread.currentThread().setContextClassLoader( classRealm1 );
+            getContainer().lookup( PLUGIN_1_ROLE, "alt" );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldClassLoader );
+        }
     }
 
     public void testThatASingletonComponentIntheCoreRealmWhenLookedUpInComponentRealmsYieldsTheSameInstance()
@@ -93,36 +105,56 @@ public class ComponentRealmCompositionTest
     public void testMultiRealmLookupMap()
         throws Exception
     {
-        Map<String,Object> plugin0Map = getContainer().lookupMap( PLUGIN_0_ROLE );
-        assertNotNull("plugin0Map is null", plugin0Map );
-        assertNotNull("plugin0Map does not contain a DefaultPlugin0", plugin0Map.get( PLEXUS_DEFAULT_HINT));
-        assertNotNull("plugin0Map does not contain a AltPlugin0", plugin0Map.get( "alt"));
-        assertEquals("Expected only 2 components in plugin0Map", 2, plugin0Map.size());
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+        try
+        {
+            Thread.currentThread().setContextClassLoader( classRealm0 );
+            Map<String,Object> plugin0Map = getContainer().lookupMap( PLUGIN_0_ROLE );
+            assertNotNull("plugin0Map is null", plugin0Map );
+            assertNotNull("plugin0Map does not contain a DefaultPlugin0", plugin0Map.get( PLEXUS_DEFAULT_HINT));
+            assertNotNull("plugin0Map does not contain a AltPlugin0", plugin0Map.get( "alt"));
+            assertEquals("Expected only 2 components in plugin0Map", 2, plugin0Map.size());
 
-        Map<String,Object> plugin1Map = getContainer().lookupMap( PLUGIN_1_ROLE );
-        assertNotNull("plugin1Map is null", plugin1Map);
-        assertNotNull("plugin1Map does not contain a DefaultPlugin1", plugin1Map.get( PLEXUS_DEFAULT_HINT));
-        assertNotNull("plugin1Map does not contain a AltPlugin1", plugin1Map.get( "alt"));
-        assertEquals("Expected only 2 components in plugin1Map", 2, plugin1Map.size());
-
+            Thread.currentThread().setContextClassLoader( classRealm1 );
+            Map<String,Object> plugin1Map = getContainer().lookupMap( PLUGIN_1_ROLE );
+            assertNotNull("plugin1Map is null", plugin1Map);
+            assertNotNull("plugin1Map does not contain a DefaultPlugin1", plugin1Map.get( PLEXUS_DEFAULT_HINT));
+            assertNotNull("plugin1Map does not contain a AltPlugin1", plugin1Map.get( "alt"));
+            assertEquals("Expected only 2 components in plugin1Map", 2, plugin1Map.size());
+            Thread.currentThread().setContextClassLoader( null );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldClassLoader );
+        }
     }
 
     public void testMultiRealmLookupList()
         throws Exception
     {
-        List<Object> plugin0List = getContainer().lookupList( PLUGIN_0_ROLE );
-        assertNotNull("plugin0List is null", plugin0List );
-        Map<String, Object> plugin0Map = mapByClassSimpleName( plugin0List );
-        assertNotNull("plugin0List does not contain a DefaultPlugin0", plugin0Map.get( "DefaultPlugin0"));
-        assertNotNull("plugin0List does not contain a AltPlugin0", plugin0Map.get( "AltPlugin0"));
-        assertEquals("Expected only 2 components in plugin0Map", 2, plugin0Map.size());
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+        try
+        {
+            Thread.currentThread().setContextClassLoader( classRealm0 );
+            List<Object> plugin0List = getContainer().lookupList( PLUGIN_0_ROLE );
+            assertNotNull("plugin0List is null", plugin0List );
+            Map<String, Object> plugin0Map = mapByClassSimpleName( plugin0List );
+            assertNotNull("plugin0List does not contain a DefaultPlugin0", plugin0Map.get( "DefaultPlugin0"));
+            assertNotNull("plugin0List does not contain a AltPlugin0", plugin0Map.get( "AltPlugin0"));
+            assertEquals("Expected only 2 components in plugin0Map", 2, plugin0Map.size());
 
-        List<Object> plugin1List = getContainer().lookupList( PLUGIN_1_ROLE );
-        assertNotNull("plugin1List is null", plugin1List );
-        Map<String, Object> plugin1Map = mapByClassSimpleName( plugin1List );
-        assertNotNull("plugin1List does not contain a DefaultPlugin1", plugin1Map.get( "DefaultPlugin1"));
-        assertNotNull("plugin1List does not contain a AltPlugin1", plugin1Map.get( "AltPlugin1"));
-        assertEquals("Expected only 2 components in plugin0Map", 2, plugin1Map.size());
+            Thread.currentThread().setContextClassLoader( classRealm1 );
+            List<Object> plugin1List = getContainer().lookupList( PLUGIN_1_ROLE );
+            assertNotNull("plugin1List is null", plugin1List );
+            Map<String, Object> plugin1Map = mapByClassSimpleName( plugin1List );
+            assertNotNull("plugin1List does not contain a DefaultPlugin1", plugin1Map.get( "DefaultPlugin1"));
+            assertNotNull("plugin1List does not contain a AltPlugin1", plugin1Map.get( "AltPlugin1"));
+            assertEquals("Expected only 2 components in plugin0Map", 2, plugin1Map.size());
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldClassLoader );
+        }
     }
 
     private ClassRealm createClassRealm(String id, String... jars)

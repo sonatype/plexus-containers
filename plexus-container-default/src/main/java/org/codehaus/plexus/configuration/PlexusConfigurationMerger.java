@@ -255,20 +255,13 @@ public class PlexusConfigurationMerger
 
     private static void copyComponentManagers( PlexusConfiguration source, PlexusConfiguration destination )
     {
-        try
-        {
-            PlexusConfiguration id = destination.getChild( "default-component-manager-id" );
+        PlexusConfiguration id = destination.getChild( "default-component-manager-id" );
 
-            String sid = source.getChild( "default-component-manager-id" ).getValue();
+        String sid = source.getChild( "default-component-manager-id" ).getValue();
 
-            if ( id.getValue() == null )
-            {
-                id.setValue( sid );   
-            }
-        }
-        catch ( PlexusConfigurationException e )
+        if ( id.getValue() == null )
         {
-            // do nothing
+            id.setValue( sid );
         }
 
 
@@ -308,20 +301,13 @@ public class PlexusConfigurationMerger
 
     private static void copyComponentComposers( PlexusConfiguration source, PlexusConfiguration destination )
     {
-        try
-        {
-            PlexusConfiguration id = destination.getChild( "default-component-composer-id" );
+        PlexusConfiguration id = destination.getChild( "default-component-composer-id" );
 
-            String sid = source.getChild( "default-component-composer-id" ).getValue();
+        String sid = source.getChild( "default-component-composer-id" ).getValue();
 
-            if ( id.getValue() == null )
-            {
-                id.setValue( sid );
-            }
-        }
-        catch ( PlexusConfigurationException e )
+        if ( id.getValue() == null )
         {
-            // do nothing
+            id.setValue( sid );
         }
 
         PlexusConfiguration composers[] = source.getChild( "component-composers" ).getChildren( "component-composer" );

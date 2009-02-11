@@ -19,10 +19,10 @@
   </system-properties>
 
   <components>
-    <component>
-      <role>org.codehaus.plexus.test.discovery.PluginManager</role>
-      <implementation>org.codehaus.plexus.test.discovery.MockMavenPluginManager</implementation>
-    </component>
+    <!--<component>-->
+      <!--<role>org.codehaus.plexus.test.discovery.PluginManager</role>-->
+      <!--<implementation>org.codehaus.plexus.test.discovery.MockMavenPluginManager</implementation>-->
+    <!--</component>-->
 
     <!-- start: Component from original DefaultPlexusContainerTest -->
 
@@ -46,7 +46,6 @@
     <component>
       <role>org.codehaus.plexus.test.ServiceD</role>
       <implementation>org.codehaus.plexus.test.DefaultServiceD</implementation>
-      <instantiation-strategy>poolable</instantiation-strategy>
     </component>
 
     <component>
@@ -80,8 +79,8 @@
     </component>
 
     <component>
-      <role>org.codehaus.plexus.test.logging.LoggerManager</role>
-      <implementation>org.codehaus.plexus.test.logging.console.ConsoleLoggerManager</implementation>
+      <role>org.codehaus.plexus.logging.LoggerManager</role>
+      <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
       <lifecycle-handler>basic</lifecycle-handler>
       <configuration>
         <threshold>fatal</threshold>
@@ -253,7 +252,8 @@
     </component>
 
     <component>
-      <role>org.codehaus.plexus.test.ComponentMissingRequirements</role>
+      <role>org.codehaus.plexus.test.Component</role>
+      <role-hint>ComponentMissingRequirements</role-hint>
       <implementation>org.codehaus.plexus.test.DefaultComponent</implementation>
       <requirements>
         <requirement>

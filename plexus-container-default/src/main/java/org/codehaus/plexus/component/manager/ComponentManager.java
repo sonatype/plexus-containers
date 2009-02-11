@@ -19,7 +19,6 @@ package org.codehaus.plexus.component.manager;
 
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -46,35 +45,20 @@ public interface ComponentManager<T>
      */
     AtomicLong NEXT_START_ID = new AtomicLong( 1 );
 
-    int getConnections();
-
     /**
      * @deprecated use start instead
      */
     LifecycleHandler getLifecycleHandler();
 
-    void dispose()
-        throws ComponentLifecycleException;
+    void dispose() throws ComponentLifecycleException;
 
-    void release( Object component )
-        throws ComponentLifecycleException;
+    void release( Object component ) throws ComponentLifecycleException;
 
     T getComponent() throws ComponentInstantiationException, ComponentLifecycleException;
 
     ComponentDescriptor<T> getComponentDescriptor();
 
-    Class<? extends T> getType();
-
-    String getRole();
-
-    String getRoleHint();
-
     MutablePlexusContainer getContainer();
-
-    void dissociateComponentRealm( ClassRealm realm )
-        throws ComponentLifecycleException;
-
-    ClassRealm getRealm();
 
     void start(Object component) throws PhaseExecutionException;
 

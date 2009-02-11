@@ -17,8 +17,6 @@ public interface ComponentManagerFactory
      * Creates a new component manager for the specified component descriptor.
      */
     <T> ComponentManager<T> createComponentManager( MutablePlexusContainer container,
-                                             LifecycleHandler lifecycleHandler,
-                                             ComponentDescriptor<T> componentDescriptor,
-                                             String role,
-                                             String roleHint );
+                                                    LifecycleHandler lifecycleHandler,
+                                                    ComponentDescriptor<T> componentDescriptor );
 }
