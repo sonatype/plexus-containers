@@ -22,18 +22,48 @@ import org.codehaus.plexus.PlexusConstants;
  * This represents a component this is required by another component.
  * 
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
- * @version $Id: ComponentRequirement.java 6965 2007-10-21 05:32:27Z jvanzyl $
+ * @version $Id: ComponentRequirement.java 8109 2009-02-11 18:20:25Z dain $
  */
 public class ComponentRequirement
 {
+    private String fieldName;
+
     private String role;
 
     private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
 
-    private String fieldName;
-    
     private String fieldMappingType;
-    
+
+    public ComponentRequirement()
+    {
+    }
+
+    public ComponentRequirement( String fieldName, String role )
+    {
+        this( fieldName, role, null );
+    }
+
+    public ComponentRequirement( String fieldName, String role, String roleHint )
+    {
+        this.fieldName = fieldName;
+        this.role = role;
+
+        if ( roleHint != null )
+        {
+            this.roleHint = roleHint;
+        }
+    }
+
+    public ComponentRequirement( String fieldName, Class<?> type )
+    {
+        this( fieldName, type.getName(), null );
+    }
+
+    public ComponentRequirement( String fieldName, Class<?> type, String roleHint )
+    {
+        this( fieldName, type.getName(), roleHint );
+    }
+
     /**
      * Returns the field name that this component requirement will inject.
      * @return the field name that this component requirement will inject
