@@ -101,8 +101,7 @@ public abstract class PlexusTestCase
         }
         catch ( PlexusContainerException e )
         {
-            e.printStackTrace();
-            fail( "Failed to create plexus container." );
+            throw new RuntimeException( "Failed to create plexus container.", e );
         }
     }
 
