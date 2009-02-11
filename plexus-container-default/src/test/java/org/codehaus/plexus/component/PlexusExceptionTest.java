@@ -126,8 +126,6 @@ public class PlexusExceptionTest extends TestCase
         }
         catch ( ComponentLookupException lookupException )
         {
-            lookupException.printStackTrace(  );
-
             // verify cause is the same excption thrown from the component constructor
             Throwable cause = lookupException.getCause();
             assertNotNull( "ComponentLookupException.getCause() is null", cause );
@@ -228,8 +226,6 @@ public class PlexusExceptionTest extends TestCase
         }
         catch ( ComponentLookupException lookupException )
         {
-            lookupException.printStackTrace(  );
-
             // verify cause is the same excption thrown from the component constructor
             Throwable cause = lookupException.getCause();
             assertNotNull( "ComponentLookupException.getCause() is null", cause );
