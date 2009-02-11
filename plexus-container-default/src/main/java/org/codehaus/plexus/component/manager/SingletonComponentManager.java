@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.manager;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.ExecutionException;
 
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -104,19 +105,26 @@ public class SingletonComponentManager<T> extends AbstractComponentManager<T>
                 }
             }
 
-            Throwable cause = e.getCause();
-            if ( cause == null )
+            // future.get() normally throws an execution execption which contains the real cause
+            Throwable cause = e;
+            if ( e instanceof ExecutionException && e.getCause() != null )
             {
-                cause = e;
+                cause = e.getCause();
             }
+
+            // rethrow ComponentInstantiationException
             if ( cause instanceof ComponentInstantiationException )
             {
                 throw (ComponentInstantiationException) cause;
             }
+
+            // rethrow ComponentLifecycleException
             if ( cause instanceof ComponentLifecycleException )
             {
                 throw (ComponentLifecycleException) cause;
             }
+
+            // nothing else was expected
             throw new ComponentLifecycleException( "Unexpected error obtaining singleton instance", cause );
         }
     }

@@ -10,7 +10,8 @@ import com.google.common.collect.ReferenceMap;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import static org.codehaus.plexus.component.CastUtils.cast;
 import org.codehaus.plexus.component.ComponentIndex;
-import org.codehaus.plexus.component.factory.ComponentInstantiationException;
+import static org.codehaus.plexus.component.ComponentStack.pushComponentStack;
+import static org.codehaus.plexus.component.ComponentStack.popComponentStack;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
 import org.codehaus.plexus.component.manager.StaticComponentManager;
@@ -39,15 +40,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DefaultComponentRegistry implements ComponentRegistry
 {
     private static final String DEFAULT_INSTANTIATION_STRATEGY = "singleton";
-
-    private static final ThreadLocal<LinkedHashSet<ComponentDescriptor<?>>> STACK =
-        new ThreadLocal<LinkedHashSet<ComponentDescriptor<?>>>()
-        {
-            protected LinkedHashSet<ComponentDescriptor<?>> initialValue()
-            {
-                return new LinkedHashSet<ComponentDescriptor<?>>();
-            }
-        };
 
     private final MutablePlexusContainer container;
     private final LifecycleHandlerManager lifecycleHandlerManager;
@@ -286,7 +278,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         ComponentManager<T> componentManager = (ComponentManager<T>) componentManagersByComponentDescriptor.get( componentDescriptor );
         if ( componentManager == null )
         {
-            throw new ComponentLookupException( "Component descriptor is not registered with PlexusContainer", componentDescriptor, STACK.get());
+            throw new ComponentLookupException( "Component descriptor is not registered with PlexusContainer", componentDescriptor );
         }
         return getComponent( componentManager );
     }
@@ -515,7 +507,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         ComponentManager<T> componentManager = (ComponentManager<T>) index.get( type, roleHint );
         if ( componentManager == null )
         {
-            throw new ComponentLookupException( "Component descriptor cannot be found", type, roleHint, STACK.get() );
+            throw new ComponentLookupException( "Component descriptor cannot be found", type, roleHint );
         }
         return getComponent( componentManager );
     }
@@ -524,26 +516,8 @@ public class DefaultComponentRegistry implements ComponentRegistry
     {
         ComponentDescriptor<T> descriptor = componentManager.getComponentDescriptor();
 
-        // check for creation circularity
-        LinkedHashSet<ComponentDescriptor<?>> stack = STACK.get();
-        if ( stack.contains( descriptor ) )
-        {
-            // create list of circularity
-            List<ComponentDescriptor<?>> circularity = new ArrayList<ComponentDescriptor<?>>( stack );
-            circularity.subList( circularity.indexOf( descriptor ), circularity.size() );
-            circularity.add( descriptor );
-
-            // nice circularity message
-            String message = "Creation circularity: ";
-            for ( ComponentDescriptor<?> componentDescriptor : circularity )
-            {
-                message += "\n\t[" + componentDescriptor.getRole() + ", " + componentDescriptor.getRoleHint() + "]";
-            }
-            throw new ComponentLookupException( message, descriptor, STACK.get() );
-        }
-
         // Get instance from manager... may result in creation
-        stack.add( descriptor );
+        pushComponentStack( descriptor );
         try
         {
             T component = componentManager.getComponent();
@@ -552,33 +526,26 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
             return component;
         }
-        catch ( ComponentInstantiationException e )
+        catch ( Exception e )
         {
+            // get real cause
             Throwable cause = e.getCause();
             if ( cause == null )
             {
                 cause = e;
             }
-            throw new ComponentLookupException( "Component could not be created: " + cause.getMessage(),
-                descriptor,
-                STACK.get(),
-                cause );
-        }
-        catch ( ComponentLifecycleException e )
-        {
-            Throwable cause = e.getCause();
-            if ( cause == null )
+
+            // do not rewrap ComponentLookupException
+            if (cause instanceof ComponentLookupException )
             {
-                cause = e;
+                throw (ComponentLookupException) cause;
             }
-            throw new ComponentLookupException( "Component could not be started: " + cause.getMessage(),
-                descriptor,
-                STACK.get(),
-                cause );
+
+            throw new ComponentLookupException( e.getMessage(), descriptor, cause );
         }
         finally
         {
-            stack.remove( descriptor );
+            popComponentStack();
         }
     }
 
@@ -653,16 +620,10 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
             Pair<?,?> pair = (Pair<?,?>) o;
 
-            if ( left != null ? !left.equals( pair.left ) : pair.left != null )
-            {
-                return false;
-            }
-            if ( right != null ? !right.equals( pair.right ) : pair.right != null )
-            {
-                return false;
-            }
+            return
+                ( left == null ? pair.left == null : left.equals( pair.left ) ) && 
+                ( right == null ? pair.right == null : right.equals( pair.right ) );
 
-            return true;
         }
 
         public int hashCode()

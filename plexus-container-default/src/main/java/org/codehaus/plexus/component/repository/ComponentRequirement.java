@@ -26,14 +26,44 @@ import org.codehaus.plexus.PlexusConstants;
  */
 public class ComponentRequirement
 {
+    private String fieldName;
+
     private String role;
 
     private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
 
-    private String fieldName;
-    
     private String fieldMappingType;
-    
+
+    public ComponentRequirement()
+    {
+    }
+
+    public ComponentRequirement( String fieldName, String role )
+    {
+        this( fieldName, role, null );
+    }
+
+    public ComponentRequirement( String fieldName, String role, String roleHint )
+    {
+        this.fieldName = fieldName;
+        this.role = role;
+
+        if ( roleHint != null )
+        {
+            this.roleHint = roleHint;
+        }
+    }
+
+    public ComponentRequirement( String fieldName, Class<?> type )
+    {
+        this( fieldName, type.getName(), null );
+    }
+
+    public ComponentRequirement( String fieldName, Class<?> type, String roleHint )
+    {
+        this( fieldName, type.getName(), roleHint );
+    }
+
     /**
      * Returns the field name that this component requirement will inject.
      * @return the field name that this component requirement will inject

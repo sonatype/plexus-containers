@@ -7,145 +7,259 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.StoppingException;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.DefaultPlexusConfiguration;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.apache.xbean.recipe.MissingAccessorException;
 import junit.framework.TestCase;
 
 import java.util.List;
 
 public class PlexusExceptionTest extends TestCase
 {
-    private DefaultPlexusContainer container;
-    private ComponentDescriptor<Component> descriptor;
+    private static DefaultPlexusContainer container;
+    private ComponentDescriptor<ExceptionalComponent> exceptionalDescriptor;
+    private ComponentDescriptor<RequiresComponent> requiresDescriptor;
 
     private static Exception constructorException;
     private static Exception setterException;
     private static Exception startException;
-    private static Exception stopException;
+    private static boolean lookupInSetter;
+    private static boolean lookupInConstructor;
 
     protected void setUp() throws Exception
     {
         super.setUp();
         container = new DefaultPlexusContainer();
 
-        descriptor = new ComponentDescriptor<Component>(
-            Component.class,
+        //
+        // ExceptionalComponent definition
+        //
+        exceptionalDescriptor = new ComponentDescriptor<ExceptionalComponent>(
+            ExceptionalComponent.class,
             container.getContainerRealm() );
-        descriptor.setRoleClass( Component.class );
-        PlexusConfiguration configuration = new DefaultPlexusConfiguration(){};
-        configuration.setAttribute( "name", "testBean" );
-        descriptor.setConfiguration( configuration );
+        exceptionalDescriptor.setRoleClass( ExceptionalComponent.class );
+        PlexusConfiguration exceptionalConfiguration = new DefaultPlexusConfiguration(){};
+        exceptionalConfiguration.setAttribute( "name", "exceptional bean" );
+        exceptionalDescriptor.setConfiguration( exceptionalConfiguration );
+        exceptionalDescriptor.setSource( "exceptionalDescriptor.xml" );
 
-        container.addComponentDescriptor( descriptor );
+        container.addComponentDescriptor( exceptionalDescriptor );
+
+        //
+        // RequiresComponent definition
+        //
+        requiresDescriptor = new ComponentDescriptor<RequiresComponent>(
+            RequiresComponent.class,
+            container.getContainerRealm() );
+        requiresDescriptor.setRoleClass( RequiresComponent.class );
+        PlexusConfiguration requiresConfiguration = new DefaultPlexusConfiguration(){};
+        requiresConfiguration.setAttribute( "name", "requires bean" );
+        requiresDescriptor.setConfiguration( requiresConfiguration );
+        requiresDescriptor.setSource( "requiresDescriptor.xml" );
+
+        container.addComponentDescriptor( requiresDescriptor );
 
         constructorException = null;
         setterException = null;
         startException = null;
-        stopException = null;
+        lookupInConstructor = false;
+        lookupInSetter = false;
     }
 
     public void testConstructorCheckedException() throws Exception {
         constructorException = new TestCheckedException( "constructor test" );
 
-        try
-        {
-            container.lookup( Component.class );
-            fail("Expected ComponentLookupException");
-        }
-        catch ( ComponentLookupException e )
-        {
-            assertValidComponentLookupException( constructorException, e );
-        }
+        assertLookupFailed( constructorException );
     }
 
     public void testConstructorRuntimeException() throws Exception {
         constructorException = new TestRuntimeException( "constructor test" );
 
-        try
-        {
-            container.lookup( Component.class );
-            fail("Expected ComponentLookupException");
-        }
-        catch ( ComponentLookupException e )
-        {
-            assertValidComponentLookupException( constructorException, e );
-        }
+        assertLookupFailed( constructorException );
     }
 
     public void testSetterCheckedException() throws Exception {
         setterException = new TestCheckedException( "setter test");
 
-        try
-        {
-            container.lookup( Component.class );
-            fail("Expected ComponentLookupException");
-        }
-        catch ( ComponentLookupException e )
-        {
-            assertValidComponentLookupException( setterException, e );
-        }
+        assertLookupFailed( setterException );
     }
 
     public void testSetterRuntimeException() throws Exception {
         setterException = new TestRuntimeException( "setter test");
 
-        try
-        {
-            container.lookup( Component.class );
-            fail("Expected ComponentLookupException");
-        }
-        catch ( ComponentLookupException e )
-        {
-            assertValidComponentLookupException( setterException, e );
-        }
+        assertLookupFailed( setterException );
     }
 
     public void testStartCheckedException() throws Exception {
         startException = new StartingException( "start test");
 
-        try
-        {
-            container.lookup( Component.class );
-            fail("Expected ComponentLookupException");
-        }
-        catch ( ComponentLookupException e )
-        {
-            assertValidComponentLookupException( startException, e );
-        }
+        assertLookupFailed( startException );
     }
 
     public void testStartRuntimeException() throws Exception {
         startException = new TestRuntimeException( "start test");
 
+        assertLookupFailed( startException );
+    }
+
+    public void testMissingProperty() throws Exception {
+        exceptionalDescriptor.getConfiguration().addChild( "unknown", "unknown" );
+
+        Throwable cause = assertLookupFailed( null );
+        assertTrue("cause should be an instance of MissingAccessorException", cause instanceof MissingAccessorException );
+    }
+
+    public void testMissingRequirementProperty() throws Exception {
+        exceptionalDescriptor.addRequirement( new ComponentRequirement( "unknown", ExceptionalComponent.class.getName()) );
+
+        Throwable cause = assertLookupFailed( null );
+        assertTrue("cause should be an instance of MissingAccessorException", cause instanceof MissingAccessorException );
+    }
+
+    private Throwable assertLookupFailed( Exception expected )
+    {
         try
         {
-            container.lookup( Component.class );
+            container.lookup( ExceptionalComponent.class );
             fail("Expected ComponentLookupException");
+            throw new AssertionError("Unreachable statement");
         }
-        catch ( ComponentLookupException e )
+        catch ( ComponentLookupException lookupException )
         {
-            assertValidComponentLookupException( startException, e );
+            lookupException.printStackTrace(  );
+
+            // verify cause is the same excption thrown from the component constructor
+            Throwable cause = lookupException.getCause();
+            assertNotNull( "ComponentLookupException.getCause() is null", cause );
+            if ( expected != null )
+            {
+                assertSame( "cause should be same instance thrown from component", expected, cause );
+            }
+
+            // verify stack contains only the one component
+            List<ComponentStackElement> stack = lookupException.getComponentStack();
+            assertEquals( "Component stack", 1, stack.size() );
+            ComponentDescriptor<?> failedDescriptor = stack.get( 0 ).getDescriptor();
+            assertSame( "Failed component descriptor should be created component", exceptionalDescriptor, failedDescriptor );
+
+            return lookupException.getCause();
         }
     }
 
-    private void assertValidComponentLookupException( Exception expected, ComponentLookupException lookupException )
-    {
-        // verify cause is the same excption thrown from the component constructor
-        Throwable cause = lookupException.getCause();
-        assertNotNull( "ComponentLookupException.getCause() is null", cause );
-        assertSame( "cause should be same instance thrown from component", expected, cause );
+    public void testNestedRequiresConstructorCheckedException() throws Exception {
+        constructorException = new TestCheckedException( "constructor test" );
+        requiresDescriptor.addRequirement( new ComponentRequirement( "component", ExceptionalComponent.class.getName()) );
 
-        // verify stack contains only the one component
-        List<ComponentDescriptor<?>> stack = lookupException.getComponentStack();
-        assertEquals( "Component stack", 1, stack.size() );
-        ComponentDescriptor<?> failedDescriptor = stack.get( 0 );
-        assertSame( "Failed component descriptor should be created component", descriptor, failedDescriptor );
+        assertNestedRequiresFailed( constructorException );
     }
 
-    public static class Component implements Startable
+    public void testNestedRequiresConstructorRuntimeException() throws Exception {
+        constructorException = new TestRuntimeException( "constructor test" );
+        requiresDescriptor.addRequirement( new ComponentRequirement( "component", ExceptionalComponent.class.getName()) );
+
+        assertNestedRequiresFailed( constructorException );
+    }
+
+    public void testNestedRequiresSetterCheckedException() throws Exception {
+        setterException = new TestCheckedException( "setter test");
+        requiresDescriptor.addRequirement( new ComponentRequirement( "component", ExceptionalComponent.class.getName()) );
+
+        assertNestedRequiresFailed( setterException );
+    }
+
+    public void testNestedRequiresSetterRuntimeException() throws Exception {
+        setterException = new TestRuntimeException( "setter test");
+        requiresDescriptor.addRequirement( new ComponentRequirement( "component", ExceptionalComponent.class.getName()) );
+
+        assertNestedRequiresFailed( setterException );
+    }
+
+    public void testNestedRequiresStartCheckedException() throws Exception {
+        startException = new StartingException( "start test");
+        requiresDescriptor.addRequirement( new ComponentRequirement( "component", ExceptionalComponent.class.getName()) );
+
+        assertNestedRequiresFailed( startException );
+    }
+
+    public void testNestedRequiresStartRuntimeException() throws Exception {
+        startException = new TestRuntimeException( "start test");
+        requiresDescriptor.addRequirement( new ComponentRequirement( "component", ExceptionalComponent.class.getName()) );
+
+        assertNestedRequiresFailed( startException );
+    }
+
+    public void testNestedRequiresMissingProperty() throws Exception {
+        exceptionalDescriptor.getConfiguration().addChild( "unknown", "unknown" );
+        requiresDescriptor.addRequirement( new ComponentRequirement( "component", ExceptionalComponent.class.getName()) );
+
+        Throwable cause = assertNestedRequiresFailed( null );
+        assertTrue("cause should be an instance of MissingAccessorException", cause instanceof MissingAccessorException );
+    }
+
+    public void testNestedRequiresMissingRequirementProperty() throws Exception {
+        exceptionalDescriptor.addRequirement( new ComponentRequirement( "unknown", ExceptionalComponent.class.getName()) );
+        requiresDescriptor.addRequirement( new ComponentRequirement( "component", ExceptionalComponent.class.getName()) );
+
+        Throwable cause = assertNestedRequiresFailed( null );
+        assertTrue("cause should be an instance of MissingAccessorException", cause instanceof MissingAccessorException );
+    }
+
+    public void testNestedLookupInConstructor() throws Exception {
+        constructorException = new TestCheckedException( "constructor test" );
+        lookupInConstructor = true;
+
+        assertNestedRequiresFailed( constructorException );
+    }
+
+    public void testNestedLookupInSetter() throws Exception {
+        constructorException = new TestCheckedException( "constructor test" );
+        lookupInSetter = true;
+
+        assertNestedRequiresFailed( constructorException );
+    }
+
+    private Throwable assertNestedRequiresFailed( Exception expected )
+    {
+        try
+        {
+            container.lookup( RequiresComponent.class );
+            fail("Expected ComponentLookupException");
+            throw new AssertionError("Unreachable statement");
+        }
+        catch ( ComponentLookupException lookupException )
+        {
+            lookupException.printStackTrace(  );
+
+            // verify cause is the same excption thrown from the component constructor
+            Throwable cause = lookupException.getCause();
+            assertNotNull( "ComponentLookupException.getCause() is null", cause );
+            if ( expected != null )
+            {
+                assertSame( "cause should be same instance thrown from component", expected, cause );
+            }
+
+            // verify stack contains only the one component
+            List<ComponentStackElement> stack = lookupException.getComponentStack();
+            assertEquals( "Component stack", 2, stack.size() );
+            ComponentDescriptor<?> failedDescriptor = stack.get( 0 ).getDescriptor();
+            assertSame( "Failed component descriptor should be created component", exceptionalDescriptor, failedDescriptor );
+            ComponentStackElement wrapperElement = stack.get( 1 );
+            ComponentDescriptor<?> wrapperDescriptor = wrapperElement.getDescriptor();
+            assertSame( "Wrapper component descriptor should be looked-up component", requiresDescriptor, wrapperDescriptor );
+            if ( requiresDescriptor.getRequirements().size() > 0 )
+            {
+                assertSame( "Wrapper property", "component", wrapperElement.getProperty() );
+            }
+
+            return lookupException.getCause();
+        }
+    }
+
+    public static class ExceptionalComponent implements Startable
     {
         private String myName;
 
-        public Component() throws Exception
+        public ExceptionalComponent() throws Exception
         {
             if ( constructorException != null )
             {
@@ -182,19 +296,34 @@ public class PlexusExceptionTest extends TestCase
 
         public void stop() throws StoppingException
         {
-            if ( stopException instanceof RuntimeException )
-            {
-                throw (RuntimeException) stopException;
-            }
-            if ( stopException instanceof StoppingException )
-            {
-                throw (StoppingException) stopException;
+        }
 
-            }
-            if ( stopException != null )
+        public String toString()
+        {
+            return myName;
+        }
+    }
+
+    public static class RequiresComponent
+    {
+        private String myName;
+        public ExceptionalComponent component;
+
+        public RequiresComponent() throws Exception
+        {
+            if ( lookupInConstructor )
             {
-                throw new StoppingException( "", stopException );
+                container.lookup( ExceptionalComponent.class );
             }
+        }
+
+        public void setName( String name ) throws Exception
+        {
+            if ( lookupInSetter )
+            {
+                container.lookup( ExceptionalComponent.class );
+            }
+            this.myName = name;
         }
 
         public String toString()
@@ -205,17 +334,21 @@ public class PlexusExceptionTest extends TestCase
 
     public static class TestRuntimeException extends RuntimeException
     {
+
         public TestRuntimeException( String message )
         {
             super( message );
         }
+
     }
 
     public static class TestCheckedException extends RuntimeException
     {
+
         public TestCheckedException( String message )
         {
             super( message );
         }
+
     }
 }
