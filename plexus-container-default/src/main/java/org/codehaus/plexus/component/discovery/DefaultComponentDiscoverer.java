@@ -60,7 +60,14 @@ public class DefaultComponentDiscoverer
             }
             catch ( PlexusConfigurationException e )
             {
-                throw new PlexusConfigurationException( "Cannot process component descriptor: " + source, e );
+               	// This is not the most accurate of exceptions as the only real case where this exception
+            	// will be thrown is when the implementation class of the component sited cannot be loaded.
+            	// In the case where role and implementation classes do not exist then we just shouldn't
+            	// create the component descriptor. All information should be taken from annotations which
+            	// will be correct, so in the case we can't load the class it must be coming from and older
+            	// hand written descriptor which is incorrect.
+            	
+            	continue;            	
             }
 
             componentDescriptor.setSource( source );

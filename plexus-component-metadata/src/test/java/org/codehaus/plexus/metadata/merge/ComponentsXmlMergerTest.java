@@ -50,7 +50,7 @@ public class ComponentsXmlMergerTest
     public void testBasic()
         throws Exception
     {
-        ComponentsXmlMerger merger = (ComponentsXmlMerger) lookup( Merger.class, "componentsXml" );
+        Merger merger = lookup( Merger.class, "componentsXml" );
         assertNotNull( merger );
     }
 
