@@ -9,3 +9,5 @@ assert utf8File.exists()
 def utf8Chars = new XmlParser().parse(utf8File).components.component.description.text()
 println utf8Chars
 assert "TEST-CHARS: \u00DF\u0131\u03A3\u042F\u05D0\u20AC".equals( utf8Chars )
+
+return true;

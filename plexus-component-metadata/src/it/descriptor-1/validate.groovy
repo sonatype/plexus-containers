@@ -24,3 +24,5 @@ assert file.exists()
 def componentSet = new XmlParser().parse(file)
 
 assert componentSet.components.component.size() == 2
+
+return true;
