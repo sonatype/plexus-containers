@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus</artifactId>
     <version>2.0.2</version>
   </parent>
+
   <artifactId>plexus-containers</artifactId>
   <version>1.0-beta-4-SNAPSHOT</version>
-  <properties>
-    <classWorldsVersion>1.4</classWorldsVersion>
-    <plexusUtilsVersion>1.4.5</plexusUtilsVersion>
-    <xbeanReflectVersion>3.4</xbeanReflectVersion>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
   <packaging>pom</packaging>
+
   <name>Parent :: Plexus Containers</name>
+
   <modules>
     <module>plexus-component-annotations</module>
     <module>plexus-component-metadata</module>
     <module>plexus-component-javadoc</module>
     <module>plexus-container-default</module>
   </modules>
+
   <scm>
     <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/trunk</connection>
     <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/trunk</developerConnection>
     <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/trunk</url>
   </scm>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-    </dependency>
-  </dependencies>
+
+  <properties>
+    <classWorldsVersion>1.4</classWorldsVersion>
+    <plexusUtilsVersion>1.4.5</plexusUtilsVersion>
+    <xbeanReflectVersion>3.4</xbeanReflectVersion>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -98,6 +98,14 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.2</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>

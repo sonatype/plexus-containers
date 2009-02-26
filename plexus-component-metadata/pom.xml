@@ -25,8 +25,8 @@
       <artifactId>plexus-component-annotations</artifactId>
     </dependency>
     <!--
-      NOTE: When QDox 1.7 is fuly cooked should update this and consider using it to provide source-level annotation
-      processing (plexus-cdc-anno). But right now its way to buggy. <dependency>
+      NOTE: When QDox 1.7 is fully cooked should update this and consider using it to provide source-level annotation
+      processing (plexus-cdc-anno). But right now its way too buggy. <dependency>
       <groupId>com.thoughtworks.qdox</groupId> <artifactId>qdox</artifactId> <version>1.7-SNAPSHOT</version>
       </dependency>
     -->
