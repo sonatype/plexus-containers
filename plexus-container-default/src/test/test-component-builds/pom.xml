@@ -8,8 +8,8 @@
   <modules>
     <module>component-a</module>
     <module>component-b</module>
-    <module>component-c</module>    
+    <module>component-c</module>
     <module>plugin0</module>
-    <module>plugin1</module>        
+    <module>plugin1</module>
   </modules>
 </project>
