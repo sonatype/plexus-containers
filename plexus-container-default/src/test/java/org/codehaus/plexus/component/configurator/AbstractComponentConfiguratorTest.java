@@ -608,4 +608,60 @@ public abstract class AbstractComponentConfiguratorTest
         }
     }
 
+    public void testComponentConfigurationWithEmptyContentForBasicField()
+        throws Exception
+    {
+        String xml = "<configuration>" //
+            + "  <address></address>" //
+            + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        DefaultComponent component = new DefaultComponent();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration( configuration );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        configureComponent( component, descriptor, realm );
+
+        assertEquals( null, component.getAddress() );
+    }
+
+    public void testComponentConfigurationWithEmptyContentForCompositeField()
+        throws Exception
+    {
+        String xml = "<configuration>" //
+            + "  <thing></thing>" //
+            + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithCompositeFields component = new ComponentWithCompositeFields();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration( configuration );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        configureComponent( component, descriptor, realm );
+
+        assertEquals( null, component.getThing() );
+    }
+
 }

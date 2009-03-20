@@ -75,7 +75,7 @@ public class ObjectWithFieldsConverter
     {
         Object retValue = fromExpression( configuration, expressionEvaluator, type );
 
-        if ( retValue == null )
+        if ( retValue == null && configuration.getChildCount() > 0 )
         {
             try
             {
