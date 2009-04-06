@@ -17,7 +17,6 @@ package org.codehaus.plexus.component.discovery;
  */
 
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
 
 /**
@@ -25,7 +24,7 @@ import java.util.Map;
  */
 public interface ComponentDiscovererManager
 {
-    //void addComponentDiscoverer( ComponentDiscoverer componentDiscoverer );
+    void addComponentDiscoverer( ComponentDiscoverer componentDiscoverer );
 
     List<ComponentDiscoverer> getComponentDiscoverers();
 
@@ -37,6 +36,4 @@ public interface ComponentDiscovererManager
     void removeComponentDiscoveryListener( ComponentDiscoveryListener listener );
 
     void fireComponentDiscoveryEvent( ComponentDiscoveryEvent event );
-
-    void initialize();
 }

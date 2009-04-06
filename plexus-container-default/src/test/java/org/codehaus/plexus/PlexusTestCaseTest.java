@@ -24,8 +24,7 @@ import org.codehaus.plexus.test.DefaultLoadOnStartService;
 import java.io.File;
 
 /**
- * @author <a href="mailto:jason@maven.org">Jason van Zyl</a>
- * @version $Id$
+ * @author Jason van Zyl
  */
 public class PlexusTestCaseTest
     extends TestCase

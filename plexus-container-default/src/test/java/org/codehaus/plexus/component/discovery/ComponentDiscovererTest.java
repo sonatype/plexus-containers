@@ -41,8 +41,6 @@ public class ComponentDiscovererTest
     {
         ComponentDiscoverer componentDiscoverer = new DefaultComponentDiscoverer();
 
-        componentDiscoverer.setManager( new DefaultComponentDiscovererManager() );
-
         ClassWorld classWorld = new ClassWorld();
 
         ClassRealm core = classWorld.newRealm( "core" );

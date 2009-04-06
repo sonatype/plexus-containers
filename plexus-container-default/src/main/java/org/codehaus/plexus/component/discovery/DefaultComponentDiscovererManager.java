@@ -75,16 +75,4 @@ public class DefaultComponentDiscovererManager
             listener.componentDiscovered( event );
         }
     }
-
-    // ----------------------------------------------------------------------
-    // Lifecylce Management
-    // ----------------------------------------------------------------------
-
-    public synchronized void initialize()
-    {
-        for ( ComponentDiscoverer componentDiscoverer : componentDiscoverers )
-        {
-            componentDiscoverer.setManager( this );
-        }
-    }
 }

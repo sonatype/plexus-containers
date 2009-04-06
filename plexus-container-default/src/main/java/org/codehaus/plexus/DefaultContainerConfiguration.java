@@ -1,6 +1,8 @@
 package org.codehaus.plexus;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
@@ -52,6 +54,10 @@ public class DefaultContainerConfiguration
     private URL containerConfigurationURL;
 
     private ConfigurationSource configurationSource;
+    
+    private List<Class> componentDiscoverers = new ArrayList<Class>();
+    
+    private List<Class> componentDiscoveryListeners = new ArrayList<Class>();
     
     public ContainerConfiguration setName( String name )
     {
@@ -301,5 +307,27 @@ public class DefaultContainerConfiguration
     public ConfigurationSource getConfigurationSource()
     {
         return configurationSource;
+    }
+
+    public ContainerConfiguration addComponentDiscoverer( Class<?> clazz )
+    {
+        componentDiscoverers.add( clazz );
+        return this;
+    }
+
+    public ContainerConfiguration addComponentDiscoveryListener( Class<?> clazz )
+    {
+        componentDiscoveryListeners.add( clazz );
+        return this;
+    }
+
+    public List<Class> getComponentDiscoverers()
+    {
+        return componentDiscoverers;
+    }
+
+    public List<Class> getComponentDiscoveryListeners()
+    {
+        return componentDiscoveryListeners;
     }    
 }

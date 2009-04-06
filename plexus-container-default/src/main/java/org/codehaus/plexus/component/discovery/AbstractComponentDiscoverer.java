@@ -16,8 +16,16 @@ package org.codehaus.plexus.component.discovery;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
@@ -25,15 +33,6 @@ import org.codehaus.plexus.context.ContextMapAdapter;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.plexus.util.ReaderFactory;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Collections;
 
 /**
  * @author Jason van Zyl
@@ -43,26 +42,14 @@ import java.util.Collections;
 public abstract class AbstractComponentDiscoverer
     implements ComponentDiscoverer
 {
-    private ComponentDiscovererManager manager;
-
     // ----------------------------------------------------------------------
     //  Abstract methods
     // ----------------------------------------------------------------------
 
     protected abstract String getComponentDescriptorLocation();
 
-    protected abstract ComponentSetDescriptor createComponentDescriptors( Reader reader,
-                                                                          String source, ClassRealm realm )
+    protected abstract ComponentSetDescriptor createComponentDescriptors( Reader reader, String source, ClassRealm realm )
         throws PlexusConfigurationException;
-
-    // ----------------------------------------------------------------------
-    //  ComponentDiscoverer
-    // ----------------------------------------------------------------------
-
-    public void setManager( ComponentDiscovererManager manager )
-    {
-        this.manager = manager;
-    }
 
     public List<ComponentSetDescriptor> findComponents( Context context, ClassRealm realm )
         throws PlexusConfigurationException
@@ -110,11 +97,6 @@ public abstract class AbstractComponentDiscoverer
                     createComponentDescriptors( interpolationFilterReader, url.toString(), realm );
 
                 componentSetDescriptors.add( componentSetDescriptor );
-
-                // Fire the event
-                ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
-
-                manager.fireComponentDiscoveryEvent( event );
             }
             catch ( IOException ex )
             {

@@ -34,6 +34,7 @@ import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
+import org.codehaus.plexus.component.discovery.ComponentDiscoveryEvent;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
@@ -292,6 +293,30 @@ public class DefaultPlexusContainer
         {
             IOUtil.close( configurationReader );
         }
+        
+        for( Class clazz : c.getComponentDiscoverers() )
+        {
+            try
+            {
+                ComponentDiscoverer cd = (ComponentDiscoverer) lookup( clazz );
+                componentDiscovererManager.addComponentDiscoverer( cd );
+            }
+            catch ( ComponentLookupException e )
+            {
+            }
+        }
+        
+        for( Class clazz : c.getComponentDiscoveryListeners() )
+        {
+            try
+            {
+                ComponentDiscoveryListener cdl = (ComponentDiscoveryListener) lookup( clazz );
+                componentDiscovererManager.registerComponentDiscoveryListener( cdl );
+            }
+            catch ( ComponentLookupException e )
+            {
+            }
+        }        
     }
 
     // ----------------------------------------------------------------------------
@@ -953,26 +978,30 @@ public class DefaultPlexusContainer
     public List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm )
         throws PlexusConfigurationException, ComponentRepositoryException
     {
-
-        List<ComponentSetDescriptor> componentSets = new ArrayList<ComponentSetDescriptor>();
-        for ( ComponentDiscoverer componentDiscoverer : getComponentDiscovererManager().getComponentDiscoverers() )
-        {
-            for ( ComponentSetDescriptor componentSet : componentDiscoverer.findComponents( getContext(), realm ) )
-            {
-                componentSets.add(componentSet);
-            }
-        }
+        List<ComponentSetDescriptor> componentSetDescriptors = new ArrayList<ComponentSetDescriptor>();
 
         List<ComponentDescriptor<?>> discoveredComponentDescriptors = new ArrayList<ComponentDescriptor<?>>();
-        for ( ComponentSetDescriptor componentSet : componentSets )
-        {
-            for ( ComponentDescriptor<?> componentDescriptor : componentSet.getComponents() )
-            {
-                addComponentDescriptor( componentDescriptor );
 
-                discoveredComponentDescriptors.add( componentDescriptor );
+        for ( ComponentDiscoverer componentDiscoverer : getComponentDiscovererManager().getComponentDiscoverers() )
+        {
+            for ( ComponentSetDescriptor componentSetDescriptor : componentDiscoverer.findComponents( getContext(), realm ) )
+            {
+                componentSetDescriptors.add(componentSetDescriptor);
+                
+                for( ComponentDescriptor<?> componentDescriptor : componentSetDescriptor.getComponents() )
+                {
+                    addComponentDescriptor( componentDescriptor );                    
+                    
+                    discoveredComponentDescriptors.add( componentDescriptor );
+                }
+                
+                // Fire the event
+                ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
+
+                componentDiscovererManager.fireComponentDiscoveryEvent( event );                
             }
         }
+                
         return discoveredComponentDescriptors;
     }
 }

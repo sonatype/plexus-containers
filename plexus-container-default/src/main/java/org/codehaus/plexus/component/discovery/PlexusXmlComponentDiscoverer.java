@@ -43,13 +43,6 @@ public class PlexusXmlComponentDiscoverer
 
     private static final String PLEXUS_XML_RESOURCE = "META-INF/plexus/plexus.xml";
 
-    private ComponentDiscovererManager manager;
-
-    public void setManager( ComponentDiscovererManager manager )
-    {
-        this.manager = manager;
-    }
-
     public List<ComponentSetDescriptor> findComponents( Context context, ClassRealm realm )
         throws PlexusConfigurationException
     {
@@ -58,10 +51,6 @@ public class PlexusXmlComponentDiscoverer
 
         // Create ComponentDescriptors defined in PlexusConfiguration
         ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( configuration, realm );
-
-        // Fire the event
-        ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
-        manager.fireComponentDiscoveryEvent( event );
 
         return Collections.singletonList( componentSetDescriptor );
     }
@@ -133,8 +122,7 @@ public class PlexusXmlComponentDiscoverer
 
         if ( configuration != null )
         {
-            PlexusConfiguration[] componentConfigurations = configuration.getChild( "components" ).getChildren(
-                "component" );
+            PlexusConfiguration[] componentConfigurations = configuration.getChild( "components" ).getChildren( "component" );
 
             for ( PlexusConfiguration componentConfiguration : componentConfigurations )
             {
