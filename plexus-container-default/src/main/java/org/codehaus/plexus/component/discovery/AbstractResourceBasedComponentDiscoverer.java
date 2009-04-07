@@ -34,17 +34,15 @@ import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.InterpolationFilterReader;
 import org.codehaus.plexus.util.ReaderFactory;
 
+//TODO: this should be a default strategy of searching through classloaders. a discoverer should really not have to be
+// concerned finding a particular resource and how to turn it into a set of component descriptors.
+
 /**
  * @author Jason van Zyl
- * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  */
-public abstract class AbstractComponentDiscoverer
+public abstract class AbstractResourceBasedComponentDiscoverer
     implements ComponentDiscoverer
 {
-    // ----------------------------------------------------------------------
-    //  Abstract methods
-    // ----------------------------------------------------------------------
-
     protected abstract String getComponentDescriptorLocation();
 
     protected abstract ComponentSetDescriptor createComponentDescriptors( Reader reader, String source, ClassRealm realm )
@@ -58,9 +56,6 @@ public abstract class AbstractComponentDiscoverer
         Enumeration<URL> resources;
         try
         {
-            // We don't always want to scan parent realms. For plexus
-            // testcase, most components are in the root classloader so that needs to be scanned,
-            // but for child realms, we don't.
             if ( realm.getParentRealm() != null )
             {
                 resources = realm.findRealmResources( getComponentDescriptorLocation() );

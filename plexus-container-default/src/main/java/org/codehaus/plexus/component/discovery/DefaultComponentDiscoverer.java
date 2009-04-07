@@ -29,10 +29,9 @@ import java.util.List;
 
 /**
  * @author Jason van Zyl
- * @version $Id$
  */
 public class DefaultComponentDiscoverer
-    extends AbstractComponentDiscoverer
+    extends AbstractResourceBasedComponentDiscoverer
 {
     public String getComponentDescriptorLocation()
     {

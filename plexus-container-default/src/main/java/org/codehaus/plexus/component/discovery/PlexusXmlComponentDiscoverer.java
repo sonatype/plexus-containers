@@ -25,7 +25,7 @@ import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 
 public class PlexusXmlComponentDiscoverer
-    extends AbstractComponentDiscoverer
+    extends AbstractResourceBasedComponentDiscoverer
 {
     public String getComponentDescriptorLocation()
     {
