@@ -37,7 +37,6 @@ import org.codehaus.plexus.util.ReaderFactory;
 /**
  * @author Jason van Zyl
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
- * @version $Id$
  */
 public abstract class AbstractComponentDiscoverer
     implements ComponentDiscoverer
@@ -73,8 +72,7 @@ public abstract class AbstractComponentDiscoverer
         }
         catch ( IOException e )
         {
-            throw new PlexusConfigurationException( "Unable to retrieve resources for: " +
-                getComponentDescriptorLocation() + " in class realm: " + realm.getId() );
+            throw new PlexusConfigurationException( "Unable to retrieve resources for: " + getComponentDescriptorLocation() + " in class realm: " + realm.getId() );
         }
 
         for ( URL url : Collections.list( resources ))
@@ -90,11 +88,9 @@ public abstract class AbstractComponentDiscoverer
 
                 reader = ReaderFactory.newXmlReader( conn.getInputStream() );
 
-                InterpolationFilterReader interpolationFilterReader =
-                    new InterpolationFilterReader( reader, new ContextMapAdapter( context ) );
+                InterpolationFilterReader interpolationFilterReader = new InterpolationFilterReader( reader, new ContextMapAdapter( context ) );
 
-                ComponentSetDescriptor componentSetDescriptor =
-                    createComponentDescriptors( interpolationFilterReader, url.toString(), realm );
+                ComponentSetDescriptor componentSetDescriptor = createComponentDescriptors( interpolationFilterReader, url.toString(), realm );
 
                 componentSetDescriptors.add( componentSetDescriptor );
             }

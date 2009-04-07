@@ -36,9 +36,6 @@ import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 /**
  * @author Jason van Zyl 
- * @version $Id$
- * @todo these are all really tools for dealing with xml configurations so they
- * should be packaged as such.
  */
 public class PlexusTools
 {

@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * @author Jason van Zyl
- * @version $Id$
  */
 public interface ComponentDiscoverer
 {

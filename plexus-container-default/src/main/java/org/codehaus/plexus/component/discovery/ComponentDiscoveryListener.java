@@ -17,8 +17,7 @@ package org.codehaus.plexus.component.discovery;
  */
 
 /**
- * A listener which responds in some way to component discovery by a
- * PlexusContainer.
+ * A listener which responds in some way to component discovery by a PlexusContainer.
  */
 public interface ComponentDiscoveryListener
 {
@@ -27,10 +26,4 @@ public interface ComponentDiscoveryListener
      * @param event the event that signals what components have been discovered
      */
     void componentDiscovered( ComponentDiscoveryEvent event );
-
-    /**
-     * Returns this listener's unique key.
-     * @return this listener's unique key
-     */
-    String getId();
 }

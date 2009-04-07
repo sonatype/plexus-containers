@@ -643,12 +643,7 @@ public class DefaultPlexusContainer
     {
         ContainerInitializationPhase[] initPhases = containerConfiguration.getInitializationPhases();
 
-        ContainerInitializationContext initializationContext = new ContainerInitializationContext(
-            this,
-            classWorld,
-            containerRealm,
-            configuration,
-            containerConfiguration );
+        ContainerInitializationContext initializationContext = new ContainerInitializationContext( this, classWorld, containerRealm, configuration, containerConfiguration );
 
         for ( ContainerInitializationPhase phase : initPhases )
         {
@@ -755,33 +750,20 @@ public class DefaultPlexusContainer
     // Configuration
     // ----------------------------------------------------------------------
 
-    // TODO: put this in a separate helper class and turn into a component if possible, too big.
-
+    // This is the default PlexusXmlDiscovery
+    
     protected void initializeConfiguration( ContainerConfiguration c )
-        throws PlexusConfigurationException,
-            ContextException,
-            IOException
+        throws PlexusConfigurationException, ContextException, IOException
     {
         // We need an empty plexus configuration for merging. This is a function of removing the
         // plexus-boostrap.xml file.
         configuration = new XmlPlexusConfiguration( "plexus" );
 
-            PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
-
-            PlexusConfiguration plexusConfiguration = discoverer.discoverConfiguration( getContext(), containerRealm );
-
-            if ( plexusConfiguration != null )
-            {
-                configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
-            }
-
         if ( configurationReader != null )
         {
             // User userConfiguration
 
-            PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration(
-                "<User Specified Configuration Reader>",
-                getInterpolationConfigurationReader( configurationReader ) );
+            PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration( "<User Specified Configuration Reader>", getInterpolationConfigurationReader( configurationReader ) );
 
             // Merger of bootstrapConfiguration and user userConfiguration
 
