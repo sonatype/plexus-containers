@@ -54,16 +54,10 @@ public abstract class AbstractResourceBasedComponentDiscoverer
         List<ComponentSetDescriptor> componentSetDescriptors = new ArrayList<ComponentSetDescriptor>();
 
         Enumeration<URL> resources;
+        
         try
         {
-            if ( realm.getParentRealm() != null )
-            {
-                resources = realm.findRealmResources( getComponentDescriptorLocation() );
-            }
-            else
-            {
-                resources = realm.findResources( getComponentDescriptorLocation() );
-            }
+            resources = realm.findResources( getComponentDescriptorLocation() );
         }
         catch ( IOException e )
         {
