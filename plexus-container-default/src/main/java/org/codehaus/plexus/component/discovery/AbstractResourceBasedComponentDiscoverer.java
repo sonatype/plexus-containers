@@ -67,6 +67,7 @@ public abstract class AbstractResourceBasedComponentDiscoverer
         for ( URL url : Collections.list( resources ))
         {
             Reader reader = null;
+            
             try
             {
                 URLConnection conn = url.openConnection();
