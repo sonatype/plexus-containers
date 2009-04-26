@@ -14,12 +14,12 @@ public class DefaultComponentRegistryTest
     public void testConcurrentDisposeAndLookup()
         throws Exception
     {
+        final PlexusContainer plexus = new DefaultPlexusContainer();
+
         ComponentDescriptor<TestSynchronizedComponent> descriptor = new ComponentDescriptor<TestSynchronizedComponent>(
-            TestSynchronizedComponent.class );
+            TestSynchronizedComponent.class, plexus.getContainerRealm() );
         descriptor.setRole( TestSynchronizedComponent.class.getCanonicalName() );
         descriptor.setImplementation( TestSynchronizedComponent.class.getCanonicalName() );
-
-        final PlexusContainer plexus = new DefaultPlexusContainer();
         plexus.addComponentDescriptor( descriptor );
 
         TestSynchronizedComponent component = plexus.lookup( TestSynchronizedComponent.class );
@@ -45,7 +45,7 @@ public class DefaultComponentRegistryTest
             {
                 return component;
             }
-        };
+        }
 
         LookupThread lookupThread = new LookupThread();
 

@@ -25,14 +25,9 @@ import java.util.List;
 
 /**
  * @author Jason van Zyl
- * @version $Id$
  */
 public interface ComponentDiscoverer
 {
-    static String ROLE = ComponentDiscoverer.class.getName();
-
-    void setManager( ComponentDiscovererManager manager );
-
     List<ComponentSetDescriptor> findComponents( Context context, ClassRealm classRealm )
         throws PlexusConfigurationException;
 }

@@ -39,6 +39,8 @@ public class ComponentDescriptor<T>
 
     private String role = null;
 
+    private Class<? extends T> roleClass;
+
     private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
 
     private String implementation;
@@ -92,9 +94,11 @@ public class ComponentDescriptor<T>
     {
     }
 
-    public ComponentDescriptor( Class<T> implementationClass )
+    public ComponentDescriptor( Class<T> implementationClass, ClassRealm realm )
     {
         this.implementationClass = implementationClass;
+        this.implementation = implementationClass.getName();
+        this.realm = realm;
     }
 
     /**
@@ -169,6 +173,33 @@ public class ComponentDescriptor<T>
         return role;
     }
 
+    public Class<? extends T> getRoleClass()
+    {
+        attemptRoleLoad();
+
+        if (roleClass == null) {
+            return (Class<T>) Object.class;
+        }
+        return roleClass;
+    }
+
+    private void attemptRoleLoad()
+    {
+        if ( roleClass == null && role != null && realm != null )
+        {
+            try
+            {
+                roleClass = realm.loadClass( role );
+                Thread.currentThread();
+            }
+            catch ( Throwable ignored )
+            {
+                Thread.currentThread();
+            }
+        }
+    }
+
+
     /**
      * Sets the role of this component.
      *
@@ -177,6 +208,21 @@ public class ComponentDescriptor<T>
     public void setRole( String role )
     {
         this.role = role;
+
+        // reload role class
+        roleClass = null;
+        attemptRoleLoad();
+    }
+
+    public void setRoleClass( Class<? extends T> roleClass )
+    {
+        this.roleClass = roleClass;
+
+        if (roleClass == null) {
+            role = null;
+        } else {
+            role = roleClass.getName();
+        }
     }
 
     /**
@@ -254,9 +300,11 @@ public class ComponentDescriptor<T>
             try
             {
                 implementationClass = realm.loadClass( implementation );
+                Thread.currentThread();
             }
             catch ( Throwable ignored )
             {
+                Thread.currentThread();
             }
         }
     }
@@ -599,6 +647,10 @@ public class ComponentDescriptor<T>
         // reload implementation class
         implementationClass = null;
         attemptImplementationLoad();
+
+        // reload role class
+        roleClass = null;
+        attemptRoleLoad();
     }
 
     // Component identity established here!

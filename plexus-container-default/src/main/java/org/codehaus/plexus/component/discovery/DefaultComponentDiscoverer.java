@@ -21,6 +21,7 @@ import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -28,17 +29,16 @@ import java.util.List;
 
 /**
  * @author Jason van Zyl
- * @version $Id$
  */
 public class DefaultComponentDiscoverer
-    extends AbstractComponentDiscoverer
+    extends AbstractResourceBasedComponentDiscoverer
 {
     public String getComponentDescriptorLocation()
     {
         return "META-INF/plexus/components.xml";
     }
 
-    public ComponentSetDescriptor createComponentDescriptors( Reader componentDescriptorReader, String source )
+    public ComponentSetDescriptor createComponentDescriptors( Reader componentDescriptorReader, String source, ClassRealm realm )
         throws PlexusConfigurationException
     {
         PlexusConfiguration componentDescriptorConfiguration = PlexusTools.buildConfiguration( source, componentDescriptorReader );
@@ -47,24 +47,32 @@ public class DefaultComponentDiscoverer
 
         List<ComponentDescriptor<?>> componentDescriptors = new ArrayList<ComponentDescriptor<?>>();
 
-        PlexusConfiguration[] componentConfigurations =
-            componentDescriptorConfiguration.getChild( "components" ).getChildren( "component" );
+        PlexusConfiguration[] componentConfigurations = componentDescriptorConfiguration.getChild( "components" ).getChildren( "component" );
 
         for ( PlexusConfiguration componentConfiguration : componentConfigurations )
         {
             ComponentDescriptor<?> componentDescriptor;
             try
             {
-                componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration );
+                componentDescriptor = PlexusTools.buildComponentDescriptor( componentConfiguration, realm );
             }
             catch ( PlexusConfigurationException e )
             {
-                throw new PlexusConfigurationException( "Cannot process component descriptor: " + source, e );
+               	// This is not the most accurate of exceptions as the only real case where this exception
+            	// will be thrown is when the implementation class of the component sited cannot be loaded.
+            	// In the case where role and implementation classes do not exist then we just shouldn't
+            	// create the component descriptor. All information should be taken from annotations which
+            	// will be correct, so in the case we can't load the class it must be coming from and older
+            	// hand written descriptor which is incorrect.
+            	
+            	continue;            	
             }
 
             componentDescriptor.setSource( source );
 
             componentDescriptor.setComponentType( "plexus" );
+
+            componentDescriptor.setComponentSetDescriptor( componentSetDescriptor );
 
             componentDescriptors.add( componentDescriptor );
         }

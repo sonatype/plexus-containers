@@ -1,6 +1,8 @@
 package org.codehaus.plexus;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
@@ -19,11 +21,11 @@ import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentDiscovererManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeComponentFactoryManagerPhase;
+import org.codehaus.plexus.container.initialization.InitializeComponentRegistryPhase;
 import org.codehaus.plexus.container.initialization.InitializeContainerConfigurationSourcePhase;
 import org.codehaus.plexus.container.initialization.InitializeLoggerManagerPhase;
 import org.codehaus.plexus.container.initialization.InitializeSystemPropertiesPhase;
 import org.codehaus.plexus.container.initialization.InitializeUserConfigurationSourcePhase;
-import org.codehaus.plexus.container.initialization.InitializeComponentRegistryPhase;
 import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
 import org.codehaus.plexus.lifecycle.DefaultLifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
@@ -54,6 +56,10 @@ public class DefaultContainerConfiguration
     private URL containerConfigurationURL;
 
     private ConfigurationSource configurationSource;
+    
+    private List<Class> componentDiscoverers = new ArrayList<Class>();
+    
+    private List<Class> componentDiscoveryListeners = new ArrayList<Class>();
     
     public ContainerConfiguration setName( String name )
     {
@@ -171,6 +177,28 @@ public class DefaultContainerConfiguration
         return this;
     }
 
+    public ContainerConfiguration addComponentDiscoverer( Class<?> clazz )
+    {
+        componentDiscoverers.add( clazz );
+        return this;
+    }
+
+    public ContainerConfiguration addComponentDiscoveryListener( Class<?> clazz )
+    {
+        componentDiscoveryListeners.add( clazz );
+        return this;
+    }
+
+    public List<Class> getComponentDiscoverers()
+    {
+        return componentDiscoverers;
+    }
+
+    public List<Class> getComponentDiscoveryListeners()
+    {
+        return componentDiscoveryListeners;
+    }    
+    
     public ContainerConfiguration setComponentDiscovererManager( ComponentDiscovererManager componentDiscovererManager )
     {
         this.componentDiscovererManager = componentDiscovererManager;
@@ -322,5 +350,5 @@ public class DefaultContainerConfiguration
     public ConfigurationSource getConfigurationSource()
     {
         return configurationSource;
-    }    
+    }
 }

@@ -1,6 +1,7 @@
 package org.codehaus.plexus;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
@@ -98,5 +99,13 @@ public interface ContainerConfiguration
     ContainerConfiguration setConfigurationSource( ConfigurationSource configurationSource );
 
     ConfigurationSource getConfigurationSource();
+
+    ContainerConfiguration addComponentDiscoverer( Class<?> componentDiscoverer );
+    
+    ContainerConfiguration addComponentDiscoveryListener( Class<?> componentDiscoveryListener );
+
+    List<Class> getComponentDiscoverers();
+
+    List<Class> getComponentDiscoveryListeners();    
 }
 

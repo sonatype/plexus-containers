@@ -27,7 +27,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -35,6 +34,7 @@ import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
+import org.codehaus.plexus.component.discovery.ComponentDiscoveryEvent;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
@@ -50,7 +50,6 @@ import org.codehaus.plexus.configuration.PlexusConfigurationMerger;
 import org.codehaus.plexus.configuration.source.ConfigurationSource;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.container.initialization.ContainerInitializationContext;
-import org.codehaus.plexus.container.initialization.ContainerInitializationException;
 import org.codehaus.plexus.container.initialization.ContainerInitializationPhase;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
@@ -282,6 +281,30 @@ public class DefaultPlexusContainer
         {
             IOUtil.close( configurationReader );
         }
+        
+        for( Class clazz : c.getComponentDiscoverers() )
+        {
+            try
+            {
+                ComponentDiscoverer cd = (ComponentDiscoverer) lookup( clazz );
+                componentDiscovererManager.addComponentDiscoverer( cd );
+            }
+            catch ( ComponentLookupException e )
+            {
+            }
+        }
+        
+        for( Class clazz : c.getComponentDiscoveryListeners() )
+        {
+            try
+            {
+                ComponentDiscoveryListener cdl = (ComponentDiscoveryListener) lookup( clazz );
+                componentDiscovererManager.registerComponentDiscoveryListener( cdl );
+            }
+            catch ( ComponentLookupException e )
+            {
+            }
+        }                
     }
 
     // ----------------------------------------------------------------------------
@@ -697,36 +720,23 @@ public class DefaultPlexusContainer
     // TODO: put this in a separate helper class and turn into a component if possible, too big.
 
     protected void initializeConfiguration( ContainerConfiguration c )
-        throws PlexusConfigurationException,
-            ContextException,
-            IOException
+    throws PlexusConfigurationException, ContextException, IOException
+{
+    // We need an empty plexus configuration for merging. This is a function of removing the
+    // plexus-boostrap.xml file.
+    configuration = new XmlPlexusConfiguration( "plexus" );
+
+    if ( configurationReader != null )
     {
-        // We need an empty plexus configuration for merging. This is a function of removing the
-        // plexus-boostrap.xml file.
-        configuration = new XmlPlexusConfiguration( "plexus" );
+        // User userConfiguration
 
-            PlexusXmlComponentDiscoverer discoverer = new PlexusXmlComponentDiscoverer();
+        PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration( "<User Specified Configuration Reader>", getInterpolationConfigurationReader( configurationReader ) );
 
-            PlexusConfiguration plexusConfiguration = discoverer.discoverConfiguration( getContext(), containerRealm );
+        // Merger of bootstrapConfiguration and user userConfiguration
 
-            if ( plexusConfiguration != null )
-            {
-                configuration = PlexusConfigurationMerger.merge( plexusConfiguration, configuration );
-            }
-
-        if ( configurationReader != null )
-        {
-            // User userConfiguration
-
-            PlexusConfiguration userConfiguration = PlexusTools.buildConfiguration(
-                "<User Specified Configuration Reader>",
-                getInterpolationConfigurationReader( configurationReader ) );
-
-            // Merger of bootstrapConfiguration and user userConfiguration
-
-            configuration = PlexusConfigurationMerger.merge( userConfiguration, configuration );
-        }
+        configuration = PlexusConfigurationMerger.merge( userConfiguration, configuration );
     }
+}
 
     protected Reader getInterpolationConfigurationReader( Reader reader )
     {
@@ -917,18 +927,32 @@ public class DefaultPlexusContainer
     public List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm )
         throws PlexusConfigurationException, ComponentRepositoryException
     {
+        List<ComponentSetDescriptor> componentSetDescriptors = new ArrayList<ComponentSetDescriptor>();
+
         List<ComponentDescriptor<?>> discoveredComponentDescriptors = new ArrayList<ComponentDescriptor<?>>();
 
         for ( ComponentDiscoverer componentDiscoverer : getComponentDiscovererManager().getComponentDiscoverers() )
         {
-            for ( ComponentSetDescriptor componentSet : componentDiscoverer.findComponents( getContext(), realm ) )
+            for ( ComponentSetDescriptor componentSetDescriptor : componentDiscoverer.findComponents( getContext(), realm ) )
             {
-                for ( ComponentDescriptor<?> componentDescriptor : componentSet.getComponents() )
+                // Here we should collect all the urls
+                // do the interpolation against the context
+                // register all the components
+                // allow interception and replacement of the components
+
+                componentSetDescriptors.add( componentSetDescriptor );
+
+                for ( ComponentDescriptor<?> componentDescriptor : componentSetDescriptor.getComponents() )
                 {
                     addComponentDescriptor( componentDescriptor );
 
                     discoveredComponentDescriptors.add( componentDescriptor );
                 }
+
+                // Fire the event
+                ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
+
+                componentDiscovererManager.fireComponentDiscoveryEvent( event );
             }
         }
 

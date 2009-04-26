@@ -30,8 +30,6 @@ public class InitializeComponentDiscovererManagerPhase
     {
         ComponentDiscovererManager componentDiscovererManager = context.getContainerConfiguration().getComponentDiscovererManager();
 
-        componentDiscovererManager.initialize();
-
         context.getContainer().setComponentDiscovererManager( componentDiscovererManager );
 
         for ( ComponentDiscoveryListener listener : componentDiscovererManager.getComponentDiscoveryListeners().keySet() )
