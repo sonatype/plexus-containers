@@ -70,8 +70,9 @@ public abstract class AbstractMerger
     public void mergeDescriptors( File outputDescriptor, List<File> descriptors )
         throws IOException
     {
-        SAXBuilder builder = new SAXBuilder();
-
+        SAXBuilder builder = new SAXBuilder( Driver.class.getName() );
+        System.out.println( builder.getDriverClass() );
+        
         Document finalDoc = null;
 
         for ( File f : descriptors )

@@ -52,8 +52,6 @@ public class ClassComponentDescriptorExtractor
     public List<ComponentDescriptor<?>> extract( MetadataGenerationRequest configuration, final ComponentDescriptor<?>[] roleDefaults )
         throws Exception
     {
-        assert roleDefaults != null;
-
         // We don't have a reasonable default to use, so just puke up
         if ( gleaner == null )
         {
@@ -116,8 +114,7 @@ public class ClassComponentDescriptorExtractor
         return new URLClassLoader( urls, null );
     }
 
-    private List<ComponentDescriptor<?>> extract( final File classesDir, final ClassLoader cl,
-                                                  final Map<String, ComponentDescriptor<?>> defaultsByRole )
+    private List<ComponentDescriptor<?>> extract( File classesDir, ClassLoader cl, Map<String, ComponentDescriptor<?>> defaultsByRole )
         throws Exception
     {
         assert classesDir != null;

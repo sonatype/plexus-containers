@@ -57,8 +57,7 @@ public class SourceComponentDescriptorExtractor
         return extract( configuration.sourceDirectories, configuration.sourceEncoding, getDefaultsByRole( roleDefaults ) );
     }
 
-    private List<ComponentDescriptor<?>> extract( final List<String> sourceDirectories, final String sourceEncoding,
-                                                  final Map<String, ComponentDescriptor<?>> defaultsByRole )
+    private List<ComponentDescriptor<?>> extract( final List<String> sourceDirectories, final String sourceEncoding, final Map<String, ComponentDescriptor<?>> defaultsByRole )
         throws Exception
     {
         assert sourceDirectories != null;

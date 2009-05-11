@@ -24,6 +24,7 @@ package org.codehaus.plexus.metadata.merge;
  * SOFTWARE.
  */
 
+import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.metadata.merge.support.PlexusRootElement;
 import org.jdom.Document;
 
@@ -33,10 +34,10 @@ import org.jdom.Document;
  * @author <a href='mailto:rahul.thakur.xdev@gmail.com'>Rahul Thakur</a>
  * @version $Id$
  */
+@Component(role=Merger.class,hint="plexusXml")
 public class PlexusXmlMerger
     extends AbstractMerger
 {
-
     /**
      * @see org.codehaus.plexus.metadata.merge.Merger#merge(org.jdom.Document, org.jdom.Document)
      */
@@ -44,7 +45,7 @@ public class PlexusXmlMerger
         throws MergeException
     {
         // TODO: Ideally we don't want to manipulate the original
-        // dominant document but use its copy for merge.
+        // dominant document but use its copy for merge. 
         //Document mDoc = (Document) dDocument.clone();        // doesn't merge properly
         Document mDoc = dDocument;
         PlexusRootElement dCSE = new PlexusRootElement( mDoc.getRootElement() );
@@ -53,5 +54,4 @@ public class PlexusXmlMerger
         // the contents are merged into the dominant document DOM.
         return mDoc;
     }
-
 }

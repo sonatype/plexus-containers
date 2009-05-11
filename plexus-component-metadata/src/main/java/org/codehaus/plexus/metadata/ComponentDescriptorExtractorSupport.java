@@ -49,8 +49,7 @@ public abstract class ComponentDescriptorExtractorSupport
         return defaultsByRole;
     }
 
-    protected void applyDefaults( final ComponentDescriptor<?> descriptor,
-                                  final Map<String, ComponentDescriptor<?>> defaultsByRole )
+    protected void applyDefaults( ComponentDescriptor<?> descriptor, Map<String, ComponentDescriptor<?>> defaultsByRole )
     {
         assert descriptor != null;
         assert defaultsByRole != null;
