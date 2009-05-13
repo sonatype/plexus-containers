@@ -71,7 +71,6 @@ public abstract class AbstractMerger
         throws IOException
     {
         SAXBuilder builder = new SAXBuilder( Driver.class.getName() );
-        System.out.println( builder.getDriverClass() );
         
         Document finalDoc = null;
 
