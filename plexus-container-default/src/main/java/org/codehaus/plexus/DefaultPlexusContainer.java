@@ -32,6 +32,7 @@ import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.realm.DuplicateRealmException;
 import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryEvent;
@@ -124,7 +125,7 @@ public class DefaultPlexusContainer
     private ThreadLocal<ClassRealm> lookupRealm = new ThreadLocal<ClassRealm>();
 
     public void addComponent( Object component, String role )
-        throws ComponentRepositoryException
+        throws CycleDetectedInComponentGraphException
     {
         ComponentDescriptor<?> cd = new ComponentDescriptor<Object>();
 
@@ -493,7 +494,8 @@ public class DefaultPlexusContainer
         return componentRegistry.getComponentDescriptorList( type, role );
     }
 
-    public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) throws ComponentRepositoryException
+    public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) 
+        throws CycleDetectedInComponentGraphException
     {
         if ( componentDescriptor.getRealm() == null )
         {
@@ -608,9 +610,9 @@ public class DefaultPlexusContainer
         {
             throw new PlexusContainerException( "Error reading configuration file", e );
         }
-        catch ( ComponentRepositoryException e )
+        catch ( CycleDetectedInComponentGraphException e )
         {
-            throw new PlexusContainerException( "Error discoverying components.", e );
+            throw new PlexusContainerException( "Cycle detected in component graph in the system: ", e );
         }        
     }
 
@@ -924,8 +926,8 @@ public class DefaultPlexusContainer
     
     // Discovery
 
-    public List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm )
-        throws PlexusConfigurationException, ComponentRepositoryException
+    public List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm )            
+        throws PlexusConfigurationException, CycleDetectedInComponentGraphException
     {
         List<ComponentSetDescriptor> componentSetDescriptors = new ArrayList<ComponentSetDescriptor>();
 

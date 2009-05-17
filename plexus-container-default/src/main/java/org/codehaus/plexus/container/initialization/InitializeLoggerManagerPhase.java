@@ -18,6 +18,7 @@ package org.codehaus.plexus.container.initialization;
 
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -61,7 +62,7 @@ public class InitializeLoggerManagerPhase
                 {
                     context.getContainer().addComponentDescriptor( cd );
                 }
-                catch ( ComponentRepositoryException cre )
+                catch ( CycleDetectedInComponentGraphException cre )
                 {
                     throw new ContainerInitializationException( "Error setting up logging manager.", cre );
                 }

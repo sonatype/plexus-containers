@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.PlexusConstants;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
@@ -86,7 +87,7 @@ public class InitializeUserConfigurationSourcePhase
                 {
                     context.getContainer().addComponentDescriptor( cd );
                 }
-                catch ( ComponentRepositoryException cre )
+                catch ( CycleDetectedInComponentGraphException cre )
                 {
                     throw new ContainerInitializationException( "Error setting up configuration source.", cre );
                 }

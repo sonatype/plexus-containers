@@ -23,7 +23,7 @@ package org.codehaus.plexus.component.composition;
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
-public class CompositionException
+public class CycleDetectedInComponentGraphException
     extends Exception
 {
     private static final long serialVersionUID = -5587124702588800322L;
@@ -33,7 +33,7 @@ public class CompositionException
      *
      * @param message The detail message for this exception.
      */
-    public CompositionException( String message )
+    public CycleDetectedInComponentGraphException( String message )
     {
         super( message );
     }
@@ -44,7 +44,7 @@ public class CompositionException
      * @param message   The detail message for this exception.
      * @param throwable the root cause of the exception
      */
-    public CompositionException( String message, Throwable throwable )
+    public CycleDetectedInComponentGraphException( String message, Throwable throwable )
     {
         super( message, throwable );
     }

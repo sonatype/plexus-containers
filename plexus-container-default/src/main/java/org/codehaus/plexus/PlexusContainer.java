@@ -17,6 +17,7 @@ package org.codehaus.plexus;
  */
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
@@ -219,7 +220,7 @@ public interface PlexusContainer
      * @throws ComponentRepositoryException
      */
     void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
-        throws ComponentRepositoryException;
+        throws CycleDetectedInComponentGraphException;
 
     /**
      * Releases the component from the container. This is dependant upon how the implementation manages the component,
@@ -345,7 +346,7 @@ public interface PlexusContainer
      * @throws ComponentRepositoryException
      */
     List<ComponentDescriptor<?>> discoverComponents( ClassRealm childRealm )
-        throws PlexusConfigurationException, ComponentRepositoryException;    
+        throws PlexusConfigurationException, CycleDetectedInComponentGraphException;
     
     // ----------------------------------------------------------------------------
     // Component/Plugin ClassRealm creation
@@ -389,5 +390,5 @@ public interface PlexusContainer
     ClassRealm getLookupRealm( Object component );
 
     void addComponent( Object component, String role )
-        throws ComponentRepositoryException;    
+        throws CycleDetectedInComponentGraphException;
 }

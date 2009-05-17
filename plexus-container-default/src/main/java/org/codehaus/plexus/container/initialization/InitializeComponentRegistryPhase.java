@@ -20,6 +20,7 @@ import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.manager.PerLookupComponentManagerFactory;
 import org.codehaus.plexus.component.manager.SingletonComponentManagerFactory;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -31,7 +32,8 @@ import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 /**
  * @author Jason van Zyl
  */
-public class InitializeComponentRegistryPhase implements ContainerInitializationPhase
+public class InitializeComponentRegistryPhase 
+    implements ContainerInitializationPhase
 {
     public void execute( ContainerInitializationContext context )
         throws ContainerInitializationException
@@ -71,13 +73,13 @@ public class InitializeComponentRegistryPhase implements ContainerInitialization
         }
         catch ( PlexusConfigurationException e )
         {
-            throw new ContainerInitializationException( "Error initializing component repository: " +
-                "Cannot unmarshall component descriptor: ", e );
+            throw new ContainerInitializationException( "Error initializing component repository: " + "Cannot unmarshall component descriptor: ", e );
         }
-        catch ( ComponentRepositoryException e )
+        catch ( CycleDetectedInComponentGraphException e )
         {
-            throw new ContainerInitializationException( "Error initializing component repository: ", e );
+            throw new ContainerInitializationException( "A cycle has been detected in the components of the system: ", e );
         }
+        
         return repository;
     }
 

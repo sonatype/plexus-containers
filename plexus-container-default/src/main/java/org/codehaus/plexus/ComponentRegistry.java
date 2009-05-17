@@ -24,6 +24,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
 
 /**
@@ -36,7 +37,7 @@ public interface ComponentRegistry
     void registerComponentManagerFactory( ComponentManagerFactory componentManagerFactory );
 
     void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
-        throws ComponentRepositoryException;
+        throws CycleDetectedInComponentGraphException;
 
     <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint );
 

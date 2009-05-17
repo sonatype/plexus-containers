@@ -31,9 +31,10 @@ public interface CompositionResolver
 
     /**
      * @param componentDescriptor
-     * @throws CompositionException when cycle is detected
+     * @throws CycleDetectedInComponentGraphException when cycle is detected
      */
-    void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) throws CompositionException;
+    void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) 
+        throws CycleDetectedInComponentGraphException;
 
     /**
      * Returns the list of names of components which are required

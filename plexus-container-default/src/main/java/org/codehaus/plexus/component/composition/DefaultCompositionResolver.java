@@ -16,14 +16,13 @@ package org.codehaus.plexus.component.composition;
  * limitations under the License.
  */
 
+import java.util.List;
+
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentRequirementList;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.codehaus.plexus.util.dag.DAG;
-
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -37,7 +36,7 @@ public class DefaultCompositionResolver
     private DAG dag = new DAG();
 
     public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
-        throws CompositionException
+        throws CycleDetectedInComponentGraphException
     {
         String key = getDAGKey( componentDescriptor.getRole(), componentDescriptor.getRoleHint() );
 
@@ -61,7 +60,7 @@ public class DefaultCompositionResolver
             }
             catch ( CycleDetectedException e )
             {
-                throw new CompositionException( "Cyclic requirement detected", e );
+                throw new CycleDetectedInComponentGraphException( "Cyclic requirement detected", e );
             }
         }
     }

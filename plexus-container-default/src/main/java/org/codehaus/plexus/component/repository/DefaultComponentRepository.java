@@ -29,7 +29,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.composition.CompositionException;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
@@ -175,8 +175,8 @@ public class DefaultComponentRepository
     // Component Descriptor processing.
     // ----------------------------------------------------------------------
 
-    public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
-        throws ComponentRepositoryException
+    public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) 
+        throws CycleDetectedInComponentGraphException
     {
         ClassRealm classRealm = componentDescriptor.getRealm();
         SortedMap<String, Multimap<String, ComponentDescriptor<?>>> roleIndex = index.get( classRealm );
@@ -194,13 +194,6 @@ public class DefaultComponentRepository
         }
         roleHintIndex.put( componentDescriptor.getRoleHint(), componentDescriptor );
 
-        try
-        {
-            compositionResolver.addComponentDescriptor( componentDescriptor );
-        }
-        catch ( CompositionException e )
-        {
-            throw new ComponentRepositoryException( e.getMessage(), e );
-        }
+        compositionResolver.addComponentDescriptor( componentDescriptor );
     }
 }

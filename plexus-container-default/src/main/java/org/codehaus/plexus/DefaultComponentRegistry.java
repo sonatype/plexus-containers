@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.Map.Entry;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.component.manager.ComponentManager;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
@@ -118,7 +119,8 @@ public class DefaultComponentRegistry implements ComponentRegistry
         componentManagerFactories.put( componentManagerFactory.getId(), componentManagerFactory );
     }
 
-    public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) throws ComponentRepositoryException
+    public void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor ) 
+        throws CycleDetectedInComponentGraphException
     {
         repository.addComponentDescriptor( componentDescriptor );
     }

@@ -17,6 +17,7 @@ package org.codehaus.plexus.component.repository;
  */
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.Map;
 public interface ComponentRepository
 {
     void addComponentDescriptor( ComponentDescriptor<?> componentDescriptor )
-        throws ComponentRepositoryException;
+        throws CycleDetectedInComponentGraphException;
 
     <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint );
 
