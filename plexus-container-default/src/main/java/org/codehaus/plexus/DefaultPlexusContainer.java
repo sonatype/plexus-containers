@@ -37,13 +37,11 @@ import org.codehaus.plexus.component.discovery.ComponentDiscoverer;
 import org.codehaus.plexus.component.discovery.ComponentDiscovererManager;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryEvent;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
-import org.codehaus.plexus.component.discovery.PlexusXmlComponentDiscoverer;
 import org.codehaus.plexus.component.factory.ComponentFactoryManager;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
@@ -926,7 +924,13 @@ public class DefaultPlexusContainer
     
     // Discovery
 
-    public List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm )            
+    public List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm )
+        throws PlexusConfigurationException, CycleDetectedInComponentGraphException
+    {
+        return discoverComponents( realm, null );
+    }    
+    
+    public List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm, Object data )            
         throws PlexusConfigurationException, CycleDetectedInComponentGraphException
     {
         List<ComponentSetDescriptor> componentSetDescriptors = new ArrayList<ComponentSetDescriptor>();
@@ -952,7 +956,7 @@ public class DefaultPlexusContainer
                 }
 
                 // Fire the event
-                ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor );
+                ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor, data );
 
                 componentDiscovererManager.fireComponentDiscoveryEvent( event );
             }

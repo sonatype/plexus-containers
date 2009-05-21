@@ -348,6 +348,9 @@ public interface PlexusContainer
     List<ComponentDescriptor<?>> discoverComponents( ClassRealm childRealm )
         throws PlexusConfigurationException, CycleDetectedInComponentGraphException;
     
+    List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm, Object data )            
+        throws PlexusConfigurationException, CycleDetectedInComponentGraphException;
+    
     // ----------------------------------------------------------------------------
     // Component/Plugin ClassRealm creation
     // ----------------------------------------------------------------------------
