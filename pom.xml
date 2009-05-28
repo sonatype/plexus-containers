@@ -23,9 +23,9 @@
     <module>plexus-container-default</module>
   </modules>
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0-beta-3.0.6</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/tags/plexus-containers-1.0-beta-3.0.6</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/tags/plexus-containers-1.0-beta-3.0.6</url>
+    <connection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/branches/plexus-containers-1.x</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/branches/plexus-containers-1.x</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/branches/plexus-containers-1.x</url>
   </scm>
   <dependencies>
     <dependency>
