@@ -20,12 +20,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
-import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
-import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.manager.ComponentManagerFactory;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 
 /**
  * @author Jason van Zyl
@@ -62,4 +61,6 @@ public interface ComponentRegistry
     void removeComponentRealm( ClassRealm classRealm ) throws PlexusContainerException;
 
     void dispose();
+
+    <T> void addComponent( T component, String role, String roleHint );
 }

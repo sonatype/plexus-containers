@@ -123,17 +123,23 @@ public class DefaultPlexusContainer
     private ThreadLocal<ClassRealm> lookupRealm = new ThreadLocal<ClassRealm>();
 
     public void addComponent( Object component, String role )
-        throws CycleDetectedInComponentGraphException
     {
-        ComponentDescriptor<?> cd = new ComponentDescriptor<Object>();
+        addComponent( component, role, PLEXUS_DEFAULT_HINT );
+    }
 
-        cd.setRole( role );
+    public <T> void addComponent( T component, Class<?> role, String roleHint ) 
+    {
+        addComponent( component, role.getName(), roleHint );
+    }
 
-        cd.setRoleHint( PLEXUS_DEFAULT_HINT );
+    public void addComponent( Object component, String role, String roleHint )
+    {
+        if ( roleHint == null )
+        {
+            roleHint = PLEXUS_DEFAULT_HINT;
+        }
 
-        cd.setImplementation( role );
-
-        addComponentDescriptor( cd );
+        getComponentRegistry().addComponent( component, role, roleHint );
     }
 
     public ClassRealm setLookupRealm( ClassRealm realm )

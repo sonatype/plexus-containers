@@ -489,4 +489,42 @@ public class PlexusContainerTest
             // todo actually test nested exception is as expected when 
         }
     }
+
+    public void testAddComponent()
+        throws Exception
+    {
+        LiveComponent live = new LiveComponent();
+
+        container.addComponent( live, LiveComponent.class.getName() );
+
+        LiveComponent c = container.lookup( LiveComponent.class );
+
+        assertSame( live, c );
+    }
+
+    public void testComponentOverride() 
+        throws Exception
+    {
+        assertNotNull( container.lookup( Component.class ) );
+
+        Component live = new Component()
+        {
+            public Activity getActivity()
+            {
+                return null;
+            }
+            public String getHost()
+            {
+                return null;
+            }
+            public int getPort()
+            {
+                return 0;
+            }
+        };
+
+        container.addComponent( live, Component.class, null );
+
+        assertSame( live, container.lookup( Component.class ) );
+    }
 }

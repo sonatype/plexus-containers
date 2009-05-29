@@ -3,8 +3,8 @@ package org.codehaus.plexus;
 import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Comparator;
 import java.util.Map.Entry;
 
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
@@ -25,7 +24,6 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRepository;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
@@ -48,6 +46,8 @@ public class DefaultComponentRegistry implements ComponentRegistry
     private final Map<Key, ComponentManager<?>> componentManagers = new TreeMap<Key, ComponentManager<?>>();
     private final Map<Object, ComponentManager<?>> componentManagersByComponent = new IdentityHashMap<Object, ComponentManager<?>>();
 
+    private final Map<Key, Object> unmanagedComponents = new TreeMap<Key, Object>();
+
     public DefaultComponentRegistry( MutablePlexusContainer container,
                                      ComponentRepository repository,
                                      LifecycleHandlerManager lifecycleHandlerManager )
@@ -66,6 +66,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
             managers = new ArrayList<ComponentManager<?>>( componentManagers.values() );
             componentManagers.clear();
             componentManagersByComponent.clear();
+            unmanagedComponents.clear();
 
             disposingComponents = true;
         }
@@ -123,6 +124,18 @@ public class DefaultComponentRegistry implements ComponentRegistry
         throws CycleDetectedInComponentGraphException
     {
         repository.addComponentDescriptor( componentDescriptor );
+    }
+
+    @SuppressWarnings("unchecked")
+    public synchronized <T> void addComponent( T component, String role, String roleHint )
+    {
+        ComponentDescriptor descriptor = new ComponentDescriptor(component.getClass(), null );
+        descriptor.setRole( role );
+        descriptor.setRoleHint( roleHint );
+
+        Key key = new Key( descriptor.getRealm(), role, roleHint );
+
+        unmanagedComponents.put( key, component );
     }
 
     public <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint )
@@ -281,7 +294,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
     public void removeComponentRealm( ClassRealm classRealm ) throws PlexusContainerException
     {
         repository.removeComponentRealm( classRealm );
-
+        
         List<ComponentManager<?>> dispose = new ArrayList<ComponentManager<?>>();
         try
         {
@@ -321,12 +334,21 @@ public class DefaultComponentRegistry implements ComponentRegistry
     private <T> T getComponent( Class<T> type, String role, String roleHint, ComponentDescriptor<T> descriptor )
         throws ComponentLookupException
     {
+        // lookup for unmanaged components first
+
+        T component = this.<T>getUnmanagedComponent( role, roleHint ); // weird syntax due to http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6302954
+
+        if ( component != null )
+        {
+            return component;
+        }
+
         ComponentManager<T> componentManager = getComponentManager( type, role, roleHint, descriptor );
 
         // Get instance from manager... may result in creation
         try
         {
-            T component = componentManager.getComponent();
+            component = componentManager.getComponent();
             synchronized ( this )
             {
                 componentManagersByComponent.put( component, componentManager );
@@ -344,6 +366,23 @@ public class DefaultComponentRegistry implements ComponentRegistry
             throw new ComponentLookupException(
                 "Unable to lookup component '" + componentManager.getRole() + "', it could not be started.",
                 componentManager.getRole(), componentManager.getRoleHint(), componentManager.getRealm(), e );
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private synchronized <T> T getUnmanagedComponent( String role, String roleHint )
+    {
+        Set<ClassRealm> realms = getSearchRealms( true );
+
+        if ( realms != null )
+        {
+            // ignore unmanaged components, they are not associated with realms 
+            // but lookup realm is provided via thread context classloader 
+            return null;
+        }
+        else
+        {
+            return (T) unmanagedComponents.get( new Key( null, role, roleHint ) );
         }
     }
 
@@ -380,7 +419,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
     private <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint )
     {
-        Set<ClassRealm> realms = getSearchRealms();
+        Set<ClassRealm> realms = getSearchRealms( false );
 
         // return the component in the first realm
         for ( ClassRealm realm : realms )
@@ -394,13 +433,13 @@ public class DefaultComponentRegistry implements ComponentRegistry
         return null;
     }
 
-    private Set<ClassRealm> getSearchRealms()
+    private Set<ClassRealm> getSearchRealms( boolean specifiedOnly )
     {
         // determine realms to search
         Set<ClassRealm> realms = new LinkedHashSet<ClassRealm>();
         for ( ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); classLoader != null; classLoader = classLoader.getParent() )
         {
-            if ( classLoader instanceof ClassRealm )
+            if ( classLoader instanceof ClassRealm && ((ClassRealm) classLoader).getWorld() == container.getClassWorld() )
             {
                 ClassRealm realm = (ClassRealm) classLoader;
                 while ( realm != null )
@@ -413,6 +452,11 @@ public class DefaultComponentRegistry implements ComponentRegistry
 
         if ( realms.isEmpty() )
         {
+            if ( specifiedOnly )
+            {
+                return null;
+            }
+
             realms.addAll( container.getClassWorld().getRealms() );
         }
 
@@ -531,7 +575,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
             int value;
             if ( realm != null )
             {
-                value = realm.getId().compareTo( o.realm.getId() );
+                value = o.realm == null? -1 : realm.getId().compareTo( o.realm.getId() );
             }
             else
             {

@@ -16,6 +16,9 @@ package org.codehaus.plexus;
  * limitations under the License.
  */
 
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.discovery.ComponentDiscoveryListener;
@@ -25,9 +28,6 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.context.Context;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * PlexusContainer is the entry-point for loading and accessing other
@@ -394,4 +394,13 @@ public interface PlexusContainer
 
     void addComponent( Object component, String role )
         throws CycleDetectedInComponentGraphException;
+
+    /**
+     * Adds live component instance to this container.
+     * 
+     * Component instance is not associated with any class realm and will
+     * be ignored during lookup is lookup realm is provided using thread context
+     * classloader.
+     */
+    <T> void addComponent( T component, Class<?> role, String roleHint );
 }
