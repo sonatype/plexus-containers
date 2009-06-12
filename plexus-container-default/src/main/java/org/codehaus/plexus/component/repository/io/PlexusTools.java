@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
@@ -31,9 +32,6 @@ import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.io.XmlPlexusConfigurationReader;
-import org.codehaus.plexus.classworlds.ClassWorld;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
-import org.codehaus.plexus.classworlds.realm.NoSuchRealmException;
 
 
 /**
@@ -73,6 +71,12 @@ public class PlexusTools
     {
         return buildComponentDescriptor( buildConfiguration( configuration ), realm );
     }
+
+    public static ComponentDescriptor<?> buildComponentDescriptor( PlexusConfiguration configuration )
+        throws PlexusConfigurationException
+    {
+        return buildComponentDescriptorImpl( configuration, null );
+    }
     
     public static ComponentDescriptor<?> buildComponentDescriptor( PlexusConfiguration configuration, ClassRealm realm )
         throws PlexusConfigurationException
@@ -82,7 +86,13 @@ public class PlexusTools
             throw new NullPointerException( "realm is null" );
         }
 
+        return buildComponentDescriptorImpl( configuration, realm );
+    }
 
+    private static ComponentDescriptor<?> buildComponentDescriptorImpl( PlexusConfiguration configuration,
+                                                                        ClassRealm realm )
+        throws PlexusConfigurationException
+    {
         String implementation = configuration.getChild( "implementation" ).getValue();
         if (implementation == null)
         {
@@ -92,8 +102,16 @@ public class PlexusTools
         ComponentDescriptor<?> cd;
         try
         {
-            Class<?> implementationClass = realm.loadClass( implementation );
-            cd = new ComponentDescriptor(implementationClass, realm);
+            if ( realm != null )
+            {
+                Class<?> implementationClass = realm.loadClass( implementation );
+                cd = new ComponentDescriptor(implementationClass, realm);
+            }
+            else
+            {
+                cd = new ComponentDescriptor();
+                cd.setImplementation( implementation );
+            }
         }
         catch ( Throwable e )
         {
@@ -181,6 +199,12 @@ public class PlexusTools
         return cd;
     }
 
+    public static ComponentSetDescriptor buildComponentSet( PlexusConfiguration c )
+        throws PlexusConfigurationException
+    {
+        return buildComponentSet( c, null );
+    }
+
     public static ComponentSetDescriptor buildComponentSet( PlexusConfiguration c, ClassRealm realm )
         throws PlexusConfigurationException
     {
@@ -196,7 +220,7 @@ public class PlexusTools
         {
             PlexusConfiguration component = components[i];
 
-            csd.addComponentDescriptor( buildComponentDescriptor( component, realm ) );
+            csd.addComponentDescriptor( buildComponentDescriptorImpl( component, realm ) );
         }
 
         // ----------------------------------------------------------------------
