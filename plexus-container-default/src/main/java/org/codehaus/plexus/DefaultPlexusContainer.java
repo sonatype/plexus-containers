@@ -954,17 +954,17 @@ public class DefaultPlexusContainer
 
                 componentSetDescriptors.add( componentSetDescriptor );
 
+                // Fire the event
+                ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor, data );
+
+                componentDiscovererManager.fireComponentDiscoveryEvent( event );
+
                 for ( ComponentDescriptor<?> componentDescriptor : componentSetDescriptor.getComponents() )
                 {
                     addComponentDescriptor( componentDescriptor );
 
                     discoveredComponentDescriptors.add( componentDescriptor );
                 }
-
-                // Fire the event
-                ComponentDiscoveryEvent event = new ComponentDiscoveryEvent( componentSetDescriptor, data );
-
-                componentDiscovererManager.fireComponentDiscoveryEvent( event );
             }
         }
 
