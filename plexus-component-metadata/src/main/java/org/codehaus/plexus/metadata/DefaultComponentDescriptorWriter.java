@@ -26,9 +26,7 @@ package org.codehaus.plexus.metadata;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
@@ -182,16 +180,9 @@ public class DefaultComponentDescriptorWriter
         }
 
         w.startElement( "requirements" );
-
-        Set<String> processedRequirements = new HashSet<String>();
         
         for ( ComponentRequirement cr : requirements )
         {
-            if ( processedRequirements.contains( cr.getRole() ) )
-            {
-                continue;
-            }
-                        
             w.startElement( "requirement" );
 
             element( w, "role", cr.getRole() );
@@ -224,8 +215,6 @@ public class DefaultComponentDescriptorWriter
             element( w, "field-name", cr.getFieldName() );
 
             w.endElement();
-
-            processedRequirements.add( cr.getRole() );
         }
 
         w.endElement();
