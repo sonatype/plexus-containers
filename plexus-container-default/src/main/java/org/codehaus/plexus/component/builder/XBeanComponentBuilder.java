@@ -149,17 +149,19 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
         ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(realm);
         try {
-            ObjectRecipe recipe = createObjectRecipe(descriptor, realm);
+            ObjectRecipe recipe;
 
             T instance;
             ComponentFactory componentFactory = container.getComponentFactoryManager().findComponentFactory(descriptor.getComponentFactory());
             if (JavaComponentFactory.class.equals(componentFactory.getClass())) {
                 // xbean-reflect will create object and do injection
+                recipe = createObjectRecipe( null, descriptor, realm );
                 instance = (T) recipe.create();
             } else {
                 // todo figure out how to easily let xbean use the factory to construct the component
                 // use object factory to construct component and then inject into that object
                 instance = (T) componentFactory.newInstance(descriptor, realm, container);
+                recipe = createObjectRecipe( instance, descriptor, realm );
                 recipe.setProperties( instance );
             }
 
@@ -177,12 +179,33 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
         }
     }
 
-    public ObjectRecipe createObjectRecipe(ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException, PlexusConfigurationException {
+    public ObjectRecipe createObjectRecipe(T instance, ComponentDescriptor<T> descriptor, ClassRealm realm) throws ComponentInstantiationException, PlexusConfigurationException {
         String factoryMethod = null;
         String[] constructorArgNames = null;
         Class[] constructorArgTypes = null;
 
-        ObjectRecipe recipe = new ObjectRecipe(descriptor.getImplementationClass(),
+        Class<?> implClass = ( instance != null ) ? instance.getClass() : descriptor.getImplementationClass();
+
+        if ( implClass == null || implClass == Object.class )
+        {
+            // if the descriptor could not load the class, it's time to report this up to the caller now
+            try
+            {
+                realm.loadClass( descriptor.getImplementation() );
+            }
+            catch ( ClassNotFoundException e )
+            {
+                throw new ComponentInstantiationException( "Could not load implementation class for component "
+                    + descriptor.getHumanReadableKey() + " from class realm " + realm, e );
+            }
+            catch ( LinkageError e )
+            {
+                throw new ComponentInstantiationException( "Could not load implementation class for component "
+                    + descriptor.getHumanReadableKey() + " from class realm " + realm, e );
+            }
+        }
+
+        ObjectRecipe recipe = new ObjectRecipe( implClass,
                 factoryMethod,
                 constructorArgNames,
                 constructorArgTypes);
@@ -190,7 +213,7 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
         recipe.allow(Option.PRIVATE_PROPERTIES);
 
         // MapOrientedComponents don't get normal injection
-        if (!MapOrientedComponent.class.isAssignableFrom(descriptor.getImplementationClass())) {
+        if (!MapOrientedComponent.class.isAssignableFrom( implClass )) {
             for (ComponentRequirement requirement : descriptor.getRequirements() ) {
                 String name = requirement.getFieldName();
                 RequirementRecipe requirementRecipe = new RequirementRecipe(descriptor, requirement, getContainer(), name == null);

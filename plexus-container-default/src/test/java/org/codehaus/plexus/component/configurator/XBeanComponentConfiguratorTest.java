@@ -13,7 +13,7 @@ public class XBeanComponentConfiguratorTest extends AbstractComponentConfigurato
     @Override
     protected void configureComponent(Object component, ComponentDescriptor descriptor, ClassRealm realm) throws Exception {
         XBeanComponentBuilder componentBuilder = new XBeanComponentBuilder();
-        ObjectRecipe recipe = componentBuilder.createObjectRecipe(descriptor, realm);
+        ObjectRecipe recipe = componentBuilder.createObjectRecipe( component, descriptor, realm);
 
         // need a caller context
         ExecutionContext executionContext = new DefaultExecutionContext();
