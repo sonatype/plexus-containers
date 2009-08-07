@@ -126,18 +126,18 @@ public class ComponentDescriptor<T>
     {
         StringBuffer key = new StringBuffer();
 
-        key.append( "role: '" ).append( role ).append( "'" );
+        key.append( "role: '" ).append( getRole() ).append( "'" );
 
-        key.append( ", implementation: '" ).append( implementation ).append( "'" );
+        key.append( ", implementation: '" ).append( getImplementation() ).append( "'" );
 
         if ( roleHint != null )
         {
-            key.append( ", role hint: '" ).append( roleHint ).append( "'" );
+            key.append( ", role hint: '" ).append( getRoleHint() ).append( "'" );
         }
 
         if ( alias != null )
         {
-            key.append( ", alias: '" ).append( alias ).append( "'" );
+            key.append( ", alias: '" ).append( getAlias() ).append( "'" );
         }
 
         return key.toString();
@@ -185,11 +185,11 @@ public class ComponentDescriptor<T>
 
     private void attemptRoleLoad()
     {
-        if ( roleClass == null && role != null && realm != null )
+        if ( roleClass == null && getRole() != null && getRealm() != null )
         {
             try
             {
-                roleClass = realm.loadClass( role );
+                roleClass = getRealm().loadClass( getRole() );
                 Thread.currentThread();
             }
             catch ( Throwable ignored )
@@ -295,11 +295,11 @@ public class ComponentDescriptor<T>
 
     private void attemptImplementationLoad()
     {
-        if ( implementationClass == null && implementation != null && realm != null )
+        if ( implementationClass == null && getImplementation() != null && getRealm() != null )
         {
             try
             {
-                implementationClass = realm.loadClass( implementation );
+                implementationClass = getRealm().loadClass( getImplementation() );
                 Thread.currentThread();
             }
             catch ( Throwable ignored )
