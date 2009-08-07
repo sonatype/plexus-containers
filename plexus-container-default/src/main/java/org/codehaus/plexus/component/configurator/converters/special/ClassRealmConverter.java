@@ -1,6 +1,5 @@
 package org.codehaus.plexus.component.configurator.converters.special;
 
-import org.codehaus.classworlds.ClassRealmAdapter;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
@@ -41,9 +40,7 @@ public class ClassRealmConverter
 
     public boolean canConvert( Class type )
     {
-        // backwards compatibility for old ClassWorld fields
-        return org.codehaus.classworlds.ClassRealm.class.isAssignableFrom( type )
-            || ClassRealm.class.isAssignableFrom( type );
+        return ClassRealm.class.isAssignableFrom( type );
     }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
@@ -56,12 +53,6 @@ public class ClassRealmConverter
         if ( retValue == null )
         {
             retValue = classRealm;
-        }
-
-        // backwards compatibility for old ClassWorld fields
-        if ( retValue instanceof ClassRealm && org.codehaus.classworlds.ClassRealm.class.isAssignableFrom( type ) )
-        {
-            retValue = ClassRealmAdapter.getInstance( (ClassRealm) retValue );
         }
 
         return retValue;

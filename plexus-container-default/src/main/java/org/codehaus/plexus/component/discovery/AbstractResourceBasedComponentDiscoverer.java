@@ -57,7 +57,7 @@ public abstract class AbstractResourceBasedComponentDiscoverer
         
         try
         {
-            resources = realm.findResources( getComponentDescriptorLocation() );
+            resources = realm.getResources( getComponentDescriptorLocation() );
         }
         catch ( IOException e )
         {

@@ -24,7 +24,6 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
-import org.codehaus.classworlds.ClassRealmAdapter;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
@@ -79,16 +78,14 @@ public abstract class AbstractComponentConfigurator
         // For compatibility with old ComponentFactories that use old ClassWorlds
         // ----------------------------------------------------------------------------
 
-        org.codehaus.classworlds.ClassRealm cr = ClassRealmAdapter.getInstance( containerRealm );
-
         Method method;
 
         try
         {
             method = getClass().getMethod( "configureComponent", new Class[]{Object.class, PlexusConfiguration.class,
-                ExpressionEvaluator.class, org.codehaus.classworlds.ClassRealm.class, ConfigurationListener.class} );
+                ExpressionEvaluator.class, ClassRealm.class, ConfigurationListener.class} );
 
-            method.invoke( this, new Object[]{component, configuration, expressionEvaluator, cr, listener} );
+            method.invoke( this, new Object[]{component, configuration, expressionEvaluator, containerRealm, listener} );
         }
         catch ( Exception mnfe )
         {
