@@ -31,6 +31,7 @@ import org.codehaus.plexus.component.configurator.converters.basic.ByteConverter
 import org.codehaus.plexus.component.configurator.converters.basic.CharConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.DateConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.DoubleConverter;
+import org.codehaus.plexus.component.configurator.converters.basic.EnumConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.FileConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.FloatConverter;
 import org.codehaus.plexus.component.configurator.converters.basic.IntConverter;
@@ -155,6 +156,8 @@ public class DefaultConverterLookup
         registerDefaultConverter( new UrlConverter() );
 
         registerDefaultConverter( new UriConverter() );
+
+        registerDefaultConverter( new EnumConverter() );
     }
 
     private void registerDefaultCompositeConverters()

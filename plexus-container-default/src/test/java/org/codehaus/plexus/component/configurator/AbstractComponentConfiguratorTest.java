@@ -26,6 +26,7 @@ package org.codehaus.plexus.component.configurator;
 
 import java.io.File;
 import java.io.StringReader;
+import java.lang.annotation.ElementType;
 import java.net.URI;
 import java.net.URL;
 import java.util.LinkedList;
@@ -606,6 +607,37 @@ public abstract class AbstractComponentConfiguratorTest
             // expected
             e.printStackTrace();
         }
+    }
+
+    public void testComponentConfigurationWhereFieldIsEnum()
+        throws Exception
+    {
+        String xml = "<configuration>" //
+            + "  <simpleEnum>TYPE</simpleEnum>" //
+            + "  <nestedEnum>ONE</nestedEnum>" //
+            + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithEnumFields component = new ComponentWithEnumFields();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration( configuration );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        configureComponent( component, descriptor, realm );
+
+        assertEquals( ElementType.TYPE, component.getSimpleEnum() );
+
+        assertEquals( ComponentWithEnumFields.NestedEnum.ONE, component.getNestedEnum() );
     }
 
 }
