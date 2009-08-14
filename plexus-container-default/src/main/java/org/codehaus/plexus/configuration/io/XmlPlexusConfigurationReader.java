@@ -20,7 +20,7 @@ public class XmlPlexusConfigurationReader
         throws IOException,
             PlexusConfigurationException
     {
-        return read( new InputStreamReader( inputStream ) );
+        return read( new InputStreamReader( inputStream, "UTF-8" ) );
     }
 
     public PlexusConfiguration read( Reader reader )

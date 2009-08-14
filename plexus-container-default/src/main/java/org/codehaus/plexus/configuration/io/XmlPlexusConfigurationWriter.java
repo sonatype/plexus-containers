@@ -14,7 +14,7 @@ public class XmlPlexusConfigurationWriter
     public void write( OutputStream outputStream, PlexusConfiguration configuration )
         throws IOException
     {
-        write( new OutputStreamWriter( outputStream ), configuration );
+        write( new OutputStreamWriter( outputStream, "UTF-8" ), configuration );
     }
 
     public void write( Writer writer, PlexusConfiguration configuration )
