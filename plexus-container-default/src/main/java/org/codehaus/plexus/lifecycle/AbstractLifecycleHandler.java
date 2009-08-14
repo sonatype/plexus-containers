@@ -28,9 +28,9 @@ import java.util.List;
 public abstract class AbstractLifecycleHandler
     implements LifecycleHandler
 {
-    private List beginSegment;
+    private List<Phase> beginSegment;
 
-    private List endSegment;
+    private List<Phase> endSegment;
 
     // ----------------------------------------------------------------------
     // Begin Segment
@@ -40,13 +40,13 @@ public abstract class AbstractLifecycleHandler
     {
         if ( beginSegment == null )
         {
-            beginSegment = new ArrayList();
+            beginSegment = new ArrayList<Phase>();
         }
 
         beginSegment.add( phase );
     }
 
-    public List getBeginSegment()
+    public List<Phase> getBeginSegment()
     {
         return beginSegment;
     }
@@ -55,13 +55,13 @@ public abstract class AbstractLifecycleHandler
     {
         if ( endSegment == null )
         {
-            endSegment = new ArrayList();
+            endSegment = new ArrayList<Phase>();
         }
 
         endSegment.add( phase );
     }
 
-    public List getEndSegment()
+    public List<Phase> getEndSegment()
     {
         return endSegment;
     }
@@ -90,10 +90,8 @@ public abstract class AbstractLifecycleHandler
             return;
         }
 
-        for ( Iterator i = getBeginSegment().iterator(); i.hasNext(); )
+        for ( Phase phase : getBeginSegment() )
         {
-            Phase phase = (Phase) i.next();
-
             phase.execute( component, manager, realm );
         }
     }
@@ -119,15 +117,13 @@ public abstract class AbstractLifecycleHandler
             return;
         }
 
-        for ( Iterator i = getEndSegment().iterator(); i.hasNext(); )
+        for ( Phase phase : getEndSegment() )
         {
-            Phase phase = (Phase) i.next();
-
             phase.execute( component, manager, contextRealm );
         }
     }
 
-    private boolean segmentIsEmpty( List segment )
+    private boolean segmentIsEmpty( List<Phase> segment )
     {
         if ( segment == null || segment.size() == 0 )
         {

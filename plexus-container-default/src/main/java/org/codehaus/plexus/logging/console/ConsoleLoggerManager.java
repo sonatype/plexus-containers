@@ -38,7 +38,7 @@ import java.util.Map;
  *   </logger>
  * </logging>
  * </pre>
- * 
+ *
  * @author Jason van Zyl
  * @author <a href="mailto:trygvis@inamo.no">Trygve Laugst&oslash;l</a>
  * @version $Id$
@@ -48,8 +48,8 @@ public class ConsoleLoggerManager
     implements LoggerManager, Initializable
 {
     /**
-     * Message of this level or higher will be logged. 
-     * 
+     * Message of this level or higher will be logged.
+     *
      * This field is set by the plexus container thus the name is 'threshold'. The field
      * currentThreshold contains the current setting of the threshold.
      */
@@ -57,7 +57,7 @@ public class ConsoleLoggerManager
 
     private int currentThreshold;
 
-    private Map loggers;
+    private Map<String, Logger> loggers;
 
     /** The number of active loggers in use. */
     private int loggerCount;
@@ -93,7 +93,7 @@ public class ConsoleLoggerManager
             currentThreshold = Logger.LEVEL_DEBUG;
         }
 
-        loggers = new HashMap();
+        loggers = new HashMap<String, Logger>();
     }
 
     public void setThreshold( int currentThreshold )
@@ -105,9 +105,8 @@ public class ConsoleLoggerManager
     {
         this.currentThreshold = currentThreshold;
 
-        for ( Iterator logs = loggers.values().iterator(); logs.hasNext(); )
+        for ( Logger logger : loggers.values() )
         {
-            Logger logger = (Logger) logs.next();
             logger.setThreshold( currentThreshold );
         }
     }
@@ -159,14 +158,13 @@ public class ConsoleLoggerManager
 
     public Logger getLoggerForComponent( String role, String roleHint )
     {
-        Logger logger;
-        String name;
-
-        name = toMapKey( role, roleHint );
-        logger = (Logger)loggers.get( name );
+        String name = toMapKey( role, roleHint );
+        Logger logger = (Logger)loggers.get( name );
 
         if ( logger != null )
+        {
             return logger;
+        }
 
         debug( "Creating logger '" + name + "' " + this.hashCode() + "." );
         logger = createLogger( getThreshold(), name );

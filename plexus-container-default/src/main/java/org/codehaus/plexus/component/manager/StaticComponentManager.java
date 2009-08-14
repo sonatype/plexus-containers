@@ -3,7 +3,6 @@ package org.codehaus.plexus.component.manager;
 import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.component.repository.exception.ComponentLifecycleException;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
-import org.codehaus.plexus.component.factory.ComponentInstantiationException;
 import org.codehaus.plexus.MutablePlexusContainer;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.PhaseExecutionException;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;

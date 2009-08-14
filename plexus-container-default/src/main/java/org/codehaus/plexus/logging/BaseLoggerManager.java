@@ -19,7 +19,6 @@ package org.codehaus.plexus.logging;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public abstract class BaseLoggerManager
         extends AbstractLoggerManager implements Initializable
 {
     /** */
-    private Map loggerCache = new HashMap();
+    private Map<String, Logger> loggerCache = new HashMap<String, Logger>();
 
     private String threshold = "info";
 
@@ -100,9 +99,8 @@ public abstract class BaseLoggerManager
     {
         this.currentThreshold = currentThreshold;
 
-        for ( Iterator logs = loggerCache.values().iterator(); logs.hasNext(); )
+        for ( Logger logger : loggerCache.values() )
         {
-            Logger logger = (Logger) logs.next();
             logger.setThreshold( currentThreshold );
         }
     }
