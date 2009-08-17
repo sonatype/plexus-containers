@@ -40,7 +40,7 @@
       </dependencies>
     </profile>
     <profile>
-      <id>integration-tests</id>
+      <id>run-its</id>
       <activation>
         <property>
           <name>maven.test.skip</name>

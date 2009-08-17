@@ -18,8 +18,8 @@ package org.codehaus.plexus.metadata.gleaner;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 
+import com.thoughtworks.qdox.JavaDocBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaClassCache;
 
 /**
  * Interface for component gleaners which glean off of source code.
@@ -30,6 +30,6 @@ public interface SourceComponentGleaner
 {
     String ROLE = SourceComponentGleaner.class.getName();
 
-    ComponentDescriptor<?> glean(JavaClassCache classCache, JavaClass javaClass) 
+    ComponentDescriptor<?> glean( JavaDocBuilder classCache, JavaClass javaClass )
         throws ComponentGleanerException;
 }

@@ -45,9 +45,9 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
 import org.codehaus.plexus.util.StringUtils;
 
+import com.thoughtworks.qdox.JavaDocBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
-import com.thoughtworks.qdox.model.JavaClassCache;
 import com.thoughtworks.qdox.model.JavaField;
 
 /**
@@ -88,7 +88,7 @@ public class QDoxComponentGleaner
     // ComponentGleaner Implementation
     // ----------------------------------------------------------------------
 
-    public ComponentDescriptor<?> glean( JavaClassCache classCache, JavaClass javaClass )
+    public ComponentDescriptor<?> glean( JavaDocBuilder classCache, JavaClass javaClass )
         throws ComponentGleanerException
     {
         DocletTag tag = javaClass.getTagByName( PLEXUS_COMPONENT_TAG );
@@ -235,6 +235,18 @@ public class QDoxComponentGleaner
         Startable.class.getName(),
     } ) );
 
+    private static String getPackage( JavaClass javaClass )
+    {
+        if ( javaClass.getPackage() != null )
+        {
+            return javaClass.getPackage().getName();
+        }
+        else
+        {
+            return "";
+        }
+    }
+
     private String findRole( JavaClass javaClass )
     {
         // ----------------------------------------------------------------------
@@ -268,7 +280,7 @@ public class QDoxComponentGleaner
 
             String fqn = ifc.getFullyQualifiedName();
 
-            String pkg = ifc.getPackage();
+            String pkg = getPackage( ifc );
 
             if ( pkg == null )
             {
@@ -286,7 +298,7 @@ public class QDoxComponentGleaner
                     // prepend the gleaned class' package
                     // -----------------------------------------------------------------------
 
-                    pkg = javaClass.getPackage();
+                    pkg = getPackage( javaClass );
 
                     fqn = pkg + "." + fqn;
                 }
@@ -330,7 +342,7 @@ public class QDoxComponentGleaner
         return role;
     }
 
-    private void findRequirements( JavaClassCache classCache, ComponentDescriptor<?> componentDescriptor,
+    private void findRequirements( JavaDocBuilder classCache, ComponentDescriptor<?> componentDescriptor,
                                    JavaClass javaClass )
     {
         JavaField[] fields = javaClass.getFields();
@@ -444,9 +456,9 @@ public class QDoxComponentGleaner
 
                 JavaClass roleClass = classCache.getClassByName( role );
 
-                if ( role.indexOf( '.' ) == -1 && StringUtils.isEmpty( roleClass.getPackage() ) )
+                if ( role.indexOf( '.' ) == -1 && StringUtils.isEmpty( getPackage( roleClass ) ) )
                 {
-                    role = javaClass.getPackage() + "." + roleClass.getName();
+                    role = getPackage( javaClass ) + "." + roleClass.getName();
                 }
 
                 cr.setRole( role );

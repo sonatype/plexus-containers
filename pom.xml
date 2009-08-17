@@ -69,7 +69,7 @@
       <dependency>
         <groupId>com.thoughtworks.qdox</groupId>
         <artifactId>qdox</artifactId>
-        <version>1.6.3</version>
+        <version>1.9.2</version>
       </dependency>
       <dependency>
         <groupId>jdom</groupId>

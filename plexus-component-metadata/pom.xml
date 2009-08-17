@@ -28,12 +28,6 @@
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
-    <!--
-      NOTE: When QDox 1.7 is fuly cooked should update this and consider using it to provide source-level annotation
-      processing (plexus-cdc-anno). But right now its way to buggy. <dependency>
-      <groupId>com.thoughtworks.qdox</groupId> <artifactId>qdox</artifactId> <version>1.7-SNAPSHOT</version>
-      </dependency>
-    -->
     <dependency>
       <groupId>com.thoughtworks.qdox</groupId>
       <artifactId>qdox</artifactId>
@@ -83,7 +77,7 @@
 
   <profiles>
     <profile>
-      <id>its</id>
+      <id>run-its</id>
       <build>
         <plugins>
           <plugin>
