@@ -57,11 +57,10 @@ public class XmlPlexusConfiguration
         }
 
         // children
-        Xpp3Dom[] doms = dom.getChildren();
-
-        for ( int i = 0; i < doms.length; i++ )
+        int childCount = dom.getChildCount();
+        for ( int i = 0; i < childCount; i++ )
         {
-            addChild( new XmlPlexusConfiguration( doms[i] ) );
+            addChild( new XmlPlexusConfiguration( dom.getChild( i ) ) );
         }
     }
 
