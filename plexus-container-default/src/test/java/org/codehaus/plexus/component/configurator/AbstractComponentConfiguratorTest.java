@@ -39,7 +39,9 @@ import java.util.Vector;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.component.configurator.expression.TypeAwareExpressionEvaluator;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.io.PlexusTools;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
@@ -638,6 +640,61 @@ public abstract class AbstractComponentConfiguratorTest
         assertEquals( ElementType.TYPE, component.getSimpleEnum() );
 
         assertEquals( ComponentWithEnumFields.NestedEnum.ONE, component.getNestedEnum() );
+    }
+
+    public void testComponentConfigurationWithAmbiguousExpressionValue()
+        throws Exception
+    {
+        String xml = "<configuration>" //
+            + "  <address>${address}</address>" //
+            + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        DefaultComponent component = new DefaultComponent();
+
+        ExpressionEvaluator expressionEvaluator = new TypeAwareExpressionEvaluator()
+        {
+            public Object evaluate( String expression )
+                throws ExpressionEvaluationException
+            {
+                return evaluate( expression, null );
+            }
+
+            public File alignToBaseDirectory( File file )
+            {
+                return null;
+            }
+
+            public Object evaluate( String expression, Class<?> type )
+                throws ExpressionEvaluationException
+            {
+                if ( String.class == type )
+                {
+                    return "PASSED";
+                }
+                else
+                {
+                    return Boolean.FALSE;
+                }
+            }
+        };
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration( configuration );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        configureComponent( component, descriptor, realm, expressionEvaluator );
+
+        assertEquals( "PASSED", component.getAddress() );
     }
 
 }

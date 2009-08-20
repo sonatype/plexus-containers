@@ -28,7 +28,9 @@ import org.codehaus.plexus.component.configurator.ComponentConfigurationExceptio
 import org.codehaus.plexus.component.configurator.ConfigurationListener;
 import org.codehaus.plexus.component.configurator.converters.AbstractConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
+import org.codehaus.plexus.component.configurator.expression.TypeAwareExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
 /**
@@ -39,6 +41,76 @@ public abstract class AbstractBasicConverter
 {
     protected abstract Object fromString( String str )
         throws ComponentConfigurationException;
+
+    protected Object fromExpression( PlexusConfiguration configuration, ExpressionEvaluator expressionEvaluator, Class type )
+        throws ComponentConfigurationException
+    {
+        Object v = null;
+
+        String value = configuration.getValue( null );
+
+        if ( value != null && value.length() > 0 )
+        {
+            // Object is provided by an expression
+            // This seems a bit ugly... canConvert really should return false in this instance, but it doesn't have the
+            //   configuration to know better
+            try
+            {
+                if ( expressionEvaluator instanceof TypeAwareExpressionEvaluator )
+                {
+                    v = ( (TypeAwareExpressionEvaluator) expressionEvaluator ).evaluate( value, type );
+                }
+                else
+                {
+                    v = expressionEvaluator.evaluate( value );
+                }
+            }
+            catch ( ExpressionEvaluationException e )
+            {
+                String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
+                    configuration.getName() + "'";
+                throw new ComponentConfigurationException( configuration, msg, e );
+            }
+        }
+
+        if ( v == null )
+        {
+            value = configuration.getAttribute( "default-value", null );
+
+            if ( value != null && value.length() > 0 )
+            {
+                try
+                {
+                    if ( expressionEvaluator instanceof TypeAwareExpressionEvaluator )
+                    {
+                        v = ( (TypeAwareExpressionEvaluator) expressionEvaluator ).evaluate( value, type );
+                    }
+                    else
+                    {
+                        v = expressionEvaluator.evaluate( value );
+                    }
+                }
+                catch ( ExpressionEvaluationException e )
+                {
+                    String msg = "Error evaluating the expression '" + value + "' for configuration value '" +
+                        configuration.getName() + "'";
+                    throw new ComponentConfigurationException( configuration, msg, e );
+                }
+            }
+        }
+        
+        if ( v != null )
+        {
+            if ( !( v instanceof String ) && !type.isInstance( v ) )
+            {
+                String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type +
+                    "' from '" + configuration.getValue( null ) + "', which is of type " + v.getClass();
+                throw new ComponentConfigurationException( configuration, msg );
+            }
+        }
+
+        return v;
+    }
 
     public Object fromConfiguration( ConverterLookup converterLookup, PlexusConfiguration configuration, Class type,
                                      Class baseType, ClassLoader classLoader, ExpressionEvaluator expressionEvaluator,
@@ -51,7 +123,7 @@ public abstract class AbstractBasicConverter
                 "contain any child elements. " + "Configuration element '" + configuration.getName() + "'." );
         }
 
-        Object retValue = fromExpression( configuration, expressionEvaluator );
+        Object retValue = fromExpression( configuration, expressionEvaluator, type );
 
         if ( retValue instanceof String )
         {
