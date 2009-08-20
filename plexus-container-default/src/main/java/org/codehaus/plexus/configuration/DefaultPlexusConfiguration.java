@@ -151,7 +151,7 @@ public class DefaultPlexusConfiguration
 
     public PlexusConfiguration getChild( int i )
     {
-        return getChildren()[i];
+        return childList.get( i );
     }
 
     public PlexusConfiguration getChild( String name, boolean createChild )
