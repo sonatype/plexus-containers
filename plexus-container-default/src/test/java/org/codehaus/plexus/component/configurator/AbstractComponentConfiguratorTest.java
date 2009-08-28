@@ -697,4 +697,53 @@ public abstract class AbstractComponentConfiguratorTest
         assertEquals( "PASSED", component.getAddress() );
     }
 
+    public void testComponentConfigurationWithPrimitiveValueConversion()
+        throws Exception
+    {
+        String xml = "<configuration>" //
+            + "  <intValue>${primitive}</intValue>" //
+            + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ConfigurableComponent component = new ConfigurableComponent();
+
+        ExpressionEvaluator expressionEvaluator = new TypeAwareExpressionEvaluator()
+        {
+            public Object evaluate( String expression )
+                throws ExpressionEvaluationException
+            {
+                return evaluate( expression, null );
+            }
+
+            public File alignToBaseDirectory( File file )
+            {
+                return null;
+            }
+
+            public Object evaluate( String expression, Class<?> type )
+                throws ExpressionEvaluationException
+            {
+                // java.lang.Short -> short -> int
+                return new Short( (short) 23 );
+            }
+        };
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration( configuration );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        configureComponent( component, descriptor, realm, expressionEvaluator );
+
+        assertEquals( 23, component.getIntValue() );
+    }
+
 }

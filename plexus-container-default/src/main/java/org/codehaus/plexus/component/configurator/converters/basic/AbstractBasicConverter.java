@@ -98,16 +98,11 @@ public abstract class AbstractBasicConverter
                 }
             }
         }
-        
-        if ( v != null )
-        {
-            if ( !( v instanceof String ) && !type.isInstance( v ) )
-            {
-                String msg = "Cannot assign configuration entry '" + configuration.getName() + "' to '" + type +
-                    "' from '" + configuration.getValue( null ) + "', which is of type " + v.getClass();
-                throw new ComponentConfigurationException( configuration, msg );
-            }
-        }
+
+        /*
+         * NOTE: We don't check the type here which would be ugly to do correctly (e.g. value=Short -> type=int), the
+         * reflective setter/field injection will fail by itself when the type didn't match.
+         */
 
         return v;
     }
