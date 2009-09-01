@@ -410,9 +410,14 @@ public class DefaultComponentRegistry implements ComponentRegistry
                         role,
                         roleHint );
                 }
+                // search also into descriptor realm as the key of a created component is per descriptor realm
+                componentManager = getComponentManager( type, role, roleHint, descriptor.getRealm() );
             }
 
-            componentManager = createComponentManager( descriptor, role, roleHint );
+            if ( componentManager == null )
+            {
+                componentManager = createComponentManager( descriptor, role, roleHint );
+            }
         }
         return componentManager;
     }
@@ -429,6 +434,16 @@ public class DefaultComponentRegistry implements ComponentRegistry
             {
                 return (ComponentManager<T>) manager;
             }
+        }
+        return null;
+    }
+
+    private <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint, ClassRealm realm )
+    {
+        ComponentManager<?> manager = componentManagers.get( new Key( realm, role, roleHint ) );
+        if ( manager != null && isAssignableFrom( type, manager.getType() ) )
+        {
+            return (ComponentManager<T>) manager;
         }
         return null;
     }
