@@ -74,12 +74,7 @@ public class ComponentList<T>
 
     public boolean add( T object )
     {
-        if ( components == null )
-        {
-            components = new ArrayList<T>();
-        }
-
-        components.add( object );
+        getList().add( object );
 
         /*
          * PLX-352 This is strictly to support the hack in the Ant Run plugin that tries to poke in a custom converter.
