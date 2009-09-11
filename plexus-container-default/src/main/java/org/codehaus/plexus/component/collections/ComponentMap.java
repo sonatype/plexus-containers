@@ -65,17 +65,7 @@ public class ComponentMap<T>
 
     public T get( Object k )
     {
-        Map<String, ComponentDescriptor<T>> descriptorMap = getComponentDescriptorMap();
-        if ( k instanceof String )
-        {
-            String key = (String) k;
-            if ( descriptorMap.containsKey( key ) )
-            {
-                return lookup( role, key );
-            }
-        }
-
-        return null;
+        return getMap().get( k );
     }
 
     public T put( String key, T value )

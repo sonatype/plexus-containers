@@ -351,6 +351,9 @@ public class PlexusContainerTest
 
         assertNotNull( one );
 
+        // repeated retrieval from map should not cause re-lookup even if instantiation strategy is per-lookup
+        assertSame( one, am.getActivity( "one" ) );
+
         assertFalse( one.getState() );
 
         am.execute( "one" );
@@ -392,6 +395,12 @@ public class PlexusContainerTest
         Pipeline pipeline = container.lookup( Pipeline.class );
 
         List valves = pipeline.getValves();
+
+        for ( int i = 0; i < valves.size(); i++ )
+        {
+            // repeated retrieval from list should not cause re-lookup even if instantiation strategy is per-lookup
+            assertSame( valves.get( i ), valves.get( i ) );
+        }
 
         assertFalse( ( (Valve) valves.get( 0 ) ).getState() );
 

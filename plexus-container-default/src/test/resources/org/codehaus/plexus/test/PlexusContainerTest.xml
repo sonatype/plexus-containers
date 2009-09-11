@@ -164,6 +164,7 @@
       <role>org.codehaus.plexus.test.map.Activity</role>
       <role-hint>one</role-hint>
       <implementation>org.codehaus.plexus.test.map.ActivityOne</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.test.map.Activity</role>
@@ -235,6 +236,7 @@
       <role>org.codehaus.plexus.test.list.Valve</role>
       <role-hint>one</role-hint>
       <implementation>org.codehaus.plexus.test.list.ValveOne</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
 
     <component>
