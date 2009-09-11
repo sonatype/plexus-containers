@@ -174,6 +174,8 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
             return instance;
         } catch (Exception e) {
             throw new ComponentLifecycleException("Error constructing component " + descriptor.getHumanReadableKey(), e);
+        } catch (LinkageError e) {
+            throw new ComponentLifecycleException("Error constructing component " + descriptor.getHumanReadableKey(), e);
         } finally {
             Thread.currentThread().setContextClassLoader(oldClassLoader);
         }
