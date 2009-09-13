@@ -10,16 +10,7 @@
   <artifactId>plexus-component-javadoc</artifactId>
   <name>Plexus :: Javadoc Taglets</name>
   <inceptionYear>2007</inceptionYear>
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jxr-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </reporting>
+
   <profiles>
     <profile>
       <id>default-tools.jar</id>

@@ -1,26 +1,12 @@
-<project name="Plexus Utils">
-  <bannerLeft>
-    <name>Plexus</name>
-    <href>http://plexus.codehaus.org/</href>
-    <src>/images/plexus-logo.png</src>
-  </bannerLeft>
-  <publishDate format="dd MMM yyyy" position="left" />
-  <version position="left" />
-  <skin>
-    <groupId>org.codehaus.plexus</groupId>
-    <artifactId>plexus-stylus-skin</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </skin>
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <body>
-    <links>
-      <item name="Plexus" href="http://plexus.codehaus.org/"/>
-    </links>
-
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Usage" href="usage.html"/>
     </menu>
 
-    <menu ref="reports" inherit="bottom" />
+    <menu ref="reports" />
   </body>
 </project>
