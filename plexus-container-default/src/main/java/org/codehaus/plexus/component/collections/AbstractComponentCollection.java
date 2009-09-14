@@ -104,8 +104,9 @@ public abstract class AbstractComponentCollection<T>
             return false;
         }
 
-        Map<String, ComponentDescriptor<T>> newComponentDescriptors = new HashMap<String, ComponentDescriptor<T>>();
         Map<String, ComponentDescriptor<T>> componentMap = container.getComponentDescriptorMap( componentType, role );
+        Map<String, ComponentDescriptor<T>> newComponentDescriptors =
+            new HashMap<String, ComponentDescriptor<T>>( componentMap.size() * 2 );
 
         if ( roleHints != null && !roleHints.isEmpty() )
         {
@@ -123,7 +124,7 @@ public abstract class AbstractComponentCollection<T>
             newComponentDescriptors.putAll( componentMap );
         }
 
-        if ( componentDescriptorMap == null || newComponentDescriptors.size() != componentDescriptorMap.size() )
+        if ( componentDescriptorMap == null || !newComponentDescriptors.equals( componentDescriptorMap ) )
         {
             componentDescriptorMap = newComponentDescriptors;
 

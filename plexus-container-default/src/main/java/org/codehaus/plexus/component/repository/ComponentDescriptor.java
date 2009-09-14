@@ -653,50 +653,50 @@ public class ComponentDescriptor<T>
         attemptRoleLoad();
     }
 
-    // Component identity established here!
-    public boolean equals( Object other )
-    {
-        if ( !( other instanceof ComponentDescriptor ) )
-        {
-            return false;
-        }
-        else
-        {
-            ComponentDescriptor<?> otherDescriptor = (ComponentDescriptor<?>) other;
-
-            boolean isEqual = true;
-
-            String role = getRole();
-            String otherRole = otherDescriptor.getRole();
-
-            isEqual = isEqual && ( ( role.equals( otherRole ) ) || role.equals( otherRole ) );
-
-            String roleHint = getRoleHint();
-            String otherRoleHint = otherDescriptor.getRoleHint();
-
-            isEqual = isEqual && ( ( roleHint.equals( otherRoleHint ) ) || roleHint.equals( otherRoleHint ) );
-
-            return isEqual;
-        }
-    }
-
     public String toString()
     {
         return getClass().getName() + " [role: '" + getRole() + "', hint: '" + getRoleHint() + "', realm: "
             + ( realm == null ? "NULL" : "'" + realm + "'" ) + "]";
     }
 
-    public int hashCode()
+    // Component identity established here!
+    public boolean equals( Object other )
     {
-        int result = getRole().hashCode() + 1;
-
-        String hint = getRoleHint();
-
-        if ( hint != null )
+        if ( this == other )
         {
-            result += hint.hashCode();
+            return true;
         }
 
-        return result;
+        if ( !( other instanceof ComponentDescriptor ) )
+        {
+            return false;
+        }
+
+        ComponentDescriptor<?> that = (ComponentDescriptor<?>) other;
+
+        return eq( getRole(), that.getRole() ) && eq( getRoleHint(), that.getRoleHint() )
+            && eq( getRealm(), that.getRealm() );
     }
+
+    private static <T> boolean eq( T o1, T o2 )
+    {
+        return ( o1 != null ) ? o1.equals( o2 ) : o2 == null;
+    }
+
+    public int hashCode()
+    {
+        int hash = 17;
+
+        hash = hash * 31 + hash( getRole() );
+        hash = hash * 31 + hash( getRoleHint() );
+        hash = hash * 31 + hash( getRealm() );
+
+        return hash;
+    }
+
+    private static int hash( Object obj )
+    {
+        return ( obj != null ) ? obj.hashCode() : 0;
+    }
+
 }
