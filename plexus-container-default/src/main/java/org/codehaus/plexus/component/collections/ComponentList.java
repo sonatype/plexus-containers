@@ -228,6 +228,19 @@ public class ComponentList<T>
         return components;
     }
 
+    @Override
+    protected boolean checkUpdate()
+    {
+        if ( super.checkUpdate() )
+        {
+            components = null;
+
+            return true;
+        }
+
+        return false;
+    }
+
     protected void releaseAllCallback()
     {
         if ( components != null )

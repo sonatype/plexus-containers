@@ -159,7 +159,7 @@ public class ComponentMap<T>
     {
         if ( ( components == null ) || checkUpdate() )
         {
-            components = new LinkedHashMap<String, T>();
+            Map<String, T> componentMap = new LinkedHashMap<String, T>();
 
             Map<String, ComponentDescriptor<T>> descriptorMap = getComponentDescriptorMap();
 
@@ -171,7 +171,7 @@ public class ComponentMap<T>
                     T component = lookup( role, roleHint );
                     if ( component != null )
                     {
-                        components.put( roleHint, component );
+                        componentMap.put( roleHint, component );
                     }
                 }
             }
@@ -184,13 +184,27 @@ public class ComponentMap<T>
                     T component = lookup( role, roleHint );
                     if ( component != null )
                     {
-                        components.put( roleHint, component );
+                        componentMap.put( roleHint, component );
                     }
                 }
             }
+            components = componentMap;
         }
 
         return components;
+    }
+
+    @Override
+    protected boolean checkUpdate()
+    {
+        if ( super.checkUpdate() )
+        {
+            components = null;
+
+            return true;
+        }
+
+        return false;
     }
 
     protected void releaseAllCallback()

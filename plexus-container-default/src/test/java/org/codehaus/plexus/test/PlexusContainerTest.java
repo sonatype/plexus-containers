@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.discovery.DiscoveredComponent;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.lifecycle.BasicLifecycleHandler;
@@ -37,6 +38,7 @@ import org.codehaus.plexus.test.list.ValveTwo;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -536,4 +538,66 @@ public class PlexusContainerTest
 
         assertSame( live, container.lookup( Component.class ) );
     }
+
+    public void testUpdateOfActiveComponentCollectionUponChangeOfThreadContextClassLoader()
+        throws Exception
+    {
+        ComponentManager manager = container.lookup( ComponentManager.class );
+
+        Map<String, ?> map = manager.getMap();
+        assertNotNull( map );
+        assertEquals( 0, map.size() );
+
+        List<?> list = manager.getList();
+        assertNotNull( list );
+        assertEquals( 0, list.size() );
+
+        /*
+         * Below we're creating two realms which basically contain the same components, only their bytecode/version
+         * differs. When we switch the thread's context class loader, the active component collections in the component
+         * manager must accurately reflect the components from the current realm (and not from a previous realm).
+         */
+
+        ClassRealm realmA = container.createChildRealm( "realm-a" );
+        realmA.addURL( new File( "src/test/test-components/component-a-1.0-SNAPSHOT.jar" ).toURI().toURL() );
+        container.discoverComponents( realmA );
+
+        ClassRealm realmB = container.createChildRealm( "realm-b" );
+        realmB.addURL( new File( "src/test/test-components/component-a-2.0-SNAPSHOT.jar" ).toURI().toURL() );
+        container.discoverComponents( realmB );
+
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+
+        try
+        {
+            Thread.currentThread().setContextClassLoader( realmA );
+
+            map = manager.getMap();
+            assertNotNull( map );
+            assertEquals( 1, map.size() );
+            assertSame( realmA, map.values().iterator().next().getClass().getClassLoader() );
+
+            list = manager.getList();
+            assertNotNull( list );
+            assertEquals( 1, list.size() );
+            assertSame( realmA, list.iterator().next().getClass().getClassLoader() );
+
+            Thread.currentThread().setContextClassLoader( realmB );
+
+            map = manager.getMap();
+            assertNotNull( map );
+            assertEquals( 1, map.size() );
+            assertSame( realmB, map.values().iterator().next().getClass().getClassLoader() );
+
+            list = manager.getList();
+            assertNotNull( list );
+            assertEquals( 1, list.size() );
+            assertSame( realmB, list.iterator().next().getClass().getClassLoader() );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldClassLoader );
+        }
+    }
+
 }

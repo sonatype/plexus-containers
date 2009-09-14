@@ -240,6 +240,21 @@
     </component>
 
     <component>
+      <role>org.codehaus.plexus.test.ComponentManager</role>
+      <implementation>org.codehaus.plexus.test.DefaultComponentManager</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.components.A</role>
+          <field-name>list</field-name>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.components.A</role>
+          <field-name>map</field-name>
+        </requirement>
+      </requirements>
+    </component>
+
+    <component>
       <role>org.codehaus.plexus.logging.LoggerManager</role>
       <implementation>org.codehaus.plexus.logging.console.ConsoleLoggerManager</implementation>
       <lifecycle-handler>basic</lifecycle-handler>
