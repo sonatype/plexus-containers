@@ -18,8 +18,6 @@ package org.codehaus.plexus;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -59,7 +57,7 @@ public abstract class PlexusTestCase
         customizeContext( context );
 
         boolean hasPlexusHome = context.contains( "plexus.home" );
-        
+
         if ( !hasPlexusHome )
         {
             File f = getTestFile( "target/plexus-home" );
@@ -119,12 +117,12 @@ public abstract class PlexusTestCase
     protected void customizeContext( Context context )
     {
     }
-    
+
     protected PlexusConfiguration customizeComponentConfiguration()
     {
-        return null;        
+        return null;
     }
-    
+
     protected void tearDown()
         throws Exception
     {
@@ -166,9 +164,9 @@ public abstract class PlexusTestCase
     /**
      * Allow the retrieval of a container configuration that is based on the name
      * of the test class being run. So if you have a test class called org.foo.FunTest, then
-     * this will produce a resource name of org/foo/FunTest.xml which would be used to 
+     * this will produce a resource name of org/foo/FunTest.xml which would be used to
      * configure the Plexus container before running your test.
-     * 
+     *
      * @param subname
      * @return
      */
