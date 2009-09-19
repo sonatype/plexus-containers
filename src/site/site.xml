@@ -1,0 +1,37 @@
+<project name="Plexus Default Container" xmlns="http://maven.apache.org/DECORATION/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+  <bannerLeft>
+    <name>Plexus</name>
+    <href>http://plexus.codehaus.org/</href>
+    <src>/images/plexus-logo.png</src>
+  </bannerLeft>
+
+  <publishDate format="yyyy-MM-dd" position="right" />
+  <version position="right" />
+
+  <skin>
+    <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus-stylus-skin</artifactId>
+    <version>1.0</version>
+  </skin>
+
+  <body>
+    <breadcrumbs>
+      <item name="Plexus" href="/"/>
+      <item name="Plexus Containers" href="/plexus-containers/"/>
+      <item name="Plexus Default Container" href="/plexus-containers/plexus-container-default-1.0-alpha-9-stable-x"/>
+    </breadcrumbs>
+
+    <menu ref="parent" inherit="top" />
+    <menu ref="modules" inherit="top" />
+    <menu ref="reports" inherit="bottom" />
+
+    <menu name="Plexus Projects" inherit="bottom">
+      <item name="Plexus Classworlds" href="/plexus-classworlds/" />
+      <item name="Plexus Container"   href="/plexus-containers/" />
+      <item name="Plexus Components"  href="/plexus-components/" />
+      <item name="Plexus Utils"       href="/plexus-utils/" />
+    </menu>
+  </body>
+</project>
