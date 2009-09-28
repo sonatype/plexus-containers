@@ -451,19 +451,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
     private Set<ClassRealm> getSearchRealms( boolean specifiedOnly )
     {
         // determine realms to search
-        Set<ClassRealm> realms = new LinkedHashSet<ClassRealm>();
-        for ( ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); classLoader != null; classLoader = classLoader.getParent() )
-        {
-            if ( classLoader instanceof ClassRealm && ((ClassRealm) classLoader).getWorld() == container.getClassWorld() )
-            {
-                ClassRealm realm = (ClassRealm) classLoader;
-                while ( realm != null )
-                {
-                    realms.add( realm );
-                    realm = realm.getParentRealm();
-                }
-            }
-        }
+        Set<ClassRealm> realms = ClassRealmUtil.getContextRealms( container.getClassWorld() );
 
         if ( realms.isEmpty() )
         {

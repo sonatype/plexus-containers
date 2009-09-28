@@ -39,6 +39,7 @@ import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -593,6 +594,52 @@ public class PlexusContainerTest
             assertNotNull( list );
             assertEquals( 1, list.size() );
             assertSame( realmB, list.iterator().next().getClass().getClassLoader() );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldClassLoader );
+        }
+    }
+
+    public void testComponentLookupFromParentRealmOfImportedRealms()
+        throws Exception
+    {
+        ComponentManager manager = container.lookup( ComponentManager.class );
+
+        Map<String, ?> map = manager.getMap();
+        assertNotNull( map );
+        assertEquals( 0, map.size() );
+
+        List<?> list = manager.getList();
+        assertNotNull( list );
+        assertEquals( 0, list.size() );
+
+        URL componentUrl = new File( "src/test/test-components/component-a-1.0-SNAPSHOT.jar" ).toURI().toURL();
+
+        ClassRealm realmP = container.createChildRealm( "parent-of-imported-realm" );
+        realmP.addURL( componentUrl );
+        container.discoverComponents( realmP );
+
+        ClassRealm realmI = realmP.createChildRealm( "imported-realm" );
+
+        ClassRealm realmL = container.createChildRealm( "lookup-realm" );
+        realmL.importFrom( realmI, "org.something" );
+
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+
+        try
+        {
+            Thread.currentThread().setContextClassLoader( realmL );
+
+            map = manager.getMap();
+            assertNotNull( map );
+            assertEquals( 1, map.size() );
+            assertSame( realmP, map.values().iterator().next().getClass().getClassLoader() );
+
+            list = manager.getList();
+            assertNotNull( list );
+            assertEquals( 1, list.size() );
+            assertSame( realmP, list.iterator().next().getClass().getClassLoader() );
         }
         finally
         {

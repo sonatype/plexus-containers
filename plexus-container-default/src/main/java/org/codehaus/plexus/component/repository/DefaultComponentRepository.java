@@ -21,18 +21,17 @@ import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.codehaus.plexus.ClassRealmUtil;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
-import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 import com.google.common.collect.Multimap;
@@ -66,18 +65,9 @@ public class DefaultComponentRepository
         }
 
         // determine realms to search
-        LinkedHashSet<ClassRealm> realms = new LinkedHashSet<ClassRealm>();
-        for (ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); classLoader != null; classLoader = classLoader.getParent()) {
-            if ( classLoader instanceof ClassRealm )
-            {
-                ClassRealm realm = (ClassRealm) classLoader;
-                while (realm != null) {
-                    realms.add(realm);
-                    realm = realm.getParentRealm();
-                }
-            }
-        }
-        if (realms.isEmpty()) {
+        Set<ClassRealm> realms = ClassRealmUtil.getContextRealms( null );
+        if ( realms.isEmpty() )
+        {
             realms.addAll( index.keySet() );
         }
 
