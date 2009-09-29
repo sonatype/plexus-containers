@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+
+<model xmlns="http://modello.codehaus.org/MODELLO/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://modello.codehaus.org/MODELLO/1.1.0 http://modello.codehaus.org/xsd/modello-1.1.0.xsd"
+  xml.namespace="http://plexus.codehaus.org/COMPONENTS/${version}"
+  xml.schemaLocation="http://plexus.codehaus.org/xsd/components-${version}.xsd">
+  <id>plexus-components</id>
+  <name>PlexusComponents</name>
+  <description>
+    <![CDATA[
+    <p>This is a documentation for the Plexus Components descriptor: <code>META-INF/plexus/components.xml</code>.</p>
+    <p>An XSD is available at
+    <a href="http://plexus.codehaus.org/xsd/components-1.0.0.xsd">http://plexus.codehaus.org/xsd/components-1.0.0.xsd</a>.
+    </p>]]>
+  </description>
+
+  <classes>
+    <class rootElement="true" xml.tagName="component-set">
+      <name>ComponentSetDescriptor</name>
+      <description><![CDATA[
+        Contains a set of ComponentDescriptors and the set's dependencies.
+        See <a href="apidocs/org/codehaus/plexus/component/repository/ComponentSetDescriptor.html">javadoc</a>.]]>
+      </description>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>components</name>
+          <version>1.0.0+</version>
+          <association>
+            <type>ComponentDescriptor</type>
+            <multiplicity>*</multiplicity>
+          </association>
+          <description>The component descriptors that can be found within this component set descriptor.</description>
+        </field>
+        <field xdoc.separator="blank">
+          <name>dependencies</name>
+          <version>1.0.0+</version>
+          <association>
+            <type>ComponentDependency</type>
+            <multiplicity>*</multiplicity>
+          </association>
+          <description>The dependencies that are required by the set of components found in this component set descriptor.</description>
+        </field>
+      </fields>
+    </class>
+
+    <class>
+      <name>ComponentDescriptor</name>
+      <description><![CDATA[
+        Component instantiation description.
+        See <a href="apidocs/org/codehaus/plexus/component/repository/ComponentDescriptor.html">javadoc</a>.]]>
+      </description>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>role</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the role of this component.</description>
+        </field>
+        <field>
+          <name>role-hint</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the role-hint of this component.</description>
+        </field>
+        <field>
+          <name>implementation</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>
+            the implementation of this component. Implementation is a string denoting a FQCN in normal Java
+            components, or some other name or file for other component factory implementations.
+          </description>
+        </field>
+        <field>
+          <name>version</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>a specific point in a components's project timeline. i.e. version 1, or 2.1.4</description>
+        </field>
+        <field>
+          <name>component-type</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the type of this component.</description>
+        </field>
+        <field>
+          <name>instantiation-strategy</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the type of instantiation strategy for this component: one of "per-lookup", "singleton", "keep-alive" or "poolable".</description>
+          <defaultValue>singleton</defaultValue>
+        </field>
+        <field>
+          <name>lifecycle-handler</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the lifecycle-handler for this component. For example, "basic", "passive", "bootstrap".</description>
+        </field>
+        <field>
+          <name>component-profile</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description></description>
+        </field>
+        <field>
+          <name>component-composer</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>
+            the ID of the type of composer this component will use. For example, "setter" or "field" for the
+            different types of dependency injection.
+          </description>
+        </field>
+        <field>
+          <name>component-configurator</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>
+            the type of component configurator for this project. For example "basic" for normal, or "map-oriented"
+            for map oriented components.
+          </description>
+        </field>
+        <field>
+          <name>component-factory</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>an id of the factory used to create this component. For example, "jruby" will use a JRuby factory.</description>
+        </field>
+        <field>
+          <name>description</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>a human-readable description of this component.</description>
+        </field>
+        <field>
+          <name>alias</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>an alias for this component. An alias is as an alternate name other than the normal key.</description>
+        </field>
+        <field>
+          <name>isolated-realm</name>
+          <version>1.0.0+</version>
+          <type>boolean</type>
+          <description>true if this may be in an isolated classrealm.</description>
+        </field>
+        <field>
+          <name>configuration</name>
+          <version>1.0.0+</version>
+          <type>DOM</type>
+          <description>configuration values defined for this component.</description>
+        </field>
+        <field xdoc.separator="blank">
+          <name>requirements</name>
+          <version>1.0.0+</version>
+          <association>
+            <type>ComponentRequirement</type>
+            <multiplicity>*</multiplicity>
+          </association>
+          <description>project requirements to this component.</description>
+        </field>
+      </fields>
+    </class>
+    <class>
+      <name>ComponentRequirement</name>
+      <description>
+        This represents a component that is required by another component.
+      </description>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>role</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the role of the required component.</description>
+        </field>
+        <field>
+          <name>field-name</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the name of the field that will be populated by the required component.</description>
+        </field>
+        <field>
+          <name>role-hint</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the role-hint of the required component.</description>
+          <defaultValue>default</defaultValue>
+        </field>
+        <field>
+          <name>role-hints</name>
+          <version>1.0.0+</version>
+          <association>
+            <type>String</type>
+            <multiplicity>*</multiplicity>
+          </association>
+          <description>the role-hints of the required component.</description>
+        </field>
+      </fields>
+    </class>
+    <class>
+      <name>ComponentDependency</name>
+      <description>
+      </description>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>artifact-id</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the dependency's artifact ID.</description>
+        </field>
+        <field>
+          <name>group-id</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the dependency's group ID.</description>
+        </field>
+        <field>
+          <name>type</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the type of dependency, for example a "jar".</description>
+        </field>
+        <field>
+          <name>version</name>
+          <version>1.0.0+</version>
+          <type>String</type>
+          <description>the point in a project's development timeline</description>
+        </field>
+      </fields>
+    </class>
+  </classes>
+</model>
