@@ -402,6 +402,11 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
 
                 return assignment;
             } catch (ComponentLookupException e) {
+                if ( requirement.isOptional() )
+                {
+                    return null;
+                }
+
                 throw new ConstructionException("Composition failed of field " + requirement.getFieldName() + " "
                         + "in object of type " + componentDescriptor.getImplementation() + " because the requirement "
                         + requirement + " was missing)", e);

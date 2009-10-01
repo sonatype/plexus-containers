@@ -214,6 +214,8 @@ public class DefaultComponentDescriptorWriter
 
             element( w, "field-name", cr.getFieldName() );
 
+            element( w, "optional", cr.isOptional() ? Boolean.TRUE.toString() : null );
+
             w.endElement();
         }
 

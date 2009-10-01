@@ -647,4 +647,17 @@ public class PlexusContainerTest
         }
     }
 
+    public void testOptionalComponentRequirement()
+        throws Exception
+    {
+        DefaultComponentWithOptionalRequirement ca =
+            (DefaultComponentWithOptionalRequirement) container.lookup( Component.class, "with-optional" );
+
+        assertNotNull( ca );
+
+        assertNotNull( ca.getActivity() );
+
+        assertNull( ca.optionalComponent );
+    }
+
 }

@@ -39,6 +39,7 @@ public class ComponentElement
     private final DescriptorTag[] allowedTags = {
         ROLE,
         ROLE_HINT,
+        OPTIONAL,
         IMPLEMENTATION,
         FIELD_NAME,
         LIFECYCLE_HANDLER,
@@ -51,6 +52,8 @@ public class ComponentElement
     static final DescriptorTag ROLE = new DescriptorTag( "role" );
 
     static final DescriptorTag ROLE_HINT = new DescriptorTag( "role-hint" );
+
+    static final DescriptorTag OPTIONAL = new DescriptorTag( "optional" );
 
     private static final DescriptorTag DESCRIPTION = new DescriptorTag( "description" );
     

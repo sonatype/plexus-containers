@@ -99,6 +99,24 @@
       </configuration>
     </component>
     <component>
+      <role>org.codehaus.plexus.test.Component</role>
+      <implementation>org.codehaus.plexus.test.DefaultComponentWithOptionalRequirement</implementation>
+      <role-hint>with-optional</role-hint>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.test.map.Activity</role>
+          <role-hint>one</role-hint>
+          <field-name>activity</field-name>
+        </requirement>
+        <requirement>
+          <role>org.codehaus.plexus.test.NonAvailableComponent</role>
+          <role-hint>missing</role-hint>
+          <field-name>optionalComponent</field-name>
+          <optional>true</optional>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
       <role>org.codehaus.plexus.test.ComponentA</role>
       <implementation>org.codehaus.plexus.test.DefaultComponentA</implementation>
       <requirements>

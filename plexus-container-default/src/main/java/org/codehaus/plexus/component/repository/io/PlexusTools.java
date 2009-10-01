@@ -191,6 +191,8 @@ public class PlexusTools
 
             cr.setRole( requirement.getChild( "role" ).getValue() );
 
+            cr.setOptional( Boolean.parseBoolean( requirement.getChild( "optional" ).getValue() ) );
+
             cr.setFieldName( requirement.getChild( "field-name" ).getValue() );
 
             cd.addRequirement( cr );

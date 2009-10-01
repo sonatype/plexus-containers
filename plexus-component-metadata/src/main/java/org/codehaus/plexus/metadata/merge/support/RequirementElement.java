@@ -43,7 +43,8 @@ public class RequirementElement
 
     public DescriptorTag[] getAllowedTags()
     {
-        return new DescriptorTag[]{ComponentElement.ROLE, ComponentElement.ROLE_HINT, ComponentElement.FIELD_NAME};
+        return new DescriptorTag[] { ComponentElement.ROLE, ComponentElement.ROLE_HINT, ComponentElement.FIELD_NAME,
+            ComponentElement.OPTIONAL };
     }
 
     public void merge( Mergeable me )

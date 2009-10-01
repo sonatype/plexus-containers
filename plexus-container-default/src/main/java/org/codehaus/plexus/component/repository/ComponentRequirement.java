@@ -33,7 +33,9 @@ public class ComponentRequirement
     private String fieldName;
     
     private String fieldMappingType;
-    
+
+    private boolean optional;
+
     /**
      * Returns the field name that this component requirement will inject.
      * @return the field name that this component requirement will inject
@@ -114,6 +116,28 @@ public class ComponentRequirement
     public void setFieldMappingType( String fieldType )
     {
         this.fieldMappingType = fieldType;
+    }
+
+    /**
+     * Whether this component requirement is optional and needs not be satisfied
+     * 
+     * @return {@code true} if the requested component may be missing, {@code false} if the component is mandatory.
+     */
+    public boolean isOptional()
+    {
+        return optional;
+    }
+
+    /**
+     * Controls whether a failure to satisfy this requirement can be tolerated by host component or whether construction
+     * of the host component should also fail.
+     * 
+     * @param optional {@code true} if the requested component may be missing, {@code false} if the component is
+     *            mandatory.
+     */
+    public void setOptional( boolean optional )
+    {
+        this.optional = optional;
     }
 
     public String toString()

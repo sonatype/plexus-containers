@@ -246,6 +246,8 @@ public class AnnotationComponentGleaner
 
         requirement.setFieldMappingType(type.getName());
 
+        requirement.setOptional( anno.optional() );
+
         return requirement;
     }
 

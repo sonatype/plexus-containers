@@ -82,6 +82,8 @@ public class QDoxComponentGleaner
 
     public static final String PLEXUS_INSTANTIATION_STARTEGY_PARAMETER = "instantiation-strategy";
 
+    public static final String PLEXUS_OPTIONAL_PARAMETER = "optional";
+
     public static final String PLEXUS_DEFAULT_HINT = "default";
 
     // ----------------------------------------------------------------------
@@ -427,6 +429,10 @@ public class QDoxComponentGleaner
             {
                 cr.setRole( role );
             }
+
+            String optional = getParameter( parameters, PLEXUS_OPTIONAL_PARAMETER );
+
+            cr.setOptional( Boolean.parseBoolean( optional ) );
 
             cr.setFieldName( field.getName() );
 

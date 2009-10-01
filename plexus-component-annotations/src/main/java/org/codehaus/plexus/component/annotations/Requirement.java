@@ -44,4 +44,7 @@ public @interface Requirement
     //
     
     String[] hints() default {};
+
+    boolean optional() default false;
+
 }
