@@ -20,7 +20,7 @@ import org.codehaus.plexus.PlexusConstants;
 
 /**
  * This represents a component this is required by another component.
- * 
+ *
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
  * @version $Id$
  */
@@ -31,7 +31,7 @@ public class ComponentRequirement
     private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
 
     private String fieldName;
-    
+
     private String fieldMappingType;
 
     private boolean optional;
@@ -120,8 +120,9 @@ public class ComponentRequirement
 
     /**
      * Whether this component requirement is optional and needs not be satisfied
-     * 
+     *
      * @return {@code true} if the requested component may be missing, {@code false} if the component is mandatory.
+     * @since 1.3.0
      */
     public boolean isOptional()
     {
@@ -131,9 +132,10 @@ public class ComponentRequirement
     /**
      * Controls whether a failure to satisfy this requirement can be tolerated by host component or whether construction
      * of the host component should also fail.
-     * 
+     *
      * @param optional {@code true} if the requested component may be missing, {@code false} if the component is
      *            mandatory.
+     * @since 1.3.0
      */
     public void setOptional( boolean optional )
     {
@@ -177,16 +179,16 @@ public class ComponentRequirement
         if ( other instanceof ComponentRequirement )
         {
             String myId = role + ":" + roleHint;
-            
+
             ComponentRequirement req = (ComponentRequirement) other;
             String otherId = req.role + ":" + req.roleHint;
-            
+
             return myId.equals( otherId );
         }
-        
+
         return false;
     }
-    
+
     public int hashCode()
     {
         return ( role + ":" + roleHint ).hashCode();
