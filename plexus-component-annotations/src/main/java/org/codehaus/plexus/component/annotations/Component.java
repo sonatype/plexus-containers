@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
 /**
  * Marks a class as a Plexus component.
  *
+ * @since 1.0-alpha-33
  * @version $Id$
  */
 @Documented
@@ -47,7 +48,7 @@ public @interface Component
     String lifecycleHandler() default "";
 
     String instantiationStrategy() default "";
-    
+
     String factory() default "";
 
     String type() default "";

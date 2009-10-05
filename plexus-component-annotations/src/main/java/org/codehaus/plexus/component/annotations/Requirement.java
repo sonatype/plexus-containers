@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
 /**
  * Configures a requirement.
  *
+ * @since 1.0-alpha-33
  * @version $Id$
  */
 @Documented
@@ -42,7 +43,7 @@ public @interface Requirement
     //
     // HACK: This is here to support component requirement lists, which can take a list of hints
     //
-    
+
     String[] hints() default {};
 
     boolean optional() default false;
