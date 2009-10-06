@@ -223,7 +223,7 @@ public interface PlexusContainer
         throws CycleDetectedInComponentGraphException;
 
     /**
-     * Releases the component from the container. This is dependant upon how the implementation manages the component,
+     * Releases the component from the container. This is dependent upon how the implementation manages the component,
      * but usually enacts some standard lifecycle shutdown procedure on the component. In every case, the component is
      * no longer accessible from the container (unless another is created).
      * @param component the plexus component object to release
@@ -327,7 +327,7 @@ public interface PlexusContainer
     /**
      * Adds the listener to this container. ComponentDiscoveryListeners have the ability to respond to various
      * ComponentDiscoverer events.
-     * @param listener A listener which responds to differnet ComponentDiscoveryEvents
+     * @param listener A listener which responds to different ComponentDiscoveryEvents
      */
     void registerComponentDiscoveryListener( ComponentDiscoveryListener listener );
 
@@ -340,23 +340,23 @@ public interface PlexusContainer
     /**
      * Discovers components in the given realm.
      * @param childRealm
-     * @param override wheter to override/merge any conflicting components, where the new component takes precedence.
+     * @param override whether to override/merge any conflicting components, where the new component takes precedence.
      * @return
      * @throws PlexusConfigurationException
      * @throws ComponentRepositoryException
      */
     List<ComponentDescriptor<?>> discoverComponents( ClassRealm childRealm )
         throws PlexusConfigurationException, CycleDetectedInComponentGraphException;
-    
-    List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm, Object data )            
+
+    List<ComponentDescriptor<?>> discoverComponents( ClassRealm realm, Object data )
         throws PlexusConfigurationException, CycleDetectedInComponentGraphException;
-    
+
     // ----------------------------------------------------------------------------
     // Component/Plugin ClassRealm creation
     // ----------------------------------------------------------------------------
 
-    ClassRealm createChildRealm( String id );    
-    
+    ClassRealm createChildRealm( String id );
+
     ClassRealm getComponentRealm( String realmId );
 
     /**
@@ -377,7 +377,7 @@ public interface PlexusContainer
     /**
      * Sets the lookup realm to use for lookup calls that don't have a ClassRealm parameter.
      * @param realm the new realm to use.
-     * @return The previous lookup realm. It is adviced to set it back once the old-style lookups have completed.
+     * @return The previous lookup realm. It is advised to set it back once the old-style lookups have completed.
      */
     ClassRealm setLookupRealm(ClassRealm realm);
 
@@ -397,7 +397,7 @@ public interface PlexusContainer
 
     /**
      * Adds live component instance to this container.
-     * 
+     *
      * Component instance is not associated with any class realm and will
      * be ignored during lookup is lookup realm is provided using thread context
      * classloader.
