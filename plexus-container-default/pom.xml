@@ -52,6 +52,7 @@
         <configuration>
           <models>
             <model>src/main/mdo/components.mdo</model>
+            <model>src/main/mdo/plexus.mdo</model>
           </models>
           <version>1.3.0</version>
         </configuration>

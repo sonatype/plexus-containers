@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+
+<model xmlns="http://modello.codehaus.org/MODELLO/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://modello.codehaus.org/MODELLO/1.1.0 http://modello.codehaus.org/xsd/modello-1.1.0.xsd"
+  xml.namespace="http://plexus.codehaus.org/PLEXUS/${version}"
+  xml.schemaLocation="http://plexus.codehaus.org/xsd/plexus-${version}.xsd">
+  <id>plexus-configuration</id>
+  <name>PlexusConfiguration</name>
+  <description>
+    <![CDATA[
+    <p>This is a Work In Progress for a documentation for the Plexus Container descriptor: <code>META-INF/plexus/plexus.xml</code>.</p>
+    <p>An XSD will be available at
+    <a href="http://plexus.codehaus.org/xsd/plexus-1.3.0.xsd">http://plexus.codehaus.org/xsd/plexus-1.3.0.xsd</a>.
+    </p>
+    <p>Note that since <code>plexus.xml</code> is a superset of <a href="plexus-components.html"><code>components.xml</code></a>,
+    this documentation only focuses on elements only available in <code>plexus.xml</code>.</p>
+    ]]>
+  </description>
+
+  <classes>
+    <class rootElement="true" xml.tagName="plexus">
+      <name>PlexusDescriptor</name>
+      <description><![CDATA[
+        Plexus Container descriptor, that can be used to configure the plexus container and runtime in addition
+        to declaring components.]]>
+      </description>
+      <comment>see org.codehaus.plexus.configuration.PlexusConfigurationMerger</comment>
+      <version>1.0.0+</version>
+      <fields>
+        <field>
+          <name>load-on-start</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field>
+          <name>system-properties</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field>
+          <name>configurations-directory</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field>
+          <name>logging</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field>
+          <name>component-repository</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field>
+          <name>resources</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field>
+          <name>component-manager-manager</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field>
+          <name>component-discoverer-manager</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <association>
+            <type>ComponentDiscovererManager</type>
+          </association>
+        </field>
+        <field>
+          <name>component-factory-manager</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field>
+          <name>lifecycle-handler-manager</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field>
+          <name>component-composer-manager</name>
+          <version>1.0.0+</version>
+          <description>TBD</description>
+          <type>DOM</type>
+        </field>
+        <field xdoc.separator="blank">
+          <name>components</name>
+          <version>1.0.0+</version>
+          <type>DOM</type>
+          <description><![CDATA[
+            The component descriptors that can be found within this plexus descriptor, exactly like in
+            <a href="plexus-components.html"><code>components.xml</code></a>.]]>
+          </description>
+        </field>
+      </fields>
+    </class>
+
+    <class>
+      <name>ComponentDiscovererManager</name>
+      <description><![CDATA[
+        see <code>org.codehaus.plexus.component.discovery.ComponentDiscovererManager</code>
+        <a href="./xref/org/codehaus/plexus/component/discovery/ComponentDiscovererManager.html">source</a>
+        <a href="./apidocs/org/codehaus/plexus/component/discovery/ComponentDiscovererManager.html">javadoc</a>.]]>
+      </description>
+      <version>1.0.0+</version>
+      <fields>
+        <field xml.attribute="true">
+          <name>implementation</name>
+          <version>1.0.0+</version>
+          <description>Implementation class.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>listeners</name>
+          <version>1.0.0+</version>
+          <association>
+            <multiplicity>*</multiplicity>
+            <type>ComponentDiscoveryListener</type>
+          </association>
+        </field>
+        <field>
+          <name>component-discoverers</name>
+          <version>1.0.0+</version>
+          <association>
+            <multiplicity>*</multiplicity>
+            <type>ComponentDiscoverer</type>
+          </association>
+        </field>
+      </fields>
+    </class>
+    <class>
+      <name>ComponentDiscoveryListener</name>
+      <description><![CDATA[
+        see <code>org.codehaus.plexus.component.discovery.ComponentDiscoveryListener</code>
+        <a href="./xref/org/codehaus/plexus/component/discovery/ComponentDiscoveryListener.html">source</a>
+        <a href="./apidocs/org/codehaus/plexus/component/discovery/ComponentDiscoveryListener.html">javadoc</a>.]]>
+      </description>
+      <version>1.0.0+</version>
+      <fields>
+        <field xml.attribute="true">
+          <name>implementation</name>
+          <version>1.0.0+</version>
+          <description>Implementation class.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>configuration</name>
+          <version>1.0.0+</version>
+          <description>Configuration of the class.</description>
+          <type>Content</type>
+        </field>
+      </fields>
+    </class>
+    <class>
+      <name>ComponentDiscoverer</name>
+      <description><![CDATA[
+        see <code>org.codehaus.plexus.component.discovery.ComponentDiscoverer</code>
+        <a href="./xref/org/codehaus/plexus/component/discovery/ComponentDiscoverer.html">source</a>
+        <a href="./apidocs/org/codehaus/plexus/component/discovery/ComponentDiscoverer.html">javadoc</a>.]]>
+      </description>
+      <version>1.0.0+</version>
+      <fields>
+        <field xml.attribute="true">
+          <name>implementation</name>
+          <version>1.0.0+</version>
+          <description>Implementation class.</description>
+          <type>String</type>
+        </field>
+        <field>
+          <name>configuration</name>
+          <version>1.0.0+</version>
+          <description>Configuration of the class.</description>
+          <type>Content</type>
+        </field>
+      </fields>
+    </class>
+  </classes>
+</model>
