@@ -1,0 +1,32 @@
+ -----
+ plexus-container-default
+ -----
+ Hervé Boutemy
+ -----
+ 2009-10-06
+ -----
+
+Overview
+
+  <<<plexus-default-container>>> is Plexus' <inversion-of-control> (IoC) container. It is composed of:
+
+  * its public API: the root class is
+  <<<{{{./apidocs/org/codehaus/plexus/PlexusContainer.html}org.codehaus.plexus.PlexusContainer}}>>>,
+
+  * its default implementation: the root class is
+  <<<{{{./apidocs/org/codehaus/plexus/DefaultPlexusContainer.html}org.codehaus.plexus.DefaultPlexusContainer}}>>>.
+
+  []
+
+
+  Default implementation reads configuration in XML files:
+
+  * multiple <<<{{{./plexus-components.html}META-INF/plexus/components.xml}}>>> files that declare components,
+
+  * one <<<{{{./plexus-configuration.html}META-INF/plexus/plexus.xml}}>>> file that can be used to configure
+  the plexus container and runtime in addition to declaring components.
+
+  []
+
+  But it is not limited to these files: Plexus container is by nature very extensible, it can be configured
+  programmatically too or extended to read configuration from any source.
