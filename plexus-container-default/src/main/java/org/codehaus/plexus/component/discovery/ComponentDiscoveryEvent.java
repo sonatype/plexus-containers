@@ -16,8 +16,6 @@ package org.codehaus.plexus.component.discovery;
  * limitations under the License.
  */
 
-import java.util.Map;
-
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 
 /**
@@ -30,7 +28,7 @@ public class ComponentDiscoveryEvent
     private ComponentSetDescriptor componentSetDescriptor;
 
     private Object data;
-    
+
     /**
      * Constructs a <code>ComponentDiscoveryEvent</code> with a set of
      * ComponentDescriptors.
@@ -46,7 +44,7 @@ public class ComponentDiscoveryEvent
         this.componentSetDescriptor = componentSetDescriptor;
         this.data = data;
     }
-    
+
     /**
      * Returns this event's set of ComponentDescriptors.
      * @return this event's set of ComponentDescriptors
