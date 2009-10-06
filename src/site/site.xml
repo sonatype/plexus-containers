@@ -3,9 +3,5 @@
   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
   <body>
     <menu ref="modules" />
-
-    <menu name="Documentation">
-      <item name="History" href="history.html"/>
-    </menu>
   </body>
 </project>

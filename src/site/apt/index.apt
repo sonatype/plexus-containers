@@ -1,0 +1,25 @@
+ -----
+ plexus-containers
+ -----
+ Hervé Boutemy
+ -----
+ 2009-10-06
+ -----
+
+Overview
+
+  <<<plexus-containers>>> is Plexus' <inversion-of-control> (IoC) container and companion tools:
+
+  * {{{./default-plexus-container}default-plexus-container}} is the IoC container itself,
+
+  * {{{./plexus-component-metadata}plexus-component-metadata}} is a Maven plugin to generate plexus <<<{{{./plexus-default-container/plexus-component.html}component.xml}}>>> from
+  source annotations,
+
+  * {{{./plexus-component-annotations}plexus-component-annotations}} provides the Java 5 annotations for plexus components,
+
+  * {{{./plexus-component-javadoc}plexus-component-javadoc}} provides javadoc taglets to add plexus documentation to javadoc.
+
+  []
+
+
+  <<<plexus-containers>>>' structure has evolved over time: see {{{./history.html}history}} to understand its changes.
