@@ -10,7 +10,7 @@ Overview
 
   <<<plexus-containers>>> is Plexus' <inversion-of-control> (IoC) container and companion tools:
 
-  * {{{./default-plexus-container}default-plexus-container}} is the IoC container itself,
+  * {{{./plexus-container-default}plexus-container-default}} is the IoC container itself,
 
   * {{{./plexus-component-metadata}plexus-component-metadata}} is a Maven plugin to generate plexus <<<{{{./plexus-default-container/plexus-component.html}component.xml}}>>> from
   source annotations,
