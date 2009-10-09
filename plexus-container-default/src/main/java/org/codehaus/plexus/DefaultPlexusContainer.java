@@ -390,8 +390,13 @@ public class DefaultPlexusContainer
 
     public <T> T lookup( Class<T> type, String role, String roleHint ) throws ComponentLookupException
     {
-        
         return componentRegistry.lookup( type, role, roleHint );
+    }
+
+    public <T> T lookup( ComponentDescriptor<T> componentDescriptor )
+        throws ComponentLookupException
+    {
+        return componentRegistry.lookup( componentDescriptor );
     }
 
     public List<Object> lookupList( String role ) throws ComponentLookupException

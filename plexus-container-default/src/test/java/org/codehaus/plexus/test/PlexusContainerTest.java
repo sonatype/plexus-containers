@@ -601,6 +601,71 @@ public class PlexusContainerTest
         }
     }
 
+    public void testUpdateOfActiveComponentCollectionUponChangeOfThreadContextClassLoaderFromParentToChildRealm()
+        throws Exception
+    {
+        ComponentManager manager = container.lookup( ComponentManager.class );
+
+        Map<String, ?> map = manager.getMap();
+        assertNotNull( map );
+        assertEquals( 0, map.size() );
+
+        List<?> list = manager.getList();
+        assertNotNull( list );
+        assertEquals( 0, list.size() );
+
+        /*
+         * Below we're creating two realms which basically contain the same components, only their bytecode/version
+         * differs. The realms form a parent-child relationship where the child imports the component role from the
+         * parent. When we first load from the parent and then switch the thread's context class loader to the child,
+         * the active component collections in the component manager must accurately reflect the components from the
+         * current realm (and not from a previous realm).
+         */
+
+        ClassRealm realmA = container.createChildRealm( "realm-a" );
+        realmA.addURL( new File( "src/test/test-components/component-a-1.0-SNAPSHOT.jar" ).toURI().toURL() );
+        container.discoverComponents( realmA );
+
+        ClassRealm realmB = realmA.createChildRealm( "realm-b" );
+        realmB.importFrom( realmA, "org.codehaus.plexus.components.A" );
+        realmB.importFromParent( "nothing" );
+        realmB.addURL( new File( "src/test/test-components/component-a-2.0-SNAPSHOT.jar" ).toURI().toURL() );
+        container.discoverComponents( realmB );
+
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+
+        try
+        {
+            Thread.currentThread().setContextClassLoader( realmA );
+
+            map = manager.getMap();
+            assertNotNull( map );
+            assertEquals( 1, map.size() );
+            assertSame( realmA, map.values().iterator().next().getClass().getClassLoader() );
+
+            list = manager.getList();
+            assertNotNull( list );
+            assertEquals( 1, list.size() );
+            assertSame( realmA, list.iterator().next().getClass().getClassLoader() );
+
+            Thread.currentThread().setContextClassLoader( realmB );
+
+            map = manager.getMap();
+            assertNotNull( map );
+            assertEquals( 1, map.size() );
+            assertSame( realmB, map.values().iterator().next().getClass().getClassLoader() );
+
+            list = manager.getList();
+            assertNotNull( list );
+            assertEquals( 1, list.size() );
+            assertSame( realmB, list.iterator().next().getClass().getClassLoader() );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldClassLoader );
+        }
+    }
+
     public void testComponentLookupFromParentRealmOfImportedRealms()
         throws Exception
     {

@@ -168,7 +168,10 @@ public class ComponentMap<T>
                 // we must follow the order given in roleHints
                 for ( String roleHint : roleHints )
                 {
-                    T component = lookup( role, roleHint );
+                    ComponentDescriptor<T> componentDescriptor = descriptorMap.get( roleHint );
+
+                    T component = lookup( componentDescriptor );
+
                     if ( component != null )
                     {
                         componentMap.put( roleHint, component );
@@ -181,7 +184,10 @@ public class ComponentMap<T>
                 {
                     String roleHint = entry.getKey();
 
-                    T component = lookup( role, roleHint );
+                    ComponentDescriptor<T> componentDescriptor = entry.getValue();
+
+                    T component = lookup( componentDescriptor );
+
                     if ( component != null )
                     {
                         componentMap.put( roleHint, component );

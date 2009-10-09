@@ -39,7 +39,7 @@ public class ComponentDescriptor<T>
 
     private String role = null;
 
-    private Class<? extends T> roleClass;
+    private Class<T> roleClass;
 
     private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
 
@@ -173,7 +173,7 @@ public class ComponentDescriptor<T>
         return role;
     }
 
-    public Class<? extends T> getRoleClass()
+    public Class<T> getRoleClass()
     {
         attemptRoleLoad();
 
@@ -214,7 +214,7 @@ public class ComponentDescriptor<T>
         attemptRoleLoad();
     }
 
-    public void setRoleClass( Class<? extends T> roleClass )
+    public void setRoleClass( Class<T> roleClass )
     {
         this.roleClass = roleClass;
 

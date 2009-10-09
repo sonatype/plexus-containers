@@ -86,6 +86,14 @@ public interface PlexusContainer
         throws ComponentLookupException;
 
     /**
+     * Looks up and returns a component object matching the given component descriptor.
+     * @param componentDescriptor the descriptor of the component
+     * @return a Plexus component object
+     */
+    <T> T lookup( ComponentDescriptor<T> componentDescriptor )
+        throws ComponentLookupException;
+
+    /**
      * Looks up and returns a List of component objects with the given role.
      * @param role a non-unique key for the desired components
      * @return a List of component objects

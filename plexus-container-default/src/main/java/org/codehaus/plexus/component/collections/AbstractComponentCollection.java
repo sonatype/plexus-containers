@@ -134,19 +134,24 @@ public abstract class AbstractComponentCollection<T>
         return false;
     }
 
-    protected T lookup( String role, String roleHint )
+    protected T lookup( ComponentDescriptor<T> componentDescriptor )
     {
+        T component = null;
+
         try
         {
-            return container.lookup( componentType, role, roleHint );
+            if ( componentDescriptor != null )
+            {
+                component = container.lookup( componentDescriptor );
+            }
         }
         catch ( ComponentLookupException e )
         {
-            logger.debug( "Failed to lookup a member of active collection with role: " + role
-                          + " and role-hint: " + roleHint, e );
-
-            return null;
+            logger.debug( "Failed to lookup a member of active collection with role: " + role + " and role-hint: "
+                + componentDescriptor.getRoleHint(), e );
         }
+
+        return component;
     }
 
     public void clear()

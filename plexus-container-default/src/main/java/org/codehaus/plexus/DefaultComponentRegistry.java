@@ -178,6 +178,13 @@ public class DefaultComponentRegistry implements ComponentRegistry
         return getComponent( type, role, roleHint, null );
     }
 
+    public <T> T lookup( ComponentDescriptor<T> componentDescriptor )
+        throws ComponentLookupException
+    {
+        return getComponent( componentDescriptor.getRoleClass(), componentDescriptor.getRole(),
+                             componentDescriptor.getRoleHint(), componentDescriptor );
+    }
+
     public <T> Map<String, T> lookupMap( Class<T> type, String role, List<String> roleHints )
         throws ComponentLookupException
     {
@@ -396,7 +403,17 @@ public class DefaultComponentRegistry implements ComponentRegistry
                 roleHint );
         }
 
-        ComponentManager<T> componentManager = getComponentManager( type, role, roleHint );
+        ComponentManager<T> componentManager = null;
+
+        if ( descriptor != null )
+        {
+            componentManager = getComponentManager( type, role, roleHint, descriptor.getRealm() );
+        }
+        else
+        {
+            componentManager = getComponentManager( type, role, roleHint );
+        }
+
         if ( componentManager == null )
         {
             // we need to create a component manager, but first we must have a descriptor
@@ -419,6 +436,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
                 componentManager = createComponentManager( descriptor, role, roleHint );
             }
         }
+
         return componentManager;
     }
 

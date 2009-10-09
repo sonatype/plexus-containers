@@ -67,7 +67,7 @@ public class ComponentList<T>
         return getList().toArray();
     }
 
-    public Object[] toArray( Object[] ts )
+    public <X> X[] toArray( X[] ts )
     {
         return getList().toArray( ts );
     }
@@ -202,7 +202,10 @@ public class ComponentList<T>
                 // we must follow the order in roleHints
                 for ( String roleHint : roleHints )
                 {
-                    T component = lookup( role, roleHint );
+                    ComponentDescriptor<T> componentDescriptor = descriptorMap.get( roleHint );
+
+                    T component = lookup( componentDescriptor );
+
                     if ( component != null )
                     {
                         componentList.add( component );
@@ -213,9 +216,10 @@ public class ComponentList<T>
             {
                 for ( Entry<String, ComponentDescriptor<T>> entry : descriptorMap.entrySet() )
                 {
-                    String roleHint = entry.getKey();
+                    ComponentDescriptor<T> componentDescriptor = entry.getValue();
 
-                    T component = lookup( role, roleHint );
+                    T component = lookup( componentDescriptor );
+
                     if ( component != null )
                     {
                         componentList.add( component );

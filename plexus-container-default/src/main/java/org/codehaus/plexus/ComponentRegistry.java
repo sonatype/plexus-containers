@@ -50,6 +50,9 @@ public interface ComponentRegistry
     <T> T lookup( Class<T> type, String role, String roleHint )
         throws ComponentLookupException;
 
+    <T> T lookup( ComponentDescriptor<T> componentDescriptor )
+        throws ComponentLookupException;
+
     <T> List<T> lookupList( Class<T> type, String role, List<String> hints )
         throws ComponentLookupException;
 
