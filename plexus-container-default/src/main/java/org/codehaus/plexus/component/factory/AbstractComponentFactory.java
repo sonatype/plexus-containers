@@ -16,6 +16,11 @@ package org.codehaus.plexus.component.factory;
  * limitations under the License.
  */
 
+import org.codehaus.classworlds.ClassRealmAdapter;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
+
 /**
  *
  *
@@ -28,4 +33,19 @@ public abstract class AbstractComponentFactory
 {
     // This is for backward compatibility
     private String id;
+
+    public Object newInstance( ComponentDescriptor componentDescriptor, ClassRealm classRealm, PlexusContainer container )
+        throws ComponentInstantiationException
+    {
+        // for backward-compatibility with the old component factories delegate to the old-style method
+        return newInstance( componentDescriptor, ClassRealmAdapter.getInstance( classRealm ), container );
+    }
+
+    protected Object newInstance( ComponentDescriptor componentDescriptor,
+                                  org.codehaus.classworlds.ClassRealm classRealm, PlexusContainer container )
+        throws ComponentInstantiationException
+    {
+        throw new IllegalStateException( getClass().getName() + " does not implement component creation." );
+    }
+
 }
