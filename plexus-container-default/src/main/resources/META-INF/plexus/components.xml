@@ -5,5 +5,10 @@
       <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
       <role-hint>basic</role-hint>
     </component>
+    <component>
+      <implementation>org.codehaus.plexus.component.configurator.MapOrientedComponentConfigurator</implementation>
+      <role>org.codehaus.plexus.component.configurator.ComponentConfigurator</role>
+      <role-hint>map-oriented</role-hint>
+    </component>
   </components>
 </component-set>
