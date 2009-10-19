@@ -7,6 +7,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,9 +58,8 @@ public abstract class AbstractComponentCollection<T>
     /** Used to log errors in the component lookup process. */
     protected Logger logger;
 
-    private List<ClassRealm> realms;
-
-    private int lastRealmCount = -1;
+    private ClassLoader tccl;
+    private Collection<ClassRealm> realms;
 
     private Map<String, ComponentDescriptor<T>> componentDescriptorMap;
     private ClassWorld world;
@@ -87,7 +87,8 @@ public abstract class AbstractComponentCollection<T>
 
     private boolean realmsHaveChanged()
     {
-        return ( realms == null ) || ( world.getRealms().size() != lastRealmCount );
+        return ( tccl != Thread.currentThread().getContextClassLoader() ) ||
+               ( realms == null ) || ( !realms.equals( world.getRealms() ) );
     }
 
     protected Map<String, ComponentDescriptor<T>> getComponentDescriptorMap()
@@ -103,6 +104,9 @@ public abstract class AbstractComponentCollection<T>
         {
             return false;
         }
+
+        tccl = Thread.currentThread().getContextClassLoader();
+        realms = world.getRealms();
 
         Map<String, ComponentDescriptor<T>> componentMap = container.getComponentDescriptorMap( componentType, role );
         Map<String, ComponentDescriptor<T>> newComponentDescriptors =
@@ -156,8 +160,8 @@ public abstract class AbstractComponentCollection<T>
         componentDescriptorMap.clear();
         componentDescriptorMap = null;
 
+        tccl = null;
         realms = null;
-        lastRealmCount = -1;
     }
 
     protected abstract void releaseAllCallback();
