@@ -1,5 +1,8 @@
 package org.codehaus.plexus.component.repository.exception;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 
 /*
@@ -86,8 +89,11 @@ public class ComponentLookupException
 
         if ( realm != null )
         {
-            sb.append( realm.getId() );
-            realm.display();
+            sb.append( realm.getId() ).append( LS );
+            ByteArrayOutputStream os = new ByteArrayOutputStream( 1024 );
+            PrintStream ps = new PrintStream( os );
+            realm.display( ps );
+            sb.append( os.toString() );
         }
         else
         {
