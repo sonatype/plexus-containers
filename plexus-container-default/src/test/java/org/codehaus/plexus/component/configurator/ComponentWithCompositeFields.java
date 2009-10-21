@@ -35,10 +35,18 @@ public class ComponentWithCompositeFields
 {
     private ThingInterface thing;
 
+    private DefaultComponent bean;
+
     public ThingInterface getThing()
     {
         return thing;
     }
+
+    public DefaultComponent getBean()
+    {
+        return bean;
+    }
+
 }
 
 

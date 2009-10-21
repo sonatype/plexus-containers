@@ -58,6 +58,12 @@ public class XBeanComponentConfiguratorTest extends AbstractComponentConfigurato
         // expression evalator is not supported since it is not used by normal AutoConfigurePhase
     }
 
+    public void testComponentConfigurationWithUnresolvedExpressionContentForCompositeFieldOfNonInstantiatableType()
+        throws Exception
+    {
+        // expression evalator is not supported since it is not used by normal AutoConfigurePhase
+    }
+
     protected ComponentConfigurator getComponentConfigurator() throws Exception {
         // this should never be called because the configureComponent is overridden
         throw new UnsupportedOperationException();

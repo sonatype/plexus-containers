@@ -75,12 +75,17 @@ public class ObjectWithFieldsConverter
     {
         Object retValue = fromExpression( configuration, expressionEvaluator, type );
 
-        if ( retValue == null && configuration.getChildCount() > 0 )
+        if ( retValue == null )
         {
             try
             {
                 // it is a "composite" - we compose it from its children. It does not have a value of its own
                 Class implementation = getClassForImplementationHint( type, configuration, classLoader );
+
+                if ( type == implementation && type.isInterface() && configuration.getChildCount() <= 0 )
+                {
+                    return null;
+                }
 
                 retValue = instantiateObject( implementation );
 

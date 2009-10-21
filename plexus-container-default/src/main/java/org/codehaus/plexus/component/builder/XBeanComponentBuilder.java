@@ -244,13 +244,13 @@ public class XBeanComponentBuilder<T> implements ComponentBuilder<T> {
                     for (PlexusConfiguration child : configuration.getChildren()) {
                         String name = child.getName();
                         name = fromXML(name);
-                        if ( child.getChildCount() > 0 )
-                        {
-                            recipe.setProperty( name, new PlexusConfigurationRecipe( child ) );
-                        }
-                        else if ( StringUtils.isNotEmpty( child.getValue() ) )
+                        if ( StringUtils.isNotEmpty( child.getValue( null ) ) )
                         {
                             recipe.setProperty( name, child.getValue() );
+                        }
+                        else
+                        {
+                            recipe.setProperty( name, new PlexusConfigurationRecipe( child ) );
                         }
                     }
                 }

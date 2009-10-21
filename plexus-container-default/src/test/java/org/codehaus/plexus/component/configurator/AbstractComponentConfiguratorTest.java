@@ -778,7 +778,7 @@ public abstract class AbstractComponentConfiguratorTest
         throws Exception
     {
         String xml = "<configuration>" //
-            + "  <thing></thing>" //
+            + "  <bean/>" //
             + "</configuration>";
 
         PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
@@ -798,6 +798,48 @@ public abstract class AbstractComponentConfiguratorTest
         ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
 
         configureComponent( component, descriptor, realm );
+
+        assertNotNull( component.getBean() );
+    }
+
+    public void testComponentConfigurationWithUnresolvedExpressionContentForCompositeFieldOfNonInstantiatableType()
+        throws Exception
+    {
+        String xml = "<configuration>" //
+            + "  <thing>${null-valued-expression}</thing>" //
+            + "</configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithCompositeFields component = new ComponentWithCompositeFields();
+
+        ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator()
+        {
+            public Object evaluate( String expression )
+                throws ExpressionEvaluationException
+            {
+                return null;
+            }
+
+            public File alignToBaseDirectory( File file )
+            {
+                return null;
+            }
+        };
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration( configuration );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        configureComponent( component, descriptor, realm, expressionEvaluator );
 
         assertEquals( null, component.getThing() );
     }
