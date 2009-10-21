@@ -1,14 +1,15 @@
 package org.codehaus.plexus.component.collections;
 
 import org.codehaus.plexus.MutablePlexusContainer;
-import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -62,13 +63,13 @@ public abstract class AbstractComponentCollection<T>
     private Collection<ClassRealm> realms;
 
     private Map<String, ComponentDescriptor<T>> componentDescriptorMap;
-    private ClassWorld world;
+    private final ClassWorld world;
 
-    public AbstractComponentCollection( MutablePlexusContainer container,
-                                        Class<T> componentType,
-                                        String role,
-                                        List<String> roleHints,
-                                        String hostComponent )
+    public AbstractComponentCollection( final MutablePlexusContainer container,
+                                        final Class<T> componentType,
+                                        final String role,
+                                        final List<String> roleHints,
+                                        final String hostComponent )
     {
         this.container = container;
 
@@ -98,6 +99,7 @@ public abstract class AbstractComponentCollection<T>
         return componentDescriptorMap;
     }
 
+    @SuppressWarnings( "unchecked" )
     protected boolean checkUpdate()
     {
         if ( componentDescriptorMap != null && !realmsHaveChanged() )
@@ -106,7 +108,15 @@ public abstract class AbstractComponentCollection<T>
         }
 
         tccl = Thread.currentThread().getContextClassLoader();
-        realms = world.getRealms();
+        Collection fromWorld = world.getRealms();
+        if ( fromWorld == null || fromWorld.isEmpty() )
+        {
+            realms = null;
+        }
+        else
+        {
+            realms = new HashSet<ClassRealm>( fromWorld );
+        }
 
         Map<String, ComponentDescriptor<T>> componentMap = container.getComponentDescriptorMap( componentType, role );
         Map<String, ComponentDescriptor<T>> newComponentDescriptors =
