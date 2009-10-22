@@ -122,7 +122,19 @@ public abstract class AbstractBasicConverter
 
         if ( retValue instanceof String )
         {
-            retValue = fromString( (String) retValue );
+            try
+            {
+                retValue = fromString( (String) retValue );
+            }
+            catch ( ComponentConfigurationException e )
+            {
+                if ( e.getFailedConfiguration() == null )
+                {
+                    e.setFailedConfiguration( configuration );
+                }
+
+                throw e;
+            }
         }
 
         return retValue;
