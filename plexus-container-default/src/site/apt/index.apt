@@ -29,4 +29,6 @@ Overview
   []
 
   But it is not limited to these files: Plexus container is by nature very extensible, it can be configured
-  programmatically too or extended to read configuration from any source.
+  programmatically too or extended to read configuration from any source. It is used for example in Maven 2 to
+  read plugins configuration from <<<META-INF/maven/plugin.xml>>> and instanciate Mojos downloaded from
+  Maven repositories.
