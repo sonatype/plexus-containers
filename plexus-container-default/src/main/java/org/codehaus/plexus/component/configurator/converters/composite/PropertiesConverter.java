@@ -71,30 +71,38 @@ public class PropertiesConverter
             {
                 PlexusConfiguration child = children[i];
 
-                addEntry( retValue, element, child );
+                addEntry( retValue, element, child, expressionEvaluator );
             }
         }
 
         return retValue;
     }
 
-    private void addEntry( Properties properties, String element, PlexusConfiguration property )
+    private void addEntry( Properties properties, String element, PlexusConfiguration property,
+                           ExpressionEvaluator expressionEvaluator )
         throws ComponentConfigurationException
     {
-        String name;
-
-        name = property.getChild( "name" ).getValue( null );
+        Object name = fromExpression( property.getChild( "name" ), expressionEvaluator );
 
         if ( name == null )
         {
-            String msg = "Converter: java.util.Properties. Trying to convert the configuration element: '" + element
-                + "', missing child element 'name'.";
+            String msg =
+                "Trying to convert the configuration element: '" + element
+                    + "', missing child element 'name' for property.";
 
             throw new ComponentConfigurationException( msg );
         }
 
-        String value = property.getChild( "value" ).getValue( "" );
+        Object value = fromExpression( property.getChild( "value" ), expressionEvaluator );
 
-        properties.put( name, value );
+        if ( value == null )
+        {
+            properties.setProperty( name.toString(), "" );
+        }
+        else
+        {
+            properties.setProperty( name.toString(), value.toString() );
+        }
     }
+
 }

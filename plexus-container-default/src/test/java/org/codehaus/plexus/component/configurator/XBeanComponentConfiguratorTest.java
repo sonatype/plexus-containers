@@ -46,6 +46,10 @@ public class XBeanComponentConfiguratorTest extends AbstractComponentConfigurato
         // expression evalator is not supported since it is not used by normal AutoConfigurePhase
     }
 
+    public void testComponentConfigurationWithPropertiesFieldsWithExpressions() throws Exception {
+        // expression evalator is not supported since it is not used by normal AutoConfigurePhase
+    }
+
     public void testComponentConfigurationWithAmbiguousExpressionValue()
         throws Exception
     {

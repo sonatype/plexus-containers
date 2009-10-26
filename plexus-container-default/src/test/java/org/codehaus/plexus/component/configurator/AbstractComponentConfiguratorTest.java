@@ -542,6 +542,58 @@ public abstract class AbstractComponentConfiguratorTest
 
     }
 
+    public void testComponentConfigurationWithPropertiesFieldsWithExpressions()
+        throws Exception
+    {
+
+        String xml = "<configuration>" + "<someProperties>" //
+            + "<property><name>${theName}</name><value>${theValue}</value></property>" //
+            + "<property><name>empty</name></property>" //
+            + "</someProperties>" + "</configuration>";
+
+        final Properties values = new Properties();
+        values.put( "${theName}", "test" );
+        values.put( "${theValue}", "PASSED" );
+
+        ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator()
+        {
+            public Object evaluate( String expression )
+            {
+                return values.containsKey( expression ) ? values.get( expression ) : expression;
+            }
+
+            public File alignToBaseDirectory( File file )
+            {
+                return null;
+            }
+        };
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithPropertiesField component = new ComponentWithPropertiesField();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration( configuration );
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        configureComponent( component, descriptor, realm, expressionEvaluator );
+
+        Properties properties = component.getSomeProperties();
+
+        assertNotNull( properties );
+
+        assertEquals( "PASSED", properties.get( "test" ) );
+        assertEquals( "", properties.get( "empty" ) );
+    }
+
     public void testComponentConfigurationWithMapField()
         throws Exception
     {
