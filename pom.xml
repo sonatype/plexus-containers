@@ -31,7 +31,7 @@
   </scm>
 
   <properties>
-    <classWorldsVersion>2.2.0</classWorldsVersion>
+    <classWorldsVersion>2.2.2</classWorldsVersion>
     <plexusUtilsVersion>1.4.5</plexusUtilsVersion>
     <xbeanReflectVersion>3.4</xbeanReflectVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
