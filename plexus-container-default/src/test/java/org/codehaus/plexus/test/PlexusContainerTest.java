@@ -725,4 +725,12 @@ public class PlexusContainerTest
         assertNull( ca.optionalComponent );
     }
 
+    public void testLookupOfComponentThatHasARequirementWithoutRoleHintAndTheOneAndOnlyImplHasNoDefaultHint()
+        throws Exception
+    {
+        DefaultThingUser component = (DefaultThingUser) container.lookup( ThingUser.class );
+
+        assertNotNull( component.thing );
+    }
+
 }

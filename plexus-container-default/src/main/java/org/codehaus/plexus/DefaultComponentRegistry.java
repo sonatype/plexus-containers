@@ -28,6 +28,7 @@ import org.codehaus.plexus.lifecycle.LifecycleHandler;
 import org.codehaus.plexus.lifecycle.LifecycleHandlerManager;
 import org.codehaus.plexus.lifecycle.UndefinedLifecycleHandlerException;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.StringUtils;
 
 public class DefaultComponentRegistry implements ComponentRegistry
 {
@@ -172,7 +173,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
         if ( roleHint == null )
         {
-            roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
+            roleHint = "";
         }
 
         return getComponent( type, role, roleHint, null );
@@ -389,6 +390,11 @@ public class DefaultComponentRegistry implements ComponentRegistry
         }
         else
         {
+            if ( StringUtils.isEmpty( roleHint ) )
+            {
+                roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
+            }
+
             return (T) unmanagedComponents.get( new Key( null, role, roleHint ) );
         }
     }

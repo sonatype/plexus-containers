@@ -19,6 +19,7 @@ package org.codehaus.plexus.component.repository;
 import static org.codehaus.plexus.component.CastUtils.isAssignableFrom;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,11 +29,13 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.codehaus.plexus.ClassRealmUtil;
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.composition.CycleDetectedInComponentGraphException;
 import org.codehaus.plexus.component.composition.CompositionResolver;
 import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.util.StringUtils;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -89,7 +92,39 @@ public class DefaultComponentRepository
 
     public <T> ComponentDescriptor<T> getComponentDescriptor( Class<T> type, String role, String roleHint )
     {
-        for ( ComponentDescriptor<?> descriptor : getComponentDescriptors( role ).get( roleHint ) )
+        Multimap<String, ComponentDescriptor<?>> roleHintIndex = getComponentDescriptors( role );
+
+        Collection<ComponentDescriptor<?>> descriptors;
+
+        if ( StringUtils.isNotEmpty( roleHint ) )
+        {
+            // specific role hint -> get only those
+            descriptors = roleHintIndex.get( roleHint );
+        }
+        else
+        {
+            // missing role hint -> get all (wildcard)
+            Collection<ComponentDescriptor<?>> allDescriptors = new ArrayList<ComponentDescriptor<?>>();
+
+            descriptors = roleHintIndex.get( PlexusConstants.PLEXUS_DEFAULT_HINT );
+            if ( descriptors != null )
+            {
+                allDescriptors.addAll( descriptors );
+            }
+
+            for ( String hint : roleHintIndex.keySet() )
+            {
+                descriptors = roleHintIndex.get( hint );
+                if ( descriptors != null )
+                {
+                    allDescriptors.addAll( descriptors );
+                }
+            }
+
+            descriptors = allDescriptors;
+        }
+
+        for ( ComponentDescriptor<?> descriptor : descriptors )
         {
             Class<?> implClass = descriptor.getImplementationClass();
             if ( isAssignableFrom( type, implClass ) )

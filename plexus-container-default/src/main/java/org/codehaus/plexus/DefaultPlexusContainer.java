@@ -370,7 +370,7 @@ public class DefaultPlexusContainer
 
     public Object lookup( String role ) throws ComponentLookupException
     {
-        return componentRegistry.lookup( getRoleClass( role ), role, PLEXUS_DEFAULT_HINT );
+        return componentRegistry.lookup( getRoleClass( role ), role, "" );
     }
 
     public Object lookup( String role, String roleHint ) throws ComponentLookupException
@@ -380,7 +380,7 @@ public class DefaultPlexusContainer
 
     public <T> T lookup( Class<T> type ) throws ComponentLookupException
     {
-        return componentRegistry.lookup( type, type.getName(), PLEXUS_DEFAULT_HINT );
+        return componentRegistry.lookup( type, type.getName(), "" );
     }
 
     public <T> T lookup( Class<T> type, String roleHint ) throws ComponentLookupException
@@ -445,7 +445,7 @@ public class DefaultPlexusContainer
 
     public boolean hasComponent( String role )
     {
-        return componentRegistry.getComponentDescriptor( Object.class, role, PLEXUS_DEFAULT_HINT ) != null;
+        return componentRegistry.getComponentDescriptor( Object.class, role, "" ) != null;
     }
 
     public boolean hasComponent( String role, String roleHint )
@@ -455,7 +455,7 @@ public class DefaultPlexusContainer
 
     public boolean hasComponent( Class<?> type )
     {
-        return componentRegistry.getComponentDescriptor( type, type.getName(), PLEXUS_DEFAULT_HINT ) != null;
+        return componentRegistry.getComponentDescriptor( type, type.getName(), "" ) != null;
     }
 
     public boolean hasComponent( Class<?> type, String roleHint )
@@ -470,7 +470,7 @@ public class DefaultPlexusContainer
 
     public ComponentDescriptor<?> getComponentDescriptor( String role )
     {
-        return componentRegistry.getComponentDescriptor( Object.class, role, PLEXUS_DEFAULT_HINT );
+        return componentRegistry.getComponentDescriptor( Object.class, role, "" );
     }
 
     public ComponentDescriptor<?> getComponentDescriptor( String role, String roleHint )

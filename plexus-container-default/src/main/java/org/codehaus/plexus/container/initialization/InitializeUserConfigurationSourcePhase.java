@@ -42,7 +42,7 @@ public class InitializeUserConfigurationSourcePhase
         try
         {
             // is the user overriding the ConfigurationSource (role-hint: default) or only extending it?
-            if ( context.getContainer().hasComponent( ConfigurationSource.class  ) )
+            if ( context.getContainer().hasComponent( ConfigurationSource.class, PlexusConstants.PLEXUS_DEFAULT_HINT ) )
             {
                 // overriding
 

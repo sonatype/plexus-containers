@@ -18,9 +18,11 @@ package org.codehaus.plexus.component.composition;
 
 import java.util.List;
 
+import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentRequirementList;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.codehaus.plexus.util.dag.DAG;
 
@@ -84,6 +86,7 @@ public class DefaultCompositionResolver
 
     private String getDAGKey( String role, String roleHint )
     {
-        return role + SEPARATOR_CHAR + roleHint;
+        return role + SEPARATOR_CHAR
+            + ( StringUtils.isNotEmpty( roleHint ) ? roleHint : PlexusConstants.PLEXUS_DEFAULT_HINT );
     }
 }
