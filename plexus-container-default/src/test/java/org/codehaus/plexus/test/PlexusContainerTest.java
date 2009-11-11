@@ -16,7 +16,15 @@ package org.codehaus.plexus.test;
  * limitations under the License.
  */
 
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.TestCase;
+
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
 import org.codehaus.plexus.DefaultPlexusContainer;
@@ -37,13 +45,6 @@ import org.codehaus.plexus.test.list.ValveThree;
 import org.codehaus.plexus.test.list.ValveTwo;
 import org.codehaus.plexus.test.map.Activity;
 import org.codehaus.plexus.test.map.ActivityManager;
-
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PlexusContainerTest
     extends TestCase
@@ -733,4 +734,13 @@ public class PlexusContainerTest
         assertNotNull( component.thing );
     }
 
+    public void testSingleLookupWithAndWithoutRoleHint()
+        throws Exception
+    {
+        ComponentWithRoleDefault withRoleHint = (ComponentWithRoleDefault) container.lookup( ComponentWithRoleDefault.class, "default" );
+
+        ComponentWithRoleDefault withoutRoleHint = (ComponentWithRoleDefault) container.lookup( ComponentWithRoleDefault.class );
+
+        assertSame( withRoleHint, withoutRoleHint );
+    }
 }

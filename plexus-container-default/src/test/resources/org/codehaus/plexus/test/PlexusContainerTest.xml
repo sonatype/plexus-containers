@@ -454,5 +454,11 @@
       </requirements>
     </component>
 
+    <component>
+      <role>org.codehaus.plexus.test.ComponentWithRoleDefault</role>
+      <implementation>org.codehaus.plexus.test.ComponentWithRoleDefault</implementation>
+      <role-hint>default</role-hint>
+    </component>
+
  </components>
 </plexus>
