@@ -99,15 +99,13 @@
         <artifactId>google-collect</artifactId>
         <version>snapshot-20080530</version>
       </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-    </dependency>
-  </dependencies>
 
   <build>
     <plugins>
