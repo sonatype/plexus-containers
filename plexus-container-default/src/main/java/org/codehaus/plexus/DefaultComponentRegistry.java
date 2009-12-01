@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -409,11 +408,16 @@ public class DefaultComponentRegistry implements ComponentRegistry
                 roleHint );
         }
 
+        if ( descriptor == null )
+        {
+            descriptor = getComponentDescriptor( type, role, roleHint );
+        }
+
         ComponentManager<T> componentManager = null;
 
         if ( descriptor != null )
         {
-            componentManager = getComponentManager( type, role, roleHint, descriptor.getRealm() );
+            componentManager = getComponentManager( type, role, descriptor.getRoleHint(), descriptor.getRealm() );
         }
         else
         {
@@ -446,6 +450,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         return componentManager;
     }
 
+    @SuppressWarnings( "unchecked" )
     private <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint )
     {
         Set<ClassRealm> realms = getSearchRealms( false );
@@ -462,6 +467,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         return null;
     }
 
+    @SuppressWarnings( "unchecked" )
     private <T> ComponentManager<T> getComponentManager( Class<T> type, String role, String roleHint, ClassRealm realm )
     {
         ComponentManager<?> manager = componentManagers.get( new Key( realm, role, roleHint ) );
@@ -472,6 +478,7 @@ public class DefaultComponentRegistry implements ComponentRegistry
         return null;
     }
 
+    @SuppressWarnings( "unchecked" )
     private Set<ClassRealm> getSearchRealms( boolean specifiedOnly )
     {
         // determine realms to search

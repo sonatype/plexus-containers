@@ -737,10 +737,58 @@ public class PlexusContainerTest
     public void testSingleLookupWithAndWithoutRoleHint()
         throws Exception
     {
-        ComponentWithRoleDefault withRoleHint = (ComponentWithRoleDefault) container.lookup( ComponentWithRoleDefault.class, "default" );
+        ComponentWithRoleDefault withRoleHint = container.lookup( ComponentWithRoleDefault.class, "default" );
 
-        ComponentWithRoleDefault withoutRoleHint = (ComponentWithRoleDefault) container.lookup( ComponentWithRoleDefault.class );
+        ComponentWithRoleDefault withoutRoleHint = container.lookup( ComponentWithRoleDefault.class );
 
         assertSame( withRoleHint, withoutRoleHint );
     }
+
+    public void testLookupUponChangeOfThreadContextClassLoaderFromParentToChildRealm()
+        throws Exception
+    {
+        /*
+         * Below we're creating two realms which basically contain the same components, only their bytecode/version
+         * differs. The realms form a parent-child relationship where the child imports the component role from the
+         * parent. When we first lookup from the parent and then switch the thread's context class loader to the child,
+         * the second lookup must accurately reflect the components from the current realm (and not from a previous
+         * realm).
+         */
+
+        ClassRealm realmA = container.createChildRealm( "realm-a" );
+        realmA.addURL( new File( "src/test/test-components/component-a-1.0-SNAPSHOT.jar" ).toURI().toURL() );
+        container.discoverComponents( realmA );
+
+        ClassRealm realmB = realmA.createChildRealm( "realm-b" );
+        realmB.importFrom( realmA, "org.codehaus.plexus.components.A" );
+        realmB.importFromParent( "nothing" );
+        realmB.addURL( new File( "src/test/test-components/component-a-2.0-SNAPSHOT.jar" ).toURI().toURL() );
+        container.discoverComponents( realmB );
+
+        Class<?> role = realmA.loadClass( "org.codehaus.plexus.components.A" );
+
+        ClassLoader oldClassLoader = Thread.currentThread().getContextClassLoader();
+
+        try
+        {
+            Thread.currentThread().setContextClassLoader( realmA );
+
+            Object comp1 = container.lookup( role, "default" );
+
+            Thread.currentThread().setContextClassLoader( realmB );
+
+            Object comp2 = container.lookup( role, "default" );
+
+            assertNotNull( comp1 );
+            assertNotNull( comp2 );
+            assertNotSame( comp1, comp2 );
+            assertSame( realmA, comp1.getClass().getClassLoader() );
+            assertSame( realmB, comp2.getClass().getClassLoader() );
+        }
+        finally
+        {
+            Thread.currentThread().setContextClassLoader( oldClassLoader );
+        }
+    }
+
 }
