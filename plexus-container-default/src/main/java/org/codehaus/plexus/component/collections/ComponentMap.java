@@ -54,8 +54,7 @@ public class ComponentMap<T>
 
     public boolean containsKey( Object key )
     {
-        Map<String, ComponentDescriptor<T>> descriptorMap = getComponentDescriptorMap();
-        return descriptorMap.containsKey( key );
+        return getComponentDescriptorMap().containsKey( key );
     }
 
     public boolean containsValue( Object value )
@@ -68,7 +67,7 @@ public class ComponentMap<T>
         return getMap().get( k );
     }
 
-    public T put( String key, T value )
+    public synchronized T put( String key, T value )
     {
         logger.warn( "Custom "
                      + role
@@ -83,7 +82,7 @@ public class ComponentMap<T>
         return prev;
     }
 
-    public void putAll( Map<? extends String, ? extends T> map )
+    public synchronized void putAll( Map<? extends String, ? extends T> map )
     {
         logger.warn( "Custom "
                      + role
@@ -127,13 +126,12 @@ public class ComponentMap<T>
         return getMap().hashCode();
     }
 
-    public T remove( Object k )
+    public synchronized T remove( Object key )
     {
         logger.warn( "Items in this Map should NOT be removed directly. If the matching entry is a component, it will NOT be removed." );
 
-        if ( k instanceof String )
+        if ( key instanceof String )
         {
-            String key = (String) k;
             if ( customAdditions.containsKey( key ) )
             {
                 return customAdditions.remove( key );
@@ -143,7 +141,7 @@ public class ComponentMap<T>
         return null;
     }
 
-    private Map<String, T> getMap()
+    private synchronized Map<String, T> getMap()
     {
         Map<String, T> result = getComponentMap();
 
@@ -155,7 +153,7 @@ public class ComponentMap<T>
         return result;
     }
 
-    private Map<String, T> getComponentMap()
+    private synchronized Map<String, T> getComponentMap()
     {
         if ( ( components == null ) || checkUpdate() )
         {
@@ -226,7 +224,6 @@ public class ComponentMap<T>
                 logger.debug( "Error releasing components in active collection: " + e.getMessage(), e );
             }
 
-            components.clear();
             components = null;
         }
     }

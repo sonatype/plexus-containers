@@ -72,7 +72,7 @@ public class ComponentList<T>
         return getList().toArray( ts );
     }
 
-    public boolean add( T object )
+    public synchronized boolean add( T object )
     {
         getList().add( object );
 
@@ -109,12 +109,12 @@ public class ComponentList<T>
             + hostComponent + " and managed by the container." );
     }
 
-    public boolean removeAll( Collection<?> collection )
+    public synchronized boolean removeAll( Collection<?> collection )
     {
         return getList().removeAll( collection );
     }
 
-    public boolean retainAll( Collection<?> collection )
+    public synchronized boolean retainAll( Collection<?> collection )
     {
         return getList().retainAll( collection );
     }
@@ -187,7 +187,7 @@ public class ComponentList<T>
         return getList().subList( fromIndex, toIndex );
     }
 
-    private List<T> getList()
+    private synchronized List<T> getList()
     {
         // NOTE: If we cache the component map, we have a problem with releasing any of the
         // components in this map...we need to be able to release them all.
@@ -258,7 +258,6 @@ public class ComponentList<T>
                 logger.debug( "Error releasing components in active collection: " + e.getMessage(), e );
             }
 
-            components.clear();
             components = null;
         }
     }

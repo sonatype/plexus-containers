@@ -92,7 +92,7 @@ public abstract class AbstractComponentCollection<T>
                ( realms == null ) || ( !realms.equals( world.getRealms() ) );
     }
 
-    protected Map<String, ComponentDescriptor<T>> getComponentDescriptorMap()
+    protected synchronized Map<String, ComponentDescriptor<T>> getComponentDescriptorMap()
     {
         checkUpdate();
 
@@ -168,11 +168,10 @@ public abstract class AbstractComponentCollection<T>
         return component;
     }
 
-    public void clear()
+    public synchronized void clear()
     {
         releaseAllCallback();
 
-        componentDescriptorMap.clear();
         componentDescriptorMap = null;
 
         tccl = null;

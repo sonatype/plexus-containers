@@ -22,6 +22,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.TestCase;
 
@@ -789,6 +793,75 @@ public class PlexusContainerTest
         {
             Thread.currentThread().setContextClassLoader( oldClassLoader );
         }
+    }
+
+    public void testSafeConcurrentAccessToActiveComponentCollection()
+        throws Exception
+    {
+        ComponentManager manager = container.lookup( ComponentManager.class );
+
+        final Map<String, ?> map = manager.getMap();
+        assertNotNull( map );
+        assertEquals( 0, map.size() );
+
+        final List<?> list = manager.getList();
+        assertNotNull( list );
+        assertEquals( 0, list.size() );
+
+        final AtomicBoolean go = new AtomicBoolean( false );
+
+        final List<Exception> exceptions = new CopyOnWriteArrayList<Exception>();
+        Thread[] threads = new Thread[64];
+        final CountDownLatch latch = new CountDownLatch( threads.length );
+        for ( int i = 0; i < threads.length; i++ )
+        {
+            threads[i] = new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    try
+                    {
+                        ClassRealm realm = container.createChildRealm( "realm-" + UUID.randomUUID().toString() );
+                        realm.addURL( new File( "src/test/test-components/component-a-1.0-SNAPSHOT.jar" ).toURI().toURL() );
+                        container.discoverComponents( realm );
+                        Thread.currentThread().setContextClassLoader( realm );
+
+                        while ( !go.get() )
+                        {
+                            // just wait
+                        }
+
+                        for ( int j = 0; j < 1000; j++ )
+                        {
+                            // this just must not die with some exception
+                            for ( Object value : map.values() )
+                            {
+                                value.toString();
+                            }
+                            for ( Object value : list )
+                            {
+                                value.toString();
+                            }
+                        }
+                    }
+                    catch ( Exception e )
+                    {
+                        e.printStackTrace();
+                        exceptions.add( e );
+                    }
+                    finally
+                    {
+                        latch.countDown();
+                    }
+                }
+            };
+            threads[i].start();
+        }
+        go.set( true );
+        latch.await();
+
+        assertTrue( exceptions.toString(), exceptions.isEmpty() );
     }
 
 }
