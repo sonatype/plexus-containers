@@ -37,6 +37,7 @@ import org.codehaus.plexus.component.composition.DefaultCompositionResolver;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.StringUtils;
 
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
@@ -74,8 +75,9 @@ public class DefaultComponentRepository
             realms.addAll( index.keySet() );
         }
 
+        
         // Get all valid component descriptors
-        Multimap<String, ComponentDescriptor<?>> roleHintIndex = Multimaps.newLinkedHashMultimap();
+        Multimap<String, ComponentDescriptor<?>> roleHintIndex = LinkedHashMultimap.create();
         for ( ClassRealm realm : realms )
         {
             SortedMap<String, Multimap<String, ComponentDescriptor<?>>> roleIndex = index.get( realm );
@@ -219,7 +221,7 @@ public class DefaultComponentRepository
         Multimap<String, ComponentDescriptor<?>> roleHintIndex = roleIndex.get( role );
         if ( roleHintIndex == null )
         {
-            roleHintIndex = Multimaps.newLinkedHashMultimap();
+            roleHintIndex = LinkedHashMultimap.create();
             roleIndex.put( role, roleHintIndex );
         }
         roleHintIndex.put( componentDescriptor.getRoleHint(), componentDescriptor );
