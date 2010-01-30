@@ -48,10 +48,10 @@ import org.codehaus.plexus.component.configurator.converters.composite.ObjectWit
 import org.codehaus.plexus.component.configurator.converters.composite.PlexusConfigurationConverter;
 import org.codehaus.plexus.component.configurator.converters.composite.PropertiesConverter;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DefaultConverterLookup
@@ -61,7 +61,7 @@ public class DefaultConverterLookup
 
     private final List<ConfigurationConverter> customConverters = new CopyOnWriteArrayList<ConfigurationConverter>();
 
-    private final Map<Class<?>, ConfigurationConverter> converterMap = new HashMap<Class<?>, ConfigurationConverter>();
+    private final Map<Class<?>, ConfigurationConverter> converterMap = new ConcurrentHashMap<Class<?>, ConfigurationConverter>();
 
     public DefaultConverterLookup()
     {
@@ -83,13 +83,9 @@ public class DefaultConverterLookup
     public ConfigurationConverter lookupConverterForType( Class<?> type )
         throws ComponentConfigurationException
     {
-        ConfigurationConverter retValue = null;
+        ConfigurationConverter retValue = converterMap.get( type );
 
-        if ( converterMap.containsKey( type ) )
-        {
-            retValue = converterMap.get( type );
-        }
-        else
+        if ( retValue == null )
         {
             if ( customConverters != null )
             {
@@ -100,12 +96,14 @@ public class DefaultConverterLookup
             {
                 retValue = findConverterForType( converters, type );
             }
-        }
 
-        if ( retValue == null )
-        {
-            // this is highly irregular
-            throw new ComponentConfigurationException( "Configuration converter lookup failed for type: " + type );
+            if ( retValue == null )
+            {
+                // this is highly irregular
+                throw new ComponentConfigurationException( "Configuration converter lookup failed for type: " + type );
+            }
+
+            converterMap.put( type, retValue );
         }
 
         return retValue;
@@ -117,8 +115,6 @@ public class DefaultConverterLookup
         {
             if ( converter.canConvert( type ) )
             {
-                converterMap.put( type, converter );
-
                 return converter;
             }
         }
