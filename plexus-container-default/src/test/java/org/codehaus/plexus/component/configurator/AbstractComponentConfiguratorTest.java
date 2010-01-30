@@ -896,4 +896,34 @@ public abstract class AbstractComponentConfiguratorTest
         assertEquals( null, component.getThing() );
     }
 
+    public void testComponentConfiguratorFileNormalizesSeparator()
+        throws Exception
+    {
+        String xml = "<configuration><fileArray>" +
+                "  <file>dir/test.txt</file>" +
+                "  <file>dir\\test.txt</file>" +
+                "</fileArray></configuration>";
+
+        PlexusConfiguration configuration = PlexusTools.buildConfiguration( "<Test>", new StringReader( xml ) );
+
+        ComponentWithArrayFields component = new ComponentWithArrayFields();
+
+        ComponentDescriptor descriptor = new ComponentDescriptor();
+
+        descriptor.setRole( "role" );
+
+        descriptor.setImplementation( component.getClass().getName() );
+
+        descriptor.setConfiguration(configuration);
+
+        ClassWorld classWorld = new ClassWorld();
+
+        ClassRealm realm = classWorld.newRealm( "test", getClass().getClassLoader() );
+
+        configureComponent(component, descriptor, realm);
+
+        assertEquals( new File( "dir", "test.txt" ), component.getFileArray()[0] );
+        assertEquals( new File( "dir", "test.txt" ), component.getFileArray()[1] );
+    }
+
 }

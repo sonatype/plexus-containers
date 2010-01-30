@@ -45,6 +45,7 @@ public class FileConverter
 
     public Object fromString( String str )
     {
+        str = str.replace( '\\', File.separatorChar ).replace( '/', File.separatorChar );
         return new File( str );
     }
 
