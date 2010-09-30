@@ -1,7 +1,5 @@
 package org.codehaus.plexus.component.repository;
 
-import org.codehaus.plexus.PlexusConstants;
-
 /*
  * Copyright 2001-2006 Codehaus Foundation.
  *
@@ -22,13 +20,13 @@ import org.codehaus.plexus.PlexusConstants;
  * This represents a component this is required by another component.
  *
  * @author <a href="mmaczka@interia.pl">Michal Maczka</a>
- * @version $Id: ComponentRequirement.java 6965 2007-10-21 05:32:27Z jvanzyl $
+ * @version $Id: ComponentRequirement.java 8525 2009-11-06 15:23:51Z bentmann $
  */
 public class ComponentRequirement
 {
     private String role;
 
-    private String roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
+    private String roleHint = "";
 
     private String fieldName;
 
@@ -84,19 +82,12 @@ public class ComponentRequirement
 
     /**
      * Sets the role-hint of the require component.
-     * Pasing null will set the hint to the default value.
+     * Passing null or an empty string will match any available implementation.
      * @param roleHint the required component's role-hint
      */
     public void setRoleHint( String roleHint )
     {
-        if ( roleHint == null || roleHint.trim().equals( "" ) )
-        {
-            this.roleHint = PlexusConstants.PLEXUS_DEFAULT_HINT;
-        }
-        else
-        {
-            this.roleHint = roleHint;
-        }
+        this.roleHint = ( roleHint != null ) ? roleHint : "";
     }
 
     /**
