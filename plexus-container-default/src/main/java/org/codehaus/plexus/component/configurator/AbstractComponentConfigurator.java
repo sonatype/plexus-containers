@@ -24,6 +24,7 @@ package org.codehaus.plexus.component.configurator;
  * SOFTWARE.
  */
 
+import org.codehaus.classworlds.ClassRealmAdapter;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.converters.lookup.ConverterLookup;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
@@ -31,6 +32,7 @@ import org.codehaus.plexus.component.configurator.expression.DefaultExpressionEv
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluator;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -67,33 +69,57 @@ public abstract class AbstractComponentConfigurator
         configureComponent( component, configuration, expressionEvaluator, containerRealm, null );
     }
 
-    public void configureComponent( Object component,
-                                    PlexusConfiguration configuration,
-                                    ExpressionEvaluator expressionEvaluator,
-                                    ClassRealm containerRealm,
-                                    ConfigurationListener listener )
+    public void configureComponent( final Object component, final PlexusConfiguration configuration,
+                                    final ExpressionEvaluator expressionEvaluator, final ClassRealm containerRealm,
+                                    final ConfigurationListener listener )
         throws ComponentConfigurationException
     {
         // ----------------------------------------------------------------------------
         // For compatibility with old ComponentFactories that use old ClassWorlds
         // ----------------------------------------------------------------------------
 
+        final org.codehaus.classworlds.ClassRealm cr = ClassRealmAdapter.getInstance( containerRealm );
+
         Method method;
 
         try
         {
-            method = getClass().getMethod( "configureComponent", new Class[]{Object.class, PlexusConfiguration.class,
-                ExpressionEvaluator.class, ClassRealm.class, ConfigurationListener.class} );
-
-            method.invoke( this, new Object[]{component, configuration, expressionEvaluator, containerRealm, listener} );
+            try
+            {
+                method =
+                    getClass().getMethod( "configureComponent", Object.class, PlexusConfiguration.class,
+                                          ExpressionEvaluator.class, org.codehaus.classworlds.ClassRealm.class,
+                                          ConfigurationListener.class );
+                method.invoke( this, component, configuration, expressionEvaluator, cr, listener );
+            }
+            catch ( final NoSuchMethodException e )
+            {
+                method =
+                    getClass().getMethod( "configureComponent", Object.class, PlexusConfiguration.class,
+                                          ExpressionEvaluator.class, org.codehaus.classworlds.ClassRealm.class );
+                method.invoke( this, component, configuration, expressionEvaluator, cr );
+            }
         }
-        catch ( Exception mnfe )
+        catch ( final InvocationTargetException e )
         {
-            mnfe.printStackTrace();
+            if ( e.getCause() instanceof ComponentConfigurationException )
+            {
+                throw (ComponentConfigurationException) e.getCause();
+            }
+            else if ( e.getCause() instanceof RuntimeException )
+            {
+                throw (RuntimeException) e.getCause();
+            }
+            else if ( e.getCause() instanceof Error )
+            {
+                throw (Error) e.getCause();
+            }
+            throw new ComponentConfigurationException( "Incompatible configurator " + getClass().getName(), e );
         }
-
-        // TODO: here so extended classes without the method continue to work. should be removed
-        // this won't hit the method above going into a loop - instead, it will hit the overridden one
-        //configureComponent( component, configuration, expressionEvaluator, containerRealm );
+        catch ( final Exception e )
+        {
+            throw new ComponentConfigurationException( "Incompatible configurator " + getClass().getName(), e );
+        }
     }
+
 }
