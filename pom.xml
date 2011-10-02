@@ -25,9 +25,9 @@
   </modules>
 
   <scm>
-    <connection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/branches/plexus-containers-1.x</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/plexus/plexus-containers/branches/plexus-containers-1.x</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/plexus/plexus-containers/branches/plexus-containers-1.x</url>
+    <connection>scm:git:git@github.com:sonatype/plexus-containers.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/plexus-containers.git</developerConnection>
+    <url>https://github.com/sonatype/plexus-containers</url>
   </scm>
 
   <properties>
