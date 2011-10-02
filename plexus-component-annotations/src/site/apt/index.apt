@@ -1,0 +1,23 @@
+ -----
+ Overview
+ -----
+ Hervé Boutemy
+ -----
+ 2011-10-02
+ -----
+
+About Plexus :: Component Annotations
+
+  Plexus Component "Java 5" Annotations, to describe plexus components properties in java sources with standard annotations instead of javadoc annotations.
+
+  3 "Java 5" annotations are provided to replace javadoc annotations:
+
+*-----------------------------+----------------------+
+| <<old javadoc annotation>>  | <<new "Java 5" annotation>> |
+*-----------------------------+----------------------+
+| <<<@plexus.component>>>     | {{{./apidocs/org/codehaus/plexus/component/annotations/Component.html}<<<@Component>>>}} |
+*-----------------------------+----------------------+
+| <<<@plexus.requirement>>>   | {{{./apidocs/org/codehaus/plexus/component/annotations/Requirement.html}<<<@Requirement>>>}} |
+*-----------------------------+----------------------+
+| <<<@plexus.configuration>>> | {{{./apidocs/org/codehaus/plexus/component/annotations/Configuration.html}<<<@Configuration>>>}} |
+*-----------------------------+----------------------+
