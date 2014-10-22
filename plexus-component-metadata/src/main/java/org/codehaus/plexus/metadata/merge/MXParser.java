@@ -1298,10 +1298,9 @@ public class MXParser
                     }
                     //assert usePC == true;
                     // write into PC replacement text - do merge for replacement text!!!!
-                    for (int i = 0; i < resolvedEntity.length; i++)
-                    {
-                        if(pcEnd >= pc.length) ensurePC(pcEnd);
-                        pc[pcEnd++] = resolvedEntity[ i ];
+                    for (char aResolvedEntity : resolvedEntity) {
+                        if (pcEnd >= pc.length) ensurePC(pcEnd);
+                        pc[pcEnd++] = aResolvedEntity;
 
                     }
                     hadCharData = true;
@@ -2052,10 +2051,9 @@ public class MXParser
                         this, null);
                 }
                 // write into PC replacement text - do merge for replacement text!!!!
-                for (int i = 0; i < resolvedEntity.length; i++)
-                {
-                    if(pcEnd >= pc.length) ensurePC(pcEnd);
-                    pc[pcEnd++] = resolvedEntity[ i ];
+                for (char aResolvedEntity : resolvedEntity) {
+                    if (pcEnd >= pc.length) ensurePC(pcEnd);
+                    pc[pcEnd++] = aResolvedEntity;
                 }
             } else if(ch == '\t' || ch == '\n' || ch == '\r') {
                 // do attribute value normalization
@@ -2677,11 +2675,11 @@ public class MXParser
             if(ch == 'y') {
                 ch = requireInput(ch, YES);
                 //Boolean standalone = new Boolean(true);
-                xmlDeclStandalone = new Boolean(true);
+                xmlDeclStandalone = true;
             } else if(ch == 'n') {
                 ch = requireInput(ch, NO);
                 //Boolean standalone = new Boolean(false);
-                xmlDeclStandalone = new Boolean(false);
+                xmlDeclStandalone = false;
             } else {
                 throw new XmlPullParserException(
                     "expected 'yes' or 'no' after standalone and not "
@@ -2982,7 +2980,7 @@ public class MXParser
                     reachedEnd = true;
                     return;
                 } else {
-                    StringBuffer expectedTagStack = new StringBuffer();
+                    StringBuilder expectedTagStack = new StringBuilder();
                     if(depth > 0) {
                         //final char[] cbuf = elRawName[depth];
                         //final String startname = new String(cbuf, 0, elRawNameEnd[depth]);
@@ -3067,12 +3065,11 @@ public class MXParser
     protected char requireInput(char ch, char[] input)
         throws XmlPullParserException, IOException
     {
-        for (int i = 0; i < input.length; i++)
-        {
-            if(ch != input[i]) {
+        for (char anInput : input) {
+            if (ch != anInput) {
                 throw new XmlPullParserException(
-                    "expected "+printable(input[i])+" in "+new String(input)
-                        +" and not "+printable(ch), this, null);
+                        "expected " + printable(anInput) + " in " + new String(input)
+                                + " and not " + printable(ch), this, null);
             }
             ch = more();
         }
@@ -3213,7 +3210,7 @@ public class MXParser
     protected String printable(String s) {
         if(s == null) return null;
         final int sLen = s.length();
-        StringBuffer buf = new StringBuffer(sLen + 10);
+        StringBuilder buf = new StringBuilder(sLen + 10);
         for(int i = 0; i < sLen; ++i) {
             buf.append(printable(s.charAt(i)));
         }

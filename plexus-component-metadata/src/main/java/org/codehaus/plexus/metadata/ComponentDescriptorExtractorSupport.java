@@ -33,16 +33,14 @@ public abstract class ComponentDescriptorExtractorSupport
 
         if ( roleDefaults != null )
         {
-            for ( int i = 0; i < roleDefaults.length; i++ )
-            {
-                String role = roleDefaults[i].getRole();
+            for (ComponentDescriptor<?> roleDefault : roleDefaults) {
+                String role = roleDefault.getRole();
 
-                if ( role == null )
-                {
-                    throw new IllegalArgumentException( "Invalid role defaults; found null role in: " + roleDefaults[i] );
+                if (role == null) {
+                    throw new IllegalArgumentException("Invalid role defaults; found null role in: " + roleDefault);
                 }
 
-                defaultsByRole.put( role, roleDefaults[i] );
+                defaultsByRole.put(role, roleDefault);
             }
         }
 

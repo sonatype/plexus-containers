@@ -36,9 +36,8 @@ public class DefaultPipeline
 
     public void execute()
     {
-        for ( Iterator i = valves.iterator(); i.hasNext(); )
-        {
-            ((Valve) i.next()).execute();
+        for (Object valve : valves) {
+            ((Valve) valve).execute();
         }
     }
 

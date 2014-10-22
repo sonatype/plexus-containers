@@ -66,26 +66,23 @@ public abstract class AbstractMergeableElementList
     {
         Map mergeables = new LinkedHashMap();
         List list = this.getChildren( tagName );
-        for ( Iterator it = list.iterator(); it.hasNext(); )
-        {
-            Element ce = (Element) it.next();
+        for (Object aList : list) {
+            Element ce = (Element) aList;
 
             // use the composite key specified by the passed in list
             String compositeKey = "";
-            for ( Iterator itr = compositeKeyList.iterator(); itr.hasNext(); )
-            {
-                String key = (String) itr.next();
-                if ( null != ce.getChildText( key ) )
-                {
-                    compositeKey = compositeKey + ce.getChildText( key );
+            for (Object aCompositeKeyList : compositeKeyList) {
+                String key = (String) aCompositeKeyList;
+                if (null != ce.getChildText(key)) {
+                    compositeKey = compositeKey + ce.getChildText(key);
                 }
             }
 
             // create a Mergeable instance and store it in the map.
-            DescriptorTag tag = lookupTagInstanceByName( tagName, parentElement.getAllowedTags() );
-            Mergeable mergeable = tag.createMergeable( ce );
+            DescriptorTag tag = lookupTagInstanceByName(tagName, parentElement.getAllowedTags());
+            Mergeable mergeable = tag.createMergeable(ce);
             // register the Mergeable instance based on composite key
-            mergeables.put( compositeKey, mergeable );
+            mergeables.put(compositeKey, mergeable);
         }
         return mergeables;
     }
@@ -158,19 +155,17 @@ public abstract class AbstractMergeableElementList
         }
 
         // iterate over components and process them
-        for ( Iterator it = dKeySet.iterator(); it.hasNext(); )
-        {
-            String dKey = (String) it.next();
-            if ( rMap.containsKey( dKey ) )
-            {
+        for (Object aDKeySet : dKeySet) {
+            String dKey = (String) aDKeySet;
+            if (rMap.containsKey(dKey)) {
                 // conflict ! merge this component                
-                Mergeable dMeregeable = (Mergeable) dMap.get( dKey );
-                Mergeable rMergeable = (Mergeable) rMap.get( dKey );
+                Mergeable dMeregeable = (Mergeable) dMap.get(dKey);
+                Mergeable rMergeable = (Mergeable) rMap.get(dKey);
 
-                dMeregeable.merge( rMergeable );
+                dMeregeable.merge(rMergeable);
 
                 // and remove from the recessive list to mark it as merged.
-                rMap.remove( dKey );
+                rMap.remove(dKey);
             }
         }
 
@@ -178,11 +173,10 @@ public abstract class AbstractMergeableElementList
         if ( rMap.keySet().size() > 0 )
         {
             // add them to results
-            for ( Iterator it = rKeySet.iterator(); it.hasNext(); )
-            {
-                String rKey = (String) it.next();
+            for (Object aRKeySet : rKeySet) {
+                String rKey = (String) aRKeySet;
                 // add to parent
-                parent.addContent( (Element) ( (Mergeable) rMap.get( rKey ) ).getElement().clone() );
+                parent.addContent((Element) ((Mergeable) rMap.get(rKey)).getElement().clone());
             }
         }
     }

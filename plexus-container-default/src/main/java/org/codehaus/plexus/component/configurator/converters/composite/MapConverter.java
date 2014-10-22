@@ -69,13 +69,10 @@ public class MapConverter
 
             PlexusConfiguration[] children = configuration.getChildren();
 
-            for ( int i = 0; i < children.length; i++ )
-            {
-                PlexusConfiguration child = children[i];
-
+            for (PlexusConfiguration child : children) {
                 String name = child.getName();
 
-                map.put( name, fromExpression( child, expressionEvaluator ) );
+                map.put(name, fromExpression(child, expressionEvaluator));
             }
             retValue = map;
         }

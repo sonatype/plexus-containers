@@ -81,11 +81,11 @@ public class ComponentLookupException
 
     public String getMessage()
     {
-        StringBuffer sb = new StringBuffer()
+        StringBuilder sb = new StringBuilder()
             .append( super.getMessage() ).append( LS )
             .append( "      role: ").append( role ).append( LS )
             .append( "  roleHint: ").append( roleHint ).append( LS )
-            .append( "classRealm: ");
+            .append("classRealm: ");
 
         if ( realm != null )
         {

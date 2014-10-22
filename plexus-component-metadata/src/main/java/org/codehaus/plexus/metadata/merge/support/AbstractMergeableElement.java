@@ -92,13 +92,11 @@ public abstract class AbstractMergeableElement
         }
 
         // assuming the elements will conflict.
-        for ( Iterator it = eltNameList.iterator(); it.hasNext(); )
-        {
-            String eltName = (String) it.next();
-            String dEltValue = getChildTextTrim( eltName );
-            String rEltValue = re.getChildTextTrim( eltName );
-            if ( null == dEltValue || null == rEltValue || !dEltValue.equals( rEltValue ) )
-            {
+        for (Object anEltNameList : eltNameList) {
+            String eltName = (String) anEltNameList;
+            String dEltValue = getChildTextTrim(eltName);
+            String rEltValue = re.getChildTextTrim(eltName);
+            if (null == dEltValue || null == rEltValue || !dEltValue.equals(rEltValue)) {
                 return false;
             }
         }
@@ -179,14 +177,12 @@ public abstract class AbstractMergeableElement
             }
         }
 
-        for ( Iterator i = me.getElement().getChildren().iterator(); i.hasNext(); )
-        {
-            Element child = (Element) i.next();
+        for (Object o : me.getElement().getChildren()) {
+            Element child = (Element) o;
 
-            if ( !allowedTags.contains( child.getName() ) )
-            {
+            if (!allowedTags.contains(child.getName())) {
                 // not yet merged, copy over
-                element.addContent( (Content) child.clone() );
+                element.addContent((Content) child.clone());
             }
         }
 

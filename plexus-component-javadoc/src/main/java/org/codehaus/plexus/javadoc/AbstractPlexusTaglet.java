@@ -79,12 +79,10 @@ public abstract class AbstractPlexusTaglet
         }
 
         boolean hasParameters = false;
-        for ( int i = 0; i < tags.length; i++ )
-        {
-            String tagText = tags[i].text();
-            MutableAttributeSet att = getAttributes( tagText );
-            if ( att != null )
-            {
+        for (Tag tag : tags) {
+            String tagText = tag.text();
+            MutableAttributeSet att = getAttributes(tagText);
+            if (att != null) {
                 hasParameters = att.getAttributeCount() > 0;
             }
         }

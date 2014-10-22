@@ -384,7 +384,7 @@ public abstract class AbstractComponentConfiguratorTest
 
         assertEquals( "something important", ( (ImportantThing) objectArray[1] ).getName() );
 
-        assertEquals( new Integer( 303 ), objectArray[2] );
+        assertEquals(303, objectArray[2] );
 
         URL[] urls = component.getUrlArray();
 
@@ -777,7 +777,7 @@ public abstract class AbstractComponentConfiguratorTest
                 throws ExpressionEvaluationException
             {
                 // java.lang.Short -> short -> int
-                return new Short( (short) 23 );
+                return (short) 23;
             }
         };
 

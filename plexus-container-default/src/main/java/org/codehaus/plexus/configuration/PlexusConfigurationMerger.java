@@ -86,9 +86,8 @@ public class PlexusConfigurationMerger
 
         if ( configurationsDirectories.length != 0 )
         {
-            for ( int i = 0; i < configurationsDirectories.length; i++ )
-            {
-                mergedConfiguration.addChild( configurationsDirectories[i] );
+            for (PlexusConfiguration configurationsDirectory : configurationsDirectories) {
+                mergedConfiguration.addChild(configurationsDirectory);
             }
         }
 
@@ -247,9 +246,8 @@ public class PlexusConfigurationMerger
 
         PlexusConfiguration dest = destination.getChild( "resources" );
 
-        for ( int i = 0; i < handlers.length; i++ )
-        {
-            dest.addChild( handlers[i] );
+        for (PlexusConfiguration handler : handlers) {
+            dest.addChild(handler);
         }
     }
 
@@ -276,9 +274,8 @@ public class PlexusConfigurationMerger
 
         PlexusConfiguration dest = destination.getChild( "component-managers" );
 
-        for ( int i = 0; i < handlers.length; i++ )
-        {
-            dest.addChild( handlers[i] );
+        for (PlexusConfiguration handler : handlers) {
+            dest.addChild(handler);
         }
     }
 
@@ -288,9 +285,8 @@ public class PlexusConfigurationMerger
 
         PlexusConfiguration dest = destination.getChild( "component-discoverers" );
 
-        for ( int i = 0; i < handlers.length; i++ )
-        {
-            dest.addChild( handlers[i] );
+        for (PlexusConfiguration handler : handlers) {
+            dest.addChild(handler);
         }
     }
 
@@ -300,9 +296,8 @@ public class PlexusConfigurationMerger
 
         PlexusConfiguration dest = destination.getChild( "component-factories" );
 
-        for ( int i = 0; i < handlers.length; i++ )
-        {
-            dest.addChild( handlers[i] );
+        for (PlexusConfiguration handler : handlers) {
+            dest.addChild(handler);
         }
     }
 
@@ -328,9 +323,8 @@ public class PlexusConfigurationMerger
 
         PlexusConfiguration dest = destination.getChild( "component-composers" );
 
-        for ( int i = 0; i < composers.length; i++ )
-        {
-            dest.addChild( composers[i] );
+        for (PlexusConfiguration composer : composers) {
+            dest.addChild(composer);
         }
     }
 
@@ -340,9 +334,8 @@ public class PlexusConfigurationMerger
 
         PlexusConfiguration dest = destination.getChild( "lifecycle-handlers" );
 
-        for ( int i = 0; i < handlers.length; i++ )
-        {
-            dest.addChild( handlers[i] );
+        for (PlexusConfiguration handler : handlers) {
+            dest.addChild(handler);
         }
     }
 
@@ -350,9 +343,8 @@ public class PlexusConfigurationMerger
     {
         PlexusConfiguration components[] = source.getChildren( "component" );
 
-        for ( int i = 0; i < components.length; i++ )
-        {
-            destination.addChild( components[i] );
+        for (PlexusConfiguration component : components) {
+            destination.addChild(component);
         }
     }
 }

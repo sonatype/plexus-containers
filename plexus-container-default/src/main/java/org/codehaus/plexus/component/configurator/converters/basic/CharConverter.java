@@ -34,7 +34,7 @@ public class CharConverter extends AbstractBasicConverter
 
     public Object fromString( String str )
     {
-        return new Character( str.charAt( 0 ) );
+        return str.charAt(0);
     }
 
 }

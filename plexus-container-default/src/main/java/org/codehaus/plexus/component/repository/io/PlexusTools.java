@@ -163,39 +163,32 @@ public class PlexusTools
 
         PlexusConfiguration[] requirements = configuration.getChild( "requirements" ).getChildren( "requirement" );
 
-        for ( int i = 0; i < requirements.length; i++ )
-        {
-            PlexusConfiguration requirement = requirements[i];
-
+        for (PlexusConfiguration requirement : requirements) {
             ComponentRequirement cr;
 
-            PlexusConfiguration[] hints = requirement.getChild( "role-hints" ).getChildren( "role-hint" );
-            if ( hints != null && hints.length > 0 )
-            {
+            PlexusConfiguration[] hints = requirement.getChild("role-hints").getChildren("role-hint");
+            if (hints != null && hints.length > 0) {
                 cr = new ComponentRequirementList();
 
                 List<String> hintList = new LinkedList<String>();
-                for ( PlexusConfiguration hint : hints )
-                {
-                    hintList.add( hint.getValue() );
+                for (PlexusConfiguration hint : hints) {
+                    hintList.add(hint.getValue());
                 }
 
-                ( (ComponentRequirementList) cr ).setRoleHints( hintList );
-            }
-            else
-            {
+                ((ComponentRequirementList) cr).setRoleHints(hintList);
+            } else {
                 cr = new ComponentRequirement();
 
-                cr.setRoleHint( requirement.getChild( "role-hint" ).getValue() );
+                cr.setRoleHint(requirement.getChild("role-hint").getValue());
             }
 
-            cr.setRole( requirement.getChild( "role" ).getValue() );
+            cr.setRole(requirement.getChild("role").getValue());
 
-            cr.setOptional( Boolean.parseBoolean( requirement.getChild( "optional" ).getValue() ) );
+            cr.setOptional(Boolean.parseBoolean(requirement.getChild("optional").getValue()));
 
-            cr.setFieldName( requirement.getChild( "field-name" ).getValue() );
+            cr.setFieldName(requirement.getChild("field-name").getValue());
 
-            cd.addRequirement( cr );
+            cd.addRequirement(cr);
         }
 
         return cd;
@@ -218,11 +211,8 @@ public class PlexusTools
 
         PlexusConfiguration[] components = c.getChild( "components" ).getChildren( "component" );
 
-        for ( int i = 0; i < components.length; i++ )
-        {
-            PlexusConfiguration component = components[i];
-
-            csd.addComponentDescriptor( buildComponentDescriptorImpl( component, realm ) );
+        for (PlexusConfiguration component : components) {
+            csd.addComponentDescriptor(buildComponentDescriptorImpl(component, realm));
         }
 
         // ----------------------------------------------------------------------
@@ -231,25 +221,21 @@ public class PlexusTools
 
         PlexusConfiguration[] dependencies = c.getChild( "dependencies" ).getChildren( "dependency" );
 
-        for ( int i = 0; i < dependencies.length; i++ )
-        {
-            PlexusConfiguration d = dependencies[i];
-
+        for (PlexusConfiguration d : dependencies) {
             ComponentDependency cd = new ComponentDependency();
 
-            cd.setArtifactId( d.getChild( "artifact-id" ).getValue() );
+            cd.setArtifactId(d.getChild("artifact-id").getValue());
 
-            cd.setGroupId( d.getChild( "group-id" ).getValue() );
+            cd.setGroupId(d.getChild("group-id").getValue());
 
-            String type = d.getChild( "type" ).getValue();
-            if(type != null)
-            {
-                cd.setType( type );
+            String type = d.getChild("type").getValue();
+            if (type != null) {
+                cd.setType(type);
             }
 
-            cd.setVersion( d.getChild( "version" ).getValue() );
+            cd.setVersion(d.getChild("version").getValue());
 
-            csd.addDependency( cd );
+            csd.addDependency(cd);
         }
 
         return csd;
@@ -269,9 +255,8 @@ public class PlexusTools
 
         if ( atts.length > 0 )
         {
-            for ( int i = 0; i < atts.length; i++ )
-            {
-                out.print( "\n" + indent + "  " + atts[i] + "='" + configuration.getAttribute( atts[i] ) + "'" );
+            for (String att : atts) {
+                out.print("\n" + indent + "  " + att + "='" + configuration.getAttribute(att) + "'");
             }
         }
 
@@ -284,9 +269,8 @@ public class PlexusTools
             if ( pc.length > 0 )
             {
                 out.println();
-                for ( int i = 0; i < pc.length; i++ )
-                {
-                    writeConfiguration( out, pc[i], indent + "  " );
+                for (PlexusConfiguration aPc : pc) {
+                    writeConfiguration(out, aPc, indent + "  ");
                 }
                 out.print( indent );
             }

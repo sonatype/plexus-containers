@@ -51,9 +51,8 @@ public class XmlPlexusConfiguration
         // attrs
         String[] attributes = dom.getAttributeNames();
 
-        for ( int i = 0; i < attributes.length; i++ )
-        {
-            setAttribute( attributes[i], dom.getAttribute( attributes[i] ) );
+        for (String attribute : attributes) {
+            setAttribute(attribute, dom.getAttribute(attribute));
         }
 
         // children

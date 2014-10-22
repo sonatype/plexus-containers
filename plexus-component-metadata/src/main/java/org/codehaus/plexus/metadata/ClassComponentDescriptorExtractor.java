@@ -106,8 +106,7 @@ public class ClassComponentDescriptorExtractor
         URL[] urls = list.toArray( new URL[list.size()] );
 
         //getLogger().debug( "Classpath:" );
-        for ( int i = 0; i < urls.length; i++ )
-        {
+        for (URL url : urls) {
             //getLogger().debug( "    " + urls[i] );
         }
 

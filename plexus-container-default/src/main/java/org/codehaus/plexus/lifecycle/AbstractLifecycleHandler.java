@@ -90,11 +90,10 @@ public abstract class AbstractLifecycleHandler
             return;
         }
 
-        for ( Iterator i = getBeginSegment().iterator(); i.hasNext(); )
-        {
-            Phase phase = (Phase) i.next();
+        for (Object o : getBeginSegment()) {
+            Phase phase = (Phase) o;
 
-            phase.execute( component, manager, realm );
+            phase.execute(component, manager, realm);
         }
     }
 
@@ -119,11 +118,10 @@ public abstract class AbstractLifecycleHandler
             return;
         }
 
-        for ( Iterator i = getEndSegment().iterator(); i.hasNext(); )
-        {
-            Phase phase = (Phase) i.next();
+        for (Object o : getEndSegment()) {
+            Phase phase = (Phase) o;
 
-            phase.execute( component, manager, contextRealm );
+            phase.execute(component, manager, contextRealm);
         }
     }
 

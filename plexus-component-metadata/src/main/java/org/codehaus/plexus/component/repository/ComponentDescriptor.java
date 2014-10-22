@@ -124,7 +124,7 @@ public class ComponentDescriptor<T>
      */
     public String getHumanReadableKey()
     {
-        StringBuffer key = new StringBuffer();
+        StringBuilder key = new StringBuilder();
 
         key.append( "role: '" ).append( role ).append( "'" );
 

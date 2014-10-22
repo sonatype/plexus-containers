@@ -83,15 +83,13 @@ public class SourceComponentDescriptorExtractor
         JavaClass[] classes = builder.getClasses();
 
         // For each class we find, try to glean off a descriptor
-        for ( int i = 0; i < classes.length; i++ )
-        {
-            ComponentDescriptor<?> descriptor = gleaner.glean( builder, classes[i] );
+        for (JavaClass aClass : classes) {
+            ComponentDescriptor<?> descriptor = gleaner.glean(builder, aClass);
 
-            if ( descriptor != null )
-            {
-                applyDefaults( descriptor, defaultsByRole );
+            if (descriptor != null) {
+                applyDefaults(descriptor, defaultsByRole);
 
-                descriptors.add( descriptor );
+                descriptors.add(descriptor);
             }
         }
 

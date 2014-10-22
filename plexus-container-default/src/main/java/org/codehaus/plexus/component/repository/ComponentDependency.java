@@ -113,7 +113,7 @@ public class ComponentDependency
 
     public String toString()
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         sb.append( "groupId = " ).append( groupId ).
             append( ", artifactId = " ).append( artifactId ).

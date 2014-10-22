@@ -404,10 +404,9 @@ public class PlexusContainerTest
 
         List valves = pipeline.getValves();
 
-        for ( int i = 0; i < valves.size(); i++ )
-        {
+        for (Object valve : valves) {
             // repeated retrieval from list should not cause re-lookup even if instantiation strategy is per-lookup
-            assertSame( valves.get( i ), valves.get( i ) );
+            assertSame(valve, valve);
         }
 
         assertFalse( ( (Valve) valves.get( 0 ) ).getState() );

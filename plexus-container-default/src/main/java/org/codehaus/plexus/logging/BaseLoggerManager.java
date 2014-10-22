@@ -100,10 +100,9 @@ public abstract class BaseLoggerManager
     {
         this.currentThreshold = currentThreshold;
 
-        for ( Iterator logs = loggerCache.values().iterator(); logs.hasNext(); )
-        {
-            Logger logger = (Logger) logs.next();
-            logger.setThreshold( currentThreshold );
+        for (Object o : loggerCache.values()) {
+            Logger logger = (Logger) o;
+            logger.setThreshold(currentThreshold);
         }
     }
 

@@ -26,14 +26,12 @@ public class ChainedConfigurationSource
 
     public PlexusConfiguration getConfiguration( ComponentDescriptor componentDescriptor )
     {
-        for ( Iterator i = configurationSources.iterator(); i.hasNext(); )
-        {
-            ConfigurationSource configurationSource = (ConfigurationSource) i.next();
+        for (Object configurationSource1 : configurationSources) {
+            ConfigurationSource configurationSource = (ConfigurationSource) configurationSource1;
 
-            PlexusConfiguration configuration = configurationSource.getConfiguration( componentDescriptor );
+            PlexusConfiguration configuration = configurationSource.getConfiguration(componentDescriptor);
 
-            if ( configuration != null )
-            {
+            if (configuration != null) {
                 return configuration;
             }
         }

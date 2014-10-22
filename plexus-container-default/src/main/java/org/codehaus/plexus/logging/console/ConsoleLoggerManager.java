@@ -105,10 +105,9 @@ public class ConsoleLoggerManager
     {
         this.currentThreshold = currentThreshold;
 
-        for ( Iterator logs = loggers.values().iterator(); logs.hasNext(); )
-        {
-            Logger logger = (Logger) logs.next();
-            logger.setThreshold( currentThreshold );
+        for (Object o : loggers.values()) {
+            Logger logger = (Logger) o;
+            logger.setThreshold(currentThreshold);
         }
     }
 

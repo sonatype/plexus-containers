@@ -101,14 +101,13 @@ public class XmlPlexusConfigurationWriter
     {
         String[] names = c.getAttributeNames();
 
-        for ( int i = 0; i < names.length; i++ )
-        {
-            w.write( ' ' );
-            w.write( names[i] );
-            w.write( '=' );
-            w.write( '"' );
-            w.write( c.getAttribute( names[i], null ) );
-            w.write( '"' );
+        for (String name : names) {
+            w.write(' ');
+            w.write(name);
+            w.write('=');
+            w.write('"');
+            w.write(c.getAttribute(name, null));
+            w.write('"');
         }
     }
 

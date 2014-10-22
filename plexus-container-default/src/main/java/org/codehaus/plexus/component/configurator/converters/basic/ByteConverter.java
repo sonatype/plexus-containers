@@ -34,7 +34,7 @@ public class ByteConverter extends AbstractBasicConverter
 
     public Object fromString( String str )
     {
-        return new Byte( (byte) Integer.parseInt( str ) );
+        return (byte) Integer.parseInt(str);
     }
 
 }

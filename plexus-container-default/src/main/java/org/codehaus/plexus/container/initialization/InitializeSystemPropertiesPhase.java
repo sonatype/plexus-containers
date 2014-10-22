@@ -30,23 +30,20 @@ public class InitializeSystemPropertiesPhase
         PlexusConfiguration[] systemProperties =
             context.getContainerXmlConfiguration().getChild( "system-properties" ).getChildren( "property" );
 
-        for ( int i = 0; i < systemProperties.length; ++i )
-        {
-            String name = systemProperties[i].getAttribute( "name", null );
+        for (PlexusConfiguration systemProperty : systemProperties) {
+            String name = systemProperty.getAttribute("name", null);
 
-            String value = systemProperties[i].getAttribute( "value", null );
+            String value = systemProperty.getAttribute("value", null);
 
-            if ( name == null )
-            {
-                throw new ContainerInitializationException( "Missing 'name' attribute in 'property' tag. " );
+            if (name == null) {
+                throw new ContainerInitializationException("Missing 'name' attribute in 'property' tag. ");
             }
 
-            if ( value == null )
-            {
-                throw new ContainerInitializationException( "Missing 'value' attribute in 'property' tag. " );
+            if (value == null) {
+                throw new ContainerInitializationException("Missing 'value' attribute in 'property' tag. ");
             }
 
-            System.getProperties().setProperty( name, value );
+            System.getProperties().setProperty(name, value);
         }
     }
 }

@@ -67,11 +67,8 @@ public class PropertiesConverter
 
         if ( children != null && children.length > 0 )
         {
-            for ( int i = 0; i < children.length; i++ )
-            {
-                PlexusConfiguration child = children[i];
-
-                addEntry( retValue, element, child, expressionEvaluator );
+            for (PlexusConfiguration child : children) {
+                addEntry(retValue, element, child, expressionEvaluator);
             }
         }
 

@@ -46,14 +46,10 @@ public class DateConverter extends AbstractBasicConverter
 
     public Object fromString( String str )
     {
-        for ( int i = 0; i < formats.length; i++ )
-        {
-            try
-            {
-                return formats[i].parse( str );
-            }
-            catch ( ParseException e )
-            {
+        for (DateFormat format : formats) {
+            try {
+                return format.parse(str);
+            } catch (ParseException e) {
                 // no worries, let's try the next format.
             }
         }

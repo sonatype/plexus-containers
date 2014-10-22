@@ -43,7 +43,7 @@ public class AnnInvocationHandler implements InvocationHandler {
     String name = m.getName();
 
     if("toString".equals(name)) {
-      StringBuffer sb = new StringBuffer(ann.getType());
+      StringBuilder sb = new StringBuilder(ann.getType());
       sb.append("[");
       String sep = "";
       for(Map.Entry<String, Object> e : ann.getParams().entrySet()) {

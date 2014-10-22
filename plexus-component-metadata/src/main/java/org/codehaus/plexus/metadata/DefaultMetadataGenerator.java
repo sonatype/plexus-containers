@@ -71,19 +71,14 @@ public class DefaultMetadataGenerator
 
         List<ComponentDescriptor<?>> descriptors = new ArrayList<ComponentDescriptor<?>>();
 
-        for ( int i = 0; i < extractors.length; i++ )
-        {
-            try
-            {
-                List<ComponentDescriptor<?>> list = extractors[i].extract( request, roleDefaults );
-                if ( list != null && !list.isEmpty() )
-                {
-                    descriptors.addAll( list );
+        for (ComponentDescriptorExtractor extractor : extractors) {
+            try {
+                List<ComponentDescriptor<?>> list = extractor.extract(request, roleDefaults);
+                if (list != null && !list.isEmpty()) {
+                    descriptors.addAll(list);
                 }
-            }
-            catch ( Exception e )
-            {
-                throw new Exception( "Failed to extract descriptors", e );
+            } catch (Exception e) {
+                throw new Exception("Failed to extract descriptors", e);
             }
         }
 

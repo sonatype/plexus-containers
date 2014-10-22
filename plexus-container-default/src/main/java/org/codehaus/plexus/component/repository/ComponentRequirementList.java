@@ -26,7 +26,7 @@ public class ComponentRequirementList
 
     public String getRoleHint()
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for ( String hint : roleHints )
         {
             if (buffer.length() > 0)

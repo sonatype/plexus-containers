@@ -62,7 +62,7 @@ public abstract class ComponentGleanerSupport
     protected String deHump(final String string) {
         // assert string != null;
 
-        StringBuffer buff = new StringBuffer();
+        StringBuilder buff = new StringBuilder();
 
         for (int i = 0; i < string.length(); i++) {
             if (i != 0 && Character.isUpperCase(string.charAt(i))) {
