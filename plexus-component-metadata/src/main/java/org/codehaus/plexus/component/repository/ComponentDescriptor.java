@@ -180,7 +180,7 @@ public class ComponentDescriptor<T>
         if (roleClass == null) {
             return (Class<T>) Object.class;
         }
-        return roleClass;
+        return (Class<T>)roleClass;
     }
 
     private void attemptRoleLoad()
@@ -189,7 +189,7 @@ public class ComponentDescriptor<T>
         {
             try
             {
-                roleClass = realm.loadClass( role );
+                roleClass = (Class<? extends T>) realm.loadClass( role );
                 Thread.currentThread();
             }
             catch ( Throwable ignored )
@@ -299,7 +299,7 @@ public class ComponentDescriptor<T>
         {
             try
             {
-                implementationClass = realm.loadClass( implementation );
+                implementationClass = (Class<? extends T>) realm.loadClass( implementation );
                 Thread.currentThread();
             }
             catch ( Throwable ignored )

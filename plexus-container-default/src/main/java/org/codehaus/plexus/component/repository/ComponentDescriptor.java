@@ -180,7 +180,7 @@ public class ComponentDescriptor<T>
         if (roleClass == null) {
             return (Class<T>) Object.class;
         }
-        return roleClass;
+        return (Class<T>) roleClass;
     }
 
     private void attemptRoleLoad()
@@ -189,7 +189,7 @@ public class ComponentDescriptor<T>
         {
             try
             {
-                roleClass = getRealm().loadClass( getRole() );
+                roleClass = (Class<T>) getRealm().loadClass( getRole() );
                 Thread.currentThread();
             }
             catch ( Throwable ignored )
@@ -290,7 +290,7 @@ public class ComponentDescriptor<T>
         if (implementationClass == null) {
             return (Class<T>) Object.class;
         }
-        return implementationClass;
+        return (Class<T>)implementationClass;
     }
 
     private void attemptImplementationLoad()
@@ -299,7 +299,7 @@ public class ComponentDescriptor<T>
         {
             try
             {
-                implementationClass = getRealm().loadClass( getImplementation() );
+                implementationClass = (Class<? extends T>) getRealm().loadClass( getImplementation() );
                 Thread.currentThread();
             }
             catch ( Throwable ignored )
