@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>plexus-containers</artifactId>
-  <version>1.5.6</version>
+  <version>1.5.7-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Plexus Containers</name>
