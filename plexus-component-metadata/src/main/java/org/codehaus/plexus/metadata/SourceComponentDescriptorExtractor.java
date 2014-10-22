@@ -16,6 +16,7 @@ package org.codehaus.plexus.metadata;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ import org.codehaus.plexus.metadata.gleaner.QDoxComponentGleaner;
 import org.codehaus.plexus.metadata.gleaner.SourceComponentGleaner;
 import org.codehaus.plexus.util.StringUtils;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 
 /**
@@ -66,7 +67,7 @@ public class SourceComponentDescriptorExtractor
         List<ComponentDescriptor<?>> descriptors = new ArrayList<ComponentDescriptor<?>>();
 
         // Scan the sources
-        JavaDocBuilder builder = new JavaDocBuilder();
+        JavaProjectBuilder builder = new JavaProjectBuilder();
 
         if ( StringUtils.isNotEmpty( sourceEncoding ) )
         {
@@ -80,7 +81,7 @@ public class SourceComponentDescriptorExtractor
             builder.addSourceTree( dir );
         }
 
-        JavaClass[] classes = builder.getClasses();
+        Collection<JavaClass> classes = builder.getClasses();
 
         // For each class we find, try to glean off a descriptor
         for (JavaClass aClass : classes) {

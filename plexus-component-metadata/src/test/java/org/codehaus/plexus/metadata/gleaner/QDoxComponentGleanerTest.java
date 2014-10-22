@@ -23,7 +23,7 @@ import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaSource;
 
@@ -37,7 +37,7 @@ public class QDoxComponentGleanerTest
 {
     private QDoxComponentGleaner gleaner;
 
-    private JavaDocBuilder builder;
+    private JavaProjectBuilder builder;
 
     // @Override
     protected void setUp()
@@ -46,7 +46,7 @@ public class QDoxComponentGleanerTest
         super.setUp();
 
         gleaner = new QDoxComponentGleaner();
-        builder = new JavaDocBuilder();
+        builder = new JavaProjectBuilder();
     }
 
     // @Override
@@ -74,13 +74,13 @@ public class QDoxComponentGleanerTest
         JavaSource source = addSource( name );
         assertNotNull( source );
 
-        JavaClass[] classes = source.getClasses();
+        List<JavaClass> classes = source.getClasses();
         assertNotNull( classes );
-        assertEquals( 1, classes.length );
+        assertEquals( 1, classes.size() );
 
-        assertNotNull( classes[0] );
+        assertNotNull( classes.get(0) );
 
-        return classes[0];
+        return classes.get(0);
     }
 
     private ComponentDescriptor<?> glean( final String name, final String[] supporting )

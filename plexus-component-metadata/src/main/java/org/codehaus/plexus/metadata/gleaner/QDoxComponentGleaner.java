@@ -24,28 +24,17 @@ package org.codehaus.plexus.metadata.gleaner;
  * SOFTWARE.
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.ComponentRequirementList;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.codehaus.plexus.logging.LogEnabled;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Configurable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Disposable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Startable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.*;
 import org.codehaus.plexus.util.StringUtils;
 
-import com.thoughtworks.qdox.JavaDocBuilder;
+import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.DocletTag;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
@@ -90,7 +79,7 @@ public class QDoxComponentGleaner
     // ComponentGleaner Implementation
     // ----------------------------------------------------------------------
 
-    public ComponentDescriptor<?> glean( JavaDocBuilder classCache, JavaClass javaClass )
+    public ComponentDescriptor<?> glean( JavaProjectBuilder classCache, JavaClass javaClass )
         throws ComponentGleanerException
     {
         DocletTag tag = javaClass.getTagByName( PLEXUS_COMPONENT_TAG );
@@ -255,7 +244,7 @@ public class QDoxComponentGleaner
         // Remove any Plexus specific interfaces from the calculation
         // ----------------------------------------------------------------------
 
-        List<JavaClass> interfaces = new ArrayList<JavaClass>( Arrays.asList( javaClass.getImplementedInterfaces() ) );
+        List<JavaClass> interfaces = new ArrayList<JavaClass>(  javaClass.getImplementedInterfaces() );
 
         for ( Iterator<JavaClass> it = interfaces.iterator(); it.hasNext(); )
         {
@@ -334,10 +323,10 @@ public class QDoxComponentGleaner
         return role;
     }
 
-    private void findRequirements( JavaDocBuilder classCache, ComponentDescriptor<?> componentDescriptor,
+    private void findRequirements( JavaProjectBuilder classCache, ComponentDescriptor<?> componentDescriptor,
                                    JavaClass javaClass )
     {
-        JavaField[] fields = javaClass.getFields();
+        List<JavaField> fields = javaClass.getFields();
 
         // ----------------------------------------------------------------------
         // Search the super class for requirements
@@ -365,7 +354,7 @@ public class QDoxComponentGleaner
             // Role
             // ----------------------------------------------------------------------
 
-            String requirementClass = field.getType().getJavaClass().getFullyQualifiedName();
+            String requirementClass = field.getType().getFullyQualifiedName();
 
             boolean isMap = requirementClass.equals(Map.class.getName()) ||
                     requirementClass.equals(Collection.class.getName());
@@ -455,7 +444,7 @@ public class QDoxComponentGleaner
     private void findConfiguration( XmlPlexusConfiguration configuration, JavaClass javaClass )
         throws ComponentGleanerException
     {
-        JavaField[] fields = javaClass.getFields();
+        List<JavaField> fields = javaClass.getFields();
 
         // ----------------------------------------------------------------------
         // Search the super class for configurable fields.
