@@ -658,8 +658,6 @@ public abstract class AbstractComponentConfiguratorTest
         }
         catch ( ComponentConfigurationException e )
         {
-            // expected
-            e.printStackTrace();
         }
     }
 
