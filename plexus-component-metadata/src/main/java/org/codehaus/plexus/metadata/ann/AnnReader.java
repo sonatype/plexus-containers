@@ -21,21 +21,21 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
 /**
  * @author Eugene Kuleshov
  */
-public class AnnReader implements ClassVisitor {
+public class AnnReader extends ClassVisitor {
 
   private final AnnClass annClass;
 
   private AnnReader(AnnClass annClass) {
+    super(Opcodes.ASM5);
     this.annClass = annClass;
   }
 
@@ -64,18 +64,12 @@ public class AnnReader implements ClassVisitor {
   public FieldVisitor visitField(int access, final String name, final String desc, String signature, Object value) {
     final AnnField field = new AnnField(annClass, access, name, desc);
     annClass.addField(field);
-    return new FieldVisitor() {
+    return new FieldVisitor(Opcodes.ASM5) {
 
       public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         Ann ann = new Ann(desc);
         field.addAnn(ann);
         return new AnnAnnReader(ann);
-      }
-
-      public void visitAttribute(Attribute attr) {
-      }
-
-      public void visitEnd() {
       }
     };
   }
@@ -85,7 +79,7 @@ public class AnnReader implements ClassVisitor {
     final AnnMethod method = new AnnMethod(annClass, access, mname, mdesc);
     annClass.addMethod(method);
     
-    return new MethodVisitor() {
+    return new MethodVisitor(Opcodes.ASM5) {
 
       public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         Ann ann = new Ann(desc);
@@ -98,98 +92,14 @@ public class AnnReader implements ClassVisitor {
         method.addParamAnn(parameter, ann);
         return new AnnAnnReader(ann);
       }
-      
-      public AnnotationVisitor visitAnnotationDefault() {
-        // TODO
-        return null;
-      }
-      
-      public void visitAttribute(Attribute attr) {
-      }
-
-      public void visitCode() {
-      }
-
-      public void visitFieldInsn(int opcode, String owner, String name, String desc) {
-      }
-
-      public void visitFrame(int type, int local, Object[] local2, int stack, Object[] stack2) {
-      }
-
-      public void visitIincInsn(int var, int increment) {
-      }
-
-      public void visitInsn(int opcode) {
-      }
-
-      public void visitIntInsn(int opcode, int operand) {
-      }
-
-      public void visitJumpInsn(int opcode, Label label) {
-      }
-
-      public void visitLabel(Label label) {
-      }
-
-      public void visitLdcInsn(Object cst) {
-      }
-
-      public void visitMethodInsn(int opcode, String owner, String name, String desc) {
-      }
-
-      public void visitMultiANewArrayInsn(String desc, int dims) {
-      }
-
-      public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
-      }
-      
-      public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {
-      }
-
-      public void visitTypeInsn(int opcode, String type) {
-      }
-
-      public void visitVarInsn(int opcode, int var) {
-      }
-      
-      public void visitMaxs(int maxStack, int maxLocals) {
-      }
-      
-      public void visitLocalVariable(String name, String desc,
-          String signature, Label start, Label end, int index) {
-      }
-      
-      public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
-      }
-      
-      public void visitLineNumber(int line, Label start) {
-      }
-      
-      public void visitEnd() {
-      }
-      
     };
   }
 
-  public void visitInnerClass(String name, String outer, String inner, int access) {
-  }
-
-  public void visitOuterClass(String owner, String name, String desc) {
-  }
-  
-  public void visitAttribute(Attribute attr) {
-  }
-  
-  public void visitSource(String source, String debug) {
-  }
-  
-  public void visitEnd() {
-  }
-
-  static class AnnAnnReader implements AnnotationVisitor {
+  static class AnnAnnReader extends AnnotationVisitor {
     private Ann ann;
 
     public AnnAnnReader(Ann ann) {
+      super(Opcodes.ASM5);
       this.ann = ann;
     }
 
@@ -210,13 +120,9 @@ public class AnnReader implements ClassVisitor {
     public AnnotationVisitor visitArray(String name) {
       return new AnnAnnArrayReader(ann, name);
     }
-
-    public void visitEnd() {
-    }
-    
   }
   
-  static class AnnAnnArrayReader implements AnnotationVisitor {
+  static class AnnAnnArrayReader extends AnnotationVisitor {
 
     private Ann ann;
 
@@ -226,6 +132,7 @@ public class AnnReader implements ClassVisitor {
     private ArrayList<String> array = new ArrayList<String>();
 
     public AnnAnnArrayReader(Ann ann, String name) {
+      super(Opcodes.ASM5);
       this.ann = ann;
       this.name = name;
     }
@@ -236,21 +143,8 @@ public class AnnReader implements ClassVisitor {
       }
     }
 
-    public AnnotationVisitor visitAnnotation(String name, String value) {
-      return null;
-    }
-
-    public AnnotationVisitor visitArray(String arg0) {
-      return null;
-    }
-
     public void visitEnd() {
       ann.addParam(name, array.toArray(new String[array.size()]));
     }
-
-    public void visitEnum(String arg0, String arg1, String arg2) {
-    }
-
   }
-
 }

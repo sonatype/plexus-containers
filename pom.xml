@@ -33,7 +33,7 @@
   <properties>
     <classWorldsVersion>2.5.1</classWorldsVersion>
     <plexusUtilsVersion>3.0.20</plexusUtilsVersion>
-    <xbeanReflectVersion>4.0</xbeanReflectVersion>
+    <xbeanReflectVersion>3.7</xbeanReflectVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
