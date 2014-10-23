@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.codehaus.plexus</groupId>
     <artifactId>plexus</artifactId>
-    <version>2.0.7</version>
+    <version>3.3.2</version>
   </parent>
 
   <artifactId>plexus-containers</artifactId>
