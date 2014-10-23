@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>plexus-containers</artifactId>
-  <version>1.5.7-SNAPSHOT</version>
+  <version>1.6</version>
   <packaging>pom</packaging>
 
   <name>Plexus Containers</name>
@@ -28,6 +28,7 @@
     <connection>scm:git:git@github.com:sonatype/plexus-containers.git</connection>
     <developerConnection>scm:git:git@github.com:sonatype/plexus-containers.git</developerConnection>
     <url>https://github.com/sonatype/plexus-containers</url>
+    <tag>plexus-containers-1.6</tag>
   </scm>
 
   <properties>
