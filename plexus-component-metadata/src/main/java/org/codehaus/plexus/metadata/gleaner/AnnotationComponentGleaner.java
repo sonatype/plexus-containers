@@ -48,6 +48,8 @@ public class AnnotationComponentGleaner
     extends ComponentGleanerSupport
     implements ClassComponentGleaner
 {
+    private static final String OBJECT_SLASHED_NAME = Object.class.getName().replace('.', '/');
+
     public ComponentDescriptor<?> glean(String className, ClassLoader cl) throws ComponentGleanerException 
     {
         assert className != null;
@@ -176,8 +178,9 @@ public class AnnotationComponentGleaner
 
         while(annClass!=null) {
             classes.add(annClass);
-            if(annClass.getSuperName()!=null) {
-              annClass = readClass2(annClass.getSuperName(), cl);
+            String superName = annClass.getSuperName();
+            if(superName!=null && !superName.equals(OBJECT_SLASHED_NAME)) {
+              annClass = readClass2(superName, cl);
             } else {
               break;
             }
